@@ -17,9 +17,13 @@ def search():
     if q is None or len(q) <= 0:
         return render_template('error.html')
 
+    tbm = ''
+    if 'tbm' in request.args:
+        tbm = '&tbm=' + request.args.get('tbm')
+
     b_obj = BytesIO()
     crl = pycurl.Curl()
-    crl.setopt(crl.URL, 'https://www.google.com/search?q=' + url_parse(q))
+    crl.setopt(crl.URL, 'https://www.google.com/search?q=' + url_parse(q) + tbm)
     crl.setopt(crl.USERAGENT, 'Brozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 LizzieMcGuirefox/59.0')
     crl.setopt(crl.WRITEDATA, b_obj)
     crl.perform()
