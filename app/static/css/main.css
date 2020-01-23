@@ -5,6 +5,13 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
+.logo {
+    width: 80%;
+    display: block;
+    margin: auto;
+    padding-bottom: 10px;
+}
+
 .search-container {
     width: 80%;
     position: absolute;

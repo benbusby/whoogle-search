@@ -1,0 +1,14 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>[SNK]</ShortName>
+  <Description>[Search engine full name and summary]</Description>
+  <InputEncoding>[UTF-8]</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">[https://example.com/favicon.ico]</Image>
+  <Url type="text/html" template="[searchURL]">
+    <Param name="[key name]" value="{searchTerms}"/>
+    <!-- other Params if you need them… -->
+    <Param name="[other key name]" value="[parameter value]"/>
+  </Url>
+  <Url type="application/x-suggestions+json" template="[suggestionURL]"/>
+  <moz:SearchForm>[https://example.com/search]</moz:SearchForm>
+</OpenSearchDescription>

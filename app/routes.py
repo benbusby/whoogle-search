@@ -1,7 +1,9 @@
 from app import app
+from bs4 import BeautifulSoup
 from flask import request, redirect, Response, render_template
 import os
 import pycurl
+import re
 from .url import url_parse
 from io import BytesIO
 
@@ -24,7 +26,12 @@ def search():
     if 'tbm' in request.args:
         tbm = '&tbm=' + request.args.get('tbm')
 
+    start = ''
+    if 'start' in request.args:
+        start = '&start=' + request.args.get('start')
+
     user_agent = request.headers.get('User-Agent')
+    full_query = url_parse(q) + tbm + start
 
     google_ua = DESKTOP_UA
     if 'Android' in user_agent or 'iPhone' in user_agent:
@@ -32,22 +39,43 @@ def search():
 
     b_obj = BytesIO()
     crl = pycurl.Curl()
-    crl.setopt(crl.URL, 'https://www.google.com/search?q=' + url_parse(q) + tbm)
+    crl.setopt(crl.URL, 'https://www.google.com/search?gbv=1&q=' + full_query)
     crl.setopt(crl.USERAGENT, google_ua)
     crl.setopt(crl.WRITEDATA, b_obj)
     crl.perform()
     crl.close()
-    get_body = b_obj.getvalue()
-    return render_template('search.html', response=get_body.decode("utf-8", 'ignore'))
+    get_body = b_obj.getvalue().decode('utf-8', 'ignore')
+    get_body = get_body.replace('data-src', 'src').replace('.001', '1').replace('visibility:hidden', 'visibility:visible').replace('>G<', '>Bl<')
+
+    pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
+    get_body = pattern.sub('0000ff', get_body)
+
+    soup = BeautifulSoup(get_body, 'html.parser')
+    try:
+        for script in soup("script"):
+            script.decompose()
+        soup.find('div', id='sfooter').decompose()
+    except Exception:
+        pass
+
+    return render_template('search.html', response=soup)
 
 
 @app.route('/url', methods=['GET'])
 def url():
+    if 'url' in request.args:
+        return redirect(request.args.get('url'))
+
     q = request.args.get('q')
     if len(q) > 0 and 'http' in q:
         return redirect(q)
     else:
         return render_template('error.html')
+
+
+@app.route('/imgres')
+def imgres():
+    return redirect(request.args.get('imgurl'))
 
 
 if __name__ == '__main__':

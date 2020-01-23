@@ -2,4 +2,5 @@ venv/
 __pycache__/
 *.pyc
 *.pem
+*.xml
 run.sh
