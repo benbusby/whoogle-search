@@ -5,10 +5,41 @@ import os
 import pycurl
 import re
 from .url import url_parse
+import urllib.parse as urlparse
+from urllib.parse import parse_qs
 from io import BytesIO
 
-MOBILE_UA = 'Mozilla/5.0 (Linux; Android 8.0.0; SM-G960F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36'
-DESKTOP_UA = 'Brozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Mobile LizzieMcGuirefox/59.0'
+MOBILE_UA = os.environ.get('MOZ') + '/5.0 (Android 4.20; Mobile; rv:54.0) Gecko/54.0 ' + os.environ.get('FF') + '/54.0'
+DESKTOP_UA = os.environ.get('MOZ') + '/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Mobile ' + os.environ.get('FF') + '/59.0'
+
+SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
+
+nojs = int(os.environ.get('NOJS'))
+
+
+def get_ua(user_agent):
+    return MOBILE_UA if ('Android' in user_agent or 'iPhone' in user_agent) else DESKTOP_UA
+
+
+def send_request(url, ua):
+    request_header = []
+
+    # Update as an optional param
+    # Todo: this doesn't seem to work
+    ip = '64.22.92.48'
+    request_header.append('CLIENT-IP: ' + ip)
+    request_header.append('X-FORWARDED-FOR: ' + ip)
+
+    b_obj = BytesIO()
+    crl = pycurl.Curl()
+    crl.setopt(crl.URL, url)
+    crl.setopt(crl.USERAGENT, ua)
+    crl.setopt(crl.HTTPHEADER, request_header)
+    crl.setopt(crl.WRITEDATA, b_obj)
+    crl.perform()
+    crl.close()
+
+    return b_obj.getvalue().decode('utf-8', 'ignore')
 
 
 @app.route('/', methods=['GET'])
@@ -30,27 +61,29 @@ def search():
     if 'start' in request.args:
         start = '&start=' + request.args.get('start')
 
+    # Change to a config setting
+    near = '&near=boulder'
+    if 'near' in request.args:
+        near = '&near=' + request.args.get('near')
+
     user_agent = request.headers.get('User-Agent')
-    full_query = url_parse(q) + tbm + start
+    full_query = url_parse(q) + tbm + start + near
 
-    google_ua = DESKTOP_UA
-    if 'Android' in user_agent or 'iPhone' in user_agent:
-        google_ua = MOBILE_UA
-
-    b_obj = BytesIO()
-    crl = pycurl.Curl()
-    crl.setopt(crl.URL, 'https://www.google.com/search?gbv=1&q=' + full_query)
-    crl.setopt(crl.USERAGENT, google_ua)
-    crl.setopt(crl.WRITEDATA, b_obj)
-    crl.perform()
-    crl.close()
-    get_body = b_obj.getvalue().decode('utf-8', 'ignore')
-    get_body = get_body.replace('data-src', 'src').replace('.001', '1').replace('visibility:hidden', 'visibility:visible').replace('>G<', '>Bl<')
-
+    get_body = send_request(SEARCH_URL + full_query, get_ua(user_agent))
+    get_body = get_body.replace('>G<', '>Bl<')
     pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
     get_body = pattern.sub('0000ff', get_body)
 
     soup = BeautifulSoup(get_body, 'html.parser')
+    for a in soup.find_all('a', href=True):
+        href = a['href']
+        if 'url?q=' in href:
+            href = urlparse.urlparse(href)
+            href = parse_qs(href.query)['q'][0]
+        if nojs:
+            a['href'] = '/window?location=' + href
+        #else:
+        #    a['href'] = 'about:reader?url=' + href
     try:
         for script in soup("script"):
             script.decompose()
@@ -58,7 +91,7 @@ def search():
     except Exception:
         pass
 
-    return render_template('search.html', response=soup)
+    return render_template('display.html', response=soup)
 
 
 @app.route('/url', methods=['GET'])
@@ -76,6 +109,23 @@ def url():
 @app.route('/imgres')
 def imgres():
     return redirect(request.args.get('imgurl'))
+
+
+@app.route('/window')
+def window():
+    get_body = send_request(request.args.get('location'), get_ua(request.headers.get('User-Agent')))
+    get_body = get_body.replace('src="/', 'src="' + request.args.get('location') + '"')
+    get_body = get_body.replace('href="/', 'href="' + request.args.get('location') + '"')
+
+    soup = BeautifulSoup(get_body, 'html.parser')
+
+    try:
+        for script in soup('script'):
+            script.decompose()
+    except Exception:
+        pass
+
+    return render_template('display.html', response=soup)
 
 
 if __name__ == '__main__':

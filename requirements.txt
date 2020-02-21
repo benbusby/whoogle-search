@@ -1,3 +1,5 @@
+beautifulsoup4==4.8.2
+bs4==0.0.1
 cffi==1.13.2
 Click==7.0
 cryptography==2.8
@@ -5,8 +7,10 @@ Flask==1.1.1
 itsdangerous==1.1.0
 Jinja2==2.10.3
 MarkupSafe==1.1.1
+Phyme==0.0.9
 pycparser==2.19
 pycurl==7.43.0.4
 pyOpenSSL==19.1.0
 six==1.14.0
+soupsieve==1.9.5
 Werkzeug==0.16.0
