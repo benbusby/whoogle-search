@@ -1,17 +1,24 @@
+import itertools
 from Phyme import Phyme
 import random
 import sys
 import time
 
-random.seed(time.clock())
+random.seed(time.time())
 
 ph = Phyme()
 
-rhymes = ph.get_perfect_rhymes(sys.argv[1])
-rhyme_vals = []
+def get_rhyme(word):
+    # Get all rhymes and merge to one list (normally separated by syllable count)
+    rhymes = ph.get_perfect_rhymes(word)
+    rhyme_vals = list(itertools.chain.from_iterable(list(rhymes.values())))
 
-for arr in rhymes.values():
-    for rhyme in arr:
-        rhyme_vals.append(rhyme)
+    # Pick a random rhyme and strip out any non alpha characters
+    rhymed_word = rhyme_vals[random.randint(0, len(rhyme_vals) - 1)]
+    rhymed_word = ''.join(letter for letter in rhymed_word if letter.isalpha())
 
-print(rhyme_vals[random.randint(0, len(rhyme_vals))].capitalize())
+    return rhymed_word.capitalize()
+
+
+if __name__ == '__main__':
+    print(get_rhyme(sys.argv[1]))
