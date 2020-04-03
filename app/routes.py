@@ -70,11 +70,16 @@ def search():
     full_query = url_parse(q) + tbm + start + near
 
     get_body = send_request(SEARCH_URL + full_query, get_ua(user_agent))
-    get_body = get_body.replace('>G<', '>Bl<')
+    get_body = get_body.replace('>G<', '>Sh<')
     pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
     get_body = pattern.sub('0000ff', get_body)
 
     soup = BeautifulSoup(get_body, 'html.parser')
+
+    ad_divs = soup.find('div', {'id':'main'}).findAll('div', {'class':'ZINbbc'}, recursive=False)
+    for div in ad_divs:
+        div.decompose()
+
     for a in soup.find_all('a', href=True):
         href = a['href']
         if 'url?q=' in href:
