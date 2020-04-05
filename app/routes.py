@@ -57,10 +57,16 @@ def search():
         return render_template('error.html')
 
     # Use :past(hour/day/week/month/year) if available
-    # example search "new restaurants :pastmonth"
+    # example search "new restaurants :past month"
     tbs = ''
+    # if 'tbs' in request.args:
+    #     tbs = '&tbs=' + request.args.get('tbs')
+    #     q = q.replace(q.split(':past', 1)[-1], '').replace(':past', '')
     if ':past' in q:
-        tbs = '&tbs=qdr:' + str.lower(q.split(':past', 1)[-1][0])
+        time_range = str.strip(q.split(':past', 1)[-1])
+        tbs = '&tbs=qdr:' + str.lower(time_range[0])
+
+    # Ensure search query is parsable
     q = urlparse.quote(q)
 
     # Pass along type of results (news, images, books, etc)
