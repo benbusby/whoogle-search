@@ -1,6 +1,7 @@
 venv/
+.idea/
 __pycache__/
 *.pyc
 *.pem
 *.xml
-run.sh
+config.json

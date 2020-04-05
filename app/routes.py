@@ -1,40 +1,43 @@
 from app import app
 from bs4 import BeautifulSoup
 from flask import request, redirect, Response, render_template
+import json
 import os
 import pycurl
+import rhyme
 import re
-from .url import url_parse
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 from io import BytesIO
 
-MOBILE_UA = os.environ.get('MOZ') + '/5.0 (Android 4.20; Mobile; rv:54.0) Gecko/54.0 ' + os.environ.get('FF') + '/54.0'
-DESKTOP_UA = os.environ.get('MOZ') + '/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Mobile ' + os.environ.get('FF') + '/59.0'
+# Get Mozilla Firefox rhyme (important) and form a new user agent
+mozilla = rhyme.get_rhyme('Mo') + 'zilla'
+firefox = rhyme.get_rhyme('Fire') + 'fox'
 
+MOBILE_UA = mozilla + '/5.0 (Android 4.20; Mobile; rv:54.0) Gecko/54.0 ' + firefox + '/59.0'
+DESKTOP_UA = mozilla + '/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Mobile ' + firefox + '/59.0'
+
+# Base search url
 SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
 
+# Optional nojs tag - opens links in a contained window with all js removed
+# (can be useful for achieving nojs on mobile)
 nojs = int(os.environ.get('NOJS'))
+
+config = json.load(open('config.json'))
 
 
 def get_ua(user_agent):
     return MOBILE_UA if ('Android' in user_agent or 'iPhone' in user_agent) else DESKTOP_UA
 
 
-def send_request(url, ua):
+def send_request(curl_url, ua):
     request_header = []
-
-    # Update as an optional param
-    # Todo: this doesn't seem to work
-    ip = '64.22.92.48'
-    request_header.append('CLIENT-IP: ' + ip)
-    request_header.append('X-FORWARDED-FOR: ' + ip)
 
     b_obj = BytesIO()
     crl = pycurl.Curl()
-    crl.setopt(crl.URL, url)
+    crl.setopt(crl.URL, curl_url)
     crl.setopt(crl.USERAGENT, ua)
-    crl.setopt(crl.HTTPHEADER, request_header)
     crl.setopt(crl.WRITEDATA, b_obj)
     crl.perform()
     crl.close()
@@ -52,34 +55,44 @@ def search():
     q = request.args.get('q')
     if q is None or len(q) <= 0:
         return render_template('error.html')
+    q = urlparse.quote(q)
 
+    # Pass along type of results (news, images, books, etc)
     tbm = ''
     if 'tbm' in request.args:
         tbm = '&tbm=' + request.args.get('tbm')
 
+    # Get results page start value (10 per page, ie page 2 start val = 20)
     start = ''
     if 'start' in request.args:
         start = '&start=' + request.args.get('start')
 
-    # Change to a config setting
-    near = '&near=boulder'
-    if 'near' in request.args:
-        near = '&near=' + request.args.get('near')
+    # Grab city from config, if available
+    near = ''
+    if 'near' in config:
+        near = '&near=' + config['near']
 
     user_agent = request.headers.get('User-Agent')
-    full_query = url_parse(q) + tbm + start + near
+    full_query = q + tbm + start + near
 
+    # Aesthetic only re-skinning
     get_body = send_request(SEARCH_URL + full_query, get_ua(user_agent))
     get_body = get_body.replace('>G<', '>Sh<')
     pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
-    get_body = pattern.sub('0000ff', get_body)
+    get_body = pattern.sub('685e79', get_body)
 
     soup = BeautifulSoup(get_body, 'html.parser')
 
-    ad_divs = soup.find('div', {'id':'main'}).findAll('div', {'class':'ZINbbc'}, recursive=False)
+    # Remove all ads (TODO: Ad specific div class may change over time, look into a more generic method)
+    ad_divs = soup.find('div', {'id': 'main'}).findAll('div', {'class': 'ZINbbc'}, recursive=False)
     for div in ad_divs:
         div.decompose()
 
+    # Remove unnecessary button(s)
+    for button in soup.find_all('button'):
+        button.decompose()
+
+    # Replace hrefs with only the intended destination (no "utm" type tags)
     for a in soup.find_all('a', href=True):
         href = a['href']
         if 'url?q=' in href:
@@ -87,8 +100,10 @@ def search():
             href = parse_qs(href.query)['q'][0]
         if nojs:
             a['href'] = '/window?location=' + href
-        #else:
+        # else: # Automatically go to reader mode in ff? Not sure if possible
         #    a['href'] = 'about:reader?url=' + href
+
+    # Ensure no extra scripts passed through
     try:
         for script in soup("script"):
             script.decompose()
