@@ -55,6 +55,12 @@ def search():
     q = request.args.get('q')
     if q is None or len(q) <= 0:
         return render_template('error.html')
+
+    # Use :past(hour/day/week/month/year) if available
+    # example search "new restaurants :pastmonth"
+    tbs = ''
+    if ':past' in q:
+        tbs = '&tbs=qdr:' + str.lower(q.split(':past', 1)[-1][0])
     q = urlparse.quote(q)
 
     # Pass along type of results (news, images, books, etc)
@@ -73,10 +79,11 @@ def search():
         near = '&near=' + config['near']
 
     user_agent = request.headers.get('User-Agent')
-    full_query = q + tbm + start + near
+    full_query = q + tbs + tbm + start + near
+
+    get_body = send_request(SEARCH_URL + full_query, get_ua(user_agent))
 
     # Aesthetic only re-skinning
-    get_body = send_request(SEARCH_URL + full_query, get_ua(user_agent))
     get_body = get_body.replace('>G<', '>Sh<')
     pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
     get_body = pattern.sub('685e79', get_body)
@@ -84,17 +91,32 @@ def search():
     soup = BeautifulSoup(get_body, 'html.parser')
 
     # Remove all ads (TODO: Ad specific div class may change over time, look into a more generic method)
-    ad_divs = soup.find('div', {'id': 'main'}).findAll('div', {'class': 'ZINbbc'}, recursive=False)
-    for div in ad_divs:
-        div.decompose()
+    main_divs = soup.find('div', {'id': 'main'})
+    if main_divs is not None:
+        ad_divs = main_divs.findAll('div', {'class': 'ZINbbc'}, recursive=False)
+        for div in ad_divs:
+            div.decompose()
 
     # Remove unnecessary button(s)
     for button in soup.find_all('button'):
         button.decompose()
 
+    # Remove svg logos
+    for svg in soup.find_all('svg'):
+        svg.decompose()
+
+    # Update logo
+    logo = soup.find('a', {'class': 'l'})
+    if logo is not None and 'Android' in user_agent or 'iPhone' in user_agent:
+        logo.insert(0, "Shoogle")
+        logo['style'] = 'display: flex;justify-content: center;align-items: center;color: #685e79;font-size: 18px;'
+
     # Replace hrefs with only the intended destination (no "utm" type tags)
     for a in soup.find_all('a', href=True):
         href = a['href']
+        if '/advanced_search' in href:
+            a.decompose()
+            continue
         if 'url?q=' in href:
             href = urlparse.urlparse(href)
             href = parse_qs(href.query)['q'][0]
