@@ -10,6 +10,9 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 from io import BytesIO
 
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+STATIC_FOLDER = os.path.join(APP_ROOT, 'static')
+
 # Get Mozilla Firefox rhyme (important) and form a new user agent
 mozilla = rhyme.get_rhyme('Mo') + 'zilla'
 firefox = rhyme.get_rhyme('Fire') + 'fox'
@@ -24,7 +27,7 @@ SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
 # (can be useful for achieving nojs on mobile)
 nojs = int(os.environ.get('NOJS'))
 
-config = json.load(open('config.json'))
+user_config = json.load(open(STATIC_FOLDER + '/config.json'))
 
 
 def get_ua(user_agent):
@@ -81,8 +84,8 @@ def search():
 
     # Grab city from config, if available
     near = ''
-    if 'near' in config:
-        near = '&near=' + config['near']
+    if 'near' in user_config:
+        near = '&near=' + urlparse.quote(user_config['near'])
 
     user_agent = request.headers.get('User-Agent')
     full_query = q + tbs + tbm + start + near
@@ -114,7 +117,7 @@ def search():
     # Update logo
     logo = soup.find('a', {'class': 'l'})
     if logo is not None and 'Android' in user_agent or 'iPhone' in user_agent:
-        logo.insert(0, "Shoogle")
+        logo.insert(0, 'Shoogle')
         logo['style'] = 'display: flex;justify-content: center;align-items: center;color: #685e79;font-size: 18px;'
 
     # Replace hrefs with only the intended destination (no "utm" type tags)
@@ -133,13 +136,25 @@ def search():
 
     # Ensure no extra scripts passed through
     try:
-        for script in soup("script"):
+        for script in soup('script'):
             script.decompose()
         soup.find('div', id='sfooter').decompose()
     except Exception:
         pass
 
     return render_template('display.html', response=soup)
+
+
+@app.route('/config', methods=['POST'])
+def config():
+    global user_config
+    with open(STATIC_FOLDER + '/config.json', 'w') as config_file:
+        config_file.write(json.dumps(json.loads(request.data), indent=4))
+        config_file.close()
+
+        user_config = json.loads(request.data)
+
+    return 'New config: ' + str(request.data)
 
 
 @app.route('/url', methods=['GET'])
