@@ -8,8 +8,8 @@ if [[ -z "$NOJS" ]]; then
 fi
 
 # Create config json if it doesn't exist
-if [[ -f $SCRIPT_DIR/config.json ]]; then
-    echo "{}" > $SCRIPT_DIR/config.json
+if [[ ! -f $SCRIPT_DIR/app/static/config.json ]]; then
+    echo "{}" > $SCRIPT_DIR/app/static/config.json
 fi
 
 pkill flask
