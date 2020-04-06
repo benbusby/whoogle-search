@@ -99,11 +99,12 @@ def search():
 
     soup = BeautifulSoup(get_body, 'html.parser')
 
-    # Remove all ads (TODO: Ad specific div class may change over time, look into a more generic method)
+    # Remove all ads (TODO: Ad specific div classes probably change over time, look into a more generic method)
     main_divs = soup.find('div', {'id': 'main'})
     if main_divs is not None:
         ad_divs = main_divs.findAll('div', {'class': 'ZINbbc'}, recursive=False)
-        for div in ad_divs:
+        sponsored_divs = main_divs.findAll('div', {'class': 'D1fz0e'}, recursive=False)
+        for div in ad_divs + sponsored_divs:
             div.decompose()
 
     # Remove unnecessary button(s)
