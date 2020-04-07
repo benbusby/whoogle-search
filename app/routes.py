@@ -133,7 +133,7 @@ def search():
             href = parse_qs(href.query)['q'][0]
 
             # Add no-js option
-            if user_config['nojs']:
+            if 'nojs' in user_config and user_config['nojs']:
                 nojs_link = soup.new_tag('a')
                 nojs_link['href'] = '/window?location=' + href
                 nojs_link['style'] = 'display:block;width:100%;'
@@ -149,7 +149,7 @@ def search():
     except Exception:
         pass
 
-    return render_template('display.html', response=soup)
+    return render_template('display.html', query=q, response=soup)
 
 
 @app.route('/config', methods=['POST'])
@@ -173,7 +173,7 @@ def url():
     if len(q) > 0 and 'http' in q:
         return redirect(q)
     else:
-        return render_template('error.html')
+        return render_template('error.html', query=q)
 
 
 @app.route('/imgres')
