@@ -23,10 +23,6 @@ DESKTOP_UA = mozilla + '/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/2010010
 # Base search url
 SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
 
-# Optional nojs tag - opens links in a contained window with all js removed
-# (can be useful for achieving nojs on mobile)
-nojs = int(os.environ.get('NOJS'))
-
 user_config = json.load(open(STATIC_FOLDER + '/config.json'))
 
 
@@ -36,12 +32,15 @@ def get_ua(user_agent):
 
 def send_request(curl_url, ua):
     request_header = []
+    response_header = []
 
     b_obj = BytesIO()
     crl = pycurl.Curl()
     crl.setopt(crl.URL, curl_url)
     crl.setopt(crl.USERAGENT, ua)
     crl.setopt(crl.WRITEDATA, b_obj)
+    crl.setopt(crl.HEADERFUNCTION, response_header.append)
+    crl.setopt(pycurl.FOLLOWLOCATION, 1)
     crl.perform()
     crl.close()
 
@@ -127,13 +126,20 @@ def search():
         if '/advanced_search' in href:
             a.decompose()
             continue
+
         if 'url?q=' in href:
+            # Strip unneeded arguments
             href = urlparse.urlparse(href)
             href = parse_qs(href.query)['q'][0]
-        if nojs:
-            a['href'] = '/window?location=' + href
-        # else: # Automatically go to reader mode in ff? Not sure if possible
-        #    a['href'] = 'about:reader?url=' + href
+
+            # Add no-js option
+            if user_config['nojs']:
+                nojs_link = soup.new_tag('a')
+                nojs_link['href'] = '/window?location=' + href
+                nojs_link['style'] = 'display:block;width:100%;'
+                nojs_link.string = 'NoJS Link: ' + nojs_link['href']
+                a.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
+                a.append(nojs_link)
 
     # Ensure no extra scripts passed through
     try:
