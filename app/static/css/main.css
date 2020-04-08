@@ -1,7 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 body {
-    background: #fff;
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -32,12 +31,12 @@ body {
     border: 3px solid #685e79;
     padding: 5px;
     height: 40px;
-    border-radius: 10px;
     outline: none;
     font-size: 24px;
     color: #685e79;
     border-radius: 10px 10px 0 0;
     max-width: 600px;
+    background: rgba(0,0,0,0);
 }
 
 #search-bar:focus{
@@ -51,7 +50,6 @@ body {
     background: #685e79;
     text-align: center;
     color: #fff;
-    border-radius: 10px;
     cursor: pointer;
     font-size: 20px;
     align-content: center;
@@ -61,3 +59,51 @@ body {
     max-width: 600px;
 }
 
+.config-div {
+    padding: 5px;
+}
+
+.collapsible {
+    background-color: rgba(0,0,0,0);
+    color: #685e79;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    border-radius: 10px 10px 0 0;
+}
+
+.active {
+    background-color: #685e79;
+    color: white;
+}
+
+.collapsible:after {
+    content: '\002B';
+    color: #685e79;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+    content: "\2212";
+    color: white;
+}
+
+.content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: #685e79;
+    color: white;
+    border-radius: 0 0 10px 10px;
+}
+
+.open {
+    padding-bottom: 20px;
+}

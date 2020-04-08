@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/static/css/main.css">
     </head>
-    <body>
+    <body id="main" style="display: none; background-color: {{ bg }}">
         <div class="search-container">
             <img class="logo" src="/static/img/logo.png">
             <div class="search-fields">
@@ -15,10 +15,24 @@
                 <button type="submit" id="search-submit">Search</button>
             </div>
             <br/>
-            <div class="config-fields">
-                <label for="config-near">Near: </label>
-                <input type="text" name="config-near" id="config-near" placeholder="City Name">
-                <button type="submit" id="config-submit">Save</button>
+            <button id="config-collapsible" class="collapsible">Configuration</button>
+            <div class="content">
+                <div class="config-fields">
+                <div class="config-div">
+                    <label for="config-near">Near: </label>
+                    <input type="text" name="config-near" id="config-near" placeholder="City Name">
+                </div>
+                <div class="config-div">
+                    <label for="config-nojs">Show NoJS Links: </label>
+                    <input type="checkbox" name="config-nojs" id="config-nojs">
+                </div>
+                <div class="config-div">
+                    <label for="config-dark">Dark Mode: </label>
+                    <input type="checkbox" name="config-dark" id="config-dark">
+                </div>
+                <div class="config-div">
+                    <button type="submit" id="config-submit">Save</button>
+                </div>
             </div>
         </div>
     </body>

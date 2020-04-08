@@ -49,7 +49,8 @@ def send_request(curl_url, ua):
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    bg = '#000' if 'dark' in user_config and user_config['dark'] else '#fff'
+    return render_template('index.html', bg=bg)
 
 
 @app.route('/search', methods=['GET'])
@@ -92,9 +93,12 @@ def search():
     get_body = send_request(SEARCH_URL + full_query, get_ua(user_agent))
 
     # Aesthetic only re-skinning
+    dark_mode = 'dark' in user_config and user_config['dark']
     get_body = get_body.replace('>G<', '>Sh<')
     pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
     get_body = pattern.sub('685e79', get_body)
+    if dark_mode:
+        get_body = get_body.replace('fff', '000').replace('202124', 'ddd').replace('1967D2', '3b85ea')
 
     soup = BeautifulSoup(get_body, 'html.parser')
 
@@ -140,6 +144,12 @@ def search():
                 nojs_link.string = 'NoJS Link: ' + nojs_link['href']
                 a.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
                 a.append(nojs_link)
+
+    # Set up dark mode if active
+    if dark_mode:
+        soup.find('html')['style'] = 'scrollbar-color: #333 #111;'
+        for input_element in soup.findAll('input'):
+            input_element['style'] = 'color:#fff;'
 
     # Ensure no extra scripts passed through
     try:
