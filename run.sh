@@ -11,4 +11,4 @@ pkill flask
 
 # TODO: Set up the following for running over https
 #--cert=./app/cert.pem --key=./app/key.pem
-$SCRIPT_DIR/venv/bin/flask run 
+flask run --host="0.0.0.0"
