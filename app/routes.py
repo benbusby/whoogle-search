@@ -116,7 +116,7 @@ def search():
 
     # Update logo
     logo = soup.find('a', {'class': 'l'})
-    if logo is not None and 'Android' in user_agent or 'iPhone' in user_agent:
+    if logo is not None and ('Android' in user_agent or 'iPhone' in user_agent):
         logo.insert(0, 'Shoogle')
         logo['style'] = 'display: flex;justify-content: center;align-items: center;color: #685e79;font-size: 18px;'
 
@@ -149,7 +149,7 @@ def search():
     except Exception:
         pass
 
-    return render_template('display.html', query=q, response=soup)
+    return render_template('display.html', query=urlparse.unquote(q), response=soup)
 
 
 @app.route('/config', methods=['POST'])
