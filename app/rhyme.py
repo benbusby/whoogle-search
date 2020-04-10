@@ -8,6 +8,7 @@ random.seed(time.time())
 
 ph = Phyme()
 
+
 def get_rhyme(word):
     # Get all rhymes and merge to one list (normally separated by syllable count)
     rhymes = ph.get_perfect_rhymes(word)
