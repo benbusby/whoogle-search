@@ -30,8 +30,11 @@ heroku open
 TODO
 
 ## Extra Steps
-- Set Shoogle as your primary search engine
-  - From the main shoogle folder, run `python opensearch.py "\<your app url\>"`
+#### Set Shoogle as your primary search engine
+1. From the main shoogle folder, run `python opensearch.py "\<your app url\>"`
+2. Rebuild and release your updated app
+  - `heroku container:push web` and then `heroku container:release web`
+3. Update browser settings
   - Firefox (Desktop)
     - Navigate to your app's url, and click the 3 dot menu in the address bar. At the bottom, there should be an option to "Add Search Engine". Once you've clicked this, open your Firefox Preferences menu, click "Search" in the left menu, and use the available dropdown to select "Shoogle" from the list.
   - Firefox (Mobile)

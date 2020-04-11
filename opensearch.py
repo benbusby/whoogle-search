@@ -9,7 +9,7 @@ if len(sys.argv) != 2:
     print('Example: python opensearch.py "https://my-app-1776.herokuapps.com"')
     sys.exit(0)
 
-app_url = sys.argv[1]
+app_url = sys.argv[1].rstrip('/')
 opensearch_template = open(template_path, 'r').read()
 
 with open(opensearch_path, 'w') as opensearch_xml:

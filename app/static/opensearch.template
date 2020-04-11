@@ -4,10 +4,10 @@
   <Description>Shoogle: A lightweight, deployable Google search proxy for desktop/mobile that removes Javascript, AMP links, and ads</Description>
   <InputEncoding>UTF-8</InputEncoding>
   <Image width="16" height="16" type="image/x-icon">/static/img/favicon.ico</Image>
-  <Url type="text/html" template="SHOOGLE_URL">
+  <Url type="text/html" template="SHOOGLE_URL/search">
     <Param name="q" value="{searchTerms}"/>
   </Url>
-  <Url type="application/x-suggestions+json" template="SHOOGLE_URL"/>
-  <moz:SearchForm>SHOOGLE_URL</moz:SearchForm>
+  <Url type="application/x-suggestions+json" template="SHOOGLE_URL/search"/>
+  <moz:SearchForm>SHOOGLE_URL/search</moz:SearchForm>
 </OpenSearchDescription>
 
