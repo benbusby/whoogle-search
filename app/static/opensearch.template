@@ -1,14 +1,13 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
                        xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-  <ShortName>[SNK]</ShortName>
-  <Description>[Search engine full name and summary]</Description>
-  <InputEncoding>[UTF-8]</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">[https://example.com/favicon.ico]</Image>
-  <Url type="text/html" template="[searchURL]">
-    <Param name="[key name]" value="{searchTerms}"/>
-    <!-- other Params if you need them… -->
-    <Param name="[other key name]" value="[parameter value]"/>
+  <ShortName>Shoogle</ShortName>
+  <Description>Shoogle: A lightweight, deployable Google search proxy for desktop/mobile that removes Javascript, AMP links, and ads</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">/static/img/favicon.ico</Image>
+  <Url type="text/html" template="SHOOGLE_URL">
+    <Param name="q" value="{searchTerms}"/>
   </Url>
-  <Url type="application/x-suggestions+json" template="[suggestionURL]"/>
-  <moz:SearchForm>[https://example.com/search]</moz:SearchForm>
+  <Url type="application/x-suggestions+json" template="SHOOGLE_URL"/>
+  <moz:SearchForm>SHOOGLE_URL</moz:SearchForm>
 </OpenSearchDescription>
+
