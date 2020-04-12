@@ -43,9 +43,8 @@ Same as most search engines, with the exception of filtering by time range.
 To filter by a range of time, append ":past <time>" to the end of your search, where <time> can be `hour`, `day`, `month`, or `year`. Example: `coronavirus updates :past hour`
 
 ## Extra Steps
-#### Set Shoogle as your primary search engine
-___
-1. From the main shoogle folder, run `python opensearch.py "\<your app url\>"`
+### Set Shoogle as your primary search engine
+1. From the main shoogle folder, run `python opensearch.py "<your app url>"`
 2. Rebuild and release your updated app
   - `heroku container:push web` and then `heroku container:release web`
 3. Update browser settings
@@ -56,8 +55,7 @@ ___
       - Title: "Shoogle"
       - URL: "https://\<your shoogle url\>/search?q=%s"
 
-#### Customizing and Configuration
-___
+### Customizing and Configuration
 Shoogle currently allows a few minor configuration settings, accessible from the home page:
   - "Near"
     - Set to a city name to narrow your results to a general geographic region. This can be useful if you rely on being able to search for things like "pizza places" and see results in your city, rather than results from wherever the server is located.
@@ -65,3 +63,10 @@ Shoogle currently allows a few minor configuration settings, accessible from the
     - Sets background to pure black
   - NoJS Mode (Experimental)
     - Adds a separate link for each search result that will open the webpage without any javascript content served. Can be useful if you're seeking a no-javascript experience on mobile, but otherwise could just be accomplished with a browser plugin.
+
+### Prevent Downtime (Heroku)
+Part of the deal with Heroku's free tier is that you're allocated 550 hours/month (meaning it can't stay active 24/7), and the app is temporarily shut down after 30 minutes of inactivity. Once it becomes inactive, any Shoogle searches will still work, but it'll take an extra 10-15 seconds for the app to come back online before displaying the result, which can be frustrating if you're in a hurry.
+
+A good solution for this is to set up a simple cronjob on any device at your home that is consistently powered on and connected to the internet (in my case, a PiHole worked perfectly). All the device needs to do is fetch app content on a consistent basis to keep the app alive in whatever ~17 hour window you want it on (17 hrs * 31 days = 527, meaning you'd still have 23 leftover hours each month if you searched outside of your target window).
+
+For instance: `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/shoogle-refresh` will fetch the home page of the app every 20 minutes between 8am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed. 
