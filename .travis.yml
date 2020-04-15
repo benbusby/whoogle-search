@@ -1,5 +1,7 @@
 language: python
 python: 3.6
+before_install:
+    - sudo apt-get -y install libgnutls28-dev
 install:
     - pip install -r config/requirements.txt
 script:
