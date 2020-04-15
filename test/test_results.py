@@ -27,7 +27,10 @@ def test_search_results(client):
     rv = client.get('/search?q=test')
     assert rv._status_code == 200
 
-    assert len(get_search_results(rv.data)) == 10
+    # Depending on the search, there can be more
+    # than 10 result divs
+    assert len(get_search_results(rv.data)) >= 10
+    assert len(get_search_results(rv.data)) <= 15
 
 
 def test_recent_results(client):
