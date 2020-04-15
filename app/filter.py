@@ -3,109 +3,118 @@ import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
-AD_CLASS = 'ZINbbc'
-SPONS_CLASS = 'D1fz0e'
 
+class Filter:
+    def __init__(self, mobile=False, config=None):
+        self.mobile = False
+        self.dark_mode = False
+        self.nojs = False
+        self.near_city = None
 
-def reskin(page, dark_mode=False):
-    # Aesthetic only re-skinning
-    page = page.replace('>G<', '>Sh<')
-    pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
-    page = pattern.sub('685e79', page)
-    if dark_mode:
-        page = page.replace('fff', '000').replace('202124', 'ddd').replace('1967D2', '3b85ea')
+        if config is None:
+            config = {}
 
-    return page
+        near_city = config['near'] if 'near' in config else None
+        dark_mode = config['dark_mode'] if 'dark_mode' in config else False
+        nojs = config['nojs'] if 'nojs' in config else False
+        mobile = mobile
 
+    def reskin(self, page):
+        # Aesthetic only re-skinning
+        page = page.replace('>G<', '>Sh<')
+        pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
+        page = pattern.sub('685e79', page)
+        if self.dark_mode:
+            page = page.replace('fff', '000').replace('202124', 'ddd').replace('1967D2', '3b85ea')
 
-def gen_query(q, args, near_city=None):
-    # Use :past(hour/day/week/month/year) if available
-    # example search "new restaurants :past month"
-    tbs = ''
-    # if 'tbs' in request.args:
-    #     tbs = '&tbs=' + request.args.get('tbs')
-    #     q = q.replace(q.split(':past', 1)[-1], '').replace(':past', '')
-    if ':past' in q:
-        time_range = str.strip(q.split(':past', 1)[-1])
-        tbs = '&tbs=qdr:' + str.lower(time_range[0])
+        return page
 
-    # Ensure search query is parsable
-    q = urlparse.quote(q)
+    def gen_query(self, q, args):
+        # Use :past(hour/day/week/month/year) if available
+        # example search "new restaurants :past month"
+        tbs = ''
+        if ':past' in q:
+            time_range = str.strip(q.split(':past', 1)[-1])
+            tbs = '&tbs=qdr:' + str.lower(time_range[0])
 
-    # Pass along type of results (news, images, books, etc)
-    tbm = ''
-    if 'tbm' in args:
-        tbm = '&tbm=' + args.get('tbm')
+        # Ensure search query is parsable
+        q = urlparse.quote(q)
 
-    # Get results page start value (10 per page, ie page 2 start val = 20)
-    start = ''
-    if 'start' in args:
-        start = '&start=' + args.get('start')
+        # Pass along type of results (news, images, books, etc)
+        tbm = ''
+        if 'tbm' in args:
+            tbm = '&tbm=' + args.get('tbm')
 
-    # Grab city from config, if available
-    near = ''
-    if near_city:
-        near = '&near=' + urlparse.quote(near_city)
+        # Get results page start value (10 per page, ie page 2 start val = 20)
+        start = ''
+        if 'start' in args:
+            start = '&start=' + args.get('start')
 
-    return q + tbs + tbm + start + near
+        # Grab city from config, if available
+        near = ''
+        if self.near_city:
+            near = '&near=' + urlparse.quote(self.near_city)
 
+        return q + tbs + tbm + start + near
 
-def cook(soup, user_agent, nojs=False, dark_mode=False):
-    # Remove all ads (TODO: Ad specific div classes probably change over time, look into a more generic method)
-    main_divs = soup.find('div', {'id': 'main'})
-    if main_divs is not None:
-        ad_divs = main_divs.findAll('div', {'class': AD_CLASS}, recursive=False)
-        sponsored_divs = main_divs.findAll('div', {'class': SPONS_CLASS}, recursive=False)
-        for div in ad_divs + sponsored_divs:
-            div.decompose()
+    def clean(self, soup):
+        # Remove all ads
+        main_divs = soup.find('div', {'id': 'main'})
+        if main_divs is not None:
+            result_divs = main_divs.findAll('div', recursive=False)
 
-    # Remove unnecessary button(s)
-    for button in soup.find_all('button'):
-        button.decompose()
+            # Only ads/sponsored content use classes in the list of result divs
+            ad_divs = [ad_div for ad_div in result_divs if 'class' in ad_div.attrs]
+            for div in ad_divs:
+                div.decompose()
 
-    # Remove svg logos
-    for svg in soup.find_all('svg'):
-        svg.decompose()
+        # Remove unnecessary button(s)
+        for button in soup.find_all('button'):
+            button.decompose()
 
-    # Update logo
-    logo = soup.find('a', {'class': 'l'})
-    if logo is not None and ('Android' in user_agent or 'iPhone' in user_agent):
-        logo.insert(0, 'Shoogle')
-        logo['style'] = 'display: flex;justify-content: center;align-items: center;color: #685e79;font-size: 18px;'
+        # Remove svg logos
+        for svg in soup.find_all('svg'):
+            svg.decompose()
 
-    # Replace hrefs with only the intended destination (no "utm" type tags)
-    for a in soup.find_all('a', href=True):
-        href = a['href']
-        if '/advanced_search' in href:
-            a.decompose()
-            continue
+        # Update logo
+        logo = soup.find('a', {'class': 'l'})
+        if logo is not None and self.mobile:
+            logo.insert(0, 'Shoogle')
+            logo['style'] = 'display: flex;justify-content: center;align-items: center;color: #685e79;font-size: 18px;'
 
-        if 'url?q=' in href:
-            # Strip unneeded arguments
-            href = urlparse.urlparse(href)
-            href = parse_qs(href.query)['q'][0]
+        # Replace hrefs with only the intended destination (no "utm" type tags)
+        for a in soup.find_all('a', href=True):
+            href = a['href']
+            if '/advanced_search' in href:
+                a.decompose()
+                continue
 
-            # Add no-js option
-            if nojs:
-                nojs_link = soup.new_tag('a')
-                nojs_link['href'] = '/window?location=' + href
-                nojs_link['style'] = 'display:block;width:100%;'
-                nojs_link.string = 'NoJS Link: ' + nojs_link['href']
-                a.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
-                a.append(nojs_link)
+            if 'url?q=' in href:
+                # Strip unneeded arguments
+                href = urlparse.urlparse(href)
+                href = parse_qs(href.query)['q'][0]
 
-    # Set up dark mode if active
-    if dark_mode:
-        soup.find('html')['style'] = 'scrollbar-color: #333 #111;'
-        for input_element in soup.findAll('input'):
-            input_element['style'] = 'color:#fff;'
+                # Add no-js option
+                if self.nojs:
+                    nojs_link = soup.new_tag('a')
+                    nojs_link['href'] = '/window?location=' + href
+                    nojs_link['style'] = 'display:block;width:100%;'
+                    nojs_link.string = 'NoJS Link: ' + nojs_link['href']
+                    a.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
+                    a.append(nojs_link)
 
-    # Ensure no extra scripts passed through
-    try:
-        for script in soup('script'):
-            script.decompose()
-        soup.find('div', id='sfooter').decompose()
-    except Exception:
-        pass
+        # Set up dark mode if active
+        if self.dark_mode:
+            soup.find('html')['style'] = 'scrollbar-color: #333 #111;'
+            for input_element in soup.findAll('input'):
+                input_element['style'] = 'color:#fff;'
 
-    return soup
+        # Ensure no extra scripts passed through
+        try:
+            for script in soup('script'):
+                script.decompose()
+            soup.find('div', id='sfooter').decompose()
+        except Exception:
+            pass
+
+        return soup

@@ -1,4 +1,5 @@
-from app import app, rhyme, filter
+from app import app, rhyme
+from app.filter import Filter
 from bs4 import BeautifulSoup
 from flask import request, redirect, render_template
 from io import BytesIO
@@ -7,8 +8,8 @@ import os
 import pycurl
 import urllib.parse as urlparse
 
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-STATIC_FOLDER = os.path.join(APP_ROOT, 'static')
+app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
+app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
 
 # Get Mozilla Firefox rhyme (important) and form a new user agent
 mozilla = rhyme.get_rhyme('Mo') + 'zilla'
@@ -20,7 +21,7 @@ DESKTOP_UA = mozilla + '/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/2010010
 # Base search url
 SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
 
-user_config = json.load(open(STATIC_FOLDER + '/config.json'))
+user_config = json.load(open(app.config['STATIC_FOLDER'] + '/config.json'))
 
 
 def get_ua(user_agent):
@@ -55,29 +56,31 @@ def search():
     if q is None or len(q) <= 0:
         return render_template('error.html')
 
-    full_query = filter.gen_query(q, request.args)
     user_agent = request.headers.get('User-Agent')
-    dark_mode = 'dark' in user_config and user_config['dark']
-    nojs = 'nojs' in user_config and user_config['nojs']
+    mobile = 'Android' in user_agent or 'iPhone' in user_agent
 
-    get_body = filter.reskin(send_request(
-        SEARCH_URL + full_query, get_ua(user_agent)), dark_mode=dark_mode)
-
-    soup = filter.cook(BeautifulSoup(get_body, 'html.parser'), user_agent, nojs=nojs, dark_mode=dark_mode)
+    content_filter = Filter(mobile, user_config)
+    full_query = content_filter.gen_query(q, request.args)
+    get_body = send_request(SEARCH_URL + full_query, get_ua(user_agent))
+    get_body = content_filter.reskin(get_body)
+    soup = content_filter.clean(BeautifulSoup(get_body, 'html.parser'))
 
     return render_template('display.html', query=urlparse.unquote(q), response=soup)
 
 
-@app.route('/config', methods=['POST'])
+@app.route('/config', methods=['GET', 'POST'])
 def config():
     global user_config
-    with open(STATIC_FOLDER + '/config.json', 'w') as config_file:
-        config_file.write(json.dumps(json.loads(request.data), indent=4))
-        config_file.close()
+    if request.method == 'GET':
+        return json.dumps(user_config)
+    else:
+        with open(app.config['STATIC_FOLDER'] + '/config.json', 'w') as config_file:
+            config_file.write(json.dumps(json.loads(request.data), indent=4))
+            config_file.close()
 
-        user_config = json.loads(request.data)
+            user_config = json.loads(request.data)
 
-    return 'New config: ' + str(request.data)
+        return 'New config: ' + str(request.data)
 
 
 @app.route('/url', methods=['GET'])

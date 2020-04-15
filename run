@@ -1,0 +1,33 @@
+#!/bin/bash
+# Usage:
+# ./run # Runs the full web app
+# ./run test # Runs the testing suite
+
+SCRIPT=`realpath $0`
+SCRIPT_DIR=`dirname $SCRIPT`
+
+# Set default port if unavailable
+if [[ -z "${PORT}" ]]; then
+    PORT=5000
+fi
+
+# Set directory to serve static content from
+[[ ! -z $1 ]] && SUBDIR="$1" || SUBDIR="app"
+export APP_ROOT=$SCRIPT_DIR/$SUBDIR
+export STATIC_FOLDER=$APP_ROOT/static
+
+mkdir -p $STATIC_FOLDER
+
+# Create default config json if it doesn't exist
+if [[ ! -f $STATIC_FOLDER/config.json ]]; then
+    echo "{}" > $STATIC_FOLDER/config.json
+fi
+
+pkill flask
+
+# Check for regular vs test run
+if [[ $SUBDIR == "test" ]]; then
+    pytest -sv
+else
+    flask run --host="0.0.0.0" --port=$PORT
+fi

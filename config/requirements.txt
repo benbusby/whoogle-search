@@ -11,6 +11,7 @@ Phyme==0.0.9
 pycparser==2.19
 pycurl==7.43.0.4
 pyOpenSSL==19.1.0
+pytest==5.4.1
 six==1.14.0
 soupsieve==1.9.5
 Werkzeug==0.16.0

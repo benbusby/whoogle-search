@@ -5,3 +5,4 @@ __pycache__/
 *.pem
 *.xml
 config.json
+test/static

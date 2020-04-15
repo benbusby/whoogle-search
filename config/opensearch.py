@@ -1,7 +1,9 @@
+import os
 import sys
 
-template_path = './app/static/opensearch.template'
-opensearch_path = './app/static/opensearch.xml'
+script_path = os.path.dirname(os.path.realpath(__file__))
+template_path = script_path + '/../app/static/opensearch.template'
+opensearch_path = script_path + '/../app/static/opensearch.xml'
 replace_tag = 'SHOOGLE_URL'
 
 if len(sys.argv) != 2:

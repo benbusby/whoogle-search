@@ -3,6 +3,6 @@ FROM python:3
 WORKDIR /usr/src/app
 COPY . .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r config/requirements.txt
 
-CMD ["./run.sh"]
+CMD ["./run"]

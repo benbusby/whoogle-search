@@ -29,14 +29,26 @@ heroku open
 Now you're done! This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Shoogle and even [set it as your primary search engine](https://github.com/benbusby/shoogle#set-shoogle-as-your-primary-search-engine).
 
 #### B) Using your own server, or alternative container deployment
-There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment. 
+There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
 
 Depending on your preferences, you can also deploy the app yourself on your own infrastructure. This route would require a few extra steps:
   - A server (I personally recommend [Digital Ocean](https://www.digitalocean.com/pricing/) or [Linode](https://www.linode.com/pricing/), their cheapest tiers will work fine)
   - Your own URL (I suppose this is optional, but recommended)
   - SSL certificates (free through [Let's Encrypt](https://letsencrypt.org/getting-started/))
   - A bit more experience or willingness to work through issues
-  
+
+## Setup (Local Only)
+If you want to test the app out on your own machine first, you can build it with the following instructions:
+
+```bash
+git clone https://github.com/benbusby/shoogle.git
+cd shoogle
+python3 -m venv venv
+source venv/bin/activate
+pip install -r config/requirements.txt
+./run
+```
+
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
 
@@ -44,7 +56,7 @@ To filter by a range of time, append ":past <time>" to the end of your search, w
 
 ## Extra Steps
 ### Set Shoogle as your primary search engine
-1. From the main shoogle folder, run `python opensearch.py "<your app url>"`
+1. From the main shoogle folder, run `python config/opensearch.py "<your app url>"`
 2. Rebuild and release your updated app
   - `heroku container:push web` and then `heroku container:release web`
 3. Update browser settings
@@ -69,4 +81,4 @@ Part of the deal with Heroku's free tier is that you're allocated 550 hours/mont
 
 A good solution for this is to set up a simple cronjob on any device at your home that is consistently powered on and connected to the internet (in my case, a PiHole worked perfectly). All the device needs to do is fetch app content on a consistent basis to keep the app alive in whatever ~17 hour window you want it on (17 hrs * 31 days = 527, meaning you'd still have 23 leftover hours each month if you searched outside of your target window).
 
-For instance: `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/shoogle-refresh` will fetch the home page of the app every 20 minutes between 7am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed. 
+For instance: `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/shoogle-refresh` will fetch the home page of the app every 20 minutes between 7am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed.
