@@ -7,7 +7,7 @@ from test.conftest import client
 
 
 def get_search_results(data):
-    soup = Filter().clean(BeautifulSoup(rv.data, 'html.parser'))
+    soup = Filter().clean(BeautifulSoup(data, 'html.parser'))
 
     main_divs = soup.find('div', {'id': 'main'})
     assert len(main_divs) > 1
