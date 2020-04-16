@@ -73,9 +73,8 @@ class Filter:
 
         # Update logo
         logo = soup.find('a', {'class': 'l'})
-        if logo is not None and self.mobile:
-            logo.insert(0, 'Shoogle')
-            logo['style'] = 'display: flex;justify-content: center;align-items: center;color: #685e79;font-size: 18px;'
+        if logo and self.mobile:
+            logo['style'] = 'display:flex; justify-content:center; align-items:center; color:#685e79; font-size:18px;'
 
         # Replace hrefs with only the intended destination (no "utm" type tags)
         for a in soup.find_all('a', href=True):
