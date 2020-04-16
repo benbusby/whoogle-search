@@ -1,4 +1,7 @@
 # Shoogle
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/benbusby/shoogle.svg?token=JgVbn8LSCz5Mmr9h5qq7&branch=master)](https://travis-ci.com/benbusby/shoogle)
+
 Get Google search results, but without any ads, javascript, or AMP links. Easily deployable via Docker, and customizable with a single config text file. Quick and simple to integrate as a primary search engine replacement on both desktop and mobile.
 
 ## Prerequisites
