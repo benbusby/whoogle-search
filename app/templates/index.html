@@ -33,20 +33,25 @@
             <button id="config-collapsible" class="collapsible">Configuration</button>
             <div class="content">
                 <div class="config-fields">
-                <div class="config-div">
-                    <label for="config-near">Near: </label>
-                    <input type="text" name="config-near" id="config-near" placeholder="City Name">
-                </div>
-                <div class="config-div">
-                    <label for="config-nojs">Show NoJS Links: </label>
-                    <input type="checkbox" name="config-nojs" id="config-nojs">
-                </div>
-                <div class="config-div">
-                    <label for="config-dark">Dark Mode: </label>
-                    <input type="checkbox" name="config-dark" id="config-dark">
-                </div>
-                <div class="config-div">
-                    <button type="submit" id="config-submit">Save</button>
+                    <div class="config-div">
+                        <!-- TODO: Add option to regenerate user agent? -->
+                        <span class="ua-span">User Agent: {{ ua }}</span>
+                    </div>
+                    <div class="config-div">
+                        <label for="config-near">Near: </label>
+                        <input type="text" name="config-near" id="config-near" placeholder="City Name">
+                    </div>
+                    <div class="config-div">
+                        <label for="config-nojs">Show NoJS Links: </label>
+                        <input type="checkbox" name="config-nojs" id="config-nojs">
+                    </div>
+                    <div class="config-div">
+                        <label for="config-dark">Dark Mode: </label>
+                        <input type="checkbox" name="config-dark" id="config-dark">
+                    </div>
+                    <div class="config-div">
+                        <button type="submit" id="config-submit">Save</button>
+                    </div>
                 </div>
             </div>
         </div>

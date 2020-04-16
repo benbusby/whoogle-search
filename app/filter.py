@@ -6,18 +6,13 @@ from urllib.parse import parse_qs
 
 class Filter:
     def __init__(self, mobile=False, config=None):
-        self.mobile = False
-        self.dark_mode = False
-        self.nojs = False
-        self.near_city = None
-
         if config is None:
             config = {}
 
-        near_city = config['near'] if 'near' in config else None
-        dark_mode = config['dark_mode'] if 'dark_mode' in config else False
-        nojs = config['nojs'] if 'nojs' in config else False
-        mobile = mobile
+        self.near_city = config['near'] if 'near' in config else None
+        self.dark_mode = config['dark_mode'] if 'dark_mode' in config else False
+        self.nojs = config['nojs'] if 'nojs' in config else False
+        self.mobile = mobile
 
     def reskin(self, page):
         # Aesthetic only re-skinning

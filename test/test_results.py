@@ -1,9 +1,7 @@
 from bs4 import BeautifulSoup
 from app.filter import Filter
-import json
 from datetime import datetime
 from dateutil.parser import *
-from test.conftest import client
 
 
 def get_search_results(data):

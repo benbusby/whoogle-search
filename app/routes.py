@@ -11,12 +11,8 @@ import urllib.parse as urlparse
 app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
 app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
 
-# Get Mozilla Firefox rhyme (important) and form a new user agent
-mozilla = rhyme.get_rhyme('Mo') + 'zilla'
-firefox = rhyme.get_rhyme('Fire') + 'fox'
-
-MOBILE_UA = mozilla + '/5.0 (Android 4.20; Mobile; rv:54.0) Gecko/54.0 ' + firefox + '/59.0'
-DESKTOP_UA = mozilla + '/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Mobile ' + firefox + '/59.0'
+MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
+DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 
 # Base search url
 SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
@@ -25,7 +21,16 @@ user_config = json.load(open(app.config['STATIC_FOLDER'] + '/config.json'))
 
 
 def get_ua(user_agent):
-    return MOBILE_UA if ('Android' in user_agent or 'iPhone' in user_agent) else DESKTOP_UA
+    is_mobile = 'Android' in user_agent or 'iPhone' in user_agent
+
+    mozilla = rhyme.get_rhyme('Mo') + rhyme.get_rhyme('zilla')
+    firefox = rhyme.get_rhyme('Fire') + rhyme.get_rhyme('fox')
+    linux = rhyme.get_rhyme('Lin') + 'ux'
+
+    if is_mobile:
+        return MOBILE_UA.format(mozilla, firefox)
+    else:
+        return DESKTOP_UA.format(mozilla, linux, firefox)
 
 
 def send_request(curl_url, ua):
@@ -47,7 +52,7 @@ def send_request(curl_url, ua):
 @app.route('/', methods=['GET'])
 def index():
     bg = '#000' if 'dark' in user_config and user_config['dark'] else '#fff'
-    return render_template('index.html', bg=bg)
+    return render_template('index.html', bg=bg, ua=get_ua(request.headers.get('User-Agent')))
 
 
 @app.route('/search', methods=['GET'])

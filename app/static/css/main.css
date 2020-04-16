@@ -63,7 +63,12 @@ body {
     padding: 5px;
 }
 
+button::-moz-focus-inner {
+    border: 0;
+}
+
 .collapsible {
+    outline: 0;
     background-color: rgba(0,0,0,0);
     color: #685e79;
     cursor: pointer;
@@ -106,4 +111,10 @@ body {
 
 .open {
     padding-bottom: 20px;
+}
+
+.ua-span {
+    color: white;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
 }

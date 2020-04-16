@@ -1,10 +1,10 @@
 import json
-from test.conftest import client
+import random
 
 demo_config = {
-    'near': 'Seattle',
-    'dark_mode': 0,
-    'nojs': 0
+    'near': random.choice(['Seattle', 'New York', 'San Francisco']),
+    'dark_mode': random.getrandbits(1),
+    'nojs': random.getrandbits(1)
 }
 
 
