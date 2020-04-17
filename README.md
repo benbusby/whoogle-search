@@ -1,4 +1,7 @@
-# Shoogle
+![Shoogle Banner](https://raw.githubusercontent.com/benbusby/shoogle/master/app/static/img/banner.png)
+
+___
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/benbusby/shoogle.svg?token=JgVbn8LSCz5Mmr9h5qq7&branch=master)](https://travis-ci.com/benbusby/shoogle)
 
