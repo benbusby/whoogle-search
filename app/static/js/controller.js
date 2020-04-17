@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Request existing config info
     let xhrGET = new XMLHttpRequest();
-    xhrGET.open("GET", "/static/config.json");
+    xhrGET.open("GET", "/config");
     xhrGET.onload = function() {
         if (xhrGET.readyState === 4 && xhrGET.status !== 200) {
             alert("Error loading Shoogle config");
