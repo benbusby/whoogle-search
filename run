@@ -3,8 +3,7 @@
 # ./run # Runs the full web app
 # ./run test # Runs the testing suite
 
-SCRIPT=`realpath $0`
-SCRIPT_DIR=`dirname $SCRIPT`
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 
 # Set default port if unavailable
 if [[ -z "${PORT}" ]]; then

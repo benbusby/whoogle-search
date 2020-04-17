@@ -9,8 +9,8 @@ class Filter:
         if config is None:
             config = {}
 
-        self.near_city = config['near'] if 'near' in config else None
-        self.dark_mode = config['dark_mode'] if 'dark_mode' in config else False
+        self.near = config['near'] if 'near' in config else None
+        self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
         self.mobile = mobile
 
@@ -19,7 +19,7 @@ class Filter:
         page = page.replace('>G<', '>Sh<')
         pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
         page = pattern.sub('685e79', page)
-        if self.dark_mode:
+        if self.dark:
             page = page.replace('fff', '000').replace('202124', 'ddd').replace('1967D2', '3b85ea')
 
         return page
@@ -47,8 +47,8 @@ class Filter:
 
         # Grab city from config, if available
         near = ''
-        if self.near_city:
-            near = '&near=' + urlparse.quote(self.near_city)
+        if self.near:
+            near = '&near=' + urlparse.quote(self.near)
 
         return q + tbs + tbm + start + near
 
@@ -98,7 +98,7 @@ class Filter:
                     a.append(nojs_link)
 
         # Set up dark mode if active
-        if self.dark_mode:
+        if self.dark:
             soup.find('html')['style'] = 'scrollbar-color: #333 #111;'
             for input_element in soup.findAll('input'):
                 input_element['style'] = 'color:#fff;'
