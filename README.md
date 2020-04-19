@@ -1,4 +1,4 @@
-![Shoogle Banner](app/static/img/docs/banner.png)
+![Shoogle Banner](app/static/img/docs/shoogle-logo.png)
 
 ___
 
