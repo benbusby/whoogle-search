@@ -1,11 +1,18 @@
-![Shoogle Banner](https://raw.githubusercontent.com/benbusby/shoogle/master/app/static/img/banner.png)
+![Shoogle Banner](app/static/img/docs/banner.png)
 
 ___
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/benbusby/shoogle.svg?token=JgVbn8LSCz5Mmr9h5qq7&branch=master)](https://travis-ci.com/benbusby/shoogle)
 
-Get Google search results, but without any ads, javascript, or AMP links. Easily deployable via Docker, and customizable with a single config text file. Quick and simple to integrate as a primary search engine replacement on both desktop and mobile.
+Get Google search results, but without any ads, javascript, AMP links, or tracking. Easily deployable as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
+
+## Screenshots
+#### Desktop
+![Shoogle Desktop](app/static/img/docs/screenshot_desktop.jpg)
+
+#### Mobile
+![Shoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)
 
 ## Prerequisites
 - Docker ([Windows](https://docs.docker.com/docker-for-windows/install/), [macOS](https://docs.docker.com/docker-for-mac/install/), [Ubuntu](https://docs.docker.com/engine/install/ubuntu/), [other Linux distros](https://docs.docker.com/engine/install/binaries/))
@@ -88,3 +95,4 @@ Part of the deal with Heroku's free tier is that you're allocated 550 hours/mont
 A good solution for this is to set up a simple cronjob on any device at your home that is consistently powered on and connected to the internet (in my case, a PiHole worked perfectly). All the device needs to do is fetch app content on a consistent basis to keep the app alive in whatever ~17 hour window you want it on (17 hrs * 31 days = 527, meaning you'd still have 23 leftover hours each month if you searched outside of your target window).
 
 For instance: `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/shoogle-refresh` will fetch the home page of the app every 20 minutes between 7am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed.
+
