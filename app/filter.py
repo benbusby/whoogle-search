@@ -14,6 +14,9 @@ class Filter:
         self.nojs = config['nojs'] if 'nojs' in config else False
         self.mobile = mobile
 
+    def __getitem__(self, name):
+        return getattr(self, name)
+
     def reskin(self, page):
         # Aesthetic only re-skinning
         page = page.replace('>G<', '>Sh<')
@@ -23,34 +26,6 @@ class Filter:
             page = page.replace('fff', '000').replace('202124', 'ddd').replace('1967D2', '3b85ea')
 
         return page
-
-    def gen_query(self, q, args):
-        # Use :past(hour/day/week/month/year) if available
-        # example search "new restaurants :past month"
-        tbs = ''
-        if ':past' in q:
-            time_range = str.strip(q.split(':past', 1)[-1])
-            tbs = '&tbs=qdr:' + str.lower(time_range[0])
-
-        # Ensure search query is parsable
-        q = urlparse.quote(q)
-
-        # Pass along type of results (news, images, books, etc)
-        tbm = ''
-        if 'tbm' in args:
-            tbm = '&tbm=' + args.get('tbm')
-
-        # Get results page start value (10 per page, ie page 2 start val = 20)
-        start = ''
-        if 'start' in args:
-            start = '&start=' + args.get('start')
-
-        # Grab city from config, if available
-        near = ''
-        if self.near:
-            near = '&near=' + urlparse.quote(self.near)
-
-        return q + tbs + tbm + start + near
 
     def clean(self, soup):
         # Remove all ads
@@ -75,6 +50,10 @@ class Filter:
         logo = soup.find('a', {'class': 'l'})
         if logo and self.mobile:
             logo['style'] = 'display:flex; justify-content:center; align-items:center; color:#685e79; font-size:18px;'
+
+        # Fix search bar length on mobile
+        search_bar = soup.find('header').find('form').find('div')
+        search_bar['style'] = 'width: 100%;'
 
         # Replace hrefs with only the intended destination (no "utm" type tags)
         for a in soup.find_all('a', href=True):
