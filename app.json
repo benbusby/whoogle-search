@@ -4,6 +4,9 @@
     "repository": "https://github.com/benbusby/shoogle",
     "logo": "https://raw.githubusercontent.com/benbusby/shoogle/master/app/static/img/favicon/ms-icon-150x150.png",
     "keywords": ["search", "metasearch", "flask", "docker", "heroku", "adblock", "degoogle", "privacy"],
-    "image": "heroku/python"
+    "image": "heroku/python",
+    "scripts": {
+        "postdeploy": "./run"
+    }
 }
 
