@@ -1,0 +1,9 @@
+{
+    "name": "Shoogle Search",
+    "description": "A lightweight, privacy-oriented, containerized Google search proxy for desktop/mobile that removes Javascript, AMP links, and ads/sponsored content",
+    "repository": "https://github.com/benbusby/shoogle",
+    "logo": "https://raw.githubusercontent.com/benbusby/shoogle/master/app/static/img/favicon/ms-icon-150x150.png",
+    "keywords": ["search", "metasearch", "flask", "docker", "heroku", "adblock", "degoogle", "privacy"],
+    "image": "heroku/python"
+}
+

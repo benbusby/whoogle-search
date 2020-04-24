@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let configSettings = JSON.parse(xhrGET.responseText);
 
         nearConfig.value = configSettings["near"] ? configSettings["near"] : "";
-        nearConfig.addEventListener("keyup", function(event) {
+        nearConfig.addEventListener("keyup", function() {
             configSettings["near"] = nearConfig.value;
         });
 
