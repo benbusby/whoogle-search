@@ -6,7 +6,12 @@
     "keywords": ["search", "metasearch", "flask", "docker", "heroku", "adblock", "degoogle", "privacy"],
     "image": "heroku/python",
     "scripts": {
-        "postdeploy": "./run"
+        "postdeploy": "./run &"
+    },
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "free"
+        }
     }
 }
-
