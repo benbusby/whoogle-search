@@ -50,6 +50,6 @@ def test_recent_results(client):
 
             try:
                 date = parse(date_span)
-                assert (current_date - date).days < num_days
+                assert (current_date - date).days <= num_days
             except ParserError:
                 assert ' ago' in date_span
