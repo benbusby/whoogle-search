@@ -30,6 +30,9 @@ Get Google search results, but without any ads, javascript, AMP links, or tracki
 2. Clone and deploy the docker app using a method below:
 
 #### A) Using Heroku (Free)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+or (manually):
 ```bash
 heroku login
 heroku container:login
