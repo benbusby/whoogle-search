@@ -3,6 +3,5 @@ venv/
 __pycache__/
 *.pyc
 *.pem
-*.xml
 config.json
 test/static
