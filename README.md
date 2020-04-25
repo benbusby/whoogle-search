@@ -17,11 +17,14 @@ Get Google search results, but without any ads, javascript, AMP links, or tracki
 ![Shoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)
 
 ## Prerequisites
-- Docker ([Windows](https://docs.docker.com/docker-for-windows/install/), [macOS](https://docs.docker.com/docker-for-mac/install/), [Ubuntu](https://docs.docker.com/engine/install/ubuntu/), [other Linux distros](https://docs.docker.com/engine/install/binaries/))
 - [A Heroku Account](https://www.heroku.com/)
-  - Optional, but recommended. Allows for free hosting of the web app.
+  - Optional, but recommended. Allows for free hosting of the web app and single-click deployment.
   - Alternatively, you can host the app using a different service, or deploy it to your own server (explained below).
+  
+If deploying manually:
+- Docker ([Windows](https://docs.docker.com/docker-for-windows/install/), [macOS](https://docs.docker.com/docker-for-mac/install/), [Ubuntu](https://docs.docker.com/engine/install/ubuntu/), [other Linux distros](https://docs.docker.com/engine/install/binaries/))
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+  - Only needed if you want to deploy the app to Heroku but don't want to use the deploy button shortcut.
 
 ## Setup
 1. Ensure the Docker daemon is running, and is accessible by your user account
@@ -30,6 +33,9 @@ Get Google search results, but without any ads, javascript, AMP links, or tracki
 2. Clone and deploy the docker app using a method below:
 
 #### A) Using Heroku (Free)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+or (manually):
 ```bash
 heroku login
 heroku container:login
