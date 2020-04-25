@@ -52,8 +52,9 @@ class Filter:
             logo['style'] = 'display:flex; justify-content:center; align-items:center; color:#685e79; font-size:18px;'
 
         # Fix search bar length on mobile
-        search_bar = soup.find('header').find('form').find('div')
-        search_bar['style'] = 'width: 100%;'
+        if self.mobile:
+            search_bar = soup.find('header').find('form').find('div')
+            search_bar['style'] = 'width: 100%;'
 
         # Replace hrefs with only the intended destination (no "utm" type tags)
         for a in soup.find_all('a', href=True):

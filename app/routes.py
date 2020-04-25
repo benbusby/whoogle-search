@@ -2,7 +2,7 @@ from app import app
 from app.filter import Filter
 from app.request import Request, gen_query
 from bs4 import BeautifulSoup
-from flask import g, request, redirect, render_template
+from flask import g, make_response, request, redirect, render_template
 import json
 import os
 import urllib.parse as urlparse
@@ -22,6 +22,18 @@ def before_request_func():
 def index():
     bg = '#000' if 'dark' in user_config and user_config['dark'] else '#fff'
     return render_template('index.html', bg=bg, ua=g.user_request.modified_user_agent)
+
+
+@app.route('/opensearch.xml', methods=['GET'])
+def opensearch():
+    url_root = request.url_root
+    if url_root.endswith('/'):
+        url_root = url_root[:-1]
+
+    template = render_template('opensearch.xml', shoogle_url=url_root)
+    response = make_response(template)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
 
 
 @app.route('/search', methods=['GET'])

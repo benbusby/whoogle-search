@@ -20,7 +20,7 @@ Get Google search results, but without any ads, javascript, AMP links, or tracki
 - [A Heroku Account](https://www.heroku.com/)
   - Optional, but recommended. Allows for free hosting of the web app and single-click deployment.
   - Alternatively, you can host the app using a different service, or deploy it to your own server (explained below).
-  
+
 If deploying manually:
 - Docker ([Windows](https://docs.docker.com/docker-for-windows/install/), [macOS](https://docs.docker.com/docker-for-mac/install/), [Ubuntu](https://docs.docker.com/engine/install/ubuntu/), [other Linux distros](https://docs.docker.com/engine/install/binaries/))
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
@@ -77,10 +77,7 @@ To filter by a range of time, append ":past <time>" to the end of your search, w
 
 ## Extra Steps
 ### Set Shoogle as your primary search engine
-1. From the main shoogle folder, run `python config/opensearch.py "<your app url>"`
-2. Rebuild and release your updated app
-  - `heroku container:push web` and then `heroku container:release web`
-3. Update browser settings
+Update browser settings:
   - Firefox (Desktop)
     - Navigate to your app's url, and click the 3 dot menu in the address bar. At the bottom, there should be an option to "Add Search Engine". Once you've clicked this, open your Firefox Preferences menu, click "Search" in the left menu, and use the available dropdown to select "Shoogle" from the list.
   - Firefox (Mobile)
