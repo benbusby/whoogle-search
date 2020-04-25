@@ -17,25 +17,43 @@ Get Google search results, but without any ads, javascript, AMP links, or tracki
 ![Shoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)
 
 ## Prerequisites
+If using Heroku/Heroku Quick Deploy:
 - [A Heroku Account](https://www.heroku.com/)
-  - Optional, but recommended. Allows for free hosting of the web app and single-click deployment.
+  - Allows for free hosting of the web app and single-click deployment.
   - Alternatively, you can host the app using a different service, or deploy it to your own server (explained below).
 
 If deploying manually:
 - Docker ([Windows](https://docs.docker.com/docker-for-windows/install/), [macOS](https://docs.docker.com/docker-for-mac/install/), [Ubuntu](https://docs.docker.com/engine/install/ubuntu/), [other Linux distros](https://docs.docker.com/engine/install/binaries/))
+  - Only needed if you intend on deploying the app as a Docker image
+- [Python3](https://www.python.org/downloads/)
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
   - Only needed if you want to deploy the app to Heroku but don't want to use the deploy button shortcut.
 
 ## Setup
+There are a few different ways to begin using the app, depending on your preferences:
+
+### A) Heroku Quick Deploy (Free)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/shoogle)
+
+### B) Manual Setup (non-Docker)
+Clone the repo and run the following commands to start the app in a local-only environment:
+
+```bash
+git clone https://github.com/benbusby/shoogle.git
+cd shoogle
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+./run
+```
+
+### C) Manual Setup (Docker) 
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).
 2. Clone and deploy the docker app using a method below:
 
-#### A) Using Heroku (Free)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-or (manually):
+#### Using Heroku CLI
 ```bash
 heroku login
 heroku container:login
@@ -47,9 +65,9 @@ heroku container:release web
 heroku open
 ```
 
-Now you're done! This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Shoogle and even [set it as your primary search engine](https://github.com/benbusby/shoogle#set-shoogle-as-your-primary-search-engine).
+This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Shoogle and even [set it as your primary search engine](https://github.com/benbusby/shoogle#set-shoogle-as-your-primary-search-engine).
 
-#### B) Using your own server, or alternative container deployment
+#### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
 
 Depending on your preferences, you can also deploy the app yourself on your own infrastructure. This route would require a few extra steps:
@@ -57,18 +75,6 @@ Depending on your preferences, you can also deploy the app yourself on your own 
   - Your own URL (I suppose this is optional, but recommended)
   - SSL certificates (free through [Let's Encrypt](https://letsencrypt.org/getting-started/))
   - A bit more experience or willingness to work through issues
-
-## Setup (Local Only)
-If you want to test the app out on your own machine first, you can build it with the following instructions:
-
-```bash
-git clone https://github.com/benbusby/shoogle.git
-cd shoogle
-python3 -m venv venv
-source venv/bin/activate
-pip install -r config/requirements.txt
-./run
-```
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
@@ -94,7 +100,7 @@ Shoogle currently allows a few minor configuration settings, accessible from the
   - NoJS Mode (Experimental)
     - Adds a separate link for each search result that will open the webpage without any javascript content served. Can be useful if you're seeking a no-javascript experience on mobile, but otherwise could just be accomplished with a browser plugin.
 
-### Prevent Downtime (Heroku)
+### Prevent Downtime (Heroku only)
 Part of the deal with Heroku's free tier is that you're allocated 550 hours/month (meaning it can't stay active 24/7), and the app is temporarily shut down after 30 minutes of inactivity. Once it becomes inactive, any Shoogle searches will still work, but it'll take an extra 10-15 seconds for the app to come back online before displaying the result, which can be frustrating if you're in a hurry.
 
 A good solution for this is to set up a simple cronjob on any device at your home that is consistently powered on and connected to the internet (in my case, a PiHole worked perfectly). All the device needs to do is fetch app content on a consistent basis to keep the app alive in whatever ~17 hour window you want it on (17 hrs * 31 days = 527, meaning you'd still have 23 leftover hours each month if you searched outside of your target window).
