@@ -3,6 +3,8 @@ import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
+SKIP_ARGS = ['ref_src', 'utm']
+
 
 class Filter:
     def __init__(self, mobile=False, config=None):
@@ -67,13 +69,32 @@ class Filter:
 
             if 'url?q=' in href:
                 # Strip unneeded arguments
-                href = urlparse.urlparse(href)
-                href = parse_qs(href.query)['q'][0]
+                result_link = urlparse.urlparse(href)
+                result_link = parse_qs(result_link.query)['q'][0]
+
+                parsed_link = urlparse.urlparse(result_link)
+                link_args = parse_qs(parsed_link.query)
+                safe_args = {}
+
+                for arg in link_args.keys():
+                    if arg in SKIP_ARGS:
+                        continue
+
+                    safe_args[arg] = link_args[arg]
+
+                # Remove original link query and replace with filtered args
+                result_link = result_link.replace(parsed_link.query, '')
+                if len(safe_args) > 1:
+                    result_link = result_link + urlparse.urlencode(safe_args)
+                else:
+                    result_link = result_link.replace('?', '')
+
+                a['href'] = result_link
 
                 # Add no-js option
                 if self.nojs:
                     nojs_link = soup.new_tag('a')
-                    nojs_link['href'] = '/window?location=' + href
+                    nojs_link['href'] = '/window?location=' + result_link
                     nojs_link['style'] = 'display:block;width:100%;'
                     nojs_link.string = 'NoJS Link: ' + nojs_link['href']
                     a.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
