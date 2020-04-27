@@ -45,7 +45,7 @@ def test_recent_results(client):
         current_date = datetime.now()
         for div in result_divs:
             date_span = div.find('span').decode_contents()
-            if not date_span or len(date_span) > 15:
+            if not date_span or len(date_span) > 15 or len(date_span) < 7:
                 continue
 
             try:
