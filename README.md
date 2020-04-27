@@ -7,16 +7,32 @@ ___
 [![Build Status](https://travis-ci.com/benbusby/shoogle.svg?token=JgVbn8LSCz5Mmr9h5qq7&branch=master)](https://travis-ci.com/benbusby/shoogle)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
 
-Get Google search results, but without any ads, javascript, AMP links, or tracking. Easily deployable as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
+Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
-## Screenshots
-#### Desktop
-![Shoogle Desktop](app/static/img/docs/screenshot_desktop.jpg)
+Contents
+1. [Features](#features)
+2. [Setup](#setup)
+3. [Install/Deploy](#install)
+4. [Usage](#usage)
+5. [Extra Steps](#extra-steps)
+6. [FAQ](#faq)
+7. [Screenshots](#screenshots)
 
-#### Mobile
-![Shoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)
+## Features
+- No ads or sponsored content
+- No javascript
+- No cookies
+- No tracking/linking of your personal IP address
+- No AMP links
+- No URL tracking tags (i.e. utm=%s)
+- View images at full res with one click
+- Dark mode
+- Randomly generated User Agent
+- Easy to install/deploy
+- Optional location-based searching (i.e. results near <city>)
+- Optional NoJS mode to disable all Javascript in results
 
-## Prerequisites
+## Setup
 If using Heroku/Heroku Quick Deploy:
 - [A Heroku Account](https://www.heroku.com/)
   - Allows for free hosting of the web app and single-click deployment.
@@ -29,7 +45,7 @@ If deploying manually:
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
   - Only needed if you want to deploy the app to Heroku but don't want to use the deploy button shortcut.
 
-## Setup
+## Install
 There are a few different ways to begin using the app, depending on your preferences:
 
 ### A) Heroku Quick Deploy (Free)
@@ -107,3 +123,22 @@ A good solution for this is to set up a simple cronjob on any device at your hom
 
 For instance: `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/shoogle-refresh` will fetch the home page of the app every 20 minutes between 7am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed.
 
+## FAQ
+**What's the difference between this and Searx?**
+
+*There are quite a few similarities and differences between Shoogle and Searx. Both are built to respect user privacy as much as possible, and both are capable of being individually deployed. Additionally, a lot of privacy features are shared between the two services, but since Shoogle is still in its infancy, a lot of features are missing, but will gradually be added in over time.*
+
+*The core feature of Shoogle that sets it apart and will be supported through all added features is the extremely simplified deployment of the app for individuals at any experience level, not just the technically inclined.*
+
+*It is strictly intended to be self-hosted only, and as such, needs to be (and is) excruciatingly easy to host yourself.*
+
+**Why does the image results page look so bad on mobile?**
+
+*A lot of the app currently piggybacks on Google's existing support for fetching results pages with Javascript disabled. To their credit, they've done an excellent job with styling pages, but it seems that the image results page - particularly on mobile - is a little rough. Moving forward, with enough interest, I'd like to transition to fetching the results and parsing them into a unique Shoogle-fied interface that I can style myself.*
+
+## Screenshots
+#### Desktop
+![Shoogle Desktop](app/static/img/docs/screenshot_desktop.jpg)
+
+#### Mobile
+![Shoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)
