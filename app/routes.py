@@ -2,7 +2,8 @@ from app import app
 from app.filter import Filter
 from app.request import Request, gen_query
 from bs4 import BeautifulSoup
-from flask import g, make_response, request, redirect, render_template
+from flask import g, make_response, request, redirect, render_template, send_file
+import io
 import json
 import os
 import urllib.parse as urlparse
@@ -16,6 +17,11 @@ user_config = json.load(open(app.config['STATIC_FOLDER'] + '/config.json'))
 @app.before_request
 def before_request_func():
     g.user_request = Request(request.headers.get('User-Agent'))
+
+
+# @app.after_request
+# def after_request(response):
+#     return response
 
 
 @app.route('/', methods=['GET'])
@@ -85,6 +91,21 @@ def url():
 @app.route('/imgres')
 def imgres():
     return redirect(request.args.get('imgurl'))
+
+
+@app.route('/tmp')
+def tmp():
+    file_data = g.user_request.send(base_url=request.args.get('image_url'), return_bytes=True)
+    tmp_mem = io.BytesIO()
+    tmp_mem.write(file_data)
+    tmp_mem.seek(0)
+
+    return send_file(
+        tmp_mem,
+        as_attachment=True,
+        attachment_filename='tmp.png',
+        mimetype='image/png'
+    )
 
 
 @app.route('/window')

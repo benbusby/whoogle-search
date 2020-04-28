@@ -1,5 +1,4 @@
 from app import rhyme
-from app.filter import Filter
 from io import BytesIO
 import pycurl
 import urllib.parse as urlparse
@@ -60,7 +59,7 @@ class Request:
     def __getitem__(self, name):
         return getattr(self, name)
 
-    def send(self, base_url=SEARCH_URL, query=''):
+    def send(self, base_url=SEARCH_URL, query='', return_bytes=False):
         response_header = []
 
         b_obj = BytesIO()
@@ -73,4 +72,7 @@ class Request:
         crl.perform()
         crl.close()
 
-        return b_obj.getvalue().decode('utf-8', 'ignore')
+        if return_bytes:
+            return b_obj.getvalue()
+        else:
+            return b_obj.getvalue().decode('utf-8', 'ignore')
