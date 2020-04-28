@@ -29,7 +29,7 @@ Contents
 - Dark mode
 - Randomly generated User Agent
 - Easy to install/deploy
-- Optional location-based searching (i.e. results near <city>)
+- Optional location-based searching (i.e. results near \<city\>)
 - Optional NoJS mode to disable all Javascript in results
 
 ## Setup
