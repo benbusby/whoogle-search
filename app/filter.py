@@ -120,9 +120,7 @@ class Filter:
                     param_val = query_params[param][0] if param in query_params else ''
                     new_search += '&' + param + '=' + param_val
                 a['href'] = new_search
-                continue
-
-            if 'url?q=' in href:
+            elif 'url?q=' in href:
                 # Strip unneeded arguments
                 parsed_link = urlparse.urlparse(query_link)
                 link_args = parse_qs(parsed_link.query)
@@ -146,8 +144,8 @@ class Filter:
                 # Add no-js option
                 if self.nojs:
                     gen_nojs(soup, query_link, a)
-
-            a['href'] = href
+            else:
+                a['href'] = href
 
 
 def gen_nojs(soup, link, sibling):
