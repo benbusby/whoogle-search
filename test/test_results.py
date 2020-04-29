@@ -1,11 +1,13 @@
 from bs4 import BeautifulSoup
+from cryptography.fernet import Fernet
 from app.filter import Filter
 from datetime import datetime
 from dateutil.parser import *
 
 
 def get_search_results(data):
-    soup = Filter().clean(BeautifulSoup(data, 'html.parser'))
+    secret_key = Fernet.generate_key()
+    soup = Filter(secret_key=secret_key).clean(BeautifulSoup(data, 'html.parser'))
 
     main_divs = soup.find('div', {'id': 'main'})
     assert len(main_divs) > 1
@@ -21,8 +23,18 @@ def get_search_results(data):
     return result_divs
 
 
-def test_search_results(client):
+def test_get_results(client):
     rv = client.get('/search?q=test')
+    assert rv._status_code == 200
+
+    # Depending on the search, there can be more
+    # than 10 result divs
+    assert len(get_search_results(rv.data)) >= 10
+    assert len(get_search_results(rv.data)) <= 15
+
+
+def test_post_results(client):
+    rv = client.post('/search', data=dict(q='test'))
     assert rv._status_code == 200
 
     # Depending on the search, there can be more
@@ -33,13 +45,13 @@ def test_search_results(client):
 
 def test_recent_results(client):
     times = {
-        'pastyear': 365,
-        'pastmonth': 31,
-        'pastweek': 7
+        'past year': 365,
+        'past month': 31,
+        'past week': 7
     }
 
     for time, num_days in times.items():
-        rv = client.get('/search?q=test%20%3A' + time)
+        rv = client.post('/search', data=dict(q='test :' + time))
         result_divs = get_search_results(rv.data)
 
         current_date = datetime.now()

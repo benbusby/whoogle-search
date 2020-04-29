@@ -28,3 +28,9 @@ def test_config(client):
     config = json.loads(rv.data)
     for key in demo_config.keys():
         assert config[key] == demo_config[key]
+
+
+def test_opensearch(client):
+    rv = client.get('/opensearch.xml')
+    assert rv._status_code == 200
+    assert 'Shoogle' in str(rv.data)

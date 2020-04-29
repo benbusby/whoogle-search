@@ -34,12 +34,13 @@ class Filter:
 
     def clean(self, soup):
         self.remove_ads(soup)
-        self.sync_images(soup)
+        self.update_image_paths(soup)
         self.update_styling(soup)
         self.update_links(soup)
 
         input_form = soup.find('form')
-        input_form['method'] = 'POST'
+        if input_form is not None:
+            input_form['method'] = 'POST'
 
         return soup
 
@@ -55,7 +56,7 @@ class Filter:
         for div in ad_divs:
             div.decompose()
 
-    def sync_images(self, soup):
+    def update_image_paths(self, soup):
         for img in [_ for _ in soup.find_all('img') if 'src' in _]:
             img_src = img['src']
             if img_src.startswith('//'):

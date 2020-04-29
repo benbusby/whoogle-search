@@ -10,7 +10,12 @@ MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
 DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 
 # Valid query params
-VALID_PARAMS = ['tbs', 'tbm', 'start', 'near']
+VALID_PARAMS = {
+    'tbs': '',
+    'tbm': '',
+    'start': '',
+    'near': ''
+}
 
 
 def gen_user_agent(normal_ua):
@@ -26,33 +31,34 @@ def gen_user_agent(normal_ua):
         return DESKTOP_UA.format(mozilla, linux, firefox)
 
 
-def gen_query(q, args, near_city=None):
+def gen_query(query, args, near_city=None):
     # Use :past(hour/day/week/month/year) if available
     # example search "new restaurants :past month"
-    tbs = ''
-    if ':past' in q:
-        time_range = str.strip(q.split(':past', 1)[-1])
-        tbs = '&tbs=qdr:' + str.lower(time_range[0])
+    if ':past' in query:
+        time_range = str.strip(query.split(':past', 1)[-1])
+        VALID_PARAMS['tbs'] = '&tbs=qdr:' + str.lower(time_range[0])
 
     # Ensure search query is parsable
-    q = urlparse.quote(q)
+    query = urlparse.quote(query)
 
     # Pass along type of results (news, images, books, etc)
-    tbm = ''
     if 'tbm' in args:
-        tbm = '&tbm=' + args.get('tbm')
+        VALID_PARAMS['tbm'] = '&tbm=' + args.get('tbm')
 
     # Get results page start value (10 per page, ie page 2 start val = 20)
-    start = ''
     if 'start' in args:
-        start = '&start=' + args.get('start')
+        VALID_PARAMS['start'] = '&start=' + args.get('start')
 
     # Search for results near a particular city, if available
-    near = ''
     if near_city is not None:
-        near = '&near=' + urlparse.quote(near_city)
+        VALID_PARAMS['near'] = '&near=' + urlparse.quote(near_city)
 
-    return q + tbs + tbm + start + near
+    for val in VALID_PARAMS.values():
+        if not val or val is None:
+            continue
+        query += val
+
+    return query
 
 
 class Request:

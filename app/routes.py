@@ -40,7 +40,6 @@ def opensearch():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    q = None
     if request.method == 'GET':
         q = request.args.get('q')
         try:
@@ -50,7 +49,7 @@ def search():
     else:
         q = request.form['q']
 
-    if q is None or len(q) <= 0:
+    if q is None or len(q) == 0:
         return render_template('error.html')
 
     user_agent = request.headers.get('User-Agent')
