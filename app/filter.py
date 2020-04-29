@@ -54,6 +54,8 @@ class Filter:
 
     def remove_ads(self, soup):
         main_divs = soup.find('div', {'id': 'main'})
+        if main_divs is None:
+            return
         result_divs = main_divs.find_all('div', recursive=False)
 
         # Only ads/sponsored content use classes in the list of result divs
@@ -114,9 +116,8 @@ class Filter:
                 new_search = '/search?q=' + enc_result.decode()
 
                 query_params = parse_qs(urlparse.urlparse(href).query)
-                allowed_params = [_ for _ in query_params if _ in VALID_PARAMS]
-                for param in allowed_params:
-                    param_val = query_params[param][0]
+                for param in VALID_PARAMS:
+                    param_val = query_params[param][0] if param in query_params else ''
                     new_search += '&' + param + '=' + param_val
                 a['href'] = new_search
                 continue
