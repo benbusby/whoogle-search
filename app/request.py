@@ -9,6 +9,9 @@ SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
 MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
 DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 
+# Valid query params
+VALID_PARAMS = ['tbs', 'tbm', 'start', 'near']
+
 
 def gen_user_agent(normal_ua):
     is_mobile = 'Android' in normal_ua or 'iPhone' in normal_ua

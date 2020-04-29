@@ -25,10 +25,12 @@
     <body id="main" style="display: none; background-color: {{ bg }}">
         <div class="search-container">
             <img class="logo" src="/static/img/logo.png">
-            <div class="search-fields">
-                <input type="text" id="search-bar">
-                <button type="submit" id="search-submit">Search</button>
-            </div>
+            <form action="/search" method="post">
+                <div class="search-fields">
+                    <input type="text" name="q" id="search-bar">
+                    <input type="submit" id="search-submit" value="Submit">
+                </div>
+            </form>
             <br/>
             <button id="config-collapsible" class="collapsible">Configuration</button>
             <div class="content">

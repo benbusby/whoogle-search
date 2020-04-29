@@ -63,7 +63,7 @@ pip install -r requirements.txt
 ./run
 ```
 
-### C) Manual Setup (Docker) 
+### C) Manual Setup (Docker)
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).
@@ -102,10 +102,11 @@ To filter by a range of time, append ":past <time>" to the end of your search, w
 Update browser settings:
   - Firefox (Desktop)
     - Navigate to your app's url, and click the 3 dot menu in the address bar. At the bottom, there should be an option to "Add Search Engine". Once you've clicked this, open your Firefox Preferences menu, click "Search" in the left menu, and use the available dropdown to select "Shoogle" from the list.
-  - Firefox (Mobile)
+  - Firefox (iOS)
     - In the mobile app Settings page, tap "Search" within the "General" section. There should be an option titled "Add Search Engine" to select. It should prompt you to enter a title and search query url - use the following elements to fill out the form:
       - Title: "Shoogle"
       - URL: "https://\<your shoogle url\>/search?q=%s"
+  - Others (TODO)
 
 ### Customizing and Configuration
 Shoogle currently allows a few minor configuration settings, accessible from the home page:

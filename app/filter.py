@@ -1,4 +1,6 @@
+from app.request import VALID_PARAMS
 from bs4 import BeautifulSoup
+from cryptography.fernet import Fernet
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
@@ -7,7 +9,7 @@ SKIP_ARGS = ['ref_src', 'utm']
 
 
 class Filter:
-    def __init__(self, mobile=False, config=None):
+    def __init__(self, mobile=False, config=None, secret_key=''):
         if config is None:
             config = {}
 
@@ -15,6 +17,7 @@ class Filter:
         self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
         self.mobile = mobile
+        self.secret_key = secret_key
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -30,104 +33,124 @@ class Filter:
         return page
 
     def clean(self, soup):
-        def remove_ads():
-            main_divs = soup.find('div', {'id': 'main'})
-            if main_divs is None:
-                return
+        self.remove_ads(soup)
+        self.sync_images(soup)
+        self.update_styling(soup)
+        self.update_links(soup)
 
-            result_divs = main_divs.findAll('div', recursive=False)
+        input_form = soup.find('form')
+        input_form['method'] = 'POST'
 
-            # Only ads/sponsored content use classes in the list of result divs
-            ad_divs = [ad_div for ad_div in result_divs if 'class' in ad_div.attrs]
-            for div in ad_divs:
-                div.decompose()
-
-        def sync_images():
-            for img in soup.find_all('img'):
-                if img['src'].startswith('//'):
-                    img['src'] = 'https:' + img['src']
-
-                img['src'] = '/tmp?image_url=' + img['src']
-
-        def update_styling():
-            # Remove unnecessary button(s)
-            for button in soup.find_all('button'):
-                button.decompose()
-
-            # Remove svg logos
-            for svg in soup.find_all('svg'):
-                svg.decompose()
-
-            # Update logo
-            logo = soup.find('a', {'class': 'l'})
-            if logo and self.mobile:
-                logo['style'] = 'display:flex; justify-content:center; align-items:center; color:#685e79; ' \
-                                'font-size:18px; '
-
-            # Fix search bar length on mobile
-            try:
-                search_bar = soup.find('header').find('form').find('div')
-                search_bar['style'] = 'width: 100%;'
-            except AttributeError:
-                pass
-
-            # Set up dark mode if active
-            if self.dark:
-                soup.find('html')['style'] = 'scrollbar-color: #333 #111;'
-                for input_element in soup.findAll('input'):
-                    input_element['style'] = 'color:#fff;'
-
-        def update_links():
-            # Replace hrefs with only the intended destination (no "utm" type tags)
-            for a in soup.find_all('a', href=True):
-                href = a['href']
-                if '/advanced_search' in href:
-                    a.decompose()
-                    continue
-
-                if 'url?q=' in href:
-                    # Strip unneeded arguments
-                    result_link = urlparse.urlparse(href)
-                    result_link = parse_qs(result_link.query)['q'][0]
-
-                    parsed_link = urlparse.urlparse(result_link)
-                    link_args = parse_qs(parsed_link.query)
-                    safe_args = {}
-
-                    for arg in link_args.keys():
-                        if arg in SKIP_ARGS:
-                            continue
-
-                        safe_args[arg] = link_args[arg]
-
-                    # Remove original link query and replace with filtered args
-                    result_link = result_link.replace(parsed_link.query, '')
-                    if len(safe_args) > 1:
-                        result_link = result_link + urlparse.urlencode(safe_args)
-                    else:
-                        result_link = result_link.replace('?', '')
-
-                    a['href'] = result_link
-
-                    # Add no-js option
-                    if self.nojs:
-                        nojs_link = soup.new_tag('a')
-                        nojs_link['href'] = '/window?location=' + result_link
-                        nojs_link['style'] = 'display:block;width:100%;'
-                        nojs_link.string = 'NoJS Link: ' + nojs_link['href']
-                        a.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
-                        a.append(nojs_link)
-
-            # Ensure no extra scripts passed through
-            try:
-                for script in soup('script'):
-                    script.decompose()
-                soup.find('div', id='sfooter').decompose()
-            except Exception:
-                pass
-
-        remove_ads()
-        sync_images()
-        update_styling()
-        update_links()
         return soup
+
+    def remove_ads(self, soup):
+        main_divs = soup.find('div', {'id': 'main'})
+        if main_divs is None:
+            return
+
+        result_divs = main_divs.findAll('div', recursive=False)
+
+        # Only ads/sponsored content use classes in the list of result divs
+        ad_divs = [ad_div for ad_div in result_divs if 'class' in ad_div.attrs]
+        for div in ad_divs:
+            div.decompose()
+
+    def sync_images(self, soup):
+        for img in [_ for _ in soup.find_all('img') if 'src' in _]:
+            img_src = img['src']
+            if img_src.startswith('//'):
+                img_src = 'https:' + img_src
+
+            enc_src = Fernet(self.secret_key).encrypt(img_src.encode())
+            img['src'] = '/tmp?image_url=' + enc_src.decode()
+
+    def update_styling(self, soup):
+        # Remove unnecessary button(s)
+        for button in soup.find_all('button'):
+            button.decompose()
+
+        # Remove svg logos
+        for svg in soup.find_all('svg'):
+            svg.decompose()
+
+        # Update logo
+        logo = soup.find('a', {'class': 'l'})
+        if logo and self.mobile:
+            logo['style'] = 'display:flex; justify-content:center; align-items:center; color:#685e79; ' \
+                            'font-size:18px; '
+
+        # Fix search bar length on mobile
+        try:
+            search_bar = soup.find('header').find('form').find('div')
+            search_bar['style'] = 'width: 100%;'
+        except AttributeError:
+            pass
+
+        # Set up dark mode if active
+        if self.dark:
+            soup.find('html')['style'] = 'scrollbar-color: #333 #111;'
+            for input_element in soup.findAll('input'):
+                input_element['style'] = 'color:#fff;'
+
+    def update_links(self, soup):
+        # Replace hrefs with only the intended destination (no "utm" type tags)
+        for a in soup.find_all('a', href=True):
+            href = a['href']
+            if '/advanced_search' in href:
+                a.decompose()
+                continue
+
+            if '?q=' not in href:
+                continue
+
+            result_link = urlparse.urlparse(href)
+            query_link = parse_qs(result_link.query)['q'][0]
+
+            if '/search?q=' in href:
+                enc_result = Fernet(self.secret_key).encrypt(query_link.encode())
+                new_search = '/search?q=' + enc_result.decode()
+
+                for param in VALID_PARAMS:
+                    if param in parse_qs(result_link.query):
+                        new_search += '&' + param + '=' + parse_qs(result_link.query)[param][0]
+                a['href'] = new_search
+                continue
+
+            if 'url?q=' in href:
+                # Strip unneeded arguments
+                parsed_link = urlparse.urlparse(query_link)
+                link_args = parse_qs(parsed_link.query)
+                safe_args = {}
+
+                for arg in link_args.keys():
+                    if arg in SKIP_ARGS:
+                        continue
+
+                    safe_args[arg] = link_args[arg]
+
+                # Remove original link query and replace with filtered args
+                query_link = query_link.replace(parsed_link.query, '')
+                if len(safe_args) > 1:
+                    query_link = query_link + urlparse.urlencode(safe_args)
+                else:
+                    query_link = query_link.replace('?', '')
+
+                a['href'] = query_link
+
+                # Add no-js option
+                if self.nojs:
+                    nojs_link = soup.new_tag('a')
+                    nojs_link['href'] = '/window?location=' + query_link
+                    nojs_link['style'] = 'display:block;width:100%;'
+                    nojs_link.string = 'NoJS Link: ' + nojs_link['href']
+                    a.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
+                    a.append(nojs_link)
+
+        # Ensure no extra scripts passed through
+        try:
+            for script in soup('script'):
+                script.decompose()
+            soup.find('div', id='sfooter').decompose()
+        except Exception:
+            pass
+

@@ -2,6 +2,7 @@ from app import app
 from app.filter import Filter
 from app.request import Request, gen_query
 from bs4 import BeautifulSoup
+from cryptography.fernet import Fernet, InvalidToken
 from flask import g, make_response, request, redirect, render_template, send_file
 import io
 import json
@@ -17,11 +18,6 @@ user_config = json.load(open(app.config['STATIC_FOLDER'] + '/config.json'))
 @app.before_request
 def before_request_func():
     g.user_request = Request(request.headers.get('User-Agent'))
-
-
-# @app.after_request
-# def after_request(response):
-#     return response
 
 
 @app.route('/', methods=['GET'])
@@ -42,16 +38,25 @@ def opensearch():
     return response
 
 
-@app.route('/search', methods=['GET'])
+@app.route('/search', methods=['GET', 'POST'])
 def search():
-    q = request.args.get('q')
+    q = None
+    if request.method == 'GET':
+        q = request.args.get('q')
+        try:
+            q = Fernet(app.secret_key).decrypt(q.encode()).decode()
+        except InvalidToken:
+            pass
+    else:
+        q = request.form['q']
+
     if q is None or len(q) <= 0:
         return render_template('error.html')
 
     user_agent = request.headers.get('User-Agent')
     mobile = 'Android' in user_agent or 'iPhone' in user_agent
 
-    content_filter = Filter(mobile, user_config)
+    content_filter = Filter(mobile, user_config, secret_key=app.secret_key)
     full_query = gen_query(q, request.args, content_filter.near)
     get_body = g.user_request.send(query=full_query)
 
@@ -95,7 +100,9 @@ def imgres():
 
 @app.route('/tmp')
 def tmp():
-    file_data = g.user_request.send(base_url=request.args.get('image_url'), return_bytes=True)
+    cipher_suite = Fernet(app.secret_key)
+    img_url = cipher_suite.decrypt(request.args.get('image_url').encode()).decode()
+    file_data = g.user_request.send(base_url=img_url, return_bytes=True)
     tmp_mem = io.BytesIO()
     tmp_mem.write(file_data)
     tmp_mem.seek(0)

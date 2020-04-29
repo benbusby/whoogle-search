@@ -18,10 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    searchBtn.onclick = function() {
-        window.location.href = '/search?q=' + encodeURI(searchBar.value);
-    };
-
     // Setup shoogle config
     const collapsible = document.getElementById("config-collapsible");
     collapsible.addEventListener("click", function() {

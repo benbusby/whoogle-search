@@ -57,6 +57,7 @@ body {
     margin: auto;
     border-radius: 0 0 10px 10px;
     max-width: 600px;
+    -webkit-appearance: none;
 }
 
 .config-div {

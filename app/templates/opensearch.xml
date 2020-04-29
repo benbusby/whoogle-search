@@ -1,10 +1,10 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
                        xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-  <ShortName>Shoogle</ShortName>
+  <ShortName>ShoogleTEST</ShortName>
   <Description>Shoogle: A lightweight, deployable Google search proxy for desktop/mobile that removes Javascript, AMP links, and ads</Description>
   <InputEncoding>UTF-8</InputEncoding>
   <Image width="32" height="32" type="image/x-icon">/static/img/favicon/favicon-32x32.png</Image>
-  <Url type="text/html" template="{{ shoogle_url }}/search">
+  <Url type="text/html" method="post" template="{{ shoogle_url }}/search">
     <Param name="q" value="{searchTerms}"/>
   </Url>
   <Url type="application/x-suggestions+json" template="{{ shoogle_url }}/search"/>
