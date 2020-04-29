@@ -15,28 +15,6 @@ const setupSearchLayout = () => {
     });
 }
 
-const setupConfigLayout = () => {
-    // Setup shoogle config
-    const collapsible = document.getElementById("config-collapsible");
-    collapsible.addEventListener("click", function() {
-        this.classList.toggle("active");
-        let content = this.nextElementSibling;
-        if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-        } else {
-            content.style.maxHeight = content.scrollHeight + "px";
-        }
-
-        content.classList.toggle("open");
-    });
-
-    const near = document.getElementById("config-near");
-    const noJS = document.getElementById("config-nojs");
-    const dark = document.getElementById("config-dark");
-
-    fillConfigValues(near, noJS, dark);
-}
-
 const fillConfigValues = (near, nojs, dark) => {
     // Request existing config info
     let xhrGET = new XMLHttpRequest();
@@ -67,6 +45,28 @@ const fillConfigValues = (near, nojs, dark) => {
     };
 
     xhrGET.send();
+}
+
+const setupConfigLayout = () => {
+    // Setup shoogle config
+    const collapsible = document.getElementById("config-collapsible");
+    collapsible.addEventListener("click", function() {
+        this.classList.toggle("active");
+        let content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+
+        content.classList.toggle("open");
+    });
+
+    const near = document.getElementById("config-near");
+    const noJS = document.getElementById("config-nojs");
+    const dark = document.getElementById("config-dark");
+
+    fillConfigValues(near, noJS, dark);
 }
 
 document.addEventListener("DOMContentLoaded", function() {

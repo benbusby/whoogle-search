@@ -42,14 +42,19 @@ class Filter:
         if input_form is not None:
             input_form['method'] = 'POST'
 
+        # Ensure no extra scripts passed through
+        for script in soup('script'):
+            script.decompose()
+
+        footer = soup.find('div', id='sfooter')
+        if footer is not None:
+            footer.decompose()
+
         return soup
 
     def remove_ads(self, soup):
         main_divs = soup.find('div', {'id': 'main'})
-        if main_divs is None:
-            return
-
-        result_divs = main_divs.findAll('div', recursive=False)
+        result_divs = main_divs.find_all('div', recursive=False)
 
         # Only ads/sponsored content use classes in the list of result divs
         ad_divs = [ad_div for ad_div in result_divs if 'class' in ad_div.attrs]
@@ -101,19 +106,18 @@ class Filter:
                 a.decompose()
                 continue
 
-            if '?q=' not in href:
-                continue
-
             result_link = urlparse.urlparse(href)
-            query_link = parse_qs(result_link.query)['q'][0]
+            query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
 
             if '/search?q=' in href:
                 enc_result = Fernet(self.secret_key).encrypt(query_link.encode())
                 new_search = '/search?q=' + enc_result.decode()
 
-                for param in VALID_PARAMS:
-                    if param in parse_qs(result_link.query):
-                        new_search += '&' + param + '=' + parse_qs(result_link.query)[param][0]
+                query_params = parse_qs(urlparse.urlparse(href).query)
+                allowed_params = [_ for _ in query_params if _ in VALID_PARAMS]
+                for param in allowed_params:
+                    param_val = query_params[param][0]
+                    new_search += '&' + param + '=' + param_val
                 a['href'] = new_search
                 continue
 
@@ -140,18 +144,13 @@ class Filter:
 
                 # Add no-js option
                 if self.nojs:
-                    nojs_link = soup.new_tag('a')
-                    nojs_link['href'] = '/window?location=' + query_link
-                    nojs_link['style'] = 'display:block;width:100%;'
-                    nojs_link.string = 'NoJS Link: ' + nojs_link['href']
-                    a.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
-                    a.append(nojs_link)
+                    gen_nojs(soup, query_link, a)
 
-        # Ensure no extra scripts passed through
-        try:
-            for script in soup('script'):
-                script.decompose()
-            soup.find('div', id='sfooter').decompose()
-        except Exception:
-            pass
 
+def gen_nojs(soup, link, sibling):
+    nojs_link = soup.new_tag('a')
+    nojs_link['href'] = '/window?location=' + link
+    nojs_link['style'] = 'display:block;width:100%;'
+    nojs_link.string = 'NoJS Link: ' + nojs_link['href']
+    sibling.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
+    sibling.append(nojs_link)
