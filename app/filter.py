@@ -64,7 +64,7 @@ class Filter:
             div.decompose()
 
     def update_image_paths(self, soup):
-        for img in [_ for _ in soup.find_all('img') if 'src' in _]:
+        for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
             img_src = img['src']
             if img_src.startswith('//'):
                 img_src = 'https:' + img_src
@@ -103,7 +103,7 @@ class Filter:
     def update_links(self, soup):
         # Replace hrefs with only the intended destination (no "utm" type tags)
         for a in soup.find_all('a', href=True):
-            href = a['href']
+            href = a['href'].replace('https://www.google.com', '')
             if '/advanced_search' in href:
                 a.decompose()
                 continue
@@ -146,6 +146,8 @@ class Filter:
                 # Add no-js option
                 if self.nojs:
                     gen_nojs(soup, query_link, a)
+
+            a['href'] = href
 
 
 def gen_nojs(soup, link, sibling):
