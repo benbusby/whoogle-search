@@ -3,8 +3,8 @@ import random
 
 demo_config = {
     'near': random.choice(['Seattle', 'New York', 'San Francisco']),
-    'dark_mode': random.getrandbits(1),
-    'nojs': random.getrandbits(1)
+    'dark_mode': str(random.getrandbits(1)),
+    'nojs': str(random.getrandbits(1))
 }
 
 
@@ -19,8 +19,8 @@ def test_search(client):
 
 
 def test_config(client):
-    rv = client.post('/config', data=json.dumps(demo_config))
-    assert rv._status_code == 200
+    rv = client.post('/config', data=demo_config)
+    assert rv._status_code == 302
 
     rv = client.get('/config')
     assert rv._status_code == 200

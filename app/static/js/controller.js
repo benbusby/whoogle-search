@@ -1,8 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
-    setTimeout(function() {
-        document.getElementById("main").style.display = "block";
-    }, 100);
-
+const setupSearchLayout = () => {
     // Setup search field
     const searchBar = document.getElementById("search-bar");
     const searchBtn = document.getElementById("search-submit");
@@ -17,7 +13,9 @@ document.addEventListener("DOMContentLoaded", function() {
             searchBtn.click();
         }
     });
+}
 
+const setupConfigLayout = () => {
     // Setup shoogle config
     const collapsible = document.getElementById("config-collapsible");
     collapsible.addEventListener("click", function() {
@@ -32,11 +30,14 @@ document.addEventListener("DOMContentLoaded", function() {
         content.classList.toggle("open");
     });
 
-    const saveConfig = document.getElementById("config-submit");
-    const nearConfig = document.getElementById("config-near");
-    const noJSConfig = document.getElementById("config-nojs");
-    const darkConfig = document.getElementById("config-dark");
+    const near = document.getElementById("config-near");
+    const noJS = document.getElementById("config-nojs");
+    const dark = document.getElementById("config-dark");
 
+    fillConfigValues(near, noJS, dark);
+}
+
+const fillConfigValues = (near, nojs, dark) => {
     // Request existing config info
     let xhrGET = new XMLHttpRequest();
     xhrGET.open("GET", "/config");
@@ -49,38 +50,30 @@ document.addEventListener("DOMContentLoaded", function() {
         // Allow for updating/saving config values
         let configSettings = JSON.parse(xhrGET.responseText);
 
-        nearConfig.value = configSettings["near"] ? configSettings["near"] : "";
-        nearConfig.addEventListener("keyup", function() {
-            configSettings["near"] = nearConfig.value;
+        near.value = configSettings["near"] ? configSettings["near"] : "";
+        near.addEventListener("keyup", function() {
+            configSettings["near"] = near.value;
         });
 
-        noJSConfig.checked = !!configSettings["nojs"];
-        noJSConfig.addEventListener("change", function() {
-           configSettings["nojs"] = noJSConfig.checked ? 1 : 0;
+        nojs.checked = !!configSettings["nojs"];
+        nojs.addEventListener("change", function() {
+           configSettings["nojs"] = nojs.checked ? 1 : 0;
         });
 
-        darkConfig.checked = !!configSettings["dark"];
-        darkConfig.addEventListener("change", function() {
-           configSettings["dark"] = darkConfig.checked ? 1 : 0;
+        dark.checked = !!configSettings["dark"];
+        dark.addEventListener("change", function() {
+           configSettings["dark"] = dark.checked ? 1 : 0;
         });
-
-        saveConfig.onclick = function() {
-            let xhrPOST = new XMLHttpRequest();
-            xhrPOST.open("POST", "/config");
-            xhrPOST.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhrPOST.send(JSON.stringify(configSettings));
-            xhrPOST.onload = function() {
-                if (xhrGET.readyState === 4 && xhrPOST.status !== 200) {
-                    alert("Failure to save config file");
-                    return;
-                }
-
-                if (confirm("Configuration saved. Reload now?")) {
-                    window.location.reload();
-                }
-            }
-        }
     };
-    xhrGET.send();
 
+    xhrGET.send();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() {
+        document.getElementById("main").style.display = "block";
+    }, 100);
+
+    setupSearchLayout();
+    setupConfigLayout();
 });

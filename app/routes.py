@@ -71,13 +71,14 @@ def config():
     if request.method == 'GET':
         return json.dumps(user_config)
     else:
+        config_data = request.form.to_dict()
         with open(app.config['STATIC_FOLDER'] + '/config.json', 'w') as config_file:
-            config_file.write(json.dumps(json.loads(request.data), indent=4))
+            config_file.write(json.dumps(config_data, indent=4))
             config_file.close()
 
-            user_config = json.loads(request.data)
+            user_config = config_data
 
-        return 'New config: ' + str(request.data)
+        return redirect('/')
 
 
 @app.route('/url', methods=['GET'])
