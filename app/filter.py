@@ -134,8 +134,8 @@ class Filter:
 
                 # Remove original link query and replace with filtered args
                 query_link = query_link.replace(parsed_link.query, '')
-                if len(safe_args) > 1:
-                    query_link = query_link + urlparse.urlencode(safe_args)
+                if len(safe_args) > 0:
+                    query_link = query_link + urlparse.urlencode(safe_args, doseq=True)
                 else:
                     query_link = query_link.replace('?', '')
 
