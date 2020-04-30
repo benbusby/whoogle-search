@@ -42,6 +42,8 @@ def opensearch():
 def search():
     if request.method == 'GET':
         q = request.args.get('q')
+        if q is None:
+            return redirect('/')
         try:
             q = Fernet(app.secret_key).decrypt(q.encode()).decode()
         except InvalidToken:
