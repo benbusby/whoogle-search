@@ -42,6 +42,10 @@ If deploying manually:
 - Docker ([Windows](https://docs.docker.com/docker-for-windows/install/), [macOS](https://docs.docker.com/docker-for-mac/install/), [Ubuntu](https://docs.docker.com/engine/install/ubuntu/), [other Linux distros](https://docs.docker.com/engine/install/binaries/))
   - Only needed if you intend on deploying the app as a Docker image
 - [Python3](https://www.python.org/downloads/)
+- `libcurl4-openssl-dev` and `libssl-dev`
+  - macOS: `brew install openssl curl-openssl`
+  - Ubuntu: `sudo apt-get install -y libcurl4-openssl-dev libssl-dev`
+  - Arch: `pacman -S curl openssl`
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
   - Only needed if you want to deploy the app to Heroku but don't want to use the deploy button shortcut.
 

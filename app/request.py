@@ -80,4 +80,4 @@ class Request:
         if return_bytes:
             return b_obj.getvalue()
         else:
-            return b_obj.getvalue().decode('utf-8', 'ignore')
+            return b_obj.getvalue().decode('unicode-escape', 'ignore')

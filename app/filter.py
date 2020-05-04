@@ -6,6 +6,12 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
 SKIP_ARGS = ['ref_src', 'utm']
+FULL_RES_IMG = '<br/><a href="{}">Full Image</a>'
+GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
+LOGO_URL = GOOG_IMG + '_desk'
+BLANK_B64 = '''
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkwAIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC
+'''
 
 
 class Filter:
@@ -68,9 +74,21 @@ class Filter:
             img_src = img['src']
             if img_src.startswith('//'):
                 img_src = 'https:' + img_src
+            elif img_src.startswith(GOOG_IMG):
+                # Special rebranding for image search results
+                if img_src.startswith(LOGO_URL):
+                    img['src'] = '/static/img/logo.png'
+                    img['height'] = 40
+                else:
+                    img['src'] = BLANK_B64
+
+                continue
 
             enc_src = Fernet(self.secret_key).encrypt(img_src.encode())
             img['src'] = '/tmp?image_url=' + enc_src.decode()
+            # TODO: Non-mobile image results link to website instead of image
+            # if not self.mobile:
+            # img.append(BeautifulSoup(FULL_RES_IMG.format(img_src), 'html.parser'))
 
     def update_styling(self, soup):
         # Remove unnecessary button(s)
@@ -125,6 +143,10 @@ class Filter:
                 parsed_link = urlparse.urlparse(query_link)
                 link_args = parse_qs(parsed_link.query)
                 safe_args = {}
+
+                if len(link_args) == 0 and len(parsed_link) > 0:
+                    a['href'] = query_link
+                    continue
 
                 for arg in link_args.keys():
                     if arg in SKIP_ARGS:
