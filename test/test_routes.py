@@ -33,4 +33,4 @@ def test_config(client):
 def test_opensearch(client):
     rv = client.get('/opensearch.xml')
     assert rv._status_code == 200
-    assert 'Shoogle' in str(rv.data)
+    assert 'Whoogle' in str(rv.data)

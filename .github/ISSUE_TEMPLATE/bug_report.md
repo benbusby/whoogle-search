@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a bug report to help improve Shoogle
+about: Create a bug report to help improve Whoogle
 title: "[BUG] "
 labels: bug
 assignees: benbusby

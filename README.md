@@ -1,8 +1,9 @@
-![Shoogle Banner](app/static/img/docs/shoogle-logo.png)
-
+<p align="left">
+    <img src="./app/static/img/logo.png" width="400" alt="whoogle-banner"/>
+</p>
 ___
 
-[![Latest Release](https://img.shields.io/github/v/release/benbusby/shoogle)](https://github.com/benbusby/shoogle/releases)
+[![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/benbusby/shoogle.svg?token=JgVbn8LSCz5Mmr9h5qq7&branch=master)](https://travis-ci.com/benbusby/shoogle)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
@@ -25,6 +26,7 @@ Contents
 - No tracking/linking of your personal IP address
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
+- POST request search queries (when possible)
 - View images at full res with one click
 - Dark mode
 - Randomly generated User Agent
@@ -53,14 +55,14 @@ If deploying manually:
 There are a few different ways to begin using the app, depending on your preferences:
 
 ### A) Heroku Quick Deploy (Free)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/shoogle)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search)
 
 ### B) Manual Setup (non-Docker)
 Clone the repo and run the following commands to start the app in a local-only environment:
 
 ```bash
-git clone https://github.com/benbusby/shoogle.git
-cd shoogle
+git clone https://github.com/benbusby/whoogle-search.git
+cd whoogle-search
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -77,15 +79,15 @@ pip install -r requirements.txt
 ```bash
 heroku login
 heroku container:login
-git clone https://github.com/benbusby/shoogle.git
-cd shoogle
+git clone https://github.com/benbusby/whoogle-search.git
+cd whoogle-search
 heroku create
 heroku container:push web
 heroku container:release web
 heroku open
 ```
 
-This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Shoogle and even [set it as your primary search engine](https://github.com/benbusby/shoogle#set-shoogle-as-your-primary-search-engine).
+This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Whoogle and even [set it as your primary search engine](https://github.com/benbusby/whoogle#set-whoogle-as-your-primary-search-engine).
 
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
@@ -102,18 +104,18 @@ Same as most search engines, with the exception of filtering by time range.
 To filter by a range of time, append ":past <time>" to the end of your search, where <time> can be `hour`, `day`, `month`, or `year`. Example: `coronavirus updates :past hour`
 
 ## Extra Steps
-### Set Shoogle as your primary search engine
+### Set Whoogle as your primary search engine
 Update browser settings:
   - Firefox (Desktop)
-    - Navigate to your app's url, and click the 3 dot menu in the address bar. At the bottom, there should be an option to "Add Search Engine". Once you've clicked this, open your Firefox Preferences menu, click "Search" in the left menu, and use the available dropdown to select "Shoogle" from the list.
+    - Navigate to your app's url, and click the 3 dot menu in the address bar. At the bottom, there should be an option to "Add Search Engine". Once you've clicked this, open your Firefox Preferences menu, click "Search" in the left menu, and use the available dropdown to select "Whoogle" from the list.
   - Firefox (iOS)
     - In the mobile app Settings page, tap "Search" within the "General" section. There should be an option titled "Add Search Engine" to select. It should prompt you to enter a title and search query url - use the following elements to fill out the form:
-      - Title: "Shoogle"
-      - URL: "https://\<your shoogle url\>/search?q=%s"
+      - Title: "Whoogle"
+      - URL: "https://\<your whoogle url\>/search?q=%s"
   - Others (TODO)
 
 ### Customizing and Configuration
-Shoogle currently allows a few minor configuration settings, accessible from the home page:
+Whoogle currently allows a few minor configuration settings, accessible from the home page:
   - "Near"
     - Set to a city name to narrow your results to a general geographic region. This can be useful if you rely on being able to search for things like "pizza places" and see results in your city, rather than results from wherever the server is located.
   - Dark Mode
@@ -122,28 +124,28 @@ Shoogle currently allows a few minor configuration settings, accessible from the
     - Adds a separate link for each search result that will open the webpage without any javascript content served. Can be useful if you're seeking a no-javascript experience on mobile, but otherwise could just be accomplished with a browser plugin.
 
 ### Prevent Downtime (Heroku only)
-Part of the deal with Heroku's free tier is that you're allocated 550 hours/month (meaning it can't stay active 24/7), and the app is temporarily shut down after 30 minutes of inactivity. Once it becomes inactive, any Shoogle searches will still work, but it'll take an extra 10-15 seconds for the app to come back online before displaying the result, which can be frustrating if you're in a hurry.
+Part of the deal with Heroku's free tier is that you're allocated 550 hours/month (meaning it can't stay active 24/7), and the app is temporarily shut down after 30 minutes of inactivity. Once it becomes inactive, any Whoogle searches will still work, but it'll take an extra 10-15 seconds for the app to come back online before displaying the result, which can be frustrating if you're in a hurry.
 
 A good solution for this is to set up a simple cronjob on any device at your home that is consistently powered on and connected to the internet (in my case, a PiHole worked perfectly). All the device needs to do is fetch app content on a consistent basis to keep the app alive in whatever ~17 hour window you want it on (17 hrs * 31 days = 527, meaning you'd still have 23 leftover hours each month if you searched outside of your target window).
 
-For instance: `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/shoogle-refresh` will fetch the home page of the app every 20 minutes between 7am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed.
+For instance: `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/whoogle-refresh` will fetch the home page of the app every 20 minutes between 7am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed.
 
 ## FAQ
-**What's the difference between this and Searx?**
+**What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
-*There are quite a few similarities and differences between Shoogle and Searx. Both are built to respect user privacy as much as possible, and both are capable of being individually deployed. Additionally, a lot of privacy features are shared between the two services, but since Shoogle is still in its infancy, a lot of features are missing, but will gradually be added in over time.*
+Whoogle is intended to only ever be deployed to private instances by individuals of any background, with as little effort as possible. Prior knowledge of/experience with the command line or deploying applications is not necessary to deploy Whoogle, which isn't the case with Searx. As a result, Whoole is missing some features of Searx in order to be as easy to deploy as possible.
 
-*The core feature of Shoogle that sets it apart and will be supported through all added features is the extremely simplified deployment of the app for individuals at any experience level, not just the technically inclined.*
+Whoogle also only uses Google search results, not Bing/Quant/etc, and uses the existing Google search UI to make the transition away from Google search as unnoticeable as possible.
 
-*It is strictly intended to be self-hosted only, and as such, needs to be (and is) excruciatingly easy to host yourself.*
+I'm a huge fan of Searx though and encourage anyone to use that instead if they want access to other search engines/a different UI/more configuration.
 
-**Why does the image results page look so bad on mobile?**
+**Why does the image results page look different?**
 
-*A lot of the app currently piggybacks on Google's existing support for fetching results pages with Javascript disabled. To their credit, they've done an excellent job with styling pages, but it seems that the image results page - particularly on mobile - is a little rough. Moving forward, with enough interest, I'd like to transition to fetching the results and parsing them into a unique Shoogle-fied interface that I can style myself.*
+A lot of the app currently piggybacks on Google's existing support for fetching results pages with Javascript disabled. To their credit, they've done an excellent job with styling pages, but it seems that the image results page - particularly on mobile - is a little rough. Moving forward, with enough interest, I'd like to transition to fetching the results and parsing them into a unique Whoogle-fied interface that I can style myself.
 
 ## Screenshots
 #### Desktop
-![Shoogle Desktop](app/static/img/docs/screenshot_desktop.jpg)
+![Whoogle Desktop](app/static/img/docs/screenshot_desktop.jpg)
 
 #### Mobile
-![Shoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)
+![Whoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)

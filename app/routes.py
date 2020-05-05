@@ -32,7 +32,7 @@ def opensearch():
     if url_root.endswith('/'):
         url_root = url_root[:-1]
 
-    template = render_template('opensearch.xml', shoogle_url=url_root)
+    template = render_template('opensearch.xml', whoogle_url=url_root)
     response = make_response(template)
     response.headers['Content-Type'] = 'application/xml'
     return response
@@ -61,8 +61,8 @@ def search():
     full_query = gen_query(q, request.args, content_filter.near)
     get_body = g.user_request.send(query=full_query)
 
-    shoogle_results = content_filter.reskin(get_body)
-    formatted_results = content_filter.clean(BeautifulSoup(shoogle_results, 'html.parser'))
+    results = content_filter.reskin(get_body)
+    formatted_results = content_filter.clean(BeautifulSoup(results, 'html.parser'))
 
     return render_template('display.html', query=urlparse.unquote(q), response=formatted_results)
 

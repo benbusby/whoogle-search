@@ -30,7 +30,7 @@ class Filter:
 
     def reskin(self, page):
         # Aesthetic only re-skinning
-        page = page.replace('>G<', '>Sh<')
+        page = page.replace('>G<', '>Wh<')
         pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
         page = pattern.sub('685e79', page)
         if self.dark:
