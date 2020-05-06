@@ -5,3 +5,8 @@ __pycache__/
 *.pem
 config.json
 test/static
+
+# pip stuff
+build/
+dist/
+*.egg-info/

@@ -4,6 +4,6 @@ WORKDIR /usr/src/app
 COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
-RUN chmod +x ./run
+RUN chmod +x ./whoogle-search
 
-CMD ["./run"]
+CMD ["./whoogle-search"]
