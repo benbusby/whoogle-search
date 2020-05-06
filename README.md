@@ -23,8 +23,9 @@ Contents
 - No tracking/linking of your personal IP address
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
+- No referrer header
 - POST request search queries (when possible)
-- View images at full res with one click
+- View images at full res without site redirect (currently mobile only)
 - Dark mode
 - Randomly generated User Agent
 - Easy to install/deploy

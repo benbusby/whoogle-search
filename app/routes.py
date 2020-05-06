@@ -20,6 +20,11 @@ def before_request_func():
     g.user_request = Request(request.headers.get('User-Agent'))
 
 
+@app.errorhandler(404)
+def unknown_page(e):
+    return redirect('/')
+
+
 @app.route('/', methods=['GET'])
 def index():
     bg = '#000' if 'dark' in user_config and user_config['dark'] else '#fff'
@@ -32,7 +37,7 @@ def opensearch():
     if url_root.endswith('/'):
         url_root = url_root[:-1]
 
-    template = render_template('opensearch.xml', whoogle_url=url_root)
+    template = render_template('opensearch.xml', main_url=url_root)
     response = make_response(template)
     response.headers['Content-Type'] = 'application/xml'
     return response
@@ -40,25 +45,23 @@ def opensearch():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    if request.method == 'GET':
-        q = request.args.get('q')
-        if q is None:
-            return redirect('/')
+    request_params = request.args if request.method == 'GET' else request.form
+    q = request_params.get('q')
+
+    if q is None or len(q) == 0:
+        return redirect('/')
+    else:
+        # Attempt to decrypt if this is an internal link
         try:
             q = Fernet(app.secret_key).decrypt(q.encode()).decode()
         except InvalidToken:
             pass
-    else:
-        q = request.form['q']
-
-    if q is None or len(q) == 0:
-        return render_template('error.html')
 
     user_agent = request.headers.get('User-Agent')
     mobile = 'Android' in user_agent or 'iPhone' in user_agent
 
     content_filter = Filter(mobile, user_config, secret_key=app.secret_key)
-    full_query = gen_query(q, request.args, content_filter.near)
+    full_query = gen_query(q, request_params, content_filter.near)
     get_body = g.user_request.send(query=full_query)
 
     results = content_filter.reskin(get_body)
