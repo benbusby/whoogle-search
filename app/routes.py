@@ -13,12 +13,13 @@ import urllib.parse as urlparse
 app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
 app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
 
-user_config = json.load(open(app.config['STATIC_FOLDER'] + '/config.json'))
+CONFIG_PATH = app.config['STATIC_FOLDER'] + '/config.json'
 
 
 @app.before_request
 def before_request_func():
     g.user_request = Request(request.headers.get('User-Agent'))
+    g.user_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {}
 
 
 @app.errorhandler(404)
@@ -28,7 +29,7 @@ def unknown_page(e):
 
 @app.route('/', methods=['GET'])
 def index():
-    bg = '#000' if 'dark' in user_config and user_config['dark'] else '#fff'
+    bg = '#000' if 'dark' in g.user_config and g.user_config['dark'] else '#fff'
     return render_template('index.html', bg=bg, ua=g.user_request.modified_user_agent)
 
 
@@ -61,7 +62,7 @@ def search():
     user_agent = request.headers.get('User-Agent')
     mobile = 'Android' in user_agent or 'iPhone' in user_agent
 
-    content_filter = Filter(mobile, user_config, secret_key=app.secret_key)
+    content_filter = Filter(mobile, g.user_config, secret_key=app.secret_key)
     full_query = gen_query(q, request_params, content_filter.near)
     get_body = g.user_request.send(query=full_query)
 
@@ -73,16 +74,13 @@ def search():
 
 @app.route('/config', methods=['GET', 'POST'])
 def config():
-    global user_config
     if request.method == 'GET':
-        return json.dumps(user_config)
+        return json.dumps(g.user_config)
     else:
         config_data = request.form.to_dict()
         with open(app.config['STATIC_FOLDER'] + '/config.json', 'w') as config_file:
             config_file.write(json.dumps(config_data, indent=4))
             config_file.close()
-
-            user_config = config_data
 
         return redirect('/')
 

@@ -17,11 +17,6 @@ export STATIC_FOLDER=$APP_ROOT/static
 
 mkdir -p $STATIC_FOLDER
 
-# Create default config json if it doesn't exist
-if [[ ! -f $STATIC_FOLDER/config.json ]]; then
-    echo "{}" > $STATIC_FOLDER/config.json
-fi
-
 pkill flask
 
 # Check for regular vs test run
