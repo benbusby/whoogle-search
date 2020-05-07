@@ -32,13 +32,9 @@ Contents
 - Optional location-based searching (i.e. results near \<city\>)
 - Optional NoJS mode to disable all Javascript in results
 
-## Setup
-If using Heroku/Heroku Quick Deploy:
-- [A Heroku Account](https://www.heroku.com/)
-  - Allows for free hosting of the web app and single-click deployment.
-  - Alternatively, you can host the app using a different service, or deploy it to your own server (explained below).
+## Dependencies
+If using Heroku Quick Deploy, **you can skip this section**.
 
-If deploying manually:
 - Docker ([Windows](https://docs.docker.com/docker-for-windows/install/), [macOS](https://docs.docker.com/docker-for-mac/install/), [Ubuntu](https://docs.docker.com/engine/install/ubuntu/), [other Linux distros](https://docs.docker.com/engine/install/binaries/))
   - Only needed if you intend on deploying the app as a Docker image
 - [Python3](https://www.python.org/downloads/)
@@ -46,16 +42,26 @@ If deploying manually:
   - macOS: `brew install openssl curl-openssl`
   - Ubuntu: `sudo apt-get install -y libcurl4-openssl-dev libssl-dev`
   - Arch: `pacman -S curl openssl`
-- [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
-  - Only needed if you want to deploy the app to Heroku but don't want to use the deploy button shortcut.
 
 ## Install
 There are a few different ways to begin using the app, depending on your preferences:
 
-### A) Heroku Quick Deploy (Free)
+### A) [Heroku Quick Deploy](https://heroku.com/about)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search)
 
-### B) Manual Setup (non-Docker)
+*Note: Requires a (free) Heroku account*
+
+Provides:
+- Free deployment of app
+- Free https url (https://\*.herokuapp.com)
+- Downtime after periods of inactivity \([solution](https://github.com/benbusby/whoogle-search#prevent-downtime-heroku-only)\)
+
+### B) [pipx](https://github.com/pipxproject/pipx#install-pipx)
+Persistent install: `pipx install git+https://github.com/benbusby/whoogle-search.git`
+
+Sandboxed temporary instance: `pipx run git+https://github.com/benbusby/whoogle-search.git whoogle-search`
+
+### C) Manual
 Clone the repo and run the following commands to start the app in a local-only environment:
 
 ```bash
@@ -64,16 +70,26 @@ cd whoogle-search
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-./run
+./whoogle-search
 ```
 
-### C) Manual Setup (Docker)
+### C) Manual (Docker)
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).
 2. Clone and deploy the docker app using a method below:
 
-#### Using Heroku CLI
+#### Docker CLI
+```bash
+git clone https://github.com/benbusby/whoogle-search.git
+cd whoogle-search
+docker build --tag whooglesearch:1.0 .
+docker run --publish 8888:5000 --detach --name whooglesearch whooglesearch:1.0
+```
+
+And kill with: `docker rm --force whooglesearch`
+
+#### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 ```bash
 heroku login
 heroku container:login
