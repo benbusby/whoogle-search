@@ -16,6 +16,11 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/benbusby/whoogle-search',
+    entry_points={
+        'console_scripts': [
+            'whoogle-search=app.routes:run_app',
+        ]
+    },
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',

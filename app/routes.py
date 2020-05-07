@@ -1,6 +1,7 @@
 from app import app
 from app.filter import Filter
 from app.request import Request, gen_query
+import argparse
 from bs4 import BeautifulSoup
 from cryptography.fernet import Fernet, InvalidToken
 from flask import g, make_response, request, redirect, render_template, send_file
@@ -137,5 +138,14 @@ def window():
     return render_template('display.html', response=results)
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+def run_app():
+    parser = argparse.ArgumentParser(description='Whoogle Search console runner')
+    parser.add_argument('--port', default=8888, metavar='<port number>',
+                        help='Specifies a port to run on (default 8888)')
+    parser.add_argument('--host', default='127.0.0.1', metavar='<ip address>',
+                        help='Specifies the host address to use (default 127.0.0.1)')
+    parser.add_argument('--debug', default=False, action='store_true',
+                        help='Activates debug mode for the Flask server (default False)')
+    args = parser.parse_args()
+
+    app.run(host=args.host, port=args.port, debug=args.debug)
