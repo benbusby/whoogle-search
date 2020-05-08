@@ -53,7 +53,7 @@ There are a few different ways to begin using the app, depending on your prefere
 
 Provides:
 - Free deployment of app
-- Free https url (https://\*.herokuapp.com)
+- Free https url (https://\<your app name\>.herokuapp.com)
 - Downtime after periods of inactivity \([solution](https://github.com/benbusby/whoogle-search#prevent-downtime-heroku-only)\)
 
 ### B) [pipx](https://github.com/pipxproject/pipx#install-pipx)
