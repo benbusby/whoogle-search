@@ -2,7 +2,7 @@
 
 [![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.com/benbusby/shoogle.svg?token=JgVbn8LSCz5Mmr9h5qq7&branch=master)](https://travis-ci.com/benbusby/shoogle)
+[![Build Status](https://travis-ci.com/benbusby/whoogle-search.svg?branch=master)](https://travis-ci.com/benbusby/whoogle-search)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
 
 Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
@@ -61,7 +61,23 @@ Persistent install: `pipx install git+https://github.com/benbusby/whoogle-search
 
 Sandboxed temporary instance: `pipx run git+https://github.com/benbusby/whoogle-search.git whoogle-search`
 
-### C) Manual
+### C) pip
+`pip install whoogle-search`
+
+```bash
+$ whoogle-search --help
+usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug]
+
+Whoogle Search console runner
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --port <port number>  Specifies a port to run on (default 8888)
+  --host <ip address>   Specifies the host address to use (default 127.0.0.1)
+  --debug               Activates debug mode for the Flask server (default False)
+```
+
+### D) Manual
 Clone the repo and run the following commands to start the app in a local-only environment:
 
 ```bash
@@ -73,7 +89,7 @@ pip install -r requirements.txt
 ./whoogle-search
 ```
 
-### C) Manual (Docker)
+### E) Manual (Docker)
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).
