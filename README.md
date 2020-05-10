@@ -169,7 +169,7 @@ Since the instance is destroyed and rebuilt after inactivity, config settings wi
 ## FAQ
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
-Whoogle is intended to only ever be deployed to private instances by individuals of any background, with as little effort as possible. Prior knowledge of/experience with the command line or deploying applications is not necessary to deploy Whoogle, which isn't the case with Searx. As a result, Whoole is missing some features of Searx in order to be as easy to deploy as possible.
+Whoogle is intended to only ever be deployed to private instances by individuals of any background, with as little effort as possible. Prior knowledge of/experience with the command line or deploying applications is not necessary to deploy Whoogle, which isn't the case with Searx. As a result, Whoogle is missing some features of Searx in order to be as easy to deploy as possible.
 
 Whoogle also only uses Google search results, not Bing/Quant/etc, and uses the existing Google search UI to make the transition away from Google search as unnoticeable as possible.
 
