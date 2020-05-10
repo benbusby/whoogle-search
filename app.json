@@ -1,8 +1,8 @@
 {
     "name": "Whoogle Search",
     "description": "A lightweight, privacy-oriented, containerized Google search proxy for desktop/mobile that removes Javascript, AMP links, tracking, and ads/sponsored content",
-    "repository": "https://github.com/benbusby/whoogle",
-    "logo": "https://raw.githubusercontent.com/benbusby/whoogle/master/app/static/img/favicon/ms-icon-150x150.png",
+    "repository": "https://github.com/benbusby/whoogle-search",
+    "logo": "https://raw.githubusercontent.com/benbusby/whoogle-search/master/app/static/img/favicon/ms-icon-150x150.png",
     "keywords": ["search", "metasearch", "flask", "docker", "heroku", "adblock", "degoogle", "privacy"],
     "stack": "container"
 }
