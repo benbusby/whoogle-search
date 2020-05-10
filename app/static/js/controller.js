@@ -15,7 +15,7 @@ const setupSearchLayout = () => {
     });
 }
 
-const fillConfigValues = (near, nojs, dark) => {
+const fillConfigValues = (near, nojs, dark, url) => {
     // Request existing config info
     let xhrGET = new XMLHttpRequest();
     xhrGET.open("GET", "/config");
@@ -29,19 +29,11 @@ const fillConfigValues = (near, nojs, dark) => {
         let configSettings = JSON.parse(xhrGET.responseText);
 
         near.value = configSettings["near"] ? configSettings["near"] : "";
-        near.addEventListener("keyup", function() {
-            configSettings["near"] = near.value;
-        });
-
         nojs.checked = !!configSettings["nojs"];
-        nojs.addEventListener("change", function() {
-           configSettings["nojs"] = nojs.checked ? 1 : 0;
-        });
-
         dark.checked = !!configSettings["dark"];
-        dark.addEventListener("change", function() {
-           configSettings["dark"] = dark.checked ? 1 : 0;
-        });
+
+        // Addresses the issue of incorrect URL being used behind reverse proxy
+        url.value = configSettings["url"] ? configSettings["url"] : "";
     };
 
     xhrGET.send();
@@ -65,8 +57,9 @@ const setupConfigLayout = () => {
     const near = document.getElementById("config-near");
     const noJS = document.getElementById("config-nojs");
     const dark = document.getElementById("config-dark");
+    const url  = document.getElementById("config-url");
 
-    fillConfigValues(near, noJS, dark);
+    fillConfigValues(near, noJS, dark, url);
 }
 
 document.addEventListener("DOMContentLoaded", function() {

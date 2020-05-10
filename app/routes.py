@@ -19,12 +19,17 @@ CONFIG_PATH = app.config['STATIC_FOLDER'] + '/config.json'
 @app.before_request
 def before_request_func():
     g.user_request = Request(request.headers.get('User-Agent'))
-    g.user_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {}
+    g.user_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {'url': request.url_root}
+
+    if 'url' not in g.user_config or not g.user_config['url']:
+        g.user_config['url'] = request.url_root
+
+    g.app_location = g.user_config['url']
 
 
 @app.errorhandler(404)
 def unknown_page(e):
-    return redirect('/')
+    return redirect(g.app_location)
 
 
 @app.route('/', methods=['GET'])
@@ -35,11 +40,11 @@ def index():
 
 @app.route('/opensearch.xml', methods=['GET'])
 def opensearch():
-    url_root = request.url_root
-    if url_root.endswith('/'):
-        url_root = url_root[:-1]
+    opensearch_url = g.app_location
+    if opensearch_url.endswith('/'):
+        opensearch_url = opensearch_url[:-1]
 
-    template = render_template('opensearch.xml', main_url=url_root)
+    template = render_template('opensearch.xml', main_url=opensearch_url)
     response = make_response(template)
     response.headers['Content-Type'] = 'application/xml'
     return response
@@ -78,11 +83,14 @@ def config():
         return json.dumps(g.user_config)
     else:
         config_data = request.form.to_dict()
+        if 'url' not in config_data or not config_data['url']:
+            config_data['url'] = request.url_root
+
         with open(app.config['STATIC_FOLDER'] + '/config.json', 'w') as config_file:
             config_file.write(json.dumps(config_data, indent=4))
             config_file.close()
 
-        return redirect('/')
+        return redirect(config_data['url'])
 
 
 @app.route('/url', methods=['GET'])

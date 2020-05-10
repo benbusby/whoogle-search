@@ -113,3 +113,7 @@ button::-moz-focus-inner {
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
 }
+
+.hidden {
+    display: none;
+}
