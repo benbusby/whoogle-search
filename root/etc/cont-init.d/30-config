@@ -3,7 +3,6 @@
 # Env variable validation
 VARS=( \
 TZ
-WEB_PORT
 )
 
 for i in "${VARS[@]}"; do
