@@ -109,6 +109,36 @@ docker run --publish 8888:5000 --detach --name whooglesearch whooglesearch:1.0
 
 And kill with: `docker rm --force whooglesearch`
 
+#### Docker-Compose
+
+```bash
+version: "3"
+services:
+    whoogle-search:
+        container_name: whoogle-search
+        hostname: whoogle-search
+        image: "benbusby/whoogle-search"
+        restart: always
+        ports:
+          - "5000:5000"
+        environment:
+          - PUID=1000
+          - PGID=1000
+          - TZ=Europe/London
+          - WEB_PORT=5000  #optional default 5000
+```
+
+#### Docker Parameters
+
+Container images are configured using parameters passed at runtime (such as those above). These parameters are separated by a colon and indicate `<external>:<internal>` respectively. For example, `-p 8080:80` would expose port `80` from inside the container to be accessible from the host's IP on port `8080` outside the container.
+
+| Parameter | Function |
+| :----: | --- |
+| `-e PUID=1000` | for UserID  |
+| `-e PGID=1000` | for GroupID  |
+| `-e TZ=Europe/London` | Specify a timezone to use |
+| `-e WEB_PORT=5000` | set the server port to expose, default to 5000, **optional** |
+
 #### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 ```bash
 heroku login
