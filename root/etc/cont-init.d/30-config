@@ -1,0 +1,21 @@
+#!/usr/bin/with-contenv bash
+
+# Env variable validation
+VARS=( \
+TZ
+WEB_PORT
+)
+
+for i in "${VARS[@]}"; do
+  if [ -z ${!i+x} ]; then
+    echo "[cont-init.d] ${i} is required and is not set will not continue"
+    exit 0
+  fi
+done
+
+export APP_ROOT=/app
+export STATIC_FOLDER=/app/static
+
+# permissions
+chown -R abc:abc \
+	/app
