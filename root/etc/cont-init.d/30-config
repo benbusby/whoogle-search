@@ -13,9 +13,6 @@ for i in "${VARS[@]}"; do
   fi
 done
 
-export APP_ROOT=/app
-export STATIC_FOLDER=/app/static
-
 # permissions
 chown -R abc:abc \
 	/app
