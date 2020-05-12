@@ -20,13 +20,12 @@ CONFIG_PATH = app.config['STATIC_FOLDER'] + '/config.json'
 @app.before_request
 def before_request_func():
     json_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {'url': request.url_root}
-
-    g.user_request = Request(request.headers.get('User-Agent'))
     g.user_config = Config(**json_config)
 
     if not g.user_config.url:
         g.user_config.url = request.url_root
 
+    g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang)
     g.app_location = g.user_config.url
 
 
