@@ -19,9 +19,9 @@ class Filter:
         if config is None:
             config = {}
 
-        self.near = config.near
-        self.dark = config.dark
-        self.nojs = config.nojs
+        self.near = config['near'] if 'near' in config else ''
+        self.dark = config['dark'] if 'dark' in config else False
+        self.nojs = config['nojs'] if 'nojs' in config else False
         self.mobile = mobile
         self.secret_key = secret_key
 
