@@ -26,7 +26,7 @@ def gen_user_agent(normal_ua):
         return DESKTOP_UA.format(mozilla, linux, firefox)
 
 
-def gen_query(query, args, near_city=None):
+def gen_query(query, args, near_city=None, language='lang_en'):
     param_dict = {key: '' for key in VALID_PARAMS}
     # Use :past(hour/day/week/month/year) if available
     # example search "new restaurants :past month"
@@ -49,6 +49,9 @@ def gen_query(query, args, near_city=None):
     if near_city is not None:
         param_dict['near'] = '&near=' + urlparse.quote(near_city)
 
+    # Set language for results (lr) and interface (hl)
+    param_dict['lr'] = '&lr=' + language + '&hl=' + language.replace('lang_', '')
+
     for val in param_dict.values():
         if not val or val is None:
             continue
@@ -58,11 +61,18 @@ def gen_query(query, args, near_city=None):
 
 
 class Request:
-    def __init__(self, normal_ua):
+    def __init__(self, normal_ua, language='lang_en'):
         self.modified_user_agent = gen_user_agent(normal_ua)
+        self.language = language
 
     def __getitem__(self, name):
         return getattr(self, name)
+
+    def get_decode_value(self):
+        if 'lang_zh' in self.language:
+            return 'gb2312'
+        else:
+            return 'unicode-escape'
 
     def send(self, base_url=SEARCH_URL, query='', return_bytes=False):
         response_header = []
@@ -80,4 +90,4 @@ class Request:
         if return_bytes:
             return b_obj.getvalue()
         else:
-            return b_obj.getvalue().decode('unicode-escape', 'ignore')
+            return b_obj.getvalue().decode(self.get_decode_value(), 'ignore')

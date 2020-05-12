@@ -1,5 +1,6 @@
 from app import app
 from app.filter import Filter
+from app.models.config import Config
 from app.request import Request, gen_query
 import argparse
 from bs4 import BeautifulSoup
@@ -19,13 +20,14 @@ CONFIG_PATH = app.config['STATIC_FOLDER'] + '/config.json'
 
 @app.before_request
 def before_request_func():
-    g.user_request = Request(request.headers.get('User-Agent'))
-    g.user_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {'url': request.url_root}
+    json_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {'url': request.url_root}
+    g.user_config = Config(**json_config)
 
-    if 'url' not in g.user_config or not g.user_config['url']:
-        g.user_config['url'] = request.url_root
+    if not g.user_config.url:
+        g.user_config.url = request.url_root
 
-    g.app_location = g.user_config['url']
+    g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang)
+    g.app_location = g.user_config.url
 
 
 @app.errorhandler(404)
@@ -35,8 +37,12 @@ def unknown_page(e):
 
 @app.route('/', methods=['GET'])
 def index():
-    bg = '#000' if 'dark' in g.user_config and g.user_config['dark'] else '#fff'
-    return render_template('index.html', bg=bg, ua=g.user_request.modified_user_agent)
+    bg = '#000' if g.user_config.dark else '#fff'
+    return render_template('index.html',
+                           bg=bg,
+                           ua=g.user_request.modified_user_agent,
+                           languages=Config.LANGUAGES,
+                           current_lang=g.user_config.lang)
 
 
 @app.route('/opensearch.xml', methods=['GET'])
@@ -69,7 +75,7 @@ def search():
     mobile = 'Android' in user_agent or 'iPhone' in user_agent
 
     content_filter = Filter(mobile, g.user_config, secret_key=app.secret_key)
-    full_query = gen_query(q, request_params, content_filter.near)
+    full_query = gen_query(q, request_params, content_filter.near, language=g.user_config.lang)
     get_body = g.user_request.send(query=full_query)
 
     results = content_filter.reskin(get_body)
@@ -81,7 +87,7 @@ def search():
 @app.route('/config', methods=['GET', 'POST'])
 def config():
     if request.method == 'GET':
-        return json.dumps(g.user_config)
+        return json.dumps(g.user_config.__dict__)
     else:
         config_data = request.form.to_dict()
         if 'url' not in config_data or not config_data['url']:

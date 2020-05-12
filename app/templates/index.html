@@ -42,6 +42,19 @@
                             <span class="ua-span">User Agent: {{ ua }}</span>
                         </div>
                         <div class="config-div">
+                            <label for="config-lang">Language: </label>
+                            <select name="lang" id="config-lang">
+                                {% for lang in languages %}
+                                <option value="{{ lang.value }}"
+                                    {% if lang.value in current_lang %}
+                                        selected
+                                    {% endif %}>
+                                    {{ lang.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="config-div">
                             <label for="config-near">Near: </label>
                             <input type="text" name="near" id="config-near" placeholder="City Name">
                         </div>
