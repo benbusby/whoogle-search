@@ -3,7 +3,7 @@ name: Bug report
 about: Create a bug report to help fix an issue with Whoogle
 title: "[BUG] "
 labels: bug
-assignees: benbusby
+assignees: ''
 
 ---
 
