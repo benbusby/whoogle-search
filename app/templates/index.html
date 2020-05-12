@@ -26,7 +26,7 @@
     <body id="main" style="display: none; background-color: {{ bg }}">
         <div class="search-container">
             <img class="logo" src="/static/img/logo.png">
-            <form action="/search" method="post">
+            <form action="/search" method="{{ request_type }}">
                 <div class="search-fields">
                     <input type="text" name="q" id="search-bar" autofocus="autofocus">
                     <input type="submit" id="search-submit" value="Search">
@@ -65,6 +65,10 @@
                         <div class="config-div">
                             <label for="config-dark">Dark Mode: </label>
                             <input type="checkbox" name="dark" id="config-dark">
+                        </div>
+                        <div class="config-div">
+                            <label for="config-get-only">GET Requests Only: </label>
+                            <input type="checkbox" name="get_only" id="config-get-only">
                         </div>
                         <div class="config-div">
                             <label for="config-url">Root URL: </label>
