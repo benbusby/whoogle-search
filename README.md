@@ -174,7 +174,7 @@ For instance, adding `*/20 7-23 * * * curl https://<your heroku app name>.heroku
 
 Since the instance is destroyed and rebuilt after inactivity, config settings will be reset once the app enters downtime. If you have configuration settings active that you'd like to keep between periods of downtime (like dark mode for example), you could instead add `*/20 7-23 * * * curl -d "dark=1" -X POST https://<your heroku app name>.herokuapp.com/config > /home/<username>/whoogle-refresh` to keep these settings more or less permanent, and still keep the app from entering downtime when you're using it. 
 
-Available config values are `near`, `nojs`, `dark` and `url`
+Available config values are `near`, `nojs`, `dark` and `url`.
 ## FAQ
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
