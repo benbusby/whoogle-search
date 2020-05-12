@@ -26,7 +26,7 @@ def gen_user_agent(normal_ua):
         return DESKTOP_UA.format(mozilla, linux, firefox)
 
 
-def gen_query(query, args, near_city=None):
+def gen_query(query, args, near_city=None, language='lang_en'):
     param_dict = {key: '' for key in VALID_PARAMS}
     # Use :past(hour/day/week/month/year) if available
     # example search "new restaurants :past month"
@@ -48,6 +48,9 @@ def gen_query(query, args, near_city=None):
     # Search for results near a particular city, if available
     if near_city is not None:
         param_dict['near'] = '&near=' + urlparse.quote(near_city)
+
+    # Set language
+    param_dict['lr'] = '&lr=' + language
 
     for val in param_dict.values():
         if not val or val is None:
