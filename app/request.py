@@ -1,6 +1,6 @@
-from app import rhyme
 from io import BytesIO
 import pycurl
+import random
 import urllib.parse as urlparse
 
 # Base search url
@@ -16,9 +16,9 @@ VALID_PARAMS = ['tbs', 'tbm', 'start', 'near']
 def gen_user_agent(normal_ua):
     is_mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
 
-    mozilla = rhyme.get_rhyme('Mo') + rhyme.get_rhyme('zilla')
-    firefox = rhyme.get_rhyme('Fire') + rhyme.get_rhyme('fox')
-    linux = rhyme.get_rhyme('Lin') + 'ux'
+    mozilla = random.choice(['Moo', 'Woah', 'Bro', 'Slow']) + 'zilla'
+    firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
+    linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
 
     if is_mobile:
         return MOBILE_UA.format(mozilla, firefox)

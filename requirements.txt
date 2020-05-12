@@ -7,7 +7,6 @@ Flask==1.1.1
 itsdangerous==1.1.0
 Jinja2==2.10.3
 MarkupSafe==1.1.1
-Phyme==0.0.9
 pycparser==2.19
 pycurl==7.43.0.4
 pyOpenSSL==19.1.0
