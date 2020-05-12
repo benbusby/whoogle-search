@@ -9,6 +9,7 @@ import io
 import json
 import os
 import urllib.parse as urlparse
+import waitress
 
 app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
 app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
@@ -146,12 +147,14 @@ def window():
 
 def run_app():
     parser = argparse.ArgumentParser(description='Whoogle Search console runner')
-    parser.add_argument('--port', default=8888, metavar='<port number>',
-                        help='Specifies a port to run on (default 8888)')
+    parser.add_argument('--port', default=5000, metavar='<port number>',
+                        help='Specifies a port to run on (default 5000)')
     parser.add_argument('--host', default='127.0.0.1', metavar='<ip address>',
                         help='Specifies the host address to use (default 127.0.0.1)')
     parser.add_argument('--debug', default=False, action='store_true',
-                        help='Activates debug mode for the Flask server (default False)')
+                        help='Activates debug mode for the server (default False)')
     args = parser.parse_args()
-
-    app.run(host=args.host, port=args.port, debug=args.debug)
+    if args.debug:
+        app.run(host=args.host, port=args.port, debug=args.debug)
+    else:
+        waitress.serve(app, listen="{}:{}".format(args.host, args.port))
