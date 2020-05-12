@@ -17,11 +17,9 @@ export STATIC_FOLDER=$APP_ROOT/static
 
 mkdir -p $STATIC_FOLDER
 
-pkill flask
-
 # Check for regular vs test run
 if [[ $SUBDIR == "test" ]]; then
     pytest -sv
 else
-    flask run --host="0.0.0.0" --port=$PORT
+    python3 -m app --port $PORT
 fi
