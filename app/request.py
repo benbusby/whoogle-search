@@ -49,8 +49,8 @@ def gen_query(query, args, near_city=None, language='lang_en'):
     if near_city is not None:
         param_dict['near'] = '&near=' + urlparse.quote(near_city)
 
-    # Set language
-    param_dict['lr'] = '&lr=' + language
+    # Set language for results (lr) and interface (hl)
+    param_dict['lr'] = '&lr=' + language + '&hl=' + language.replace('lang_', '')
 
     for val in param_dict.values():
         if not val or val is None:
@@ -83,4 +83,4 @@ class Request:
         if return_bytes:
             return b_obj.getvalue()
         else:
-            return b_obj.getvalue().decode('unicode-escape', 'ignore')
+            return b_obj.getvalue().decode('gb2312', 'ignore')
