@@ -5,5 +5,5 @@ services:
     image: benbusby/whoogle-search
     container_name: whoogle-search
     ports:
-      - 8888:5000
+      - 5000:5000
     restart: unless-stopped

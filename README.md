@@ -57,11 +57,11 @@ Provides:
 - Downtime after periods of inactivity \([solution](https://github.com/benbusby/whoogle-search#prevent-downtime-heroku-only)\)
 
 ### B) [pipx](https://github.com/pipxproject/pipx#install-pipx)
-Persistent install: 
+Persistent install:
 
 `pipx install git+https://github.com/benbusby/whoogle-search.git`
 
-Sandboxed temporary instance: 
+Sandboxed temporary instance:
 
 `pipx run git+https://github.com/benbusby/whoogle-search.git whoogle-search`
 
@@ -76,7 +76,7 @@ Whoogle Search console runner
 
 optional arguments:
   -h, --help            show this help message and exit
-  --port <port number>  Specifies a port to run on (default 8888)
+  --port <port number>  Specifies a port to run on (default 5000)
   --host <ip address>   Specifies the host address to use (default 127.0.0.1)
   --debug               Activates debug mode for the Flask server (default False)
 ```
@@ -104,7 +104,7 @@ pip install -r requirements.txt
 git clone https://github.com/benbusby/whoogle-search.git
 cd whoogle-search
 docker build --tag whooglesearch:1.0 .
-docker run --publish 8888:5000 --detach --name whooglesearch whooglesearch:1.0
+docker run --publish 5000:5000 --detach --name whooglesearch whooglesearch:1.0
 ```
 
 And kill with: `docker rm --force whooglesearch`
@@ -172,7 +172,7 @@ A good solution for this is to set up a simple cronjob on any device at your hom
 
 For instance, adding `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/whoogle-refresh` will fetch the home page of the app every 20 minutes between 7am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed.
 
-Since the instance is destroyed and rebuilt after inactivity, config settings will be reset once the app enters downtime. If you have configuration settings active that you'd like to keep between periods of downtime (like dark mode for example), you could instead add `*/20 7-23 * * * curl -d "dark=1" -X POST https://<your heroku app name>.herokuapp.com/config > /home/<username>/whoogle-refresh` to keep these settings more or less permanent, and still keep the app from entering downtime when you're using it. 
+Since the instance is destroyed and rebuilt after inactivity, config settings will be reset once the app enters downtime. If you have configuration settings active that you'd like to keep between periods of downtime (like dark mode for example), you could instead add `*/20 7-23 * * * curl -d "dark=1" -X POST https://<your heroku app name>.herokuapp.com/config > /home/<username>/whoogle-refresh` to keep these settings more or less permanent, and still keep the app from entering downtime when you're using it.
 
 Available config values are `near`, `nojs`, `dark` and `url`.
 ## FAQ

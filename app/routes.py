@@ -146,8 +146,8 @@ def window():
 
 def run_app():
     parser = argparse.ArgumentParser(description='Whoogle Search console runner')
-    parser.add_argument('--port', default=8888, metavar='<port number>',
-                        help='Specifies a port to run on (default 8888)')
+    parser.add_argument('--port', default=5000, metavar='<port number>',
+                        help='Specifies a port to run on (default 5000)')
     parser.add_argument('--host', default='127.0.0.1', metavar='<ip address>',
                         help='Specifies the host address to use (default 127.0.0.1)')
     parser.add_argument('--debug', default=False, action='store_true',
