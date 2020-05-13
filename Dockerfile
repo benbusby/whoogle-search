@@ -5,6 +5,11 @@ WORKDIR /usr/src/app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+ARG config_dir=/config
+RUN mkdir $config_dir
+VOLUME $config_dir
+ENV CONFIG_VOLUME=$config_dir
+
 COPY . .
 
 EXPOSE 5000
