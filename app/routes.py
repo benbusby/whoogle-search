@@ -42,7 +42,8 @@ def index():
                            bg=bg,
                            ua=g.user_request.modified_user_agent,
                            languages=Config.LANGUAGES,
-                           current_lang=g.user_config.lang)
+                           current_lang=g.user_config.lang,
+                           request_type='get' if g.user_config.get_only else 'post')
 
 
 @app.route('/opensearch.xml', methods=['GET'])
@@ -51,7 +52,9 @@ def opensearch():
     if opensearch_url.endswith('/'):
         opensearch_url = opensearch_url[:-1]
 
-    template = render_template('opensearch.xml', main_url=opensearch_url)
+    template = render_template('opensearch.xml',
+                               main_url=opensearch_url,
+                               request_type='get' if g.user_config.get_only else 'post')
     response = make_response(template)
     response.headers['Content-Type'] = 'application/xml'
     return response
