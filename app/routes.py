@@ -15,7 +15,7 @@ import waitress
 app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
 app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
 
-CONFIG_PATH = app.config['STATIC_FOLDER'] + '/config.json'
+CONFIG_PATH = os.getenv('CONFIG_VOLUME', app.config['STATIC_FOLDER']) + '/config.json'
 
 
 @app.before_request
@@ -96,7 +96,7 @@ def config():
         if 'url' not in config_data or not config_data['url']:
             config_data['url'] = request.url_root
 
-        with open(app.config['STATIC_FOLDER'] + '/config.json', 'w') as config_file:
+        with open(CONFIG_PATH, 'w') as config_file:
             config_file.write(json.dumps(config_data, indent=4))
             config_file.close()
 
