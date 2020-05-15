@@ -22,6 +22,7 @@ class Filter:
         self.near = config['near'] if 'near' in config else ''
         self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
+        self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.mobile = mobile
         self.secret_key = secret_key
 
@@ -131,6 +132,8 @@ class Filter:
             if '/advanced_search' in href:
                 a.decompose()
                 continue
+            elif self.new_tab:
+                a['target'] = '_blank'
 
             result_link = urlparse.urlparse(href)
             query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''

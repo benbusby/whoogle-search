@@ -21,6 +21,7 @@ const fillConfigValues = () => {
     const noJS = document.getElementById("config-nojs");
     const dark = document.getElementById("config-dark");
     const url  = document.getElementById("config-url");
+    const newTab  = document.getElementById("config-new-tab");
     const getOnly = document.getElementById("config-get-only");
 
     // Request existing config info
@@ -39,6 +40,7 @@ const fillConfigValues = () => {
         noJS.checked = !!configSettings["nojs"];
         dark.checked = !!configSettings["dark"];
         getOnly.checked = !!configSettings["get_only"];
+        newTab.checked = !!configSettings["new_tab"];
 
         // Addresses the issue of incorrect URL being used behind reverse proxy
         url.value = configSettings["url"] ? configSettings["url"] : "";

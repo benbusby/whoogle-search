@@ -57,6 +57,7 @@ class Config:
         self.dark = False
         self.nojs = False
         self.near = ''
+        self.new_tab = False
         self.get_only = False
 
         for key, value in kwargs.items():
