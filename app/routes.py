@@ -20,8 +20,10 @@ CONFIG_PATH = os.getenv('CONFIG_VOLUME', app.config['STATIC_FOLDER']) + '/config
 
 @app.before_request
 def before_request_func():
-    # Always redirect to https if HTTPS_ONLY is set
-    if os.getenv('HTTPS_ONLY', False) and request.url.startswith('http://'):
+    # Always redirect to https if HTTPS_ONLY is set (otherwise default to false)
+    https_only = os.getenv('HTTPS_ONLY', False)
+
+    if https_only and request.url.startswith('http://'):
         url = request.url.replace('http://', 'https://', 1)
         code = 301
         return redirect(url, code=code)
@@ -30,7 +32,7 @@ def before_request_func():
     g.user_config = Config(**json_config)
 
     if not g.user_config.url:
-        g.user_config.url = request.url_root
+        g.user_config.url = request.url_root.replace('http://', 'https://') if https_only else request.url_root
 
     g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang)
     g.app_location = g.user_config.url
@@ -100,7 +102,7 @@ def config():
     else:
         config_data = request.form.to_dict()
         if 'url' not in config_data or not config_data['url']:
-            config_data['url'] = request.url_root
+            config_data['url'] = g.user_config.url
 
         with open(CONFIG_PATH, 'w') as config_file:
             config_file.write(json.dumps(config_data, indent=4))
