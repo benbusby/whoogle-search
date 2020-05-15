@@ -10,7 +10,7 @@ RUN mkdir $config_dir
 VOLUME $config_dir
 ENV CONFIG_VOLUME=$config_dir
 
-ARG use_https=''
+ARG use_https=1
 ENV HTTPS_ONLY=$use_https
 
 ARG whoogle_port=5000
