@@ -64,7 +64,7 @@ def opensearch():
 def search():
     request_params = request.args if request.method == 'GET' else request.form
     q = request_params.get('q')
-
+    
     if q is None or len(q) == 0:
         return redirect('/')
     else:
@@ -74,6 +74,11 @@ def search():
         except InvalidToken:
             pass
 
+    feeling_lucky = q.startswith("! ")
+
+    if feeling_lucky:
+        q = q[2:]
+
     user_agent = request.headers.get('User-Agent')
     mobile = 'Android' in user_agent or 'iPhone' in user_agent
 
@@ -82,7 +87,15 @@ def search():
     get_body = g.user_request.send(query=full_query)
 
     results = content_filter.reskin(get_body)
-    formatted_results = content_filter.clean(BeautifulSoup(results, 'html.parser'))
+    dirty_soup = BeautifulSoup(results, 'html.parser')
+
+    if feeling_lucky:
+        redirect_url = content_filter.get_first_url(dirty_soup)
+        return redirect(redirect_url, 303) # Using 303 so the browser performs a GET request for the URL
+    else:
+        formatted_results = content_filter.clean(dirty_soup)
+
+
 
     return render_template('display.html', query=urlparse.unquote(q), response=formatted_results)
 

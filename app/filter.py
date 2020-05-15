@@ -58,6 +58,40 @@ class Filter:
 
         return soup
 
+    def get_first_url(self, soup):
+        # Replace hrefs with only the intended destination (no "utm" type tags)
+        for a in soup.find_all('a', href=True):
+            href = a['href'].replace('https://www.google.com', '')
+            
+            result_link = urlparse.urlparse(href)
+            query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
+
+            # Return the first search result URL
+            if 'url?q=' in href:
+                parsed_link = urlparse.urlparse(query_link)
+                link_args = parse_qs(parsed_link.query)
+                safe_args = {}
+
+                if len(link_args) == 0 and len(parsed_link) > 0:
+                    return query_link
+                    
+
+                for arg in link_args.keys():
+                    if arg in SKIP_ARGS:
+                        continue
+
+                    safe_args[arg] = link_args[arg]
+
+                # Remove original link query and replace with filtered args
+                query_link = query_link.replace(parsed_link.query, '')
+                if len(safe_args) > 0:
+                    query_link = query_link + urlparse.urlencode(safe_args, doseq=True)
+                else:
+                    query_link = query_link.replace('?', '')
+
+                print(query_link)
+                return query_link
+
     def remove_ads(self, soup):
         main_divs = soup.find('div', {'id': 'main'})
         if main_divs is None:
