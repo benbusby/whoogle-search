@@ -72,6 +72,7 @@ Sandboxed temporary instance:
 ```bash
 $ whoogle-search --help
 usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug]
+                      [--https-only]
 
 Whoogle Search console runner
 
@@ -79,7 +80,8 @@ optional arguments:
   -h, --help            show this help message and exit
   --port <port number>  Specifies a port to run on (default 5000)
   --host <ip address>   Specifies the host address to use (default 127.0.0.1)
-  --debug               Activates debug mode for the Flask server (default False)
+  --debug               Activates debug mode for the server (default False)
+  --https-only          Enforces HTTPS redirects for all requests (default False)
 ```
 
 ### D) Manual
@@ -95,6 +97,10 @@ pip install -r requirements.txt
 ```
 
 ### E) Manual (Docker)
+___
+*Note: Docker containers run by default with https enforcement. If your instance will be run over http, you'll need to add `--build-arg use_https=0` to your run command.*
+___
+
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).
@@ -125,8 +131,6 @@ docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
 ```
 
 And kill with: `docker rm --force whoogle-search`
-
-*NOTE: Docker containers run by default with https enforcement. If your instance will be run over http, you'll need to add `--build-arg use_https=0` to your run command.*
 
 #### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 ```bash
