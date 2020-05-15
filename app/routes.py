@@ -58,6 +58,9 @@ def opensearch():
     if opensearch_url.endswith('/'):
         opensearch_url = opensearch_url[:-1]
 
+    if os.getenv('HTTPS_ONLY', False) and opensearch_url.startswith('http://'):
+        opensearch_url = opensearch_url.replace('http://', 'https://', 1)
+
     template = render_template('opensearch.xml',
                                main_url=opensearch_url,
                                request_type='get' if g.user_config.get_only else 'post')
