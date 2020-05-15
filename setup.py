@@ -12,7 +12,7 @@ setuptools.setup(
     scripts=['whoogle-search'],
     include_package_data=True,
     install_requires=requirements,
-    description='Self-hosted, ad-free, privacy-respecting alternative to Google search',
+    description='Self-hosted, ad-free, privacy-respecting Google metasearch engine',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/benbusby/whoogle-search',
