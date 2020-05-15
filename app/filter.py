@@ -78,7 +78,7 @@ class Filter:
                 # Special rebranding for image search results
                 if img_src.startswith(LOGO_URL):
                     img['src'] = '/static/img/logo.png'
-                    img['height'] = 40
+                    img['style'] = 'height:40px;width:162px'
                 else:
                     img['src'] = BLANK_B64
 
@@ -114,9 +114,15 @@ class Filter:
 
         # Set up dark mode if active
         if self.dark:
-            soup.find('html')['style'] = 'scrollbar-color: #333 #111;'
+            soup.find('html')['style'] = 'scrollbar-color: #333 #111;color:#fff !important;background:#000 !important'
             for input_element in soup.findAll('input'):
-                input_element['style'] = 'color:#fff;'
+                input_element['style'] = 'color:#fff;background:#000;'
+
+            for span_element in soup.findAll('span'):
+                span_element['style'] = 'color: white;'
+
+            for href_element in soup.findAll('a'):
+                href_element['style'] = 'color: white' if href_element['href'].startswith('/search') else ''
 
     def update_links(self, soup):
         # Replace hrefs with only the intended destination (no "utm" type tags)
