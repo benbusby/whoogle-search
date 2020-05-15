@@ -124,7 +124,9 @@ docker build --tag whoogle-search:1.0 .
 docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
 ```
 
-And kill with: `docker rm --force whooglesearch`
+And kill with: `docker rm --force whoogle-search`
+
+*NOTE: Docker containers run by default with https enforcement. If your instance will be run over http, you'll need to add `--build-arg use_https=0` to your run command.*
 
 #### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 ```bash

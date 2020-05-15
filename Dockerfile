@@ -10,6 +10,9 @@ RUN mkdir $config_dir
 VOLUME $config_dir
 ENV CONFIG_VOLUME=$config_dir
 
+ARG use_https=1
+ENV HTTPS_ONLY=$use_https
+
 COPY . .
 
 EXPOSE 5000
