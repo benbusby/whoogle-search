@@ -97,10 +97,6 @@ pip install -r requirements.txt
 ```
 
 ### E) Manual (Docker)
-___
-*Note: Docker containers run by default with https enforcement. If your instance will be run over http, you'll need to add `--build-arg use_https=0` to your run command.*
-___
-
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).
