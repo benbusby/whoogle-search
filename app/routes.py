@@ -6,6 +6,7 @@ import argparse
 from bs4 import BeautifulSoup
 from cryptography.fernet import Fernet, InvalidToken
 from flask import g, make_response, request, redirect, render_template, send_file
+from functools import wraps
 import io
 import json
 import os
@@ -16,6 +17,21 @@ app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(_
 app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
 
 CONFIG_PATH = os.getenv('CONFIG_VOLUME', app.config['STATIC_FOLDER']) + '/config.json'
+
+
+def auth_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+
+        # Skip if username/password not set
+        whoogle_user = os.getenv('WHOOGLE_USER', '')
+        whoogle_pass = os.getenv('WHOOGLE_PASS', '')
+        if (not whoogle_user or not whoogle_pass) or (auth and whoogle_user == auth.username and whoogle_pass == auth.password):
+            return f(*args, **kwargs)
+        else:
+            return make_response('Not logged in', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+    return decorated
 
 
 @app.before_request
@@ -36,6 +52,7 @@ def unknown_page(e):
 
 
 @app.route('/', methods=['GET'])
+@auth_required
 def index():
     bg = '#000' if g.user_config.dark else '#fff'
     return render_template('index.html',
@@ -47,6 +64,7 @@ def index():
 
 
 @app.route('/opensearch.xml', methods=['GET'])
+@auth_required
 def opensearch():
     opensearch_url = g.app_location
     if opensearch_url.endswith('/'):
@@ -61,6 +79,7 @@ def opensearch():
 
 
 @app.route('/search', methods=['GET', 'POST'])
+@auth_required
 def search():
     request_params = request.args if request.method == 'GET' else request.form
     q = request_params.get('q')
@@ -88,6 +107,7 @@ def search():
 
 
 @app.route('/config', methods=['GET', 'POST'])
+@auth_required
 def config():
     if request.method == 'GET':
         return json.dumps(g.user_config.__dict__)
@@ -104,6 +124,7 @@ def config():
 
 
 @app.route('/url', methods=['GET'])
+@auth_required
 def url():
     if 'url' in request.args:
         return redirect(request.args.get('url'))
@@ -116,11 +137,13 @@ def url():
 
 
 @app.route('/imgres')
+@auth_required
 def imgres():
     return redirect(request.args.get('imgurl'))
 
 
 @app.route('/tmp')
+@auth_required
 def tmp():
     cipher_suite = Fernet(app.secret_key)
     img_url = cipher_suite.decrypt(request.args.get('image_url').encode()).decode()
@@ -138,6 +161,7 @@ def tmp():
 
 
 @app.route('/window')
+@auth_required
 def window():
     get_body = g.user_request.send(base_url=request.args.get('location'))
     get_body = get_body.replace('src="/', 'src="' + request.args.get('location') + '"')
@@ -162,7 +186,15 @@ def run_app():
                         help='Specifies the host address to use (default 127.0.0.1)')
     parser.add_argument('--debug', default=False, action='store_true',
                         help='Activates debug mode for the server (default False)')
+    parser.add_argument('--userpass', default='', metavar='<username:password>',
+                        help='Sets a username/password basic auth combo (default None)')
     args = parser.parse_args()
+
+    if args.userpass:
+        user_pass = args.userpass.split(':')
+        os.environ['WHOOGLE_USER'] = user_pass[0]
+        os.environ['WHOOGLE_PASS'] = user_pass[1]
+
     if args.debug:
         app.run(host=args.host, port=args.port, debug=args.debug)
     else:
