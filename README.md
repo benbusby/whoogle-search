@@ -173,6 +173,13 @@ Update browser settings:
     - Click the 3 dot menu in the top right
     - Navigate to the settings menu and select the "search" sub-menu
     - Select Whoogle and press "Set as default"
+  - [Alfred](https://www.alfredapp.com/) (Mac OS X)
+	  1. Go to `Alfred Preferences` > `Features` > `Web Search` and click `Add Custom Search`. Then configure these settings
+		   - Search URL: `https://\<your whoogle url\>/search?q={query}
+		   - Title: `Whoogle for '{query}'` (or whatever you want)
+		   - Keyword: `whoogle`
+
+	  2. Go to `Default Results` and click the `Setup fallback results` button. Click `+` and add Whoogle, then  drag it to the top.
   - Others (TODO)
 
 ### Customizing and Configuration
