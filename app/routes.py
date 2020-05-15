@@ -36,6 +36,12 @@ def auth_required(f):
 
 @app.before_request
 def before_request_func():
+    # Always redirect to https if HTTPS_ONLY is set
+    if os.getenv('HTTPS_ONLY', False) and request.url.startswith('http://'):
+        url = request.url.replace('http://', 'https://', 1)
+        code = 301
+        return redirect(url, code=code)
+
     json_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {'url': request.url_root}
     g.user_config = Config(**json_config)
 
@@ -186,6 +192,8 @@ def run_app():
                         help='Specifies the host address to use (default 127.0.0.1)')
     parser.add_argument('--debug', default=False, action='store_true',
                         help='Activates debug mode for the server (default False)')
+    parser.add_argument('--https-only', default=False, action='store_true',
+                        help='Enforces HTTPS redirects for all requests')
     parser.add_argument('--userpass', default='', metavar='<username:password>',
                         help='Sets a username/password basic auth combo (default None)')
     args = parser.parse_args()
@@ -194,6 +202,8 @@ def run_app():
         user_pass = args.userpass.split(':')
         os.environ['WHOOGLE_USER'] = user_pass[0]
         os.environ['WHOOGLE_PASS'] = user_pass[1]
+
+    os.environ['HTTPS_ONLY'] = '1' if args.https_only else ''
 
     if args.debug:
         app.run(host=args.host, port=args.port, debug=args.debug)

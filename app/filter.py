@@ -22,6 +22,7 @@ class Filter:
         self.near = config['near'] if 'near' in config else ''
         self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
+        self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.mobile = mobile
         self.secret_key = secret_key
 
@@ -78,7 +79,7 @@ class Filter:
                 # Special rebranding for image search results
                 if img_src.startswith(LOGO_URL):
                     img['src'] = '/static/img/logo.png'
-                    img['height'] = 40
+                    img['style'] = 'height:40px;width:162px'
                 else:
                     img['src'] = BLANK_B64
 
@@ -114,9 +115,15 @@ class Filter:
 
         # Set up dark mode if active
         if self.dark:
-            soup.find('html')['style'] = 'scrollbar-color: #333 #111;'
+            soup.find('html')['style'] = 'scrollbar-color: #333 #111;color:#fff !important;background:#000 !important'
             for input_element in soup.findAll('input'):
-                input_element['style'] = 'color:#fff;'
+                input_element['style'] = 'color:#fff;background:#000;'
+
+            for span_element in soup.findAll('span'):
+                span_element['style'] = 'color: white;'
+
+            for href_element in soup.findAll('a'):
+                href_element['style'] = 'color: white' if href_element['href'].startswith('/search') else ''
 
     def update_links(self, soup):
         # Replace hrefs with only the intended destination (no "utm" type tags)
@@ -125,6 +132,8 @@ class Filter:
             if '/advanced_search' in href:
                 a.decompose()
                 continue
+            elif self.new_tab:
+                a['target'] = '_blank'
 
             result_link = urlparse.urlparse(href)
             query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''

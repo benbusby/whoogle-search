@@ -15,8 +15,14 @@ ENV WHOOGLE_USER=$username
 ARG password=''
 ENV WHOOGLE_PASS=$password
 
+ARG use_https=''
+ENV HTTPS_ONLY=$use_https
+
+ARG whoogle_port=5000
+ENV EXPOSE_PORT=$whoogle_port
+
 COPY . .
 
-EXPOSE 5000
+EXPOSE $EXPOSE_PORT
 
 CMD ["./whoogle-search"]
