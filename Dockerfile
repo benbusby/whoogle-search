@@ -20,4 +20,4 @@ COPY . .
 
 EXPOSE $EXPOSE_PORT
 
-CMD ["./whoogle-search"]
+CMD ["./run"]
