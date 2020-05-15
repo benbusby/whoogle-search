@@ -14,7 +14,7 @@ ARG use_https=''
 ENV HTTPS_ONLY=$use_https
 
 ARG whoogle_port=5000
-ENV EXPOSE_PORT=${EXPOSE_PORT:-$whoogle_port}
+ENV EXPOSE_PORT=$whoogle_port
 
 COPY . .
 
