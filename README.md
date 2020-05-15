@@ -96,6 +96,33 @@ pip install -r requirements.txt
 ./run
 ```
 
+#### systemd Configuration
+After building the virtual environment, add the following to `/lib/systemd/system/whoogle.service`:
+
+```
+[Unit]
+Description=Whoogle
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=<whoogle_directory>
+ExecStart=<whoogle_directory>/venv/bin/python3 -um app --host 0.0.0.0 --port 5000 
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=3
+SyslogIdentifier=whoogle
+
+[Install]
+WantedBy=multi-user.target
+```
+Then,
+```
+sudo systemctl daemon-reload
+sudo systemctl enable whoogle
+sudo systemctl start whoogle
+```
+
 ### E) Manual (Docker)
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
