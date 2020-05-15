@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 
 # Set default port if unavailable
 if [[ -z "${PORT}" ]]; then
-    PORT=5000
+    PORT="${EXPOSE_PORT:-5000}"
 fi
 
 # Set directory to serve static content from

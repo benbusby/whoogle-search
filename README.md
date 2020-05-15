@@ -72,6 +72,7 @@ Sandboxed temporary instance:
 ```bash
 $ whoogle-search --help
 usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug]
+                      [--https-only]
 
 Whoogle Search console runner
 
@@ -79,7 +80,8 @@ optional arguments:
   -h, --help            show this help message and exit
   --port <port number>  Specifies a port to run on (default 5000)
   --host <ip address>   Specifies the host address to use (default 127.0.0.1)
-  --debug               Activates debug mode for the Flask server (default False)
+  --debug               Activates debug mode for the server (default False)
+  --https-only          Enforces HTTPS redirects for all requests (default False)
 ```
 
 ### D) Manual
@@ -124,7 +126,7 @@ docker build --tag whoogle-search:1.0 .
 docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
 ```
 
-And kill with: `docker rm --force whooglesearch`
+And kill with: `docker rm --force whoogle-search`
 
 #### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 ```bash
