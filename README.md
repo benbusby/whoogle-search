@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/benbusby/whoogle-search.svg?branch=master)](https://travis-ci.com/benbusby/whoogle-search)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
+![Docker Pulls](https://img.shields.io/docker/pulls/benbusby/whoogle-search)
 
 Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
@@ -100,11 +101,27 @@ pip install -r requirements.txt
 2. Clone and deploy the docker app using a method below:
 
 #### Docker CLI
+Through Docker Hub:
+```bash
+docker pull benbusby/whoogle-search
+docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:latest
+```
+
+or with docker-compose:
+
 ```bash
 git clone https://github.com/benbusby/whoogle-search.git
 cd whoogle-search
-docker build --tag whooglesearch:1.0 .
-docker run --publish 5000:5000 --detach --name whooglesearch whooglesearch:1.0
+docker-compose up
+```
+
+or by building yourself:
+
+```bash
+git clone https://github.com/benbusby/whoogle-search.git
+cd whoogle-search
+docker build --tag whoogle-search:1.0 .
+docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
 ```
 
 And kill with: `docker rm --force whooglesearch`
