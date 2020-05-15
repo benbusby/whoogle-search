@@ -97,7 +97,7 @@ pip install -r requirements.txt
 ```
 
 #### systemd Configuration
-After building the virtual environment, add the following to `/lib/systemd/system/whoogle.service`:
+After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
 
 ```
 [Unit]
