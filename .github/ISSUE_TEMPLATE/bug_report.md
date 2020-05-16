@@ -22,7 +22,13 @@ Steps to reproduce the behavior:
 - [ ] Docker
 - [ ] `run` executable
 - [ ] pip/pipx
-- [ ] Other: <describe setup>
+- [ ] Other: [describe setup]
+
+**Version of Whoogle Search**
+- [ ] Latest build from [source] (i.e. GitHub, Docker Hub, pip, etc)
+- [ ] Version [version number]
+- [ ] Not sure
+
 
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
