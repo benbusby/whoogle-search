@@ -1,5 +1,5 @@
 from app import app
-from app.filter import Filter
+from app.filter import Filter, get_first_link
 from app.models.config import Config
 from app.request import Request, gen_query
 import argparse
@@ -74,9 +74,9 @@ def search():
         except InvalidToken:
             pass
 
-    feeling_lucky = q.startswith("! ")
+    feeling_lucky = q.startswith('! ')
 
-    if feeling_lucky:
+    if feeling_lucky: # Well do you, punk?
         q = q[2:]
 
     user_agent = request.headers.get('User-Agent')
@@ -90,7 +90,7 @@ def search():
     dirty_soup = BeautifulSoup(results, 'html.parser')
 
     if feeling_lucky:
-        redirect_url = content_filter.get_first_url(dirty_soup)
+        redirect_url = get_first_link(dirty_soup)
         return redirect(redirect_url, 303) # Using 303 so the browser performs a GET request for the URL
     else:
         formatted_results = content_filter.clean(dirty_soup)
