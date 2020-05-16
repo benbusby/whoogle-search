@@ -25,7 +25,7 @@ def before_request_func():
 
     if https_only and request.url.startswith('http://'):
         url = request.url.replace('http://', 'https://', 1)
-        code = 301
+        code = 308
         return redirect(url, code=code)
 
     json_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {'url': request.url_root}
