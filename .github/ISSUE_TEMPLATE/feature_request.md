@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest a feature that would improve Whoogle
-title: ''
+title: "[FEATURE] <description of feature>"
 labels: enhancement
 assignees: ''
 
