@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a bug report to help fix an issue with Whoogle
-title: "[BUG] "
+title: "[BUG] <brief bug description>"
 labels: bug
 assignees: ''
 
@@ -17,11 +17,12 @@ Steps to reproduce the behavior:
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Deployment Method**
+- [ ] Heroku (one-click deploy)
+- [ ] Docker
+- [ ] `run` executable
+- [ ] pip/pipx
+- [ ] Other: <describe setup>
 
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
