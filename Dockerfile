@@ -10,6 +10,11 @@ RUN mkdir -p $config_dir
 VOLUME $config_dir
 ENV CONFIG_VOLUME=$config_dir
 
+ARG username=''
+ENV WHOOGLE_USER=$username
+ARG password=''
+ENV WHOOGLE_PASS=$password
+
 ARG use_https=''
 ENV HTTPS_ONLY=$use_https
 
