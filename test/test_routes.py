@@ -17,6 +17,10 @@ def test_search(client):
     rv = client.get('/search?q=test')
     assert rv._status_code == 200
 
+def test_feeling_lucky(client):
+    rv = client.get('/search?q=!%20test')
+    assert rv._status_code == 303
+
 
 def test_config(client):
     rv = client.post('/config', data=demo_config)

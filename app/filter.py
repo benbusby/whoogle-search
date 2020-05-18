@@ -13,6 +13,40 @@ BLANK_B64 = '''
 data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkwAIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC
 '''
 
+def get_first_link(soup):
+    # Replace hrefs with only the intended destination (no "utm" type tags)
+    for a in soup.find_all('a', href=True):
+        href = a['href'].replace('https://www.google.com', '')
+        
+        result_link = urlparse.urlparse(href)
+        query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
+
+        # Return the first search result URL
+        if 'url?q=' in href:
+            return filter_link_args(href)
+
+def filter_link_args(query_link):
+    parsed_link = urlparse.urlparse(query_link)
+    link_args = parse_qs(parsed_link.query)
+    safe_args = {}
+
+    if len(link_args) == 0 and len(parsed_link) > 0:
+        return query_link
+
+    for arg in link_args.keys():
+        if arg in SKIP_ARGS:
+            continue
+
+        safe_args[arg] = link_args[arg]
+
+    # Remove original link query and replace with filtered args
+    query_link = query_link.replace(parsed_link.query, '')
+    if len(safe_args) > 0:
+        query_link = query_link + urlparse.urlencode(safe_args, doseq=True)
+    else:
+        query_link = query_link.replace('?', '')
+
+    return query_link
 
 class Filter:
     def __init__(self, mobile=False, config=None, secret_key=''):
@@ -149,27 +183,7 @@ class Filter:
                 a['href'] = new_search
             elif 'url?q=' in href:
                 # Strip unneeded arguments
-                parsed_link = urlparse.urlparse(query_link)
-                link_args = parse_qs(parsed_link.query)
-                safe_args = {}
-
-                if len(link_args) == 0 and len(parsed_link) > 0:
-                    a['href'] = query_link
-                    continue
-
-                for arg in link_args.keys():
-                    if arg in SKIP_ARGS:
-                        continue
-
-                    safe_args[arg] = link_args[arg]
-
-                # Remove original link query and replace with filtered args
-                query_link = query_link.replace(parsed_link.query, '')
-                if len(safe_args) > 0:
-                    query_link = query_link + urlparse.urlencode(safe_args, doseq=True)
-                else:
-                    query_link = query_link.replace('?', '')
-
+                query_link = filter_link_args(query_link)
                 a['href'] = query_link
 
                 # Add no-js option

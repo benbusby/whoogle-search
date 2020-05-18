@@ -1,5 +1,5 @@
 from app import app
-from app.filter import Filter
+from app.filter import Filter, get_first_link
 from app.models.config import Config
 from app.request import Request, gen_query
 import argparse
@@ -72,7 +72,7 @@ def opensearch():
 def search():
     request_params = request.args if request.method == 'GET' else request.form
     q = request_params.get('q')
-
+    
     if q is None or len(q) == 0:
         return redirect('/')
     else:
@@ -82,6 +82,11 @@ def search():
         except InvalidToken:
             pass
 
+    feeling_lucky = q.startswith('! ')
+
+    if feeling_lucky: # Well do you, punk?
+        q = q[2:]
+
     user_agent = request.headers.get('User-Agent')
     mobile = 'Android' in user_agent or 'iPhone' in user_agent
 
@@ -90,7 +95,15 @@ def search():
     get_body = g.user_request.send(query=full_query)
 
     results = content_filter.reskin(get_body)
-    formatted_results = content_filter.clean(BeautifulSoup(results, 'html.parser'))
+    dirty_soup = BeautifulSoup(results, 'html.parser')
+
+    if feeling_lucky:
+        redirect_url = get_first_link(dirty_soup)
+        return redirect(redirect_url, 303) # Using 303 so the browser performs a GET request for the URL
+    else:
+        formatted_results = content_filter.clean(dirty_soup)
+
+
 
     return render_template('display.html', query=urlparse.unquote(q), response=formatted_results)
 
