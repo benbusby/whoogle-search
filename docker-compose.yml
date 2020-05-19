@@ -18,4 +18,6 @@ services:
           - PUID=${PUID} # User uid
           - PGID=${PGID} # User gid
           - TZ=${TZ}  # TimeZone
-          - WEB_PORT=5000 # Default port 5000
+          - EXPOSE_PORT=5000 # Default port 5000
+          - USER= # Optional 
+          - PASSWORD= # Optional 
