@@ -14,6 +14,8 @@ services:
         restart: always
         ports:
           - "5000:5000"
+        volumes:
+          - path/to/config:/config
         environment:
           - PUID=${PUID} # User uid
           - PGID=${PGID} # User gid
