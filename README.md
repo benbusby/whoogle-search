@@ -185,6 +185,8 @@ To filter by a range of time, append ":past <time>" to the end of your search, w
 
 ## Extra Steps
 ### Set Whoogle as your primary search engine
+*Note: If you're using a reverse proxy to run Whoogle Search, make sure the "Root URL" config option on the home page is set to your URL before going through these steps.* 
+
 Update browser settings:
   - Firefox (Desktop)
     - Navigate to your app's url, and click the 3 dot menu in the address bar. At the bottom, there should be an option to "Add Search Engine". Once you've clicked this, open your Firefox Preferences menu, click "Search" in the left menu, and use the available dropdown to select "Whoogle" from the list.
@@ -236,6 +238,7 @@ Only needed if your setup requires Flask to redirect to HTTPS on its own -- gene
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
 
 Available config values are `near`, `nojs`, `dark` and `url`.
+
 ## FAQ
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
