@@ -13,11 +13,6 @@ import os
 import urllib.parse as urlparse
 import waitress
 
-app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
-app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
-
-CONFIG_PATH = os.getenv('CONFIG_VOLUME', app.config['STATIC_FOLDER']) + '/config.json'
-
 
 def auth_required(f):
     @wraps(f)
@@ -27,7 +22,8 @@ def auth_required(f):
         # Skip if username/password not set
         whoogle_user = os.getenv('WHOOGLE_USER', '')
         whoogle_pass = os.getenv('WHOOGLE_PASS', '')
-        if (not whoogle_user or not whoogle_pass) or (auth and whoogle_user == auth.username and whoogle_pass == auth.password):
+        if (not whoogle_user or not whoogle_pass) or \
+                (auth and whoogle_user == auth.username and whoogle_pass == auth.password):
             return f(*args, **kwargs)
         else:
             return make_response('Not logged in', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
@@ -38,13 +34,14 @@ def auth_required(f):
 def before_request_func():
     # Always redirect to https if HTTPS_ONLY is set (otherwise default to false)
     https_only = os.getenv('HTTPS_ONLY', False)
+    config_path = app.config['CONFIG_PATH']
 
     if https_only and request.url.startswith('http://'):
-        url = request.url.replace('http://', 'https://', 1)
+        https_url = request.url.replace('http://', 'https://', 1)
         code = 308
-        return redirect(url, code=code)
+        return redirect(https_url, code=code)
 
-    json_config = json.load(open(CONFIG_PATH)) if os.path.exists(CONFIG_PATH) else {'url': request.url_root}
+    json_config = json.load(open(config_path)) if os.path.exists(config_path) else {'url': request.url_root}
     g.user_config = Config(**json_config)
 
     if not g.user_config.url:
@@ -68,6 +65,7 @@ def index():
                            ua=g.user_request.modified_user_agent,
                            languages=Config.LANGUAGES,
                            current_lang=g.user_config.lang,
+                           version_number=app.config['VERSION_NUMBER'],
                            request_type='get' if g.user_config.get_only else 'post')
 
 
@@ -91,7 +89,7 @@ def opensearch():
 def search():
     request_params = request.args if request.method == 'GET' else request.form
     q = request_params.get('q')
-    
+
     if q is None or len(q) == 0:
         return redirect('/')
     else:
@@ -103,7 +101,7 @@ def search():
 
     feeling_lucky = q.startswith('! ')
 
-    if feeling_lucky: # Well do you, punk?
+    if feeling_lucky:  # Well do you, punk?
         q = q[2:]
 
     user_agent = request.headers.get('User-Agent')
@@ -112,17 +110,12 @@ def search():
     content_filter = Filter(mobile, g.user_config, secret_key=app.secret_key)
     full_query = gen_query(q, request_params, content_filter.near, language=g.user_config.lang)
     get_body = g.user_request.send(query=full_query)
-
-    results = content_filter.reskin(get_body)
-    dirty_soup = BeautifulSoup(results, 'html.parser')
+    dirty_soup = BeautifulSoup(content_filter.reskin(get_body), 'html.parser')
 
     if feeling_lucky:
-        redirect_url = get_first_link(dirty_soup)
-        return redirect(redirect_url, 303) # Using 303 so the browser performs a GET request for the URL
+        return redirect(get_first_link(dirty_soup), 303)  # Using 303 so the browser performs a GET request for the URL
     else:
         formatted_results = content_filter.clean(dirty_soup)
-
-
 
     return render_template('display.html', query=urlparse.unquote(q), response=formatted_results)
 
@@ -137,7 +130,7 @@ def config():
         if 'url' not in config_data or not config_data['url']:
             config_data['url'] = g.user_config.url
 
-        with open(CONFIG_PATH, 'w') as config_file:
+        with open(app.config['CONFIG_PATH'], 'w') as config_file:
             config_file.write(json.dumps(config_data, indent=4))
             config_file.close()
 

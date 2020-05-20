@@ -1,3 +1,7 @@
+body {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
 .logo {
     width: 80%;
     display: block;
@@ -116,4 +120,12 @@ button::-moz-focus-inner {
 
 .hidden {
     display: none;
+}
+
+footer {
+    position: fixed;
+    bottom: 0%;
+    text-align: center;
+    width: 100%;
+    z-index: -1;
 }
