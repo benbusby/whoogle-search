@@ -11,6 +11,12 @@ VOLUME $config_dir
 ENV CONFIG_VOLUME=$config_dir
 
 ARG use_https=1
+
+ARG username=''
+ENV WHOOGLE_USER=$username
+ARG password=''
+ENV WHOOGLE_PASS=$password
+
 ENV HTTPS_ONLY=$use_https
 
 ARG whoogle_port=5000
