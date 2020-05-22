@@ -8,7 +8,7 @@ setuptools.setup(
     author='Ben Busby',
     author_email='benbusby@protonmail.com',
     name='whoogle-search',
-    version='0.1.0',
+    version='0.1.3',
     scripts=['whoogle-search'],
     include_package_data=True,
     install_requires=requirements,
