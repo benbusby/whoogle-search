@@ -133,7 +133,7 @@ sudo systemctl start whoogle
 Through Docker Hub:
 ```bash
 docker pull benbusby/whoogle-search
-docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:latest
+docker run --publish 5000:5000 --detach --name whoogle-search benbusby/whoogle-search:latest
 ```
 
 or with docker-compose:
