@@ -64,7 +64,9 @@ def index():
                            bg=bg,
                            ua=g.user_request.modified_user_agent,
                            languages=Config.LANGUAGES,
+                           countries=Config.COUNTRIES,
                            current_lang=g.user_config.lang,
+                           current_ctry=g.user_config.ctry,
                            version_number=app.config['VERSION_NUMBER'],
                            request_type='get' if g.user_config.get_only else 'post')
 
@@ -108,7 +110,7 @@ def search():
     mobile = 'Android' in user_agent or 'iPhone' in user_agent
 
     content_filter = Filter(mobile, g.user_config, secret_key=app.secret_key)
-    full_query = gen_query(q, request_params, content_filter.near, language=g.user_config.lang)
+    full_query = gen_query(q, request_params, g.user_config, content_filter.near)
     get_body = g.user_request.send(query=full_query)
     dirty_soup = BeautifulSoup(content_filter.reskin(get_body), 'html.parser')
 
