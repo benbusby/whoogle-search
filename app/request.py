@@ -46,7 +46,7 @@ def gen_query(query, args, config, near_city=None):
         param_dict['start'] = '&start=' + args.get('start')
 
     # Search for results near a particular city, if available
-    if near_city is not None:
+    if near_city:
         param_dict['near'] = '&near=' + urlparse.quote(near_city)
 
     # Set language for results (lr) and interface (hl)
