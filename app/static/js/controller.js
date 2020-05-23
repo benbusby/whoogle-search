@@ -20,6 +20,7 @@ const fillConfigValues = () => {
     const near = document.getElementById("config-near");
     const noJS = document.getElementById("config-nojs");
     const dark = document.getElementById("config-dark");
+    const safe = document.getElementById("config-safe");
     const url  = document.getElementById("config-url");
     const newTab  = document.getElementById("config-new-tab");
     const getOnly = document.getElementById("config-get-only");
@@ -39,6 +40,7 @@ const fillConfigValues = () => {
         near.value = configSettings["near"] ? configSettings["near"] : "";
         noJS.checked = !!configSettings["nojs"];
         dark.checked = !!configSettings["dark"];
+        safe.checked = !!configSettings["safe"];
         getOnly.checked = !!configSettings["get_only"];
         newTab.checked = !!configSettings["new_tab"];
 

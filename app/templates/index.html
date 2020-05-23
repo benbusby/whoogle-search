@@ -42,6 +42,19 @@
                             <span class="ua-span">User Agent: {{ ua }}</span>
                         </div>
                         <div class="config-div">
+                            <label for="config-ctry">Country: </label>
+                            <select name="ctry" id="config-ctry">
+                                {% for ctry in countries %}
+                                    <option value="{{ ctry.value }}"
+                                            {% if ctry.value in current_ctry %}
+                                            selected
+                                            {% endif %}>
+                                        {{ ctry.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="config-div">
                             <label for="config-lang">Language: </label>
                             <select name="lang" id="config-lang">
                                 {% for lang in languages %}
@@ -65,6 +78,10 @@
                         <div class="config-div">
                             <label for="config-dark">Dark Mode: </label>
                             <input type="checkbox" name="dark" id="config-dark">
+                        </div>
+                        <div class="config-div">
+                            <label for="config-safe">Safe Search: </label>
+                            <input type="checkbox" name="safe" id="config-safe">
                         </div>
                         <div class="config-div">
                             <label for="config-new-tab">Open Links in New Tab: </label>
