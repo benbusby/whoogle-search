@@ -6,7 +6,7 @@ import argparse
 import base64
 from bs4 import BeautifulSoup
 from cryptography.fernet import Fernet, InvalidToken
-from flask import g, make_response, request, redirect, render_template, send_file
+from flask import g, jsonify, make_response, request, redirect, render_template, send_file
 from functools import wraps
 import io
 import json
@@ -86,6 +86,17 @@ def opensearch():
     response = make_response(template)
     response.headers['Content-Type'] = 'application/xml'
     return response
+
+
+@app.route('/autocomplete', methods=['GET', 'POST'])
+def autocomplete():
+    request_params = request.args if request.method == 'GET' else request.form
+    q = request_params.get('q')
+
+    if not q:
+        return jsonify({'results': []})
+
+    return jsonify({'results': g.user_request.autocomplete(q)})
 
 
 @app.route('/search', methods=['GET', 'POST'])

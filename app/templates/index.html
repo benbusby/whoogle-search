@@ -17,9 +17,11 @@
         <meta name="referrer" content="no-referrer">
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="/static/img/favicon/ms-icon-144x144.png">
+        <script type="text/javascript" src="/static/js/autocomplete.js"></script>
         <script type="text/javascript" src="/static/js/controller.js"></script>
         <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/css/search.css">
         <link rel="stylesheet" href="/static/css/main.css">
 	<title>Whoogle Search</title>
     </head>
@@ -28,7 +30,9 @@
             <img class="logo" src="/static/img/logo.png">
             <form action="/search" method="{{ request_type }}">
                 <div class="search-fields">
-                    <input type="text" name="q" id="search-bar" autofocus="autofocus">
+                    <div class="autocomplete">
+                        <input type="text" name="q" id="search-bar" autofocus="autofocus">
+                    </div>
                     <input type="submit" id="search-submit" value="Search">
                 </div>
             </form>
