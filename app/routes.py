@@ -96,7 +96,7 @@ def autocomplete():
     if not q:
         return jsonify({'results': []})
 
-    return jsonify({'results': g.user_request.autocomplete(q)})
+    return jsonify([q, g.user_request.autocomplete(q)])
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -132,7 +132,14 @@ def search():
     else:
         formatted_results = content_filter.clean(dirty_soup)
 
-    return render_template('display.html', query=urlparse.unquote(q), response=formatted_results)
+    return render_template(
+        'display.html',
+        query=urlparse.unquote(q),
+        response=formatted_results,
+        search_header=render_template(
+            'header.html',
+            q=urlparse.unquote(q),
+            mobile=g.user_request.mobile))
 
 
 @app.route('/config', methods=['GET', 'POST'])

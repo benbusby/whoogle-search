@@ -28,7 +28,7 @@
     <body id="main" style="display: none; background-color: {{ bg }}">
         <div class="search-container">
             <img class="logo" src="/static/img/logo.png">
-            <form action="/search" method="{{ request_type }}">
+            <form id="search-form" action="/search" method="{{ request_type }}">
                 <div class="search-fields">
                     <div class="autocomplete">
                         <input type="text" name="q" id="search-bar" autofocus="autofocus">

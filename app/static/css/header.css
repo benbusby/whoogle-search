@@ -1,0 +1,55 @@
+header {
+    font-family: Roboto,HelveticaNeue,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #3C4043;
+    word-wrap: break-word;
+}
+
+.logo-link, .logo-letter {
+    text-decoration: none !important;
+    letter-spacing: -1px;
+    text-align: center;
+    border-radius: 2px 0 0 0;
+}
+
+.mobile-logo {
+    font: 22px/36px Futura, Arial, sans-serif;
+    padding-left: 5px;
+}
+
+.logo-div {
+    letter-spacing: -1px;
+    text-align: center;
+    font: 22pt Futura, Arial, sans-serif;
+    padding: 10px 0 5px 0;
+    height: 37px;
+    font-smoothing: antialiased;
+}
+
+.search-div {
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.18);
+    margin-top: 10px;
+}
+
+.search-form {
+    height: 39px;
+    display: flex;
+    width: 100%;
+}
+
+.search-input {
+    background: none;
+    margin: 2px 4px 2px 8px;
+    display: block;
+    font-size: 16px;
+    padding: 0 0 0 8px;
+    flex: 1;
+    height: 35px;
+    outline: none;
+    border: none;
+    width: 100%;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    overflow: hidden;
+}

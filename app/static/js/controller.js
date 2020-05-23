@@ -1,21 +1,3 @@
-const handleUserInput = searchBar => {
-    let xhrRequest = new XMLHttpRequest();
-    xhrRequest.open("POST", "/autocomplete");
-    xhrRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhrRequest.onload = function() {
-        if (xhrRequest.readyState === 4 && xhrRequest.status !== 200) {
-            alert("Error fetching autocomplete results");
-            return;
-        }
-
-        // Fill autocomplete with fetched results
-        let autocompleteResults = JSON.parse(xhrRequest.responseText);
-        autocomplete(searchBar, autocompleteResults["results"]);
-    };
-
-    xhrRequest.send('q=' + searchBar.value);
-};
-
 const setupSearchLayout = () => {
     // Setup search field
     const searchBar = document.getElementById("search-bar");

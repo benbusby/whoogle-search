@@ -15,9 +15,7 @@ DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near']
 
 
-def gen_user_agent(normal_ua):
-    is_mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
-
+def gen_user_agent(normal_ua, is_mobile):
     mozilla = random.choice(['Moo', 'Woah', 'Bro', 'Slow']) + 'zilla'
     firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
     linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
@@ -66,8 +64,9 @@ def gen_query(query, args, config, near_city=None):
 
 class Request:
     def __init__(self, normal_ua, language='lang_en'):
-        self.modified_user_agent = gen_user_agent(normal_ua)
         self.language = language
+        self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
+        self.modified_user_agent = gen_user_agent(normal_ua, self.mobile)
 
     def __getitem__(self, name):
         return getattr(self, name)

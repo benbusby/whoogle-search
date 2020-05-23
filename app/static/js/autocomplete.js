@@ -1,11 +1,29 @@
-function autocomplete(searchInput, autocompleteResults) {
+const handleUserInput = searchBar => {
+    let xhrRequest = new XMLHttpRequest();
+    xhrRequest.open("POST", "/autocomplete");
+    xhrRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhrRequest.onload = function() {
+        if (xhrRequest.readyState === 4 && xhrRequest.status !== 200) {
+            alert("Error fetching autocomplete results");
+            return;
+        }
+
+        // Fill autocomplete with fetched results
+        let autocompleteResults = JSON.parse(xhrRequest.responseText);
+        autocomplete(searchBar, autocompleteResults[1]);
+    };
+
+    xhrRequest.send('q=' + searchBar.value);
+};
+
+const autocomplete = (searchInput, autocompleteResults) => {
     let currentFocus;
 
     searchInput.addEventListener("input", function () {
         let autocompleteList, autocompleteItem, i, val = this.value;
         closeAllLists();
 
-        if (!val) {
+        if (!val || !autocompleteResults) {
             return false;
         }
 
@@ -47,7 +65,7 @@ function autocomplete(searchInput, autocompleteResults) {
         }
     });
 
-    function addActive(suggestion) {
+    const addActive = suggestion => {
         if (!suggestion || !suggestion[currentFocus]) return false;
         removeActive(suggestion);
 
@@ -55,25 +73,26 @@ function autocomplete(searchInput, autocompleteResults) {
         if (currentFocus < 0) currentFocus = (suggestion.length - 1);
 
         suggestion[currentFocus].classList.add("autocomplete-active");
-    }
+    };
 
-    function removeActive(suggestion) {
+    const removeActive = suggestion => {
         for (let i = 0; i < suggestion.length; i++) {
             suggestion[i].classList.remove("autocomplete-active");
         }
-    }
+    };
 
-    function closeAllLists(el) {
+    const closeAllLists = el => {
         let suggestions = document.getElementsByClassName("autocomplete-items");
         for (let i = 0; i < suggestions.length; i++) {
             if (el !== suggestions[i] && el !== searchInput) {
                 suggestions[i].parentNode.removeChild(suggestions[i]);
             }
         }
-    }
+    };
 
     // Close lists and search when user selects a suggestion
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
+        document.getElementById("search-form").submit();
     });
-}
+};
