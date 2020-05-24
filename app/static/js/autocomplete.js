@@ -38,7 +38,7 @@ const autocomplete = (searchInput, autocompleteResults) => {
                 autocompleteItem = document.createElement("div");
                 autocompleteItem.innerHTML = "<strong>" + autocompleteResults[i].substr(0, val.length) + "</strong>";
                 autocompleteItem.innerHTML += autocompleteResults[i].substr(val.length);
-                autocompleteItem.innerHTML += "<input type='hidden' value='" + autocompleteResults[i] + "'>";
+                autocompleteItem.innerHTML += "<input type=\"hidden\" value=\"" + autocompleteResults[i] + "\">";
                 autocompleteItem.addEventListener("click", function () {
                     searchInput.value = this.getElementsByTagName("input")[0].value;
                     closeAllLists();
