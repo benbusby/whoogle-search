@@ -42,6 +42,7 @@ const autocomplete = (searchInput, autocompleteResults) => {
                 autocompleteItem.addEventListener("click", function () {
                     searchInput.value = this.getElementsByTagName("input")[0].value;
                     closeAllLists();
+                    document.getElementById("search-form").submit();
                 });
                 autocompleteList.appendChild(autocompleteItem);
             }
@@ -93,6 +94,5 @@ const autocomplete = (searchInput, autocompleteResults) => {
     // Close lists and search when user selects a suggestion
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
-        document.getElementById("search-form").submit();
     });
 };

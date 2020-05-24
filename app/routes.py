@@ -93,8 +93,10 @@ def autocomplete():
     request_params = request.args if request.method == 'GET' else request.form
     q = request_params.get('q')
 
-    if not q:
-        return jsonify({'results': []})
+    if not q and not request.data:
+        return jsonify({'?': []})
+    elif request.data:
+        q = urlparse.unquote_plus(request.data.decode('utf-8').replace('q=', ''))
 
     return jsonify([q, g.user_request.autocomplete(q)])
 
