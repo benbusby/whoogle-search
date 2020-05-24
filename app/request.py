@@ -1,10 +1,12 @@
 from io import BytesIO
+from lxml import etree
 import pycurl
 import random
 import urllib.parse as urlparse
 
-# Base search url
+# Core Google search URLs
 SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
+AUTOCOMPLETE_URL = 'https://suggestqueries.google.com/complete/search?client=toolbar&'
 
 MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
 DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
@@ -13,9 +15,7 @@ DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near']
 
 
-def gen_user_agent(normal_ua):
-    is_mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
-
+def gen_user_agent(normal_ua, is_mobile):
     mozilla = random.choice(['Moo', 'Woah', 'Bro', 'Slow']) + 'zilla'
     firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
     linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
@@ -64,8 +64,9 @@ def gen_query(query, args, config, near_city=None):
 
 class Request:
     def __init__(self, normal_ua, language='lang_en'):
-        self.modified_user_agent = gen_user_agent(normal_ua)
         self.language = language
+        self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
+        self.modified_user_agent = gen_user_agent(normal_ua, self.mobile)
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -75,6 +76,16 @@ class Request:
             return 'gb2312'
         else:
             return 'unicode-escape'
+
+    def autocomplete(self, query):
+        ac_query = dict(hl=self.language, q=query)
+        response = self.send(base_url=AUTOCOMPLETE_URL, query=urlparse.urlencode(ac_query))
+
+        if response:
+            dom = etree.fromstring(response)
+            return dom.xpath('//suggestion/@data')
+
+        return []
 
     def send(self, base_url=SEARCH_URL, query='', return_bytes=False):
         response_header = []

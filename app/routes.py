@@ -6,7 +6,7 @@ import argparse
 import base64
 from bs4 import BeautifulSoup
 from cryptography.fernet import Fernet, InvalidToken
-from flask import g, make_response, request, redirect, render_template, send_file
+from flask import g, jsonify, make_response, request, redirect, render_template, send_file
 from functools import wraps
 import io
 import json
@@ -88,6 +88,19 @@ def opensearch():
     return response
 
 
+@app.route('/autocomplete', methods=['GET', 'POST'])
+def autocomplete():
+    request_params = request.args if request.method == 'GET' else request.form
+    q = request_params.get('q')
+
+    if not q and not request.data:
+        return jsonify({'?': []})
+    elif request.data:
+        q = urlparse.unquote_plus(request.data.decode('utf-8').replace('q=', ''))
+
+    return jsonify([q, g.user_request.autocomplete(q)])
+
+
 @app.route('/search', methods=['GET', 'POST'])
 @auth_required
 def search():
@@ -121,7 +134,14 @@ def search():
     else:
         formatted_results = content_filter.clean(dirty_soup)
 
-    return render_template('display.html', query=urlparse.unquote(q), response=formatted_results)
+    return render_template(
+        'display.html',
+        query=urlparse.unquote(q),
+        response=formatted_results,
+        search_header=render_template(
+            'header.html',
+            q=urlparse.unquote(q),
+            mobile=g.user_request.mobile))
 
 
 @app.route('/config', methods=['GET', 'POST'])

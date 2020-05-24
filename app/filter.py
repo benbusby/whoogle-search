@@ -96,8 +96,12 @@ class Filter:
             st_card.decompose()
 
         footer = soup.find('div', id='sfooter')
-        if footer is not None:
+        if footer:
             footer.decompose()
+
+        header = soup.find('header')
+        if header:
+            header.decompose()
 
         return soup
 

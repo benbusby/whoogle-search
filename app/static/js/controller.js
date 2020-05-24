@@ -11,6 +11,8 @@ const setupSearchLayout = () => {
         if (event.keyCode === 13) {
             event.preventDefault();
             searchBtn.click();
+        } else {
+            handleUserInput(searchBar);
         }
     });
 };

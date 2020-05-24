@@ -25,7 +25,8 @@ Contents
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
 - No referrer header
-- POST request search queries (when possible)
+- Autocomplete/search suggestions
+- POST request search and suggestion queries (when possible)
 - View images at full res without site redirect (currently mobile only)
 - Dark mode
 - Randomly generated User Agent
@@ -107,7 +108,7 @@ Description=Whoogle
 Type=simple
 User=root
 WorkingDirectory=<whoogle_directory>
-ExecStart=<whoogle_directory>/venv/bin/python3 -um app --host 0.0.0.0 --port 5000 
+ExecStart=<whoogle_directory>/venv/bin/python3 -um app --host 0.0.0.0 --port 5000
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=3
@@ -185,7 +186,7 @@ To filter by a range of time, append ":past <time>" to the end of your search, w
 
 ## Extra Steps
 ### Set Whoogle as your primary search engine
-*Note: If you're using a reverse proxy to run Whoogle Search, make sure the "Root URL" config option on the home page is set to your URL before going through these steps.* 
+*Note: If you're using a reverse proxy to run Whoogle Search, make sure the "Root URL" config option on the home page is set to your URL before going through these steps.*
 
 Update browser settings:
   - Firefox (Desktop)

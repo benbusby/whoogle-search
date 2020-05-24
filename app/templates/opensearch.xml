@@ -7,7 +7,9 @@
   <Url type="text/html" method="{{ request_type }}" template="{{ main_url }}/search">
     <Param name="q" value="{searchTerms}"/>
   </Url>
-  <Url type="application/x-suggestions+json" template="{{ main_url }}/search"/>
+  <Url type="application/x-suggestions+json" method="{{ request_type }}" template="{{ main_url }}/autocomplete">
+    <Param name="q" value="{searchTerms}"/>
+  </Url>
   <moz:SearchForm>{{ main_url }}/search</moz:SearchForm>
 </OpenSearchDescription>
 
