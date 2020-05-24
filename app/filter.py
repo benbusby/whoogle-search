@@ -90,6 +90,11 @@ class Filter:
         for script in soup('script'):
             script.decompose()
 
+        # Remove google's language/time config
+        st_card = soup.find('div', id='st-card')
+        if st_card:
+            st_card.decompose()
+
         footer = soup.find('div', id='sfooter')
         if footer is not None:
             footer.decompose()
