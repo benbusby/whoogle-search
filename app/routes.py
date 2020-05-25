@@ -133,14 +133,20 @@ def search():
     else:
         formatted_results = content_filter.clean(dirty_soup)
 
+    # Set search type to be used in the header template to allow for repeated searches
+    # in the same category
+    search_type = request_params.get('tbm') if 'tbm' in request_params else ''
+
     return render_template(
         'display.html',
         query=urlparse.unquote(q),
+        search_type=search_type,
         response=formatted_results,
         search_header=render_template(
             'header.html',
             q=urlparse.unquote(q),
-            mobile=g.user_request.mobile))
+            search_type=search_type,
+            mobile=g.user_request.mobile) if 'isch' not in search_type else '')
 
 
 @app.route('/config', methods=['GET', 'POST'])

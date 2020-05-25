@@ -13,6 +13,7 @@
                     <div class="sbc esbc autocomplete">
                         <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
                                spellcheck="false" type="text" value="{{ q }}">
+                        <input name="tbm" value="{{ search_type }}" style="display: none">
                         <div class="sc"></div>
                     </div>
                 </div>
@@ -34,6 +35,7 @@
                     <div style="width: 100%; display: flex">
                         <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
                                spellcheck="false" type="text" value="{{ q }}">
+                        <input name="tbm" value="{{ search_type }}" style="display: none">
                         <div class="sc"></div>
                     </div>
                 </div>
@@ -48,6 +50,8 @@
     searchBar.addEventListener("keyup", function (event) {
         if (event.keyCode !== 13) {
             handleUserInput(searchBar);
+        } else {
+            document.getElementById("search-form").submit();
         }
     });
 </script>
