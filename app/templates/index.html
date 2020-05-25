@@ -25,7 +25,7 @@
         <link rel="stylesheet" href="/static/css/main.css">
 	<title>Whoogle Search</title>
     </head>
-    <body id="main" style="display: none; background-color: {{ bg }}">
+    <body id="main" style="display: none; background-color: {{ '#000' if dark_mode else '#fff' }}">
         <div class="search-container">
             <img class="logo" src="/static/img/logo.png">
             <form id="search-form" action="/search" method="{{ request_type }}">
@@ -107,7 +107,10 @@
             </div>
         </div>
         <footer>
-            <p>Whoogle Search v{{ version_number }} || <a href="https://github.com/benbusby/whoogle-search">View on GitHub</a></p>
+            <p style="color: {{ '#fff' if dark_mode else '#000' }};">
+                Whoogle Search v{{ version_number }} ||
+                <a style="color: #685e79" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
+            </p>
         </footer>
     </body>
 </html>

@@ -61,9 +61,8 @@ def unknown_page(e):
 @app.route('/', methods=['GET'])
 @auth_required
 def index():
-    bg = '#000' if g.user_config.dark else '#fff'
     return render_template('index.html',
-                           bg=bg,
+                           dark_mode=g.user_config.dark,
                            ua=g.user_request.modified_user_agent,
                            languages=Config.LANGUAGES,
                            countries=Config.COUNTRIES,
