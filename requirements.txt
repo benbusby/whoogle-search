@@ -6,6 +6,7 @@ cryptography==2.8
 Flask==1.1.1
 itsdangerous==1.1.0
 Jinja2==2.10.3
+lxml==4.5.1
 MarkupSafe==1.1.1
 pycparser==2.19
 pycurl==7.43.0.4
