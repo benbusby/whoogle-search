@@ -61,9 +61,8 @@ def unknown_page(e):
 @app.route('/', methods=['GET'])
 @auth_required
 def index():
-    bg = '#000' if g.user_config.dark else '#fff'
     return render_template('index.html',
-                           bg=bg,
+                           dark_mode=g.user_config.dark,
                            ua=g.user_request.modified_user_agent,
                            languages=Config.LANGUAGES,
                            countries=Config.COUNTRIES,
@@ -137,14 +136,20 @@ def search():
     else:
         formatted_results = content_filter.clean(dirty_soup)
 
+    # Set search type to be used in the header template to allow for repeated searches
+    # in the same category
+    search_type = request_params.get('tbm') if 'tbm' in request_params else ''
+
     return render_template(
         'display.html',
         query=urlparse.unquote(q),
+        search_type=search_type,
         response=formatted_results,
         search_header=render_template(
             'header.html',
             q=urlparse.unquote(q),
-            mobile=g.user_request.mobile))
+            search_type=search_type,
+            mobile=g.user_request.mobile) if 'isch' not in search_type else '')
 
 
 @app.route('/config', methods=['GET', 'POST'])
