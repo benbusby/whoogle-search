@@ -12,6 +12,7 @@ LOGO_URL = GOOG_IMG + '_desk'
 BLANK_B64 = '''
 data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkwAIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC
 '''
+GOOGLE_LINKS = ['/gmail', '/calendar', '/advanced_search']
 
 
 def get_first_link(soup):
@@ -174,8 +175,10 @@ class Filter:
         # Replace hrefs with only the intended destination (no "utm" type tags)
         for a in soup.find_all('a', href=True):
             href = a['href'].replace('https://www.google.com', '')
-            if '/advanced_search' in href:
-                a.decompose()
+            if href in GOOGLE_LINKS:
+                print(href)
+                if '/advanced_search' in href:
+                    a.decompose()
                 continue
             elif self.new_tab:
                 a['target'] = '_blank'

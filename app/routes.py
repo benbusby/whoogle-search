@@ -144,6 +144,7 @@ def search():
         response=formatted_results,
         search_header=render_template(
             'header.html',
+            dark_mode=g.user_config.dark,
             q=urlparse.unquote(q),
             search_type=search_type,
             mobile=g.user_request.mobile) if 'isch' not in search_type else '')

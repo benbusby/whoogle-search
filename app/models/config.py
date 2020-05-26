@@ -300,7 +300,7 @@ class Config:
         self.url = ''
         self.lang = 'lang_en'
         self.ctry = ''
-        self.safe = True
+        self.safe = False
         self.dark = False
         self.nojs = False
         self.near = ''
