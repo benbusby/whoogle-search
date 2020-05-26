@@ -141,6 +141,7 @@ def search():
         'display.html',
         query=urlparse.unquote(q),
         search_type=search_type,
+        dark_mode=g.user_config.dark,
         response=formatted_results,
         search_header=render_template(
             'header.html',
