@@ -12,7 +12,6 @@ LOGO_URL = GOOG_IMG + '_desk'
 BLANK_B64 = '''
 data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkwAIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC
 '''
-GOOGLE_LINKS = ['/gmail', '/calendar', '/advanced_search']
 
 
 def get_first_link(soup):
@@ -175,10 +174,8 @@ class Filter:
         # Replace hrefs with only the intended destination (no "utm" type tags)
         for a in soup.find_all('a', href=True):
             href = a['href'].replace('https://www.google.com', '')
-            if href in GOOGLE_LINKS:
-                print(href)
-                if '/advanced_search' in href:
-                    a.decompose()
+            if '/advanced_search' in href:
+                a.decompose()
                 continue
             elif self.new_tab:
                 a['target'] = '_blank'
@@ -186,7 +183,9 @@ class Filter:
             result_link = urlparse.urlparse(href)
             query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
 
-            if '/search?q=' in href:
+            if query_link.startswith('/'):
+                a['href'] = 'https://google.com' + query_link
+            elif '/search?q=' in href:
                 enc_result = Fernet(self.secret_key).encrypt(query_link.encode())
                 new_search = '/search?q=' + enc_result.decode()
 
