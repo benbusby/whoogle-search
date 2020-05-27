@@ -183,7 +183,9 @@ class Filter:
             result_link = urlparse.urlparse(href)
             query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
 
-            if '/search?q=' in href:
+            if query_link.startswith('/'):
+                a['href'] = 'https://google.com' + query_link
+            elif '/search?q=' in href:
                 enc_result = Fernet(self.secret_key).encrypt(query_link.encode())
                 new_search = '/search?q=' + enc_result.decode()
 
