@@ -150,15 +150,27 @@ def search():
             mobile=g.user_request.mobile) if 'isch' not in search_util.search_type else '')
 
 
-@app.route('/config', methods=['GET', 'POST'])
+@app.route('/config', methods=['GET', 'POST', 'PUT'])
 @auth_required
 def config():
     if request.method == 'GET':
         return json.dumps(g.user_config.__dict__)
+    elif request.method == 'PUT':
+        if 'name' in request.args:
+            config_path = os.path.join(app.config['CONFIG_PATH'], request.args.get('name'))
+            session['config'] = json.load(open(config_path)) if os.path.exists(config_path) else session['config']
+            return json.dumps(session['config'])
+        else:
+            return json.dumps({})
     else:
         config_data = request.form.to_dict()
         if 'url' not in config_data or not config_data['url']:
             config_data['url'] = g.user_config.url
+
+        if 'name' in request.args:
+            with open(os.path.join(app.config['CONFIG_PATH'], request.args.get('name')), 'w') as config_file:
+                config_file.write(json.dumps(config_data, indent=4))
+                config_file.close()
 
         session['config'] = config_data
         return redirect(config_data['url'])
