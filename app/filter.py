@@ -129,10 +129,9 @@ class Filter:
             return
         result_divs = main_divs.find_all('div', recursive=False)
 
-        # Only ads/sponsored content use classes in the list of result divs
-        ad_divs = [ad_div for ad_div in result_divs if 'class' in ad_div.attrs]
-        for div in ad_divs:
-            div.decompose()
+        for div in [_ for _ in result_divs]:
+            has_ad = len([_ for _ in div.find_all('span', recursive=True) if 'ad' == _.text.lower()])
+            _ = div.decompose() if has_ad else None
 
     def update_element_src(self, element, mimetype):
         element_src = element['src']
