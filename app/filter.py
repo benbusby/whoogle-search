@@ -1,5 +1,6 @@
 from app.request import VALID_PARAMS
 from bs4 import BeautifulSoup
+from bs4.element import ResultSet
 from cryptography.fernet import Fernet
 import re
 import urllib.parse as urlparse
@@ -57,6 +58,7 @@ class Filter:
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.mobile = mobile
         self.user_keys = user_keys
+        self.main_divs = ResultSet('')
         self._elements = 0
 
     def __getitem__(self, name):
@@ -88,7 +90,9 @@ class Filter:
         return Fernet(self.user_keys['text_key']).encrypt(msg.encode()).decode()
 
     def clean(self, soup):
-        self.remove_ads(soup)
+        self.main_divs = soup.find('div', {'id': 'main'})
+        self.remove_ads()
+        self.fix_question_section()
         self.update_styling(soup)
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
@@ -123,15 +127,23 @@ class Filter:
 
         return soup
 
-    def remove_ads(self, soup):
-        main_divs = soup.find('div', {'id': 'main'})
-        if main_divs is None:
+    def remove_ads(self):
+        if not self.main_divs:
             return
-        result_divs = main_divs.find_all('div', recursive=False)
 
-        for div in [_ for _ in result_divs]:
+        for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
             has_ad = len([_ for _ in div.find_all('span', recursive=True) if 'ad' == _.text.lower()])
             _ = div.decompose() if has_ad else None
+
+    def fix_question_section(self):
+        if not self.main_divs:
+            return
+
+        question_divs = [_ for _ in self.main_divs.find_all('div', recursive=False) if len(_.find_all('h2')) > 0]
+        for x in question_divs:
+            questions = [_ for _ in x.find_all('div', recursive=True) if _.text.endswith('?')]
+            for question in questions:
+                question['style'] = 'padding: 10px; font-style: italic;'
 
     def update_element_src(self, element, mimetype):
         element_src = element['src']

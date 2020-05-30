@@ -79,7 +79,6 @@ def unknown_page(e):
 @auth_required
 def index():
     return render_template('index.html',
-                           ua=g.user_request.modified_user_agent,
                            languages=Config.LANGUAGES,
                            countries=Config.COUNTRIES,
                            config=g.user_config,

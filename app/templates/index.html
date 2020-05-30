@@ -42,10 +42,6 @@
                 <div class="config-fields">
                     <form id="config-form" action="/config" method="post">
                         <div class="config-div">
-                            <!-- TODO: Add option to regenerate user agent? -->
-                            <span class="ua-span">User Agent: {{ ua }}</span>
-                        </div>
-                        <div class="config-div">
                             <label for="config-ctry">Country: </label>
                             <select name="ctry" id="config-ctry">
                                 {% for ctry in countries %}
