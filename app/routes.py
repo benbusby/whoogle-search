@@ -12,6 +12,7 @@ from functools import wraps
 import io
 import json
 import os
+import pickle
 import urllib.parse as urlparse
 from requests import exceptions
 import uuid
@@ -156,8 +157,8 @@ def config():
         return json.dumps(g.user_config.__dict__)
     elif request.method == 'PUT':
         if 'name' in request.args:
-            config_path = os.path.join(app.config['CONFIG_PATH'], request.args.get('name'))
-            session['config'] = json.load(open(config_path)) if os.path.exists(config_path) else session['config']
+            config_pkl = os.path.join(app.config['CONFIG_PATH'], request.args.get('name'))
+            session['config'] = pickle.load(open(config_pkl, 'rb')) if os.path.exists(config_pkl) else session['config']
             return json.dumps(session['config'])
         else:
             return json.dumps({})
@@ -167,9 +168,7 @@ def config():
             config_data['url'] = g.user_config.url
 
         if 'name' in request.args:
-            with open(os.path.join(app.config['CONFIG_PATH'], request.args.get('name')), 'w') as config_file:
-                config_file.write(json.dumps(config_data, indent=4))
-                config_file.close()
+            pickle.dump(config_data, open(os.path.join(app.config['CONFIG_PATH'], request.args.get('name')), 'wb'))
 
         session['config'] = config_data
         return redirect(config_data['url'])
