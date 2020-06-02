@@ -201,7 +201,7 @@ def element():
     src_type = request.args.get('type')
 
     try:
-        file_data = g.user_request.send(base_url=src_url, return_bytes=True)
+        file_data = g.user_request.send(base_url=src_url).content
         app.user_elements[session['uuid']] -= 1
         tmp_mem = io.BytesIO()
         tmp_mem.write(file_data)
@@ -218,7 +218,7 @@ def element():
 @app.route('/window')
 @auth_required
 def window():
-    get_body = g.user_request.send(base_url=request.args.get('location'))
+    get_body = g.user_request.send(base_url=request.args.get('location')).text
     get_body = get_body.replace('src="/', 'src="' + request.args.get('location') + '"')
     get_body = get_body.replace('href="/', 'href="' + request.args.get('location') + '"')
 

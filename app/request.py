@@ -1,6 +1,7 @@
 from lxml import etree
 import random
 import requests
+from requests import Response
 import urllib.parse as urlparse
 
 # Core Google search URLs
@@ -72,7 +73,7 @@ class Request:
 
     def autocomplete(self, query):
         ac_query = dict(hl=self.language, q=query)
-        response = self.send(base_url=AUTOCOMPLETE_URL, query=urlparse.urlencode(ac_query))
+        response = self.send(base_url=AUTOCOMPLETE_URL, query=urlparse.urlencode(ac_query)).text
 
         if response:
             dom = etree.fromstring(response)
@@ -80,14 +81,9 @@ class Request:
 
         return []
 
-    def send(self, base_url=SEARCH_URL, query='', return_bytes=False):
+    def send(self, base_url=SEARCH_URL, query='') -> Response:
         headers = {
             'User-Agent': self.modified_user_agent
         }
 
-        response = requests.get(base_url + query, headers=headers)
-
-        if return_bytes:
-            return response.content
-        else:
-            return response.text
+        return requests.get(base_url + query, headers=headers)

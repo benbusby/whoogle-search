@@ -57,7 +57,7 @@ class RoutingUtils:
 
         content_filter = Filter(self.session['keys'], mobile=mobile, config=self.config)
         full_query = gen_query(self.query, self.request_params, self.config, content_filter.near)
-        get_body = g.user_request.send(query=full_query)
+        get_body = g.user_request.send(query=full_query).text
 
         # Produce cleanable html soup from response
         html_soup = BeautifulSoup(content_filter.reskin(get_body), 'html.parser')
