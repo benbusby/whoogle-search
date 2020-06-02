@@ -8,7 +8,7 @@ app = Flask(__name__, static_folder=os.path.dirname(os.path.abspath(__file__)) +
 app.user_elements = {}
 app.config['SECRET_KEY'] = os.urandom(16)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['VERSION_NUMBER'] = '0.1.4'
+app.config['VERSION_NUMBER'] = '0.2.0'
 app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
 app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
 app.config['CONFIG_PATH'] = os.getenv('CONFIG_VOLUME', app.config['STATIC_FOLDER'] + '/config')
