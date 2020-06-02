@@ -5,6 +5,8 @@ __pycache__/
 *.pem
 config.json
 test/static
+flask_session/
+app/static/config
 
 # pip stuff
 build/

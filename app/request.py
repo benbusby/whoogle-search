@@ -1,7 +1,7 @@
-from io import BytesIO
 from lxml import etree
-import pycurl
 import random
+import requests
+from requests import Response
 import urllib.parse as urlparse
 
 # Core Google search URLs
@@ -15,7 +15,7 @@ DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near']
 
 
-def gen_user_agent(normal_ua, is_mobile):
+def gen_user_agent(is_mobile):
     mozilla = random.choice(['Moo', 'Woah', 'Bro', 'Slow']) + 'zilla'
     firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
     linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
@@ -66,20 +66,14 @@ class Request:
     def __init__(self, normal_ua, language='lang_en'):
         self.language = language
         self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
-        self.modified_user_agent = gen_user_agent(normal_ua, self.mobile)
+        self.modified_user_agent = gen_user_agent(self.mobile)
 
     def __getitem__(self, name):
         return getattr(self, name)
 
-    def get_decode_value(self):
-        if 'lang_zh' in self.language:
-            return 'gb2312'
-        else:
-            return 'unicode-escape'
-
     def autocomplete(self, query):
         ac_query = dict(hl=self.language, q=query)
-        response = self.send(base_url=AUTOCOMPLETE_URL, query=urlparse.urlencode(ac_query))
+        response = self.send(base_url=AUTOCOMPLETE_URL, query=urlparse.urlencode(ac_query)).text
 
         if response:
             dom = etree.fromstring(response)
@@ -87,20 +81,9 @@ class Request:
 
         return []
 
-    def send(self, base_url=SEARCH_URL, query='', return_bytes=False):
-        response_header = []
+    def send(self, base_url=SEARCH_URL, query='') -> Response:
+        headers = {
+            'User-Agent': self.modified_user_agent
+        }
 
-        b_obj = BytesIO()
-        crl = pycurl.Curl()
-        crl.setopt(crl.URL, base_url + query)
-        crl.setopt(crl.USERAGENT, self.modified_user_agent)
-        crl.setopt(crl.WRITEDATA, b_obj)
-        crl.setopt(crl.HEADERFUNCTION, response_header.append)
-        crl.setopt(pycurl.FOLLOWLOCATION, 1)
-        crl.perform()
-        crl.close()
-
-        if return_bytes:
-            return b_obj.getvalue()
-        else:
-            return b_obj.getvalue().decode(self.get_decode_value(), 'ignore')
+        return requests.get(base_url + query, headers=headers)

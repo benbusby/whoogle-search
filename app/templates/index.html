@@ -21,14 +21,14 @@
         <script type="text/javascript" src="/static/js/controller.js"></script>
         <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/static/css/{{ 'search-dark' if dark_mode else 'search' }}.css">
+        <link rel="stylesheet" href="/static/css/{{ 'search-dark' if config.dark else 'search' }}.css">
         <link rel="stylesheet" href="/static/css/main.css">
 	<title>Whoogle Search</title>
     </head>
-    <body id="main" style="display: none; background-color: {{ '#000' if dark_mode else '#fff' }}">
+    <body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
         <div class="search-container">
             <img class="logo" src="/static/img/logo.png">
-            <form id="search-form" action="/search" method="{{ request_type }}">
+            <form id="search-form" action="/search" method="{{ 'get' if config.get_only else 'post' }}">
                 <div class="search-fields">
                     <div class="autocomplete">
                         <input type="text" name="q" id="search-bar" autofocus="autofocus">
@@ -40,17 +40,13 @@
             <button id="config-collapsible" class="collapsible">Configuration</button>
             <div class="content">
                 <div class="config-fields">
-                    <form action="/config" method="post">
-                        <div class="config-div">
-                            <!-- TODO: Add option to regenerate user agent? -->
-                            <span class="ua-span">User Agent: {{ ua }}</span>
-                        </div>
+                    <form id="config-form" action="/config" method="post">
                         <div class="config-div">
                             <label for="config-ctry">Country: </label>
                             <select name="ctry" id="config-ctry">
                                 {% for ctry in countries %}
                                     <option value="{{ ctry.value }}"
-                                            {% if ctry.value in current_ctry %}
+                                            {% if ctry.value in config.ctry %}
                                             selected
                                             {% endif %}>
                                         {{ ctry.name }}
@@ -63,7 +59,7 @@
                             <select name="lang" id="config-lang">
                                 {% for lang in languages %}
                                 <option value="{{ lang.value }}"
-                                    {% if lang.value in current_lang %}
+                                    {% if lang.value in config.lang %}
                                         selected
                                     {% endif %}>
                                     {{ lang.name }}
@@ -100,7 +96,9 @@
                             <input type="text" name="url" id="config-url" value="">
                         </div>
                         <div class="config-div">
-                            <input type="submit" id="config-submit" value="Save">
+                            <input type="submit" id="config-load" onclick="loadConfig(event)" value="Load">&nbsp;
+                            <input type="submit" id="config-submit" value="Apply">&nbsp;
+                            <input type="submit" id="config-submit" onclick="saveConfig(event)" value="Save As...">
                         </div>
                     </form>
                 </div>

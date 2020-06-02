@@ -4,15 +4,16 @@ cffi==1.13.2
 Click==7.0
 cryptography==2.8
 Flask==1.1.1
+Flask-Session==0.3.2
 itsdangerous==1.1.0
 Jinja2==2.10.3
 lxml==4.5.1
 MarkupSafe==1.1.1
 pycparser==2.19
-pycurl==7.43.0.4
 pyOpenSSL==19.1.0
 pytest==5.4.1
 python-dateutil==2.8.1
+requests==2.23.0
 six==1.14.0
 soupsieve==1.9.5
 Werkzeug==0.16.0

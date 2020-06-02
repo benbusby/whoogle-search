@@ -1,13 +1,13 @@
 from bs4 import BeautifulSoup
-from cryptography.fernet import Fernet
 from app.filter import Filter
+from app.utils.misc import generate_user_keys
 from datetime import datetime
 from dateutil.parser import *
 
 
 def get_search_results(data):
-    secret_key = Fernet.generate_key()
-    soup = Filter(secret_key=secret_key).clean(BeautifulSoup(data, 'html.parser'))
+    secret_key = generate_user_keys()
+    soup = Filter(user_keys=secret_key).clean(BeautifulSoup(data, 'html.parser'))
 
     main_divs = soup.find('div', {'id': 'main'})
     assert len(main_divs) > 1
