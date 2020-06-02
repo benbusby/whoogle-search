@@ -157,7 +157,7 @@ def config():
         return json.dumps(g.user_config.__dict__)
     elif request.method == 'PUT':
         if 'name' in request.args:
-            config_pkl = os.path.join(app.config['CONFIG_PATH'], request.args.get('name'))
+            config_pkl = os.path.join(app.config['USER_CONFIG'], request.args.get('name'))
             session['config'] = pickle.load(open(config_pkl, 'rb')) if os.path.exists(config_pkl) else session['config']
             return json.dumps(session['config'])
         else:
@@ -168,7 +168,7 @@ def config():
             config_data['url'] = g.user_config.url
 
         if 'name' in request.args:
-            pickle.dump(config_data, open(os.path.join(app.config['CONFIG_PATH'], request.args.get('name')), 'wb'))
+            pickle.dump(config_data, open(os.path.join(app.config['USER_CONFIG'], request.args.get('name')), 'wb'))
 
         session['config'] = config_data
         return redirect(config_data['url'])

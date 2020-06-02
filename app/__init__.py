@@ -12,11 +12,15 @@ app.config['VERSION_NUMBER'] = '0.2.0'
 app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
 app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
 app.config['CONFIG_PATH'] = os.getenv('CONFIG_VOLUME', app.config['STATIC_FOLDER'] + '/config')
+app.config['USER_CONFIG'] = os.path.join(app.config['STATIC_FOLDER'], 'custom_config')
 app.config['SESSION_FILE_DIR'] = app.config['CONFIG_PATH']
 app.config['SESSION_COOKIE_SECURE'] = True
 
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])
+
+if not os.path.exists(app.config['USER_CONFIG']):
+    os.makedirs(app.config['USER_CONFIG'])
 
 sess = Session()
 sess.init_app(app)
