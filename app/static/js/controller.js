@@ -80,7 +80,7 @@ const loadConfig = event => {
     }
 
     let xhrPUT = new XMLHttpRequest();
-    xhrPUT.open("PUT", "/config?name=" + config);
+    xhrPUT.open("PUT", "/config?name=" + config + ".conf");
     xhrPUT.onload = function() {
         if (xhrPUT.readyState === 4 && xhrPUT.status !== 200) {
             alert("Error loading Whoogle config");
@@ -102,7 +102,7 @@ const saveConfig = event => {
     }
 
     let configForm = document.getElementById("config-form");
-    configForm.action = '/config?name=' + config;
+    configForm.action = '/config?name=' + config + ".conf";
     configForm.submit();
 };
 

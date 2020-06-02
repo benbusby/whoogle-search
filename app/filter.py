@@ -47,6 +47,10 @@ def filter_link_args(query_link):
     return query_link
 
 
+def has_ad_content(element):
+    return element == 'ad' or element == 'sponsoredⓘ'
+
+
 class Filter:
     def __init__(self, user_keys: dict, mobile=False, config=None):
         if config is None:
@@ -132,7 +136,7 @@ class Filter:
             return
 
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
-            has_ad = len([_ for _ in div.find_all('span', recursive=True) if 'ad' == _.text.lower()])
+            has_ad = len([_ for _ in div.find_all('span', recursive=True) if has_ad_content(_.text.lower())])
             _ = div.decompose() if has_ad else None
 
     def fix_question_section(self):
