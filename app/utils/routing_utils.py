@@ -1,5 +1,5 @@
-from app import app
 from app.filter import Filter, get_first_link
+from app.utils.misc import generate_user_keys
 from app.request import gen_query
 from bs4 import BeautifulSoup
 from cryptography.fernet import Fernet, InvalidToken
@@ -8,13 +8,14 @@ from typing import Any, Tuple
 
 
 class RoutingUtils:
-    def __init__(self, request, config, session):
+    def __init__(self, request, config, session, cookies_disabled=False):
         self.request_params = request.args if request.method == 'GET' else request.form
         self.user_agent = request.headers.get('User-Agent')
         self.feeling_lucky = False
         self.config = config
         self.session = session
         self.query = ''
+        self.cookies_disabled = cookies_disabled
         self.search_type = self.request_params.get('tbm') if 'tbm' in self.request_params else ''
 
     def __getitem__(self, name):
@@ -30,8 +31,8 @@ class RoutingUtils:
         return hasattr(self, name)
 
     def new_search_query(self) -> str:
-        app.user_elements[self.session['uuid']] = 0
-        self.session['keys']['element_key'] = Fernet.generate_key()
+        # Generate a new element key each time a new search is performed
+        self.session['fernet_keys']['element_key'] = generate_user_keys(cookies_disabled=self.cookies_disabled)['element_key']
 
         q = self.request_params.get('q')
 
@@ -40,12 +41,12 @@ class RoutingUtils:
         else:
             # Attempt to decrypt if this is an internal link
             try:
-                q = Fernet(self.session['keys']['text_key']).decrypt(q.encode()).decode()
+                q = Fernet(self.session['fernet_keys']['text_key']).decrypt(q.encode()).decode()
             except InvalidToken:
                 pass
 
         # Reset text key
-        self.session['keys']['text_key'] = Fernet.generate_key()
+        self.session['fernet_keys']['text_key'] = generate_user_keys(cookies_disabled=self.cookies_disabled)['text_key']
 
         # Format depending on whether or not the query is a "feeling lucky" query
         self.feeling_lucky = q.startswith('! ')
@@ -55,7 +56,7 @@ class RoutingUtils:
     def generate_response(self) -> Tuple[Any, int]:
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
 
-        content_filter = Filter(self.session['keys'], mobile=mobile, config=self.config)
+        content_filter = Filter(self.session['fernet_keys'], mobile=mobile, config=self.config)
         full_query = gen_query(self.query, self.request_params, self.config, content_filter.near)
         get_body = g.user_request.send(query=full_query).text
 

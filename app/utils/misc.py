@@ -1,9 +1,13 @@
 from cryptography.fernet import Fernet
+from flask import current_app as app
 
-SESSION_VALS = ['uuid', 'config', 'keys']
+SESSION_VALS = ['uuid', 'config', 'fernet_keys']
 
 
-def generate_user_keys():
+def generate_user_keys(cookies_disabled=False) -> dict:
+    if cookies_disabled:
+        return app.default_key_set
+
     # Generate/regenerate unique key per user
     return {
         'element_key': Fernet.generate_key(),

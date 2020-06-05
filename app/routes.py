@@ -37,11 +37,19 @@ def auth_required(f):
 
 @app.before_request
 def before_request_func():
-    # Generate secret key for user if unavailable
+    g.request_params = request.args if request.method == 'GET' else request.form
+    g.cookies_disabled = False
+
+    # Generate session values for user if unavailable
     if not valid_user_session(session):
-        session['config'] = {'url': request.url_root}
-        session['keys'] = generate_user_keys()
+        session['config'] = json.load(open(app.config['DEFAULT_CONFIG'])) \
+            if os.path.exists(app.config['DEFAULT_CONFIG']) else {'url': request.url_root}
         session['uuid'] = str(uuid.uuid4())
+        session['fernet_keys'] = generate_user_keys(True)
+
+        # Flag cookies as possibly disabled in order to prevent against
+        # unnecessary session directory expansion
+        g.cookies_disabled = True
 
     if session['uuid'] not in app.user_elements:
         app.user_elements.update({session['uuid']: 0})
@@ -63,10 +71,21 @@ def before_request_func():
 
 @app.after_request
 def after_request_func(response):
-    # Regenerate element key if all elements have been served to user
     if app.user_elements[session['uuid']] <= 0 and '/element' in request.url:
-        session['keys']['element_key'] = Fernet.generate_key()
+        # Regenerate element key if all elements have been served to user
+        session['fernet_keys']['element_key'] = '' if not g.cookies_disabled else app.default_key_set['element_key']
         app.user_elements[session['uuid']] = 0
+
+    # Check if address consistently has cookies blocked, in which case start removing session
+    # files after creation.
+    # Note: This is primarily done to prevent overpopulation of session directories, since browsers that
+    # block cookies will still trigger Flask's session creation routine with every request.
+    if g.cookies_disabled and request.remote_addr not in app.no_cookie_ips:
+        app.no_cookie_ips.append(request.remote_addr)
+    elif g.cookies_disabled and request.remote_addr in app.no_cookie_ips:
+        session_list = list(session.keys())
+        for key in session_list:
+            session.pop(key)
 
     return response
 
@@ -79,6 +98,9 @@ def unknown_page(e):
 @app.route('/', methods=['GET'])
 @auth_required
 def index():
+    # Reset keys
+    session['fernet_keys'] = generate_user_keys(g.cookies_disabled)
+
     return render_template('index.html',
                            languages=Config.LANGUAGES,
                            countries=Config.COUNTRIES,
@@ -103,8 +125,7 @@ def opensearch():
 
 @app.route('/autocomplete', methods=['GET', 'POST'])
 def autocomplete():
-    request_params = request.args if request.method == 'GET' else request.form
-    q = request_params.get('q')
+    q = g.request_params.get('q')
 
     if not q and not request.data:
         return jsonify({'?': []})
@@ -117,11 +138,10 @@ def autocomplete():
 @app.route('/search', methods=['GET', 'POST'])
 @auth_required
 def search():
-    # Clear previous elements and generate a new key each time a new search is performed
+    # Reset element counter
     app.user_elements[session['uuid']] = 0
-    session['keys']['element_key'] = Fernet.generate_key()
 
-    search_util = RoutingUtils(request, g.user_config, session)
+    search_util = RoutingUtils(request, g.user_config, session, cookies_disabled=g.cookies_disabled)
     query = search_util.new_search_query()
 
     # Redirect to home if invalid/blank search
@@ -157,7 +177,7 @@ def config():
         return json.dumps(g.user_config.__dict__)
     elif request.method == 'PUT':
         if 'name' in request.args:
-            config_pkl = os.path.join(app.config['USER_CONFIG'], request.args.get('name'))
+            config_pkl = os.path.join(app.config['CONFIG_PATH'], request.args.get('name'))
             session['config'] = pickle.load(open(config_pkl, 'rb')) if os.path.exists(config_pkl) else session['config']
             return json.dumps(session['config'])
         else:
@@ -167,8 +187,13 @@ def config():
         if 'url' not in config_data or not config_data['url']:
             config_data['url'] = g.user_config.url
 
+        # Save config by name to allow a user to easily load later
         if 'name' in request.args:
-            pickle.dump(config_data, open(os.path.join(app.config['USER_CONFIG'], request.args.get('name')), 'wb'))
+            pickle.dump(config_data, open(os.path.join(app.config['CONFIG_PATH'], request.args.get('name')), 'wb'))
+
+        # Overwrite default config if user has cookies disabled
+        if g.cookies_disabled:
+            open(app.config['DEFAULT_CONFIG'], 'w').write(json.dumps(config_data, indent=4))
 
         session['config'] = config_data
         return redirect(config_data['url'])
@@ -196,7 +221,7 @@ def imgres():
 @app.route('/element')
 @auth_required
 def element():
-    cipher_suite = Fernet(session['keys']['element_key'])
+    cipher_suite = Fernet(session['fernet_keys']['element_key'])
     src_url = cipher_suite.decrypt(request.args.get('url').encode()).decode()
     src_type = request.args.get('type')
 
