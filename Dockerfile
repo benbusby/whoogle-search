@@ -25,6 +25,8 @@ RUN \
       git \
       curl-dev \
       libressl-dev \
+      libxml2-dev \
+      libxslt-dev \
       libffi-dev \
       python3-dev && \
  echo "**** install runtime packages ****" && \
