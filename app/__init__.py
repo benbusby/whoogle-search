@@ -15,7 +15,6 @@ app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config
 app.config['CONFIG_PATH'] = os.getenv('CONFIG_VOLUME', os.path.join(app.config['STATIC_FOLDER'], 'config'))
 app.config['DEFAULT_CONFIG'] = os.path.join(app.config['CONFIG_PATH'], 'config.json')
 app.config['SESSION_FILE_DIR'] = os.path.join(app.config['CONFIG_PATH'], 'session')
-app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
 
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])

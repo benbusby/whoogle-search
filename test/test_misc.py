@@ -9,26 +9,23 @@ def test_generate_user_keys():
 
 
 def test_valid_session(client):
+    assert not valid_user_session({'fernet_keys': '', 'config': {}})
     with client.session_transaction() as session:
-        assert not valid_user_session(session)
-
-        session['uuid'] = 'test'
-        session['fernet_keys'] = generate_user_keys()
-        session['config'] = {}
-
         assert valid_user_session(session)
 
 
 def test_request_key_generation(client):
-    text_key = ''
-    rv = client.get('/search?q=test+1')
+    rv = client.get('/')
+    cookie = rv.headers['Set-Cookie']
+
+    rv = client.get('/search?q=test+1', headers={'Cookie': cookie})
     assert rv._status_code == 200
 
     with client.session_transaction() as session:
         assert valid_user_session(session)
         text_key = session['fernet_keys']['text_key']
 
-    rv = client.get('/search?q=test+2')
+    rv = client.get('/search?q=test+2', headers={'Cookie': cookie})
     assert rv._status_code == 200
 
     with client.session_transaction() as session:
