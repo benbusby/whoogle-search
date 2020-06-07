@@ -87,6 +87,7 @@ def after_request_func(response):
         for key in session_list:
             session.pop(key)
 
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return response
 
 

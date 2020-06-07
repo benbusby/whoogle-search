@@ -116,14 +116,11 @@ class Filter:
         for script in soup('script'):
             script.decompose()
 
-        # Remove google's language/time config
-        st_card = soup.find('div', id='st-card')
-        if st_card:
-            st_card.decompose()
-
-        footer = soup.find('div', id='sfooter')
+        # Update default footer and header
+        footer = soup.find('footer')
         if footer:
-            footer.decompose()
+            # Remove divs that have multiple links beyond just page navigation
+            [_.decompose() for _ in footer.find_all('div', recursive=False) if len(_.find_all('a', href=True)) > 2]
 
         header = soup.find('header')
         if header:
@@ -144,12 +141,12 @@ class Filter:
             return
 
         question_divs = [_ for _ in self.main_divs.find_all('div', recursive=False) if len(_.find_all('h2')) > 0]
-        for x in question_divs:
-            questions = [_ for _ in x.find_all('div', recursive=True) if _.text.endswith('?')]
+        for question_div in question_divs:
+            questions = [_ for _ in question_div.find_all('div', recursive=True) if _.text.endswith('?')]
             for question in questions:
                 question['style'] = 'padding: 10px; font-style: italic;'
 
-    def update_element_src(self, element, mimetype):
+    def update_element_src(self, element, mime):
         element_src = element['src']
         if element_src.startswith('//'):
             element_src = 'https:' + element_src
@@ -163,7 +160,7 @@ class Filter:
             return
 
         element['src'] = '/element?url=' + self.encrypt_path(element_src, is_element=True) + \
-                         '&type=' + urlparse.quote(mimetype)
+                         '&type=' + urlparse.quote(mime)
         # TODO: Non-mobile image results link to website instead of image
         # if not self.mobile:
         # img.append(BeautifulSoup(FULL_RES_IMG.format(element_src), 'html.parser'))
