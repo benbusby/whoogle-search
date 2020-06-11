@@ -1,4 +1,5 @@
 from app.request import VALID_PARAMS
+from app.utils.misc import BLACKLIST
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
 from cryptography.fernet import Fernet
@@ -47,8 +48,8 @@ def filter_link_args(query_link):
     return query_link
 
 
-def has_ad_content(element):
-    return element == 'ad' or element == 'sponsoredⓘ'
+def has_ad_content(element: str):
+    return element.upper() in (value.upper() for value in BLACKLIST) or 'ⓘ' in element
 
 
 class Filter:
@@ -133,7 +134,7 @@ class Filter:
             return
 
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
-            has_ad = len([_ for _ in div.find_all('span', recursive=True) if has_ad_content(_.text.lower())])
+            has_ad = len([_ for _ in div.find_all('span', recursive=True) if has_ad_content(_.text)])
             _ = div.decompose() if has_ad else None
 
     def fix_question_section(self):
