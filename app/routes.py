@@ -162,6 +162,7 @@ def search():
         search_type=search_util.search_type,
         dark_mode=g.user_config.dark,
         response=response,
+        version_number=app.config['VERSION_NUMBER'],
         search_header=render_template(
             'header.html',
             dark_mode=g.user_config.dark,
