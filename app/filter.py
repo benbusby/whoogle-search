@@ -1,5 +1,7 @@
 from app.request import VALID_PARAMS
+from app.utils.misc import BLACKLIST
 from bs4 import BeautifulSoup
+from bs4.element import ResultSet
 from cryptography.fernet import Fernet
 import re
 import urllib.parse as urlparse
@@ -17,14 +19,9 @@ data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42m
 def get_first_link(soup):
     # Replace hrefs with only the intended destination (no "utm" type tags)
     for a in soup.find_all('a', href=True):
-        href = a['href'].replace('https://www.google.com', '')
-        
-        result_link = urlparse.urlparse(href)
-        query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
-
         # Return the first search result URL
-        if 'url?q=' in href:
-            return filter_link_args(href)
+        if 'url?q=' in a['href']:
+            return filter_link_args(a['href'])
 
 
 def filter_link_args(query_link):
@@ -51,8 +48,12 @@ def filter_link_args(query_link):
     return query_link
 
 
+def has_ad_content(element: str):
+    return element.upper() in (value.upper() for value in BLACKLIST) or 'ⓘ' in element
+
+
 class Filter:
-    def __init__(self, mobile=False, config=None, secret_key=''):
+    def __init__(self, user_keys: dict, mobile=False, config=None):
         if config is None:
             config = {}
 
@@ -61,10 +62,16 @@ class Filter:
         self.nojs = config['nojs'] if 'nojs' in config else False
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.mobile = mobile
-        self.secret_key = secret_key
+        self.user_keys = user_keys
+        self.main_divs = ResultSet('')
+        self._elements = 0
 
     def __getitem__(self, name):
         return getattr(self, name)
+
+    @property
+    def elements(self):
+        return self._elements
 
     def reskin(self, page):
         # Aesthetic only re-skinning
@@ -76,11 +83,31 @@ class Filter:
 
         return page
 
+    def encrypt_path(self, msg, is_element=False):
+        # Encrypts path to avoid plaintext results in logs
+        if is_element:
+            # Element paths are tracked differently in order for the element key to be regenerated
+            # once all elements have been loaded
+            enc_path = Fernet(self.user_keys['element_key']).encrypt(msg.encode()).decode()
+            self._elements += 1
+            return enc_path
+
+        return Fernet(self.user_keys['text_key']).encrypt(msg.encode()).decode()
+
     def clean(self, soup):
-        self.remove_ads(soup)
-        self.update_image_paths(soup)
+        self.main_divs = soup.find('div', {'id': 'main'})
+        self.remove_ads()
+        self.fix_question_section()
         self.update_styling(soup)
-        self.update_links(soup)
+
+        for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
+            self.update_element_src(img, 'image/png')
+
+        for audio in [_ for _ in soup.find_all('audio') if 'src' in _.attrs]:
+            self.update_element_src(audio, 'audio/mpeg')
+
+        for link in soup.find_all('a', href=True):
+            self.update_link(link)
 
         input_form = soup.find('form')
         if input_form is not None:
@@ -90,14 +117,11 @@ class Filter:
         for script in soup('script'):
             script.decompose()
 
-        # Remove google's language/time config
-        st_card = soup.find('div', id='st-card')
-        if st_card:
-            st_card.decompose()
-
-        footer = soup.find('div', id='sfooter')
+        # Update default footer and header
+        footer = soup.find('footer')
         if footer:
-            footer.decompose()
+            # Remove divs that have multiple links beyond just page navigation
+            [_.decompose() for _ in footer.find_all('div', recursive=False) if len(_.find_all('a', href=True)) > 2]
 
         header = soup.find('header')
         if header:
@@ -105,35 +129,42 @@ class Filter:
 
         return soup
 
-    def remove_ads(self, soup):
-        main_divs = soup.find('div', {'id': 'main'})
-        if main_divs is None:
+    def remove_ads(self):
+        if not self.main_divs:
             return
-        result_divs = main_divs.find_all('div', recursive=False)
 
-        for div in [_ for _ in result_divs]:
-            has_ad = len([_ for _ in div.find_all('span', recursive=True) if 'ad' == _.text.lower()])
+        for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
+            has_ad = len([_ for _ in div.find_all('span', recursive=True) if has_ad_content(_.text)])
             _ = div.decompose() if has_ad else None
 
-    def update_image_paths(self, soup):
-        for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
-            img_src = img['src']
-            if img_src.startswith('//'):
-                img_src = 'https:' + img_src
-            elif img_src.startswith(LOGO_URL):
-                # Re-brand with Whoogle logo
-                img['src'] = '/static/img/logo.png'
-                img['style'] = 'height:40px;width:162px'
-                continue
-            elif img_src.startswith(GOOG_IMG):
-                img['src'] = BLANK_B64
-                continue
+    def fix_question_section(self):
+        if not self.main_divs:
+            return
 
-            enc_src = Fernet(self.secret_key).encrypt(img_src.encode())
-            img['src'] = '/tmp?image_url=' + enc_src.decode()
-            # TODO: Non-mobile image results link to website instead of image
-            # if not self.mobile:
-            # img.append(BeautifulSoup(FULL_RES_IMG.format(img_src), 'html.parser'))
+        question_divs = [_ for _ in self.main_divs.find_all('div', recursive=False) if len(_.find_all('h2')) > 0]
+        for question_div in question_divs:
+            questions = [_ for _ in question_div.find_all('div', recursive=True) if _.text.endswith('?')]
+            for question in questions:
+                question['style'] = 'padding: 10px; font-style: italic;'
+
+    def update_element_src(self, element, mime):
+        element_src = element['src']
+        if element_src.startswith('//'):
+            element_src = 'https:' + element_src
+        elif element_src.startswith(LOGO_URL):
+            # Re-brand with Whoogle logo
+            element['src'] = '/static/img/logo.png'
+            element['style'] = 'height:40px;width:162px'
+            return
+        elif element_src.startswith(GOOG_IMG):
+            element['src'] = BLANK_B64
+            return
+
+        element['src'] = '/element?url=' + self.encrypt_path(element_src, is_element=True) + \
+                         '&type=' + urlparse.quote(mime)
+        # TODO: Non-mobile image results link to website instead of image
+        # if not self.mobile:
+        # img.append(BeautifulSoup(FULL_RES_IMG.format(element_src), 'html.parser'))
 
     def update_styling(self, soup):
         # Remove unnecessary button(s)
@@ -169,44 +200,42 @@ class Filter:
             for href_element in soup.findAll('a'):
                 href_element['style'] = 'color: white' if href_element['href'].startswith('/search') else ''
 
-    def update_links(self, soup):
-        # Replace hrefs with only the intended destination (no "utm" type tags)
-        for a in soup.find_all('a', href=True):
-            href = a['href'].replace('https://www.google.com', '')
-            if '/advanced_search' in href:
-                a.decompose()
-                continue
-            elif self.new_tab:
-                a['target'] = '_blank'
+    def update_link(self, link):
+        # Replace href with only the intended destination (no "utm" type tags)
+        href = link['href'].replace('https://www.google.com', '')
+        if '/advanced_search' in href:
+            link.decompose()
+            return
+        elif self.new_tab:
+            link['target'] = '_blank'
 
-            result_link = urlparse.urlparse(href)
-            query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
+        result_link = urlparse.urlparse(href)
+        query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
 
-            if query_link.startswith('/'):
-                a['href'] = 'https://google.com' + query_link
-            elif '/search?q=' in href:
-                enc_result = Fernet(self.secret_key).encrypt(query_link.encode())
-                new_search = '/search?q=' + enc_result.decode()
+        if query_link.startswith('/'):
+            link['href'] = 'https://google.com' + query_link
+        elif '/search?q=' in href:
+            new_search = '/search?q=' + self.encrypt_path(query_link)
 
-                query_params = parse_qs(urlparse.urlparse(href).query)
-                for param in VALID_PARAMS:
-                    param_val = query_params[param][0] if param in query_params else ''
-                    new_search += '&' + param + '=' + param_val
-                a['href'] = new_search
-            elif 'url?q=' in href:
-                # Strip unneeded arguments
-                a['href'] = filter_link_args(query_link)
+            query_params = parse_qs(urlparse.urlparse(href).query)
+            for param in VALID_PARAMS:
+                param_val = query_params[param][0] if param in query_params else ''
+                new_search += '&' + param + '=' + param_val
+            link['href'] = new_search
+        elif 'url?q=' in href:
+            # Strip unneeded arguments
+            link['href'] = filter_link_args(query_link)
 
-                # Add no-js option
-                if self.nojs:
-                    gen_nojs(soup, a['href'], a)
-            else:
-                a['href'] = href
+            # Add no-js option
+            if self.nojs:
+                gen_nojs(link)
+        else:
+            link['href'] = href
 
 
-def gen_nojs(soup, link, sibling):
-    nojs_link = soup.new_tag('a')
-    nojs_link['href'] = '/window?location=' + link
+def gen_nojs(sibling):
+    nojs_link = BeautifulSoup().new_tag('a')
+    nojs_link['href'] = '/window?location=' + sibling['href']
     nojs_link['style'] = 'display:block;width:100%;'
     nojs_link.string = 'NoJS Link: ' + nojs_link['href']
     sibling.append(BeautifulSoup('<br><hr><br>', 'html.parser'))

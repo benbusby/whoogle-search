@@ -1,19 +1,22 @@
-from app import app
-from app.filter import Filter, get_first_link
-from app.models.config import Config
-from app.request import Request, gen_query
 import argparse
 import base64
-from bs4 import BeautifulSoup
-from cryptography.fernet import Fernet, InvalidToken
-from flask import g, jsonify, make_response, request, redirect, render_template, send_file
-from functools import wraps
 import io
 import json
 import os
-from pycurl import error as pycurl_error
+import pickle
 import urllib.parse as urlparse
+import uuid
+from functools import wraps
+
 import waitress
+from flask import jsonify, make_response, request, redirect, render_template, send_file, session
+from requests import exceptions
+
+from app import app
+from app.models.config import Config
+from app.request import Request
+from app.utils.misc import valid_user_session
+from app.utils.routing_utils import *
 
 
 def auth_required(f):
@@ -34,23 +37,57 @@ def auth_required(f):
 
 @app.before_request
 def before_request_func():
-    # Always redirect to https if HTTPS_ONLY is set (otherwise default to false)
+    g.request_params = request.args if request.method == 'GET' else request.form
+    g.cookies_disabled = False
+
+    # Generate session values for user if unavailable
+    if not valid_user_session(session):
+        session['config'] = json.load(open(app.config['DEFAULT_CONFIG'])) \
+            if os.path.exists(app.config['DEFAULT_CONFIG']) else {'url': request.url_root}
+        session['uuid'] = str(uuid.uuid4())
+        session['fernet_keys'] = generate_user_keys(True)
+
+        # Flag cookies as possibly disabled in order to prevent against
+        # unnecessary session directory expansion
+        g.cookies_disabled = True
+
+    if session['uuid'] not in app.user_elements:
+        app.user_elements.update({session['uuid']: 0})
+
+    # Always redirect to https if HTTPS_ONLY is set (otherwise default to False)
     https_only = os.getenv('HTTPS_ONLY', False)
-    config_path = app.config['CONFIG_PATH']
 
     if https_only and request.url.startswith('http://'):
-        https_url = request.url.replace('http://', 'https://', 1)
-        code = 308
-        return redirect(https_url, code=code)
+        return redirect(request.url.replace('http://', 'https://', 1), code=308)
 
-    json_config = json.load(open(config_path)) if os.path.exists(config_path) else {'url': request.url_root}
-    g.user_config = Config(**json_config)
+    g.user_config = Config(**session['config'])
 
     if not g.user_config.url:
         g.user_config.url = request.url_root.replace('http://', 'https://') if https_only else request.url_root
 
     g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang)
     g.app_location = g.user_config.url
+
+
+@app.after_request
+def after_request_func(response):
+    if app.user_elements[session['uuid']] <= 0 and '/element' in request.url:
+        # Regenerate element key if all elements have been served to user
+        session['fernet_keys']['element_key'] = '' if not g.cookies_disabled else app.default_key_set['element_key']
+        app.user_elements[session['uuid']] = 0
+
+    # Check if address consistently has cookies blocked, in which case start removing session
+    # files after creation.
+    # Note: This is primarily done to prevent overpopulation of session directories, since browsers that
+    # block cookies will still trigger Flask's session creation routine with every request.
+    if g.cookies_disabled and request.remote_addr not in app.no_cookie_ips:
+        app.no_cookie_ips.append(request.remote_addr)
+    elif g.cookies_disabled and request.remote_addr in app.no_cookie_ips:
+        session_list = list(session.keys())
+        for key in session_list:
+            session.pop(key)
+
+    return response
 
 
 @app.errorhandler(404)
@@ -61,15 +98,14 @@ def unknown_page(e):
 @app.route('/', methods=['GET'])
 @auth_required
 def index():
+    # Reset keys
+    session['fernet_keys'] = generate_user_keys(g.cookies_disabled)
+
     return render_template('index.html',
-                           dark_mode=g.user_config.dark,
-                           ua=g.user_request.modified_user_agent,
                            languages=Config.LANGUAGES,
                            countries=Config.COUNTRIES,
-                           current_lang=g.user_config.lang,
-                           current_ctry=g.user_config.ctry,
-                           version_number=app.config['VERSION_NUMBER'],
-                           request_type='get' if g.user_config.get_only else 'post')
+                           config=g.user_config,
+                           version_number=app.config['VERSION_NUMBER'])
 
 
 @app.route('/opensearch.xml', methods=['GET'])
@@ -89,8 +125,7 @@ def opensearch():
 
 @app.route('/autocomplete', methods=['GET', 'POST'])
 def autocomplete():
-    request_params = request.args if request.method == 'GET' else request.form
-    q = request_params.get('q')
+    q = g.request_params.get('q')
 
     if not q and not request.data:
         return jsonify({'?': []})
@@ -103,68 +138,65 @@ def autocomplete():
 @app.route('/search', methods=['GET', 'POST'])
 @auth_required
 def search():
-    request_params = request.args if request.method == 'GET' else request.form
-    q = request_params.get('q')
+    # Reset element counter
+    app.user_elements[session['uuid']] = 0
 
-    if q is None or len(q) == 0:
+    search_util = RoutingUtils(request, g.user_config, session, cookies_disabled=g.cookies_disabled)
+    query = search_util.new_search_query()
+
+    # Redirect to home if invalid/blank search
+    if not query:
         return redirect('/')
-    else:
-        # Attempt to decrypt if this is an internal link
-        try:
-            q = Fernet(app.secret_key).decrypt(q.encode()).decode()
-        except InvalidToken:
-            pass
 
-    feeling_lucky = q.startswith('! ')
+    # Generate response and number of external elements from the page
+    response, elements = search_util.generate_response()
+    if search_util.feeling_lucky:
+        return redirect(response, code=303)
 
-    if feeling_lucky:  # Well do you, punk?
-        q = q[2:]
-
-    user_agent = request.headers.get('User-Agent')
-    mobile = 'Android' in user_agent or 'iPhone' in user_agent
-
-    content_filter = Filter(mobile, g.user_config, secret_key=app.secret_key)
-    full_query = gen_query(q, request_params, g.user_config, content_filter.near)
-    get_body = g.user_request.send(query=full_query)
-    dirty_soup = BeautifulSoup(content_filter.reskin(get_body), 'html.parser')
-
-    if feeling_lucky:
-        return redirect(get_first_link(dirty_soup), 303)  # Using 303 so the browser performs a GET request for the URL
-    else:
-        formatted_results = content_filter.clean(dirty_soup)
-
-    # Set search type to be used in the header template to allow for repeated searches
-    # in the same category
-    search_type = request_params.get('tbm') if 'tbm' in request_params else ''
+    # Keep count of external elements to fetch before element key can be regenerated
+    app.user_elements[session['uuid']] = elements
 
     return render_template(
         'display.html',
-        query=urlparse.unquote(q),
-        search_type=search_type,
+        query=urlparse.unquote(query),
+        search_type=search_util.search_type,
         dark_mode=g.user_config.dark,
-        response=formatted_results,
+        response=response,
+        version_number=app.config['VERSION_NUMBER'],
         search_header=render_template(
             'header.html',
             dark_mode=g.user_config.dark,
-            q=urlparse.unquote(q),
-            search_type=search_type,
-            mobile=g.user_request.mobile) if 'isch' not in search_type else '')
+            query=urlparse.unquote(query),
+            search_type=search_util.search_type,
+            mobile=g.user_request.mobile) if 'isch' not in search_util.search_type else '')
 
 
-@app.route('/config', methods=['GET', 'POST'])
+@app.route('/config', methods=['GET', 'POST', 'PUT'])
 @auth_required
 def config():
     if request.method == 'GET':
         return json.dumps(g.user_config.__dict__)
+    elif request.method == 'PUT':
+        if 'name' in request.args:
+            config_pkl = os.path.join(app.config['CONFIG_PATH'], request.args.get('name'))
+            session['config'] = pickle.load(open(config_pkl, 'rb')) if os.path.exists(config_pkl) else session['config']
+            return json.dumps(session['config'])
+        else:
+            return json.dumps({})
     else:
         config_data = request.form.to_dict()
         if 'url' not in config_data or not config_data['url']:
             config_data['url'] = g.user_config.url
 
-        with open(app.config['CONFIG_PATH'], 'w') as config_file:
-            config_file.write(json.dumps(config_data, indent=4))
-            config_file.close()
+        # Save config by name to allow a user to easily load later
+        if 'name' in request.args:
+            pickle.dump(config_data, open(os.path.join(app.config['CONFIG_PATH'], request.args.get('name')), 'wb'))
 
+        # Overwrite default config if user has cookies disabled
+        if g.cookies_disabled:
+            open(app.config['DEFAULT_CONFIG'], 'w').write(json.dumps(config_data, indent=4))
+
+        session['config'] = config_data
         return redirect(config_data['url'])
 
 
@@ -187,25 +219,22 @@ def imgres():
     return redirect(request.args.get('imgurl'))
 
 
-@app.route('/tmp')
+@app.route('/element')
 @auth_required
-def tmp():
-    cipher_suite = Fernet(app.secret_key)
-    img_url = cipher_suite.decrypt(request.args.get('image_url').encode()).decode()
+def element():
+    cipher_suite = Fernet(session['fernet_keys']['element_key'])
+    src_url = cipher_suite.decrypt(request.args.get('url').encode()).decode()
+    src_type = request.args.get('type')
 
     try:
-        file_data = g.user_request.send(base_url=img_url, return_bytes=True)
+        file_data = g.user_request.send(base_url=src_url).content
+        app.user_elements[session['uuid']] -= 1
         tmp_mem = io.BytesIO()
         tmp_mem.write(file_data)
         tmp_mem.seek(0)
 
-        return send_file(
-            tmp_mem,
-            as_attachment=True,
-            attachment_filename='tmp.png',
-            mimetype='image/png'
-        )
-    except pycurl_error:
+        return send_file(tmp_mem, mimetype=src_type)
+    except exceptions.RequestException:
         pass
 
     empty_gif = base64.b64decode('R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
@@ -215,7 +244,7 @@ def tmp():
 @app.route('/window')
 @auth_required
 def window():
-    get_body = g.user_request.send(base_url=request.args.get('location'))
+    get_body = g.user_request.send(base_url=request.args.get('location')).text
     get_body = get_body.replace('src="/', 'src="' + request.args.get('location') + '"')
     get_body = get_body.replace('href="/', 'href="' + request.args.get('location') + '"')
 

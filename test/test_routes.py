@@ -1,10 +1,13 @@
+from app.models.config import Config
 import json
 import random
 
 demo_config = {
     'near': random.choice(['Seattle', 'New York', 'San Francisco']),
     'dark_mode': str(random.getrandbits(1)),
-    'nojs': str(random.getrandbits(1))
+    'nojs': str(random.getrandbits(1)),
+    'lang': random.choice(Config.LANGUAGES)['value'],
+    'ctry': random.choice(Config.COUNTRIES)['value']
 }
 
 
@@ -16,6 +19,7 @@ def test_main(client):
 def test_search(client):
     rv = client.get('/search?q=test')
     assert rv._status_code == 200
+
 
 def test_feeling_lucky(client):
     rv = client.get('/search?q=!%20test')
