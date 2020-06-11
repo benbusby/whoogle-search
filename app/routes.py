@@ -1,22 +1,22 @@
-from app import app
-from app.models.config import Config
-from app.request import Request
-from app.utils.misc import generate_user_keys, valid_user_session
-from app.utils.routing_utils import *
 import argparse
 import base64
-from bs4 import BeautifulSoup
-from cryptography.fernet import Fernet
-from flask import g, jsonify, make_response, request, redirect, render_template, send_file, session
-from functools import wraps
 import io
 import json
 import os
 import pickle
 import urllib.parse as urlparse
-from requests import exceptions
 import uuid
+from functools import wraps
+
 import waitress
+from flask import jsonify, make_response, request, redirect, render_template, send_file, session
+from requests import exceptions
+
+from app import app
+from app.models.config import Config
+from app.request import Request
+from app.utils.misc import valid_user_session
+from app.utils.routing_utils import *
 
 
 def auth_required(f):
@@ -87,7 +87,6 @@ def after_request_func(response):
         for key in session_list:
             session.pop(key)
 
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return response
 
 

@@ -1,7 +1,7 @@
 from cryptography.fernet import Fernet
 from flask import current_app as app
 
-SESSION_VALS = ['uuid', 'config', 'fernet_keys']
+REQUIRED_SESSION_VALUES = ['uuid', 'config', 'fernet_keys']
 
 
 def generate_user_keys(cookies_disabled=False) -> dict:
@@ -17,7 +17,7 @@ def generate_user_keys(cookies_disabled=False) -> dict:
 
 def valid_user_session(session):
     # Generate secret key for user if unavailable
-    for value in SESSION_VALS:
+    for value in REQUIRED_SESSION_VALUES:
         if value not in session:
             return False
 

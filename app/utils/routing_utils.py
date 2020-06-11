@@ -32,7 +32,8 @@ class RoutingUtils:
 
     def new_search_query(self) -> str:
         # Generate a new element key each time a new search is performed
-        self.session['fernet_keys']['element_key'] = generate_user_keys(cookies_disabled=self.cookies_disabled)['element_key']
+        self.session['fernet_keys']['element_key'] = generate_user_keys(
+            cookies_disabled=self.cookies_disabled)['element_key']
 
         q = self.request_params.get('q')
 
@@ -46,7 +47,8 @@ class RoutingUtils:
                 pass
 
         # Reset text key
-        self.session['fernet_keys']['text_key'] = generate_user_keys(cookies_disabled=self.cookies_disabled)['text_key']
+        self.session['fernet_keys']['text_key'] = generate_user_keys(
+            cookies_disabled=self.cookies_disabled)['text_key']
 
         # Format depending on whether or not the query is a "feeling lucky" query
         self.feeling_lucky = q.startswith('! ')

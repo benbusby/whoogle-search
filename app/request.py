@@ -22,8 +22,8 @@ def gen_user_agent(is_mobile):
 
     if is_mobile:
         return MOBILE_UA.format(mozilla, firefox)
-    else:
-        return DESKTOP_UA.format(mozilla, linux, firefox)
+
+    return DESKTOP_UA.format(mozilla, linux, firefox)
 
 
 def gen_query(query, args, config, near_city=None):
