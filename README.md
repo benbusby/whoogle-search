@@ -233,6 +233,8 @@ Since the instance is destroyed and rebuilt after inactivity, config settings wi
 ### HTTPS Enforcement
 Only needed if your setup requires Flask to redirect to HTTPS on its own -- generally this is something that doesn't need to be handled by Whoogle Search.
 
+Note: You should have your own domain name and [an https certificate](https://letsencrypt.org/getting-started/) in order for this to work properly.
+
 - Heroku: Ensure that the `Root URL` configuration on the home page begins with `https://` and not `http://`
 - Docker: Add `--build-arg use_https=1` to your run command
 - Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
