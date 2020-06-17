@@ -66,10 +66,10 @@ def gen_query(query, args, config, near_city=None):
         param_dict['source'] = '&source=' + args.get('source')
         param_dict['lr'] = ('&lr=' + ''.join([_ for _ in sub_lang if not _.isdigit()])) if sub_lang else ''
     else:
-        param_dict['lr'] = '&lr=' + config.lang
+        param_dict['lr'] = ('&lr=' + config.lang_search) if config.lang_search else ''
 
     param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
-    param_dict['hl'] = '&hl=' + config.lang.replace('lang_', '')
+    param_dict['hl'] = ('&hl=' + config.lang_interface.replace('lang_', '')) if config.lang_interface else ''
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 
     for val in param_dict.values():

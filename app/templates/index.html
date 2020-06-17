@@ -55,11 +55,24 @@
                             </select>
                         </div>
                         <div class="config-div">
-                            <label for="config-lang">Language: </label>
-                            <select name="lang" id="config-lang">
+                            <label for="config-lang-interface">Interface Language: </label>
+                            <select name="lang_interface" id="config-lang-interface">
                                 {% for lang in languages %}
                                 <option value="{{ lang.value }}"
-                                    {% if lang.value in config.lang %}
+                                    {% if lang.value in config.lang_interface %}
+                                        selected
+                                    {% endif %}>
+                                    {{ lang.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="config-div">
+                            <label for="config-lang-search">Search Language: </label>
+                            <select name="lang_search" id="config-lang-search">
+                                {% for lang in languages %}
+                                <option value="{{ lang.value }}"
+                                    {% if lang.value in config.lang_search %}
                                         selected
                                     {% endif %}>
                                     {{ lang.name }}
