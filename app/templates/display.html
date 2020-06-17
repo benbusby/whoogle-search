@@ -11,7 +11,13 @@
         <title>{{ query }} - Whoogle Search</title>
     </head>
     <body>
-        {{ search_header|safe }}
-        {{ response|safe }}
+    {{ search_header|safe }}
+    {{ response|safe }}
     </body>
+    <footer>
+        <p style="color: {{ '#fff' if dark_mode else '#000' }};">
+            Whoogle Search v{{ version_number }} ||
+            <a style="color: #685e79" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
+        </p>
+    </footer>
 </html>

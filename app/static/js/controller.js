@@ -71,6 +71,41 @@ const setupConfigLayout = () => {
     fillConfigValues();
 };
 
+const loadConfig = event => {
+    event.preventDefault();
+    let config = prompt("Enter name of config:");
+    if (!config) {
+        alert("Must specify a name for the config to load");
+        return;
+    }
+
+    let xhrPUT = new XMLHttpRequest();
+    xhrPUT.open("PUT", "/config?name=" + config + ".conf");
+    xhrPUT.onload = function() {
+        if (xhrPUT.readyState === 4 && xhrPUT.status !== 200) {
+            alert("Error loading Whoogle config");
+            return;
+        }
+
+        location.reload(true);
+    };
+
+    xhrPUT.send();
+};
+
+const saveConfig = event => {
+    event.preventDefault();
+    let config = prompt("Enter name for this config:");
+    if (!config) {
+        alert("Must specify a name for the config to save");
+        return;
+    }
+
+    let configForm = document.getElementById("config-form");
+    configForm.action = '/config?name=' + config + ".conf";
+    configForm.submit();
+};
+
 document.addEventListener("DOMContentLoaded", function() {
     setTimeout(function() {
         document.getElementById("main").style.display = "block";
