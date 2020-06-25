@@ -144,6 +144,10 @@ def search():
     search_util = RoutingUtils(request, g.user_config, session, cookies_disabled=g.cookies_disabled)
     query = search_util.new_search_query()
 
+    resolved_bangs = search_util.bang_operator()
+    if resolved_bangs != '':
+        return redirect(resolved_bangs)
+
     # Redirect to home if invalid/blank search
     if not query:
         return redirect('/')
