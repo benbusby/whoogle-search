@@ -59,13 +59,13 @@ def before_request_func():
 
     if https_only and request.url.startswith('http://'):
         return redirect(request.url.replace('http://', 'https://', 1), code=308)
-
+    
     g.user_config = Config(**session['config'])
 
     if not g.user_config.url:
         g.user_config.url = request.url_root.replace('http://', 'https://') if https_only else request.url_root
 
-    g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang)
+    g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang_search)
     g.app_location = g.user_config.url
 
 
