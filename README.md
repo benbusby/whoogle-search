@@ -5,6 +5,7 @@
 [![Build Status](https://travis-ci.com/benbusby/whoogle-search.svg?branch=master)](https://travis-ci.com/benbusby/whoogle-search)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/benbusby/whoogle-search)](https://hub.docker.com/r/benbusby/whoogle-search)
+[![Gitter](https://img.shields.io/gitter/room/benbusby/whoogle-search)](https://gitter.im/whoogle-search/community)
 
 Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
