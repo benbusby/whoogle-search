@@ -171,6 +171,8 @@ class Filter:
         if query_link.startswith('/'):
             link['href'] = 'https://google.com' + query_link
         elif '/search?q=' in href:
+            if 'li:1' in href:
+                query_link = '"' + query_link + '"'
             new_search = '/search?q=' + self.encrypt_path(query_link)
 
             query_params = parse_qs(urlparse.urlparse(href).query)
