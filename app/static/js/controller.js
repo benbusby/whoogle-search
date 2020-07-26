@@ -1,3 +1,13 @@
+// Whoogle configurations that use boolean values and checkboxes
+CONFIG_BOOLS = [
+    "nojs", "dark", "safe", "alts", "new_tab", "get_only"
+];
+
+// Whoogle configurations that use string values and input fields
+CONFIG_STRS = [
+    "near", "url"
+];
+
 const setupSearchLayout = () => {
     // Setup search field
     const searchBar = document.getElementById("search-bar");
@@ -18,15 +28,6 @@ const setupSearchLayout = () => {
 };
 
 const fillConfigValues = () => {
-    // Establish all config value elements
-    const near = document.getElementById("config-near");
-    const noJS = document.getElementById("config-nojs");
-    const dark = document.getElementById("config-dark");
-    const safe = document.getElementById("config-safe");
-    const url  = document.getElementById("config-url");
-    const newTab  = document.getElementById("config-new-tab");
-    const getOnly = document.getElementById("config-get-only");
-
     // Request existing config info
     let xhrGET = new XMLHttpRequest();
     xhrGET.open("GET", "/config");
@@ -39,15 +40,15 @@ const fillConfigValues = () => {
         // Allow for updating/saving config values
         let configSettings = JSON.parse(xhrGET.responseText);
 
-        near.value = configSettings["near"] ? configSettings["near"] : "";
-        noJS.checked = !!configSettings["nojs"];
-        dark.checked = !!configSettings["dark"];
-        safe.checked = !!configSettings["safe"];
-        getOnly.checked = !!configSettings["get_only"];
-        newTab.checked = !!configSettings["new_tab"];
+        CONFIG_STRS.forEach(function(item) {
+            let configElement = document.getElementById("config-" + item.replace("_", "-"));
+            configElement.value = configSettings[item] ? configSettings[item] : "";
+        });
 
-        // Addresses the issue of incorrect URL being used behind reverse proxy
-        url.value = configSettings["url"] ? configSettings["url"] : "";
+        CONFIG_BOOLS.forEach(function(item) {
+            let configElement = document.getElementById("config-" + item.replace("_", "-"));
+            configElement.checked = !!configSettings[item];
+        });
     };
 
     xhrGET.send();

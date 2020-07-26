@@ -1,55 +1,10 @@
 from app.request import VALID_PARAMS
-from app.utils.misc import BLACKLIST
-from bs4 import BeautifulSoup
+from app.utils.filter_utils import *
 from bs4.element import ResultSet
 from cryptography.fernet import Fernet
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
-
-SKIP_ARGS = ['ref_src', 'utm']
-FULL_RES_IMG = '<br/><a href="{}">Full Image</a>'
-GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
-LOGO_URL = GOOG_IMG + '_desk'
-BLANK_B64 = '''
-data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkwAIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC
-'''
-
-
-def get_first_link(soup):
-    # Replace hrefs with only the intended destination (no "utm" type tags)
-    for a in soup.find_all('a', href=True):
-        # Return the first search result URL
-        if 'url?q=' in a['href']:
-            return filter_link_args(a['href'])
-
-
-def filter_link_args(query_link):
-    parsed_link = urlparse.urlparse(query_link)
-    link_args = parse_qs(parsed_link.query)
-    safe_args = {}
-
-    if len(link_args) == 0 and len(parsed_link) > 0:
-        return query_link
-
-    for arg in link_args.keys():
-        if arg in SKIP_ARGS:
-            continue
-
-        safe_args[arg] = link_args[arg]
-
-    # Remove original link query and replace with filtered args
-    query_link = query_link.replace(parsed_link.query, '')
-    if len(safe_args) > 0:
-        query_link = query_link + urlparse.urlencode(safe_args, doseq=True)
-    else:
-        query_link = query_link.replace('?', '')
-
-    return query_link
-
-
-def has_ad_content(element: str):
-    return element.upper() in (value.upper() for value in BLACKLIST) or 'ⓘ' in element
 
 
 class Filter:
@@ -61,6 +16,7 @@ class Filter:
         self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
+        self.alt_redirect = config['alts'] if 'alts' in config else False
         self.mobile = mobile
         self.user_keys = user_keys
         self.main_divs = ResultSet('')
@@ -213,8 +169,12 @@ class Filter:
         query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
 
         if query_link.startswith('/'):
+            # Internal google links (i.e. mail, maps, etc) should still be forwarded to Google
             link['href'] = 'https://google.com' + query_link
         elif '/search?q=' in href:
+            # "li:1" implies the query should be interpreted verbatim, so we wrap it in double quotes
+            if 'li:1' in href:
+                query_link = '"' + query_link + '"'
             new_search = '/search?q=' + self.encrypt_path(query_link)
 
             query_params = parse_qs(urlparse.urlparse(href).query)
@@ -232,11 +192,13 @@ class Filter:
         else:
             link['href'] = href
 
+        # Replace link location if "alts" config is enabled
+        if self.alt_redirect:
+            # Search and replace all link descriptions with alternative location
+            link['href'] = get_site_alt(link['href'])
+            link_desc = link.find_all(text=re.compile('|'.join(SITE_ALTS.keys())))
+            if len(link_desc) == 0:
+                return
 
-def gen_nojs(sibling):
-    nojs_link = BeautifulSoup().new_tag('a')
-    nojs_link['href'] = '/window?location=' + sibling['href']
-    nojs_link['style'] = 'display:block;width:100%;'
-    nojs_link.string = 'NoJS Link: ' + nojs_link['href']
-    sibling.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
-    sibling.append(nojs_link)
+            # Replace link destination
+            link_desc[0].replace_with(get_site_alt(link_desc[0]))

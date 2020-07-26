@@ -34,10 +34,10 @@ body {
     color: #685e79;
     border-radius: 10px 10px 0 0;
     max-width: 600px;
-    background: rgba(0,0,0,0);
+    background: rgba(0, 0, 0, 0);
 }
 
-#search-bar:focus{
+#search-bar:focus {
     color: #685e79;
 }
 
@@ -68,7 +68,7 @@ button::-moz-focus-inner {
 
 .collapsible {
     outline: 0;
-    background-color: rgba(0,0,0,0);
+    background-color: rgba(0, 0, 0, 0);
     color: #685e79;
     cursor: pointer;
     padding: 18px;
@@ -128,4 +128,9 @@ footer {
     text-align: center;
     width: 100%;
     z-index: -1;
+}
+
+.info-text {
+    font-style: italic;
+    font-size: 12px;
 }

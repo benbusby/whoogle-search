@@ -15,7 +15,7 @@ from requests import exceptions
 from app import app
 from app.models.config import Config
 from app.request import Request
-from app.utils.misc import valid_user_session
+from app.utils.session_utils import valid_user_session
 from app.utils.routing_utils import *
 
 
