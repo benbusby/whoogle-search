@@ -16,7 +16,7 @@ class Filter:
         self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
-        self.alt_redirect = config['alts'] if 'alts' in config else True
+        self.alt_redirect = config['alts'] if 'alts' in config else False
         self.mobile = mobile
         self.user_keys = user_keys
         self.main_divs = ResultSet('')
@@ -169,8 +169,10 @@ class Filter:
         query_link = parse_qs(result_link.query)['q'][0] if '?q=' in href else ''
 
         if query_link.startswith('/'):
+            # Internal google links (i.e. mail, maps, etc) should still be forwarded to Google
             link['href'] = 'https://google.com' + query_link
         elif '/search?q=' in href:
+            # "li:1" implies the query should be interpreted verbatim, so we wrap it in double quotes
             if 'li:1' in href:
                 query_link = '"' + query_link + '"'
             new_search = '/search?q=' + self.encrypt_path(query_link)
@@ -190,11 +192,13 @@ class Filter:
         else:
             link['href'] = href
 
-        # Replace link location
+        # Replace link location if "alts" config is enabled
         if self.alt_redirect:
+            # Search and replace all link descriptions with alternative location
             link['href'] = get_site_alt(link['href'])
             link_desc = link.find_all(text=re.compile('|'.join(SITE_ALTS.keys())))
             if len(link_desc) == 0:
                 return
 
+            # Replace link destination
             link_desc[0].replace_with(get_site_alt(link_desc[0]))
