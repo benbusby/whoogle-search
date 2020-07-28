@@ -1,4 +1,4 @@
-FROM lsiobase/python:3.11
+FROM lsiobase/python:arm32v7-3.11
 
 # set version release
 ARG WHOOGLESEARCH_RELEASE
@@ -11,17 +11,6 @@ ENV PYTHONIOENCODING="UTF-8"
 # enforced https, default false
 ARG use_https=''
 ENV HTTPS_ONLY="$use_https"
-
-ARG username=''
-ENV WHOOGLE_USER=$username
-ARG password=''
-ENV WHOOGLE_PASS=$password
-
-# set config volume
-ARG config_dir=/config
-RUN mkdir -p $config_dir
-VOLUME $config_dir
-ENV CONFIG_VOLUME=$config_dir
 
 LABEL org.label-schema.name="Whoogle Search"
 LABEL org.label-schema.description="Self-hosted, ad-free, privacy-respecting Google metasearch engine"
@@ -75,7 +64,6 @@ ENV CONFIG_VOLUME="/config"
 # add local files
 COPY root/ /
 
-# search port
-ARG whoogle_port=5000
-ENV EXPOSE_PORT=$whoogle_port
-EXPOSE $EXPOSE_PORT
+# ports and volumes
+EXPOSE 5000
+VOLUME /config

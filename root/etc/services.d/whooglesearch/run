@@ -1,0 +1,19 @@
+#!/usr/bin/with-contenv bash
+
+ADDRESS=${ADDRESS:-0.0.0.0}
+EXPOSE_PORT=${EXPOSE_PORT:-5000}
+USER=${USER}
+PASSWORD=${PASSWORD}
+
+cd /
+
+# Create User Authentication if specified
+if [ -z "${USER}" ] && [ -z "${PASSWORD}" ]; then
+    echo "No User and Password Will be set for Basic authentication"
+	exec \
+	s6-setuidgid abc python3 -um app --host "${ADDRESS}" --port "${EXPOSE_PORT}"
+else
+    echo "Setting Up Basic Authentication with Username="$USER" Password="$PASSWORD""
+	exec \
+	s6-setuidgid abc python3 -um app --host "${ADDRESS}" --port "${EXPOSE_PORT}" --userpass "$USER":"$PASSWORD"
+fi

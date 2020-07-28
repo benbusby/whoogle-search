@@ -1,9 +1,25 @@
 version: "3"
 
 services:
-  whoogle-search:
-    image: benbusby/whoogle-search
-    container_name: whoogle-search
-    ports:
-      - 5000:5000
-    restart: unless-stopped
+# ----------------------------------------
+    whoogle-search:
+        container_name: whoogle-search
+        hostname: whoogle-search
+        # Uncomment to build from local
+        # build:
+        #   dockerfile: Dockerfile
+        #   context: .
+        # image: "whoogle-search"
+        image: "benbusby/whoogle-search"
+        restart: always
+        ports:
+          - "5000:5000"
+        volumes:
+          - path/to/config:/config
+        environment:
+          - PUID=${PUID} # User uid
+          - PGID=${PGID} # User gid
+          - TZ=${TZ}  # TimeZone
+          - EXPOSE_PORT=5000 # Default port 5000
+          - USER= # Optional
+          - PASSWORD= # Optional

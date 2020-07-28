@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+
+# make needed folder
+mkdir -p \
+	/config/
+
+# permissions
+chown -R abc:abc \
+	/app
+chown -R abc:abc \
+	/config
