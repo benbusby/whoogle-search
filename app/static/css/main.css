@@ -16,6 +16,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     max-width: 600px;
+    z-index: 15;
 }
 
 .search-items {
@@ -127,7 +128,7 @@ footer {
     bottom: 0%;
     text-align: center;
     width: 100%;
-    z-index: -1;
+    z-index: 10;
 }
 
 .info-text {
