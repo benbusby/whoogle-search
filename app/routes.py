@@ -118,7 +118,7 @@ def opensearch():
     return render_template(
         'opensearch.xml',
         main_url=opensearch_url,
-        request_type='get' if g.user_config.get_only else 'post'
+        request_type='' if g.user_config.get_only else 'method="post"'
     ), 200, {'Content-Disposition': 'attachment; filename="opensearch.xml"'}
 
 
