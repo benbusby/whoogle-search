@@ -1,0 +1,42 @@
+html {
+    background-color: #000 !important;
+}
+
+body {
+    background-color: #222 !important;
+}
+
+div {
+    /*background-color: #111 !important;*/
+    color: #fff !important;
+}
+
+a:visited h3 div {
+    color: #bbb !important;
+}
+
+a:link h3 div {
+    color: #b2b2ff !important;
+}
+
+a:link div {
+    color: #aaffaa !important;
+}
+
+div span {
+    color: #bbb !important;
+}
+
+input {
+    background-color: #111 !important;
+    color: #fff !important;
+}
+
+#search-bar {
+    color: #fff !important;
+    background-color: #000 !important;
+}
+
+.search-container {
+    background-color: #000 !important;
+}

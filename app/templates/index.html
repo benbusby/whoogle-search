@@ -23,6 +23,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/static/css/{{ 'search-dark' if config.dark else 'search' }}.css">
         <link rel="stylesheet" href="/static/css/main.css">
+        {% if config.dark %}
+            <link rel="stylesheet" href="/static/css/dark-theme.css"/>
+        {% endif %}
 	<title>Whoogle Search</title>
     </head>
     <body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
