@@ -75,7 +75,7 @@ Persistent install:
 
 Sandboxed temporary instance:
 
-`pipx run git+https://github.com/benbusby/whoogle-search.git whoogle-search`
+`pipx run --spec git+https://github.com/benbusby/whoogle-search.git whoogle-search`
 
 ### D) pip
 `pip install whoogle-search`
