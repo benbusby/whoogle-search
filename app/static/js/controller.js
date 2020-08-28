@@ -11,11 +11,22 @@ const setupSearchLayout = () => {
         if (event.keyCode === 13) {
             event.preventDefault();
             searchBtn.click();
+        } else {
+            handleUserInput(searchBar);
         }
     });
-}
+};
 
-const fillConfigValues = (near, nojs, dark) => {
+const fillConfigValues = () => {
+    // Establish all config value elements
+    const near = document.getElementById("config-near");
+    const noJS = document.getElementById("config-nojs");
+    const dark = document.getElementById("config-dark");
+    const safe = document.getElementById("config-safe");
+    const url  = document.getElementById("config-url");
+    const newTab  = document.getElementById("config-new-tab");
+    const getOnly = document.getElementById("config-get-only");
+
     // Request existing config info
     let xhrGET = new XMLHttpRequest();
     xhrGET.open("GET", "/config");
@@ -29,23 +40,18 @@ const fillConfigValues = (near, nojs, dark) => {
         let configSettings = JSON.parse(xhrGET.responseText);
 
         near.value = configSettings["near"] ? configSettings["near"] : "";
-        near.addEventListener("keyup", function() {
-            configSettings["near"] = near.value;
-        });
-
-        nojs.checked = !!configSettings["nojs"];
-        nojs.addEventListener("change", function() {
-           configSettings["nojs"] = nojs.checked ? 1 : 0;
-        });
-
+        noJS.checked = !!configSettings["nojs"];
         dark.checked = !!configSettings["dark"];
-        dark.addEventListener("change", function() {
-           configSettings["dark"] = dark.checked ? 1 : 0;
-        });
+        safe.checked = !!configSettings["safe"];
+        getOnly.checked = !!configSettings["get_only"];
+        newTab.checked = !!configSettings["new_tab"];
+
+        // Addresses the issue of incorrect URL being used behind reverse proxy
+        url.value = configSettings["url"] ? configSettings["url"] : "";
     };
 
     xhrGET.send();
-}
+};
 
 const setupConfigLayout = () => {
     // Setup whoogle config
@@ -62,12 +68,43 @@ const setupConfigLayout = () => {
         content.classList.toggle("open");
     });
 
-    const near = document.getElementById("config-near");
-    const noJS = document.getElementById("config-nojs");
-    const dark = document.getElementById("config-dark");
+    fillConfigValues();
+};
 
-    fillConfigValues(near, noJS, dark);
-}
+const loadConfig = event => {
+    event.preventDefault();
+    let config = prompt("Enter name of config:");
+    if (!config) {
+        alert("Must specify a name for the config to load");
+        return;
+    }
+
+    let xhrPUT = new XMLHttpRequest();
+    xhrPUT.open("PUT", "/config?name=" + config + ".conf");
+    xhrPUT.onload = function() {
+        if (xhrPUT.readyState === 4 && xhrPUT.status !== 200) {
+            alert("Error loading Whoogle config");
+            return;
+        }
+
+        location.reload(true);
+    };
+
+    xhrPUT.send();
+};
+
+const saveConfig = event => {
+    event.preventDefault();
+    let config = prompt("Enter name for this config:");
+    if (!config) {
+        alert("Must specify a name for the config to save");
+        return;
+    }
+
+    let configForm = document.getElementById("config-form");
+    configForm.action = '/config?name=' + config + ".conf";
+    configForm.submit();
+};
 
 document.addEventListener("DOMContentLoaded", function() {
     setTimeout(function() {

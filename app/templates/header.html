@@ -1,0 +1,63 @@
+{% if mobile %}
+    <header>
+        <div class="bz1lBb">
+            <form class="Pg70bf" id="search-form" method="POST">
+                <a class="logo-link mobile-logo"
+                   href="/"
+                   style="display:flex; justify-content:center; align-items:center; color:#685e79; font-size:18px; ">
+                    <span class="V6gwVd">Wh</span><span class="iWkuvd">o</span><span class="cDrQ7">o</span><span
+                        class="V6gwVd">g</span><span class="ntlR9">l</span><span
+                        class="iWkuvd tJ3Myc">e</span>
+                </a>
+                <div class="H0PQec" style="width: 100%;">
+                    <div class="sbc esbc autocomplete">
+                        <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
+                               style="background-color: {{ '#000' if dark_mode else '#fff' }};
+                                       color: {{ '#685e79' if dark_mode else '#000' }};
+                                       border: {{ '1px solid #685e79' if dark_mode else '' }}"
+                               spellcheck="false" type="text" value="{{ query }}">
+                        <input name="tbm" value="{{ search_type }}" style="display: none">
+                        <div class="sc"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </header>
+{% else %}
+    <header>
+        <div class="logo-div">
+            <a class="logo-link" href="/">
+                <span class="V6gwVd logo-letter">Wh</span><span class="iWkuvd logo-letter">o</span><span
+                    class="cDrQ7 logo-letter">o</span><span class="V6gwVd logo-letter">g</span><span
+                    class="ntlR9 logo-letter">l</span><span class="iWkuvd tJ3Myc logo-letter">e</span>
+            </a>
+        </div>
+        <div class="search-div">
+            <form id="search-form" class="search-form" id="sf" method="POST">
+                <div class="autocomplete" style="width: 100%; flex: 1">
+                    <div style="width: 100%; display: flex">
+                        <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
+                               spellcheck="false" type="text" value="{{ query }}"
+                               style="background-color: {{ '#000' if dark_mode else '#fff' }};
+                                       color: {{ '#685e79' if dark_mode else '#000' }};
+                                       border: {{ '1px solid #685e79' if dark_mode else '' }}">
+                        <input name="tbm" value="{{ search_type }}" style="display: none">
+                        <div class="sc"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </header>
+{% endif %}
+
+<script>
+    const searchBar = document.getElementById("search-bar");
+
+    searchBar.addEventListener("keyup", function (event) {
+        if (event.keyCode !== 13) {
+            handleUserInput(searchBar);
+        } else {
+            document.getElementById("search-form").submit();
+        }
+    });
+</script>

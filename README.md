@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/benbusby/whoogle-search.svg?branch=master)](https://travis-ci.com/benbusby/whoogle-search)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
+[![Docker Pulls](https://img.shields.io/docker/pulls/benbusby/whoogle-search)](https://hub.docker.com/r/benbusby/whoogle-search)
 
 Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
@@ -24,7 +25,8 @@ Contents
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
 - No referrer header
-- POST request search queries (when possible)
+- Autocomplete/search suggestions
+- POST request search and suggestion queries (when possible)
 - View images at full res without site redirect (currently mobile only)
 - Dark mode
 - Randomly generated User Agent
@@ -47,7 +49,7 @@ If using Heroku Quick Deploy, **you can skip this section**.
 There are a few different ways to begin using the app, depending on your preferences:
 
 ### A) [Heroku Quick Deploy](https://heroku.com/about)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search/tree/heroku-app)
 
 *Note: Requires a (free) Heroku account*
 
@@ -57,11 +59,11 @@ Provides:
 - Downtime after periods of inactivity \([solution](https://github.com/benbusby/whoogle-search#prevent-downtime-heroku-only)\)
 
 ### B) [pipx](https://github.com/pipxproject/pipx#install-pipx)
-Persistent install: 
+Persistent install:
 
 `pipx install git+https://github.com/benbusby/whoogle-search.git`
 
-Sandboxed temporary instance: 
+Sandboxed temporary instance:
 
 `pipx run git+https://github.com/benbusby/whoogle-search.git whoogle-search`
 
@@ -71,14 +73,16 @@ Sandboxed temporary instance:
 ```bash
 $ whoogle-search --help
 usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug]
+                      [--https-only]
 
 Whoogle Search console runner
 
 optional arguments:
   -h, --help            show this help message and exit
-  --port <port number>  Specifies a port to run on (default 8888)
+  --port <port number>  Specifies a port to run on (default 5000)
   --host <ip address>   Specifies the host address to use (default 127.0.0.1)
-  --debug               Activates debug mode for the Flask server (default False)
+  --debug               Activates debug mode for the server (default False)
+  --https-only          Enforces HTTPS redirects for all requests (default False)
 ```
 
 ### D) Manual
@@ -90,7 +94,34 @@ cd whoogle-search
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-./whoogle-search
+./run
+```
+
+#### systemd Configuration
+After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
+
+```
+[Unit]
+Description=Whoogle
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=<whoogle_directory>
+ExecStart=<whoogle_directory>/venv/bin/python3 -um app --host 0.0.0.0 --port 5000
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=3
+SyslogIdentifier=whoogle
+
+[Install]
+WantedBy=multi-user.target
+```
+Then,
+```
+sudo systemctl daemon-reload
+sudo systemctl enable whoogle
+sudo systemctl start whoogle
 ```
 
 ### E) Manual (Docker)
@@ -100,14 +131,30 @@ pip install -r requirements.txt
 2. Clone and deploy the docker app using a method below:
 
 #### Docker CLI
+Through Docker Hub:
+```bash
+docker pull benbusby/whoogle-search
+docker run --publish 5000:5000 --detach --name whoogle-search benbusby/whoogle-search:latest
+```
+
+or with docker-compose:
+
 ```bash
 git clone https://github.com/benbusby/whoogle-search.git
 cd whoogle-search
-docker build --tag whooglesearch:1.0 .
-docker run --publish 8888:5000 --detach --name whooglesearch whooglesearch:1.0
+docker-compose up
 ```
 
-And kill with: `docker rm --force whooglesearch`
+or by building yourself:
+
+```bash
+git clone https://github.com/benbusby/whoogle-search.git
+cd whoogle-search
+docker build --tag whoogle-search:1.0 .
+docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
+```
+
+And kill with: `docker rm --force whoogle-search`
 
 #### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 ```bash
@@ -139,6 +186,8 @@ To filter by a range of time, append ":past <time>" to the end of your search, w
 
 ## Extra Steps
 ### Set Whoogle as your primary search engine
+*Note: If you're using a reverse proxy to run Whoogle Search, make sure the "Root URL" config option on the home page is set to your URL before going through these steps.*
+
 Update browser settings:
   - Firefox (Desktop)
     - Navigate to your app's url, and click the 3 dot menu in the address bar. At the bottom, there should be an option to "Add Search Engine". Once you've clicked this, open your Firefox Preferences menu, click "Search" in the left menu, and use the available dropdown to select "Whoogle" from the list.
@@ -161,6 +210,13 @@ Update browser settings:
     - Select the 'Other' radio button
       - Name: "Whoogle"
       - Search string to use: "http[s]://\<your whoogle url\>/search?q=%s"
+  - [Alfred](https://www.alfredapp.com/) (Mac OS X)
+	  1. Go to `Alfred Preferences` > `Features` > `Web Search` and click `Add Custom Search`. Then configure these settings
+		   - Search URL: `https://\<your whoogle url\>/search?q={query}
+		   - Title: `Whoogle for '{query}'` (or whatever you want)
+		   - Keyword: `whoogle`
+
+	  2. Go to `Default Results` and click the `Setup fallback results` button. Click `+` and add Whoogle, then  drag it to the top.
   - Others (TODO)
 
 ### Customizing and Configuration
@@ -179,12 +235,24 @@ A good solution for this is to set up a simple cronjob on any device at your hom
 
 For instance, adding `*/20 7-23 * * * curl https://<your heroku app name>.herokuapp.com > /home/<username>/whoogle-refresh` will fetch the home page of the app every 20 minutes between 7am and midnight, allowing for downtime from midnight to 7am. And again, this wouldn't be a hard limit - you'd still have plenty of remaining hours of uptime each month in case you were searching after this window has closed.
 
-Since the instance is destroyed and rebuilt after inactivity, config settings will be reset once the app enters downtime. If you have configuration settings active that you'd like to keep between periods of downtime (like dark mode for example), you could instead add `*/20 7-23 * * * curl -d "dark=1" -X POST https://<your heroku app name>.herokuapp.com > /home/<username>/whoogle-refresh` to keep these settings more or less permanent, and still keep the app from entering downtime when you're using it. 
+Since the instance is destroyed and rebuilt after inactivity, config settings will be reset once the app enters downtime. If you have configuration settings active that you'd like to keep between periods of downtime (like dark mode for example), you could instead add `*/20 7-23 * * * curl -d "dark=1" -X POST https://<your heroku app name>.herokuapp.com/config > /home/<username>/whoogle-refresh` to keep these settings more or less permanent, and still keep the app from entering downtime when you're using it.
+
+### HTTPS Enforcement
+Only needed if your setup requires Flask to redirect to HTTPS on its own -- generally this is something that doesn't need to be handled by Whoogle Search.
+
+Note: You should have your own domain name and [an https certificate](https://letsencrypt.org/getting-started/) in order for this to work properly.
+
+- Heroku: Ensure that the `Root URL` configuration on the home page begins with `https://` and not `http://`
+- Docker: Add `--build-arg use_https=1` to your run command
+- Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
+- Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
+
+Available config values are `near`, `nojs`, `dark` and `url`.
 
 ## FAQ
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
-Whoogle is intended to only ever be deployed to private instances by individuals of any background, with as little effort as possible. Prior knowledge of/experience with the command line or deploying applications is not necessary to deploy Whoogle, which isn't the case with Searx. As a result, Whoole is missing some features of Searx in order to be as easy to deploy as possible.
+Whoogle is intended to only ever be deployed to private instances by individuals of any background, with as little effort as possible. Prior knowledge of/experience with the command line or deploying applications is not necessary to deploy Whoogle, which isn't the case with Searx. As a result, Whoogle is missing some features of Searx in order to be as easy to deploy as possible.
 
 Whoogle also only uses Google search results, not Bing/Quant/etc, and uses the existing Google search UI to make the transition away from Google search as unnoticeable as possible.
 

@@ -1,0 +1,24 @@
+#!/bin/bash
+# Usage:
+# ./run # Runs the full web app
+# ./run test # Runs the testing suite
+
+set -euo pipefail
+
+SCRIPT_DIR="$(builtin cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
+# Set directory to serve static content from
+SUBDIR="${1:-app}"
+export APP_ROOT="$SCRIPT_DIR/$SUBDIR"
+export STATIC_FOLDER="$APP_ROOT/static"
+
+mkdir -p "$STATIC_FOLDER"
+
+# Check for regular vs test run
+if [[ "$SUBDIR" == "test" ]]; then
+    pytest -sv
+else
+    python3 -um app \
+      --host "${ADDRESS:-0.0.0.0}" \
+      --port "${PORT:-"${EXPOSE_PORT:-5000}"}"
+fi
