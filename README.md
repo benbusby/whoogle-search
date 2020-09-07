@@ -194,15 +194,23 @@ Update browser settings:
   - Firefox (iOS)
     - In the mobile app Settings page, tap "Search" within the "General" section. There should be an option titled "Add Search Engine" to select. It should prompt you to enter a title and search query url - use the following elements to fill out the form:
       - Title: "Whoogle"
-      - URL: "https://\<your whoogle url\>/search?q=%s"
+      - URL: `http[s]://\<your whoogle url\>/search?q=%s`
   - Firefox (Android)
-    - Navigate to your app's url
-    - Long-press on the search text field
-    - Click the "Add Search Engine" menu item
-      - Select a name and click ok
-    - Click the 3 dot menu in the top right
-    - Navigate to the settings menu and select the "search" sub-menu
-    - Select Whoogle and press "Set as default"
+    - Version <79.0.0
+      - Navigate to your app's url
+      - Long-press on the search text field
+      - Click the "Add Search Engine" menu item
+        - Select a name and click ok
+      - Click the 3 dot menu in the top right
+      - Navigate to the settings menu and select the "Search" sub-menu
+      - Select Whoogle and press "Set as default"
+    - Version >=79.0.0
+      - Click the 3 dot menu in the top right
+      - Navigate to the settings menu and select the "Search" sub-menu
+      - Click "Add search engine"
+      - Select the 'Other' radio button
+        - Name: "Whoogle"
+        - Search string to use: `https://\<your whoogle url\>/search?q=%s`
   - [Alfred](https://www.alfredapp.com/) (Mac OS X)
 	  1. Go to `Alfred Preferences` > `Features` > `Web Search` and click `Add Custom Search`. Then configure these settings
 		   - Search URL: `https://\<your whoogle url\>/search?q={query}
