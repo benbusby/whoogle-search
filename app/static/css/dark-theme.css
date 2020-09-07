@@ -12,11 +12,11 @@ div {
 }
 
 a:visited h3 div {
-    color: #bbb !important;
+    color: #bbbbff !important;
 }
 
 a:link h3 div {
-    color: #b2b2ff !important;
+    color: #4b8eea !important;
 }
 
 a:link div {
