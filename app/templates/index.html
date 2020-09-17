@@ -45,7 +45,7 @@
                 <div class="config-fields">
                     <form id="config-form" action="/config" method="post">
                         <div class="config-div">
-                            <label for="config-ctry">Country: </label>
+                            <label for="config-ctry">Filter Results by Country: </label>
                             <select name="ctry" id="config-ctry">
                                 {% for ctry in countries %}
                                     <option value="{{ ctry.value }}"
@@ -56,6 +56,7 @@
                                     </option>
                                 {% endfor %}
                             </select>
+                            <div><span class="info-text"> — Note: If enabled, a website will only appear in the results if it is *hosted* in the selected country.</span></div>
                         </div>
                         <div class="config-div">
                             <label for="config-lang-interface">Interface Language: </label>

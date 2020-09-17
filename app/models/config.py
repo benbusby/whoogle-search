@@ -52,7 +52,7 @@ class Config:
     ]
 
     COUNTRIES = [
-        {'name': 'Default (use server location)', 'value': ''},
+        {'name': 'Default (none)', 'value': ''},
         {'name': 'Afghanistan', 'value': 'countryAF'},
         {'name': 'Albania', 'value': 'countryAL'},
         {'name': 'Algeria', 'value': 'countryDZ'},

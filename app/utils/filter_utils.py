@@ -18,7 +18,7 @@ BLACKLIST = [
 
 SITE_ALTS = {
     'twitter.com': 'nitter.net',
-    'youtube.com': 'invidio.us',
+    'youtube.com': 'invidiou.site',
     'instagram.com': 'bibliogram.art/u'
 }
 
