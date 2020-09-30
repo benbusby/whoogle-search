@@ -22,7 +22,7 @@ Contents
 - No ads or sponsored content
 - No javascript
 - No cookies
-- No tracking/linking of your personal IP address
+- No tracking/linking of your personal IP address\*
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
 - No referrer header
@@ -34,6 +34,8 @@ Contents
 - Easy to install/deploy
 - Optional location-based searching (i.e. results near \<city\>)
 - Optional NoJS mode to disable all Javascript in results
+
+<sup>*If deployed to a remote server</sup>
 
 ## Dependencies
 If using Heroku Quick Deploy, **you can skip this section**.

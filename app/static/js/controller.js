@@ -8,6 +8,7 @@ CONFIG_STRS = [
     "near", "url"
 ];
 
+
 const setupSearchLayout = () => {
     // Setup search field
     const searchBar = document.getElementById("search-bar");
@@ -114,4 +115,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     setupSearchLayout();
     setupConfigLayout();
+
+    // Focusing on the search input field requires a delay for elements to finish
+    // loading (seemingly only on FF)
+    setTimeout(function() { document.getElementById("search-bar").focus(); }, 250);
 });
