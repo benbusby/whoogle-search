@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from app.filter import Filter
-from app.utils.misc import generate_user_keys
+from app.utils.session_utils import generate_user_keys
 from datetime import datetime
 from dateutil.parser import *
 
@@ -55,7 +55,7 @@ def test_recent_results(client):
         result_divs = get_search_results(rv.data)
 
         current_date = datetime.now()
-        for div in result_divs:
+        for div in [_ for _ in result_divs if _.find('span')]:
             date_span = div.find('span').decode_contents()
             if not date_span or len(date_span) > 15 or len(date_span) < 7:
                 continue

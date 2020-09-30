@@ -2,6 +2,7 @@ class Config:
     # Derived from here:
     # https://sites.google.com/site/tomihasa/google-language-codes#searchlanguage
     LANGUAGES = [
+        {'name': 'Default (use server location)', 'value': ''},
         {'name': 'English', 'value': 'lang_en'},
         {'name': 'Afrikaans', 'value': 'lang_af'},
         {'name': 'Arabic', 'value': 'lang_ar'},
@@ -51,7 +52,7 @@ class Config:
     ]
 
     COUNTRIES = [
-        {'name': 'Default (use server location)', 'value': ''},
+        {'name': 'Default (none)', 'value': ''},
         {'name': 'Afghanistan', 'value': 'countryAF'},
         {'name': 'Albania', 'value': 'countryAL'},
         {'name': 'Algeria', 'value': 'countryDZ'},
@@ -298,12 +299,14 @@ class Config:
 
     def __init__(self, **kwargs):
         self.url = ''
-        self.lang = 'lang_en'
+        self.lang_search = ''
+        self.lang_interface = ''
         self.ctry = ''
         self.safe = False
         self.dark = False
         self.nojs = False
         self.near = ''
+        self.alts = False
         self.new_tab = False
         self.get_only = False
 

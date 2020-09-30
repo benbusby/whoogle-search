@@ -16,6 +16,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     max-width: 600px;
+    z-index: 15;
 }
 
 .search-items {
@@ -34,10 +35,10 @@ body {
     color: #685e79;
     border-radius: 10px 10px 0 0;
     max-width: 600px;
-    background: rgba(0,0,0,0);
+    background: rgba(0, 0, 0, 0);
 }
 
-#search-bar:focus{
+#search-bar:focus {
     color: #685e79;
 }
 
@@ -45,7 +46,7 @@ body {
     width: 100%;
     height: 40px;
     border: 1px solid #685e79;
-    background: #685e79;
+    background: #685e79 !important;
     text-align: center;
     color: #fff;
     cursor: pointer;
@@ -68,7 +69,7 @@ button::-moz-focus-inner {
 
 .collapsible {
     outline: 0;
-    background-color: rgba(0,0,0,0);
+    background-color: rgba(0, 0, 0, 0);
     color: #685e79;
     cursor: pointer;
     padding: 18px;
@@ -127,5 +128,10 @@ footer {
     bottom: 0%;
     text-align: center;
     width: 100%;
-    z-index: -1;
+    z-index: 10;
+}
+
+.info-text {
+    font-style: italic;
+    font-size: 12px;
 }

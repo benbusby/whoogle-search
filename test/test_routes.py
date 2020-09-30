@@ -6,7 +6,8 @@ demo_config = {
     'near': random.choice(['Seattle', 'New York', 'San Francisco']),
     'dark_mode': str(random.getrandbits(1)),
     'nojs': str(random.getrandbits(1)),
-    'lang': random.choice(Config.LANGUAGES)['value'],
+    'lang_interface': random.choice(Config.LANGUAGES)['value'],
+    'lang_search': random.choice(Config.LANGUAGES)['value'],
     'ctry': random.choice(Config.COUNTRIES)['value']
 }
 

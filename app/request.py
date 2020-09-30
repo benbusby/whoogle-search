@@ -12,7 +12,7 @@ MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
 DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 
 # Valid query params
-VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source']
+VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
 
 
 def gen_user_agent(is_mobile):
@@ -66,10 +66,14 @@ def gen_query(query, args, config, near_city=None):
         param_dict['source'] = '&source=' + args.get('source')
         param_dict['lr'] = ('&lr=' + ''.join([_ for _ in sub_lang if not _.isdigit()])) if sub_lang else ''
     else:
-        param_dict['lr'] = '&lr=' + config.lang
+        param_dict['lr'] = ('&lr=' + config.lang_search) if config.lang_search else ''
+
+    # Set autocorrected search ignore
+    if 'nfpr' in args:
+        param_dict['nfpr'] = '&nfpr=' + args.get('nfpr')
 
     param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
-    param_dict['hl'] = '&hl=' + config.lang.replace('lang_', '')
+    param_dict['hl'] = ('&hl=' + config.lang_interface.replace('lang_', '')) if config.lang_interface else ''
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 
     for val in param_dict.values():

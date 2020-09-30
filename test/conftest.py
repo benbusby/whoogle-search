@@ -1,5 +1,5 @@
 from app import app
-from app.utils.misc import generate_user_keys
+from app.utils.session_utils import generate_user_keys
 import pytest
 
 

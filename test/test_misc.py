@@ -1,4 +1,4 @@
-from app.utils.misc import generate_user_keys, valid_user_session
+from app.utils.session_utils import generate_user_keys, valid_user_session
 
 
 def test_generate_user_keys():
