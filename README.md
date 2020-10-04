@@ -5,6 +5,7 @@
 [![Build Status](https://travis-ci.com/benbusby/whoogle-search.svg?branch=master)](https://travis-ci.com/benbusby/whoogle-search)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/benbusby/whoogle-search)](https://hub.docker.com/r/benbusby/whoogle-search)
+[![Gitter](https://img.shields.io/gitter/room/benbusby/whoogle-search)](https://gitter.im/whoogle-search/community)
 
 Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
@@ -21,7 +22,7 @@ Contents
 - No ads or sponsored content
 - No javascript
 - No cookies
-- No tracking/linking of your personal IP address
+- No tracking/linking of your personal IP address\*
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
 - No referrer header
@@ -33,6 +34,8 @@ Contents
 - Easy to install/deploy
 - Optional location-based searching (i.e. results near \<city\>)
 - Optional NoJS mode to disable all Javascript in results
+
+<sup>*If deployed to a remote server</sup>
 
 ## Dependencies
 If using Heroku Quick Deploy, **you can skip this section**.
@@ -55,19 +58,28 @@ There are a few different ways to begin using the app, depending on your prefere
 
 Provides:
 - Free deployment of app
-- Free https url (https://\<your app name\>.herokuapp.com)
+- Free HTTPS url (https://\<your app name\>.herokuapp.com)
 - Downtime after periods of inactivity \([solution](https://github.com/benbusby/whoogle-search#prevent-downtime-heroku-only)\)
 
-### B) [pipx](https://github.com/pipxproject/pipx#install-pipx)
+### B) [Repl.it](https://repl.it)
+[![Run on Repl.it](https://repl.it/badge/github/benbusby/whoogle-search)](https://repl.it/github/benbusby/whoogle-search)
+
+Provides:
+- Free deployment of app (can be ran without account)
+- Free HTTPS url (https://\<app name\>.\<username\>\.repl\.co)
+    - Supports custom domains
+- Downtime after periods of inactivity \([solution 1](https://repl.it/talk/ask/use-this-pingmat1replco-just-enter/28821/101298), [solution 2](https://repl.it/talk/learn/How-to-use-and-setup-UptimeRobot/9003)\)
+
+### C) [pipx](https://github.com/pipxproject/pipx#install-pipx)
 Persistent install:
 
 `pipx install git+https://github.com/benbusby/whoogle-search.git`
 
 Sandboxed temporary instance:
 
-`pipx run git+https://github.com/benbusby/whoogle-search.git whoogle-search`
+`pipx run --spec git+https://github.com/benbusby/whoogle-search.git whoogle-search`
 
-### C) pip
+### D) pip
 `pip install whoogle-search`
 
 ```bash
@@ -85,7 +97,7 @@ optional arguments:
   --https-only          Enforces HTTPS redirects for all requests (default False)
 ```
 
-### D) Manual
+### E) Manual
 Clone the repo and run the following commands to start the app in a local-only environment:
 
 ```bash
@@ -124,7 +136,7 @@ sudo systemctl enable whoogle
 sudo systemctl start whoogle
 ```
 
-### E) Manual (Docker)
+### F) Manual (Docker)
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).

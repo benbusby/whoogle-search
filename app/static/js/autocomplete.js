@@ -2,7 +2,7 @@ const handleUserInput = searchBar => {
     let xhrRequest = new XMLHttpRequest();
     xhrRequest.open("POST", "/autocomplete");
     xhrRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhrRequest.onload = function() {
+    xhrRequest.onload = function () {
         if (xhrRequest.readyState === 4 && xhrRequest.status !== 200) {
             // Do nothing if failed to fetch autocomplete results
             return;
@@ -18,6 +18,7 @@ const handleUserInput = searchBar => {
 
 const autocomplete = (searchInput, autocompleteResults) => {
     let currentFocus;
+    let originalSearch;
 
     searchInput.addEventListener("input", function () {
         let autocompleteList, autocompleteItem, i, val = this.value;
@@ -53,9 +54,11 @@ const autocomplete = (searchInput, autocompleteResults) => {
         let suggestion = document.getElementById(this.id + "-autocomplete-list");
         if (suggestion) suggestion = suggestion.getElementsByTagName("div");
         if (e.keyCode === 40) { // down
+            e.preventDefault();
             currentFocus++;
             addActive(suggestion);
         } else if (e.keyCode === 38) { //up
+            e.preventDefault();
             currentFocus--;
             addActive(suggestion);
         } else if (e.keyCode === 13) { // enter
@@ -63,17 +66,36 @@ const autocomplete = (searchInput, autocompleteResults) => {
             if (currentFocus > -1) {
                 if (suggestion) suggestion[currentFocus].click();
             }
+        } else {
+            originalSearch = document.getElementById("search-bar").value;
         }
     });
 
     const addActive = suggestion => {
-        if (!suggestion || !suggestion[currentFocus]) return false;
+        let searchBar = document.getElementById("search-bar");
+
+        // Handle navigation outside of suggestion list
+        if (!suggestion || !suggestion[currentFocus]) {
+            if (currentFocus >= suggestion.length) {
+                // Move selection back to the beginning
+                currentFocus = 0;
+            } else if (currentFocus < 0) {
+                // Retrieve original search and remove active suggestion selection
+                currentFocus = -1;
+                searchBar.value = originalSearch;
+                removeActive(suggestion);
+                return;
+            } else {
+                return;
+            }
+        }
+
         removeActive(suggestion);
-
-        if (currentFocus >= suggestion.length) currentFocus = 0;
-        if (currentFocus < 0) currentFocus = (suggestion.length - 1);
-
         suggestion[currentFocus].classList.add("autocomplete-active");
+
+        // Autofill search bar with suggestion content
+        searchBar.value = suggestion[currentFocus].textContent;
+        searchBar.focus();
     };
 
     const removeActive = suggestion => {

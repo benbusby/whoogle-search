@@ -8,7 +8,7 @@ setuptools.setup(
     author='Ben Busby',
     author_email='benbusby@protonmail.com',
     name='whoogle-search',
-    version='0.2.0',
+    version='0.2.1',
     include_package_data=True,
     install_requires=requirements,
     description='Self-hosted, ad-free, privacy-respecting Google metasearch engine',

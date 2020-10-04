@@ -2,11 +2,6 @@ from cryptography.fernet import Fernet
 from flask import current_app as app
 
 REQUIRED_SESSION_VALUES = ['uuid', 'config', 'fernet_keys']
-BLACKLIST = [
-    'ad', 'anuncio', 'annuncio', 'annonce', 'Anzeige', '广告', '廣告', 'Reklama', 'Реклама', 'Anunț', '광고',
-    'annons', 'Annonse', 'Iklan', '広告', 'Augl.', 'Mainos', 'Advertentie', 'إعلان', 'Գովազդ', 'विज्ञापन', 'Reklam',
-    'آگهی', 'Reklāma', 'Reklaam', 'Διαφήμιση', 'מודעה', 'Hirdetés'
-]
 
 
 def generate_user_keys(cookies_disabled=False) -> dict:

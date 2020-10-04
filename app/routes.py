@@ -15,7 +15,7 @@ from requests import exceptions
 from app import app
 from app.models.config import Config
 from app.request import Request
-from app.utils.misc import valid_user_session
+from app.utils.session_utils import valid_user_session
 from app.utils.routing_utils import *
 
 
@@ -59,13 +59,13 @@ def before_request_func():
 
     if https_only and request.url.startswith('http://'):
         return redirect(request.url.replace('http://', 'https://', 1), code=308)
-
+    
     g.user_config = Config(**session['config'])
 
     if not g.user_config.url:
         g.user_config.url = request.url_root.replace('http://', 'https://') if https_only else request.url_root
 
-    g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang)
+    g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang_search)
     g.app_location = g.user_config.url
 
 
@@ -115,12 +115,11 @@ def opensearch():
     if opensearch_url.endswith('/'):
         opensearch_url = opensearch_url[:-1]
 
-    template = render_template('opensearch.xml',
-                               main_url=opensearch_url,
-                               request_type='get' if g.user_config.get_only else 'post')
-    response = make_response(template)
-    response.headers['Content-Type'] = 'application/xml'
-    return response
+    return render_template(
+        'opensearch.xml',
+        main_url=opensearch_url,
+        request_type='' if g.user_config.get_only else 'method="post"'
+    ), 200, {'Content-Disposition': 'attachment; filename="opensearch.xml"'}
 
 
 @app.route('/autocomplete', methods=['GET', 'POST'])
