@@ -1,3 +1,6 @@
+import os
+
+
 class Config:
     # Derived from here:
     # https://sites.google.com/site/tomihasa/google-language-codes#searchlanguage
@@ -297,6 +300,9 @@ class Config:
         {'name': 'Zimbabwe', 'value': 'countryZW'}
     ]
 
+    THEMES = list(set([theme_name.split('-')[0]
+                       for theme_name in os.listdir('app/static/css/themes/')]))
+
     def __init__(self, **kwargs):
         self.url = ''
         self.lang_search = ''
@@ -306,6 +312,7 @@ class Config:
         self.dark = False
         self.nojs = False
         self.near = ''
+        self.theme = None
         self.alts = False
         self.new_tab = False
         self.get_only = False
