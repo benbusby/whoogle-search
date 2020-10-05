@@ -7,14 +7,14 @@
     <meta name="referrer" content="no-referrer">
     <script type="text/javascript" src="/static/js/autocomplete.js"></script>
     {% if theme %}
-        <link rel="stylesheet" href="/static/css/{{'theme/' if theme else ''}}{{ 'search-dark' if dark_mode else 'search' }}.css" />
+        <link rel="stylesheet" href="/static/css/{{'theme/' if theme else ''}}{{ 'search-dark' if dark_mode else 'search-light' }}.css" />
     {% else %}
         <link rel="stylesheet" href="/static/css/{{ 'dark-' if dark_mode else '' }}theme.css" />
+        <link rel="stylesheet" href="/static/css/{{ 'search-dark' if dark_mode else 'search-light' }}.css">
     {% endif %}
-    <link rel="stylesheet" href="/static/css/{{ 'search-dark' if dark_mode else 'search' }}.css">
     <link rel="stylesheet" href="/static/css/header.css">
     {% if theme %}
-        <link rel="stylesheet" href="/static/css/themes/{{theme}}{{ '-dark' if dark_mode else '' }}.css" />
+        <link rel="stylesheet" href="/static/css/themes/{{theme}}{{ '-dark' if dark_mode else '-light' }}.css" />
     {% else %}
         <link rel="stylesheet" href="/static/css/{{ 'dark-' if dark_mode else '' }}theme.css" />
     {% endif %}

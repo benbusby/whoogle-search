@@ -25,12 +25,12 @@
     <link rel="stylesheet" href="/static/css/main.css">
     {% if config['theme'] %}
     <link rel="stylesheet"
-        href="/static/css/themes/{{config['theme']}}{{ '-search-dark' if config['dark'] else '-search' }}.css" />
+        href="/static/css/themes/{{config['theme']}}{{ '-search-dark' if config['dark'] else '-search-light' }}.css" />
     {% else %}
     <link rel="stylesheet" href="/static/css/{{ 'dark-' if config['dark'] else '' }}theme.css" />
     {% endif %}
     {% if config['theme'] %}
-    <link rel="stylesheet" href="/static/css/themes/{{config['theme']}}{{ '-dark' if config['dark'] else '' }}.css" />
+    <link rel="stylesheet" href="/static/css/themes/{{config['theme']}}{{ '-dark' if config['dark'] else '-light' }}.css" />
     {% else %}
     <link rel="stylesheet" href="/static/css/{{ 'dark-' if config['dark'] else '' }}theme.css" />
     {% endif %}

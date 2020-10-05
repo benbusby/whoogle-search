@@ -1,0 +1,42 @@
+html {
+    background-color: #D8DEE9b3 !important;
+}
+
+body {
+    background-color: #f9fafb !important;
+}
+
+div {
+    /*background-color: #111 !important;*/
+    color: #3B4252 !important;
+}
+
+a:visited h3 div {
+    color: #A3BE8C !important;
+}
+
+a:link h3 div {
+    color: #4C566A !important;
+}
+
+a:link div {
+    color: #81a1c1 !important;
+}
+
+div span {
+    color: #5E81AC !important;
+}
+
+input {
+    background-color: #f9fafb !important;
+    color: #3B4252 !important;
+}
+
+#search-bar {
+    color: #4C566A !important;
+    background-color: #ffffff !important;
+}
+
+.search-container {
+    background-color: #f9fafb !important;
+}
