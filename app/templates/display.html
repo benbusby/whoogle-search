@@ -1,26 +1,33 @@
 <html>
-    <head>
-        <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
-        <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="referrer" content="no-referrer">
-        <script type="text/javascript" src="/static/js/autocomplete.js"></script>
-        <link rel="stylesheet" href="/static/css/{{ 'search-dark' if dark_mode else 'search' }}.css">
-        <link rel="stylesheet" href="/static/css/header.css">
-        {% if dark_mode %}
-            <link rel="stylesheet" href="/static/css/dark-theme.css"/>
-        {% endif %}
-        <title>{{ query }} - Whoogle Search</title>
-    </head>
-    <body>
+<head>
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <script type="text/javascript" src="/static/js/autocomplete.js"></script>
+    {% if theme %}
+        <link rel="stylesheet" href="/static/css/{{'theme/' if theme else ''}}{{ 'search-dark' if dark_mode else 'search' }}.css" />
+    {% else %}
+        <link rel="stylesheet" href="/static/css/{{ 'dark-' if dark_mode else '' }}theme.css" />
+    {% endif %}
+    <link rel="stylesheet" href="/static/css/{{ 'search-dark' if dark_mode else 'search' }}.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    {% if theme %}
+        <link rel="stylesheet" href="/static/css/themes/{{theme}}{{ '-dark' if dark_mode else '' }}.css" />
+    {% else %}
+        <link rel="stylesheet" href="/static/css/{{ 'dark-' if dark_mode else '' }}theme.css" />
+    {% endif %}
+    <title>{{ query }} - Whoogle Search</title>
+</head>
+<body>
     {{ search_header|safe }}
     {{ response|safe }}
-    </body>
-    <footer>
-        <p style="color: {{ '#fff' if dark_mode else '#000' }};">
-            Whoogle Search v{{ version_number }} ||
-            <a style="color: #685e79" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
-        </p>
-    </footer>
+</body>
+<footer>
+    <p style=" color: {{ '#ECEFF4' if dark_mode else '#000' }};">
+        Whoogle Search v{{ version_number }} ||
+        <a style="color: #685e79" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
+    </p>
+</footer>
 </html>

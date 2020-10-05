@@ -59,7 +59,7 @@ def before_request_func():
 
     if https_only and request.url.startswith('http://'):
         return redirect(request.url.replace('http://', 'https://', 1), code=308)
-    
+
     g.user_config = Config(**session['config'])
 
     if not g.user_config.url:
@@ -104,6 +104,7 @@ def index():
     return render_template('index.html',
                            languages=Config.LANGUAGES,
                            countries=Config.COUNTRIES,
+                           themes=Config.THEMES,
                            config=g.user_config,
                            version_number=app.config['VERSION_NUMBER'])
 
@@ -160,11 +161,13 @@ def search():
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
         dark_mode=g.user_config.dark,
+        theme=g.user_config.theme,
         response=response,
         version_number=app.config['VERSION_NUMBER'],
         search_header=render_template(
             'header.html',
             dark_mode=g.user_config.dark,
+            theme=g.user_config.theme,
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile) if 'isch' not in search_util.search_type else '')

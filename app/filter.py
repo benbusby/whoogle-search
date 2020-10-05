@@ -15,6 +15,7 @@ class Filter:
         self.near = config['near'] if 'near' in config else ''
         self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
+        self.theme = config['theme'] if 'theme' in config else None
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.alt_redirect = config['alts'] if 'alts' in config else False
         self.mobile = mobile
@@ -35,7 +36,7 @@ class Filter:
         pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
         page = pattern.sub('685e79', page)
         if self.dark:
-            page = page.replace('fff', '000').replace('202124', 'ddd').replace('1967D2', '3b85ea')
+            page = page.replace('fff', '2E3440').replace('202124', 'ddd').replace('1967D2', '3b85ea')
 
         return page
 

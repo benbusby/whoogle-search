@@ -312,7 +312,7 @@ class Config:
         self.dark = False
         self.nojs = False
         self.near = ''
-        self.theme = None
+        self.theme = 'whoogle'
         self.alts = False
         self.new_tab = False
         self.get_only = False
