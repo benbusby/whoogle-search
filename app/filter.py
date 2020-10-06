@@ -3,6 +3,7 @@ from app.utils.filter_utils import *
 from bs4.element import ResultSet
 from cryptography.fernet import Fernet
 import re
+import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import cssutils
@@ -30,8 +31,24 @@ class Filter:
     def elements(self):
         return self._elements
 
+    def get_theme_file(self):
+        """Returns the contents of the theme file as a string, if it exists. Otherwise returns empty string
+
+        Returns:
+            str: contents of the theme file
+        """
+        contents = ""
+        if self.theme:
+            if self.dark:
+                theme_file = f'app/static/css/themes/{self.theme}-dark.css'
+            else:
+                theme_file = f'app/static/css/themes/{self.theme}-light.css'
+        if os.path.exists(theme_file):
+            contents = open(f'app/static/css/themes/{self.theme}-dark.css').read()
+        return contents
+
     def parse_theme_colors(self):
-        """parses the css theme and looks for reskinning colors. Specifically looks for the .reskin CSS selector.
+        """parses the css theme and looks for re-skinning colors. Specifically looks for the .reskin CSS selector.
         If no selector is found, returns default background 'fff'
 
         Returns:
@@ -39,10 +56,7 @@ class Filter:
         """
         result = {'background-color':'fff'}
         if self.theme:
-            if self.dark:
-                sheet = cssutils.parseString(open(f'app/static/css/themes/{self.theme}-dark.css').read())
-            else:
-                sheet = cssutils.parseString(open(f'app/static/css/themes/{self.theme}-light.css').read())
+            sheet = cssutils.parseString(self.get_theme_file())
             reskin_selector = [i for i in sheet if i.selectorText=='.reskin']
             if len(reskin_selector) == 0:
                 return result
