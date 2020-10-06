@@ -40,3 +40,13 @@ input {
 .search-container {
     background-color: #f9fafb !important;
 }
+
+footer {
+    background-color: #f9fafb !important;
+    color: #3B4252;
+}
+
+.reskin {
+    background-color: #ffffff;
+    color: #3B4252;
+}

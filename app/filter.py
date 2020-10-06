@@ -5,7 +5,7 @@ from cryptography.fernet import Fernet
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
-
+import cssutils
 
 class Filter:
     def __init__(self, user_keys: dict, mobile=False, config=None):
@@ -30,13 +30,36 @@ class Filter:
     def elements(self):
         return self._elements
 
+    def parse_theme_colors(self):
+        """parses the css theme and looks for reskinning colors. Specifically looks for the .reskin CSS selector.
+        If no selector is found, returns default background 'fff'
+
+        Returns:
+            dict: Key-value dictionary of the properties 
+        """
+        result = {'background-color':'fff'}
+        if self.theme:
+            if self.dark:
+                sheet = cssutils.parseString(open(f'app/static/css/themes/{self.theme}-dark.css').read())
+            else:
+                sheet = cssutils.parseString(open(f'app/static/css/themes/{self.theme}-light.css').read())
+            reskin_selector = [i for i in sheet if i.selectorText=='.reskin']
+            if len(reskin_selector) == 0:
+                return result
+            for css_prop in reskin_selector[0].style:
+                result[css_prop.name] = css_prop.value
+            return result
+        
     def reskin(self, page):
         # Aesthetic only re-skinning
         page = page.replace('>G<', '>Wh<')
         pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
         page = pattern.sub('685e79', page)
+
+        theme_colors = self.parse_theme_colors()
+        page = page.replace('fff', theme_colors['background-color'].replace("#",""))
         if self.dark:
-            page = page.replace('fff', '2E3440').replace('202124', 'ddd').replace('1967D2', '3b85ea')
+            page = page.replace('202124', 'ddd').replace('1967D2', '3b85ea')
 
         return page
 
