@@ -1,4 +1,4 @@
-from app.utils.misc import generate_user_keys
+from app.utils.session_utils import generate_user_keys
 from flask import Flask
 from flask_session import Session
 import os
@@ -9,7 +9,7 @@ app.default_key_set = generate_user_keys()
 app.no_cookie_ips = []
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['VERSION_NUMBER'] = '0.2.0'
+app.config['VERSION_NUMBER'] = '0.2.1'
 app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
 app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
 app.config['CONFIG_PATH'] = os.getenv('CONFIG_VOLUME', os.path.join(app.config['STATIC_FOLDER'], 'config'))

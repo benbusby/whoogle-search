@@ -15,7 +15,7 @@ from requests import exceptions
 from app import app
 from app.models.config import Config
 from app.request import Request
-from app.utils.misc import valid_user_session
+from app.utils.session_utils import valid_user_session
 from app.utils.routing_utils import *
 
 
@@ -115,12 +115,11 @@ def opensearch():
     if opensearch_url.endswith('/'):
         opensearch_url = opensearch_url[:-1]
 
-    template = render_template('opensearch.xml',
-                               main_url=opensearch_url,
-                               request_type='get' if g.user_config.get_only else 'post')
-    response = make_response(template)
-    response.headers['Content-Type'] = 'application/xml'
-    return response
+    return render_template(
+        'opensearch.xml',
+        main_url=opensearch_url,
+        request_type='' if g.user_config.get_only else 'method="post"'
+    ), 200, {'Content-Disposition': 'attachment; filename="opensearch.xml"'}
 
 
 @app.route('/autocomplete', methods=['GET', 'POST'])
