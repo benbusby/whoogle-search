@@ -17,14 +17,6 @@ class RoutingUtils:
         self.query = ''
         self.cookies_disabled = cookies_disabled
         self.search_type = self.request_params.get('tbm') if 'tbm' in self.request_params else ''
-        self.bang_operators = {
-            '!gh': 'https://github.com/search?q=',
-            '!ddg': 'https://duckduckgo.com/?q=',
-            '!w': 'https://wikipedia.com/wiki/',
-            '!so': 'https://stackoverflow.com/search?q=',
-            '!a': 'https://amazon.com/s?k=',
-            '!ebay': 'https://ebay.com/sch/i.html?_nkw=',
-        }
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -63,14 +55,11 @@ class RoutingUtils:
         self.query = q[2:] if self.feeling_lucky else q
         return self.query
 
-
-    def bang_operator(self) -> str:
-        print(self.query)
-        for operator, url in self.bang_operators.items():
-            if operator in self.query:
-                return url + self.query.replace(operator, '').strip()
+    def bang_operator(self, bangs_dict: dict) -> str:
+        for operator in bangs_dict.keys():
+            if self.query.split(' ')[0] == operator:
+                return bangs_dict[operator]['url'].format(self.query.replace(operator, '').strip())
         return ''
-
 
     def generate_response(self) -> Tuple[Any, int]:
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
