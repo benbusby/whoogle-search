@@ -8,6 +8,9 @@
         <script type="text/javascript" src="/static/js/autocomplete.js"></script>
         <link rel="stylesheet" href="/static/css/{{ 'search-dark' if dark_mode else 'search' }}.css">
         <link rel="stylesheet" href="/static/css/header.css">
+        {% if dark_mode %}
+            <link rel="stylesheet" href="/static/css/dark-theme.css"/>
+        {% endif %}
         <title>{{ query }} - Whoogle Search</title>
     </head>
     <body>

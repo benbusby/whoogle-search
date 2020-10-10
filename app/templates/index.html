@@ -23,6 +23,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/static/css/{{ 'search-dark' if config.dark else 'search' }}.css">
         <link rel="stylesheet" href="/static/css/main.css">
+        {% if config.dark %}
+            <link rel="stylesheet" href="/static/css/dark-theme.css"/>
+        {% endif %}
 	<title>Whoogle Search</title>
     </head>
     <body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
@@ -31,7 +34,7 @@
             <form id="search-form" action="/search" method="{{ 'get' if config.get_only else 'post' }}">
                 <div class="search-fields">
                     <div class="autocomplete">
-                        <input type="text" name="q" id="search-bar" autofocus="autofocus">
+                        <input type="text" name="q" id="search-bar" autofocus="autofocus" autocomplete="off">
                     </div>
                     <input type="submit" id="search-submit" value="Search">
                 </div>
@@ -42,7 +45,7 @@
                 <div class="config-fields">
                     <form id="config-form" action="/config" method="post">
                         <div class="config-div">
-                            <label for="config-ctry">Country: </label>
+                            <label for="config-ctry">Filter Results by Country: </label>
                             <select name="ctry" id="config-ctry">
                                 {% for ctry in countries %}
                                     <option value="{{ ctry.value }}"
@@ -53,6 +56,7 @@
                                     </option>
                                 {% endfor %}
                             </select>
+                            <div><span class="info-text"> — Note: If enabled, a website will only appear in the results if it is *hosted* in the selected country.</span></div>
                         </div>
                         <div class="config-div">
                             <label for="config-lang-interface">Interface Language: </label>

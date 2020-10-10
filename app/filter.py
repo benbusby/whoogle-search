@@ -144,18 +144,6 @@ class Filter:
         except AttributeError:
             pass
 
-        # Set up dark mode if active
-        if self.dark:
-            soup.find('html')['style'] = 'scrollbar-color: #333 #111;color:#fff !important;background:#000 !important'
-            for input_element in soup.findAll('input'):
-                input_element['style'] = 'color:#fff;background:#000;'
-
-            for span_element in soup.findAll('span'):
-                span_element['style'] = 'color: white;'
-
-            for href_element in soup.findAll('a'):
-                href_element['style'] = 'color: white' if href_element['href'].startswith('/search') else ''
-
     def update_link(self, link):
         # Replace href with only the intended destination (no "utm" type tags)
         href = link['href'].replace('https://www.google.com', '')
