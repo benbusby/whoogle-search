@@ -55,6 +55,12 @@ class RoutingUtils:
         self.query = q[2:] if self.feeling_lucky else q
         return self.query
 
+    def bang_operator(self, bangs_dict: dict) -> str:
+        for operator in bangs_dict.keys():
+            if self.query.split(' ')[0] == operator:
+                return bangs_dict[operator]['url'].format(self.query.replace(operator, '').strip())
+        return ''
+
     def generate_response(self) -> Tuple[Any, int]:
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
 

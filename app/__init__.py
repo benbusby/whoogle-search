@@ -1,4 +1,5 @@
 from app.utils.session_utils import generate_user_keys
+from app.utils.gen_ddg_bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
 import os
@@ -15,12 +16,19 @@ app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config
 app.config['CONFIG_PATH'] = os.getenv('CONFIG_VOLUME', os.path.join(app.config['STATIC_FOLDER'], 'config'))
 app.config['DEFAULT_CONFIG'] = os.path.join(app.config['CONFIG_PATH'], 'config.json')
 app.config['SESSION_FILE_DIR'] = os.path.join(app.config['CONFIG_PATH'], 'session')
+app.config['BANG_PATH'] = os.getenv('CONFIG_VOLUME', os.path.join(app.config['STATIC_FOLDER'], 'bangs'))
+app.config['BANG_FILE'] = os.path.join(app.config['BANG_PATH'], 'bangs.json')
 
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])
 
 if not os.path.exists(app.config['SESSION_FILE_DIR']):
     os.makedirs(app.config['SESSION_FILE_DIR'])
+
+# (Re)generate DDG bang filter, and create path if it doesn't exist yet
+if not os.path.exists(app.config['BANG_PATH']):
+    os.makedirs(app.config['BANG_PATH'])
+gen_bangs_json(app.config['BANG_FILE'])
 
 Session(app)
 

@@ -27,6 +27,16 @@ def test_feeling_lucky(client):
     assert rv._status_code == 303
 
 
+def test_ddg_bang(client):
+    rv = client.get('/search?q=!gh%20whoogle')
+    assert rv._status_code == 302
+    assert rv.headers.get('Location').startswith('https://github.com')
+
+    rv = client.get('/search?q=!w%20github')
+    assert rv._status_code == 302
+    assert rv.headers.get('Location').startswith('https://en.wikipedia.org')
+
+
 def test_config(client):
     rv = client.post('/config', data=demo_config)
     assert rv._status_code == 302
