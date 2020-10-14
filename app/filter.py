@@ -39,12 +39,9 @@ class Filter:
         """
         contents = ""
         if self.theme:
-            if self.dark:
-                theme_file = f'app/static/css/themes/{self.theme}-dark.css'
-            else:
-                theme_file = f'app/static/css/themes/{self.theme}-light.css'
+            theme_file = f'app/static/css/themes/{self.theme}.css'
         if os.path.exists(theme_file):
-            contents = open(f'app/static/css/themes/{self.theme}-dark.css').read()
+            contents = open(theme_file).read()
         return contents
 
     def parse_theme_colors(self):

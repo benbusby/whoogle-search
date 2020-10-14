@@ -7,8 +7,8 @@
         <meta name="referrer" content="no-referrer">
         <script type="text/javascript" src="/static/js/autocomplete.js"></script>
         {% if theme %}
-            <link rel="stylesheet" href="/static/css/themes{{ theme }}.css" />
-            <link rel="stylesheet" href="/static/css/themes{{ theme }}-search.css" />
+            <link rel="stylesheet" href="/static/css/themes/{{ theme }}.css" />
+            <link rel="stylesheet" href="/static/css/themes/{{ theme }}-search.css" />
         {% else %}
             <link rel="stylesheet" href="/static/css/{{ 'dark-' if dark_mode else '' }}theme.css" />
             <link rel="stylesheet" href="/static/css/{{ 'search-dark' if dark_mode else 'search-light' }}.css">
@@ -22,7 +22,7 @@
     </body>
     <footer>
         <p>
-            Whoogle Search v{{ dark_mode }} ||
+            Whoogle Search v{{ version_number }} ||
             <a style="color: #685e79" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
         </p>
     </footer>
