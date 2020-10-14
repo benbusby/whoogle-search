@@ -2,12 +2,8 @@ html {
     background-color: #D8DEE9b3 !important;
 }
 
-body {
-    background-color: #f9fafb !important;
-}
-
 div {
-    /*background-color: #111 !important;*/
+    /*background-color: #D8DEE9b3 !important;*/
     color: #3B4252 !important;
 }
 
@@ -37,12 +33,8 @@ input {
     background-color: #ffffff !important;
 }
 
-.search-container {
-    background-color: #f9fafb !important;
-}
-
 footer {
-    background-color: #f9fafb !important;
+    background-color: #ECEFF4 !important;
     color: #3B4252;
 }
 

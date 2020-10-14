@@ -20,16 +20,17 @@
 .autocomplete-items div {
     padding: 10px;
     cursor: pointer;
-    color: #3B4252;
-    background-color: #D8DEE9b3;
+    color: #3B4252 !important;
+    background-color: #ECEFF4 !important;
     border-bottom: 1px solid #242424;
 }
 
 .autocomplete-items div:hover {
-    background-color: #404040;
+    background-color: #4C566A !important;
+    color: #ECEFF4 !important;
 }
 
 .autocomplete-active {
     background-color: #685e79 !important;
-    color: #f9fafb;
+    color: #f9fafb !important;
 }
