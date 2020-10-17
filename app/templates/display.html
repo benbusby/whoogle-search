@@ -1,4 +1,4 @@
-<html>
+<html class="{{ 'dark' if dark_mode else '' }}">
     <head>
         <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
@@ -16,11 +16,11 @@
         <link rel="stylesheet" href="/static/css/header.css">
         <title>{{ query }} - Whoogle Search</title>
     </head>
-    <body>
+    <body  class="{{ 'dark' if dark_mode else '' }}">
         {{ search_header|safe }}
         {{ response|safe }}
     </body>
-    <footer>
+    <footer class="{{ 'dark' if dark_mode else '' }}">
         <p>
             Whoogle Search v{{ version_number }} ||
             <a style="color: #685e79" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>

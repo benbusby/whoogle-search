@@ -2,9 +2,22 @@ html {
     background-color: #D8DEE9b3 !important;
 }
 
+html.dark {
+    background-color: #292E39 !important;
+    color: #ECEFF4 !important;
+}
+
+body.dark {
+    background-color: #292E39 !important;
+    color: #ECEFF4 !important;
+}
+
 div {
-    /*background-color: #D8DEE9b3 !important;*/
-    color: #3B4252 !important;
+    color: #3B4252 
+}
+
+div.dark {
+    color: #ECEFF4 !important;
 }
 
 a:visited h3 div {
@@ -20,7 +33,7 @@ a:link div {
 }
 
 div span {
-    color: #3B4252 !important;
+    color: #3B4252;
 }
 
 input {
@@ -30,7 +43,7 @@ input {
 
 #search-bar {
     color: #4C566A !important;
-    background-color: #ffffff !important;
+    background-color: #ffffff ;
 }
 
 footer {
@@ -38,7 +51,17 @@ footer {
     color: #3B4252;
 }
 
-.reskin {
-    background-color: #ECEFF4;
+footer.dark {
+    background-color: #ECEFF4 !important;
     color: #3B4252;
+} 
+
+.reskin {
+    background-color: #292E39;
+    color: #ECEFF4;
+}
+
+.reskin-dark {
+    background-color: #2E3440;
+    color: #ECEFF4;
 }

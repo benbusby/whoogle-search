@@ -1,4 +1,4 @@
-<html>
+<html class="{{ 'dark' if config['dark'] else '' }}">
     <head>
         <link rel="apple-touch-icon" sizes="57x57" href="/static/img/favicon/apple-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="/static/img/favicon/apple-icon-60x60.png">
@@ -35,7 +35,7 @@
         <title>Whoogle Search</title>
     </head>
 
-    <body id="main" style="display: none;">
+    <body class="{{ 'dark' if config['dark'] else '' }}" id="main" style="display: none;">
         <div class="search-container">
             <img class="logo" src="/static/img/logo.png">
             <form id="search-form" action="/search" method="{{ 'get' if config.get_only else 'post' }}">
