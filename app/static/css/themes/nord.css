@@ -1,5 +1,5 @@
 html {
-    background-color: #D8DEE9b3 !important;
+    background-color: #D8DEE9 !important;
 }
 
 html.dark {
@@ -12,20 +12,21 @@ body.dark {
     color: #ECEFF4 !important;
 }
 
-div {
-    color: #3B4252 
-}
-
-div.dark {
+body.dark>a:link div{
     color: #ECEFF4 !important;
 }
+
+div {
+    color: #3B4252; 
+}
+
 
 a:visited h3 div {
     color: #A3BE8C !important;
 }
 
 a:link h3 div {
-    color: #4C566A !important;
+    color: #4C566A 
 }
 
 a:link div {
@@ -34,6 +35,10 @@ a:link div {
 
 div span {
     color: #3B4252;
+}
+
+div span.dark {
+    color: #f9fafb;
 }
 
 input {
@@ -47,18 +52,18 @@ input {
 }
 
 footer {
-    background-color: #ECEFF4 !important;
+    background-color: #D8DEE9 ;
     color: #3B4252;
 }
 
 footer.dark {
-    background-color: #ECEFF4 !important;
-    color: #3B4252;
+    background-color: #292E39 !important;
+    color: #ECEFF4;
 } 
 
 .reskin {
-    background-color: #292E39;
-    color: #ECEFF4;
+    background-color: #f9fafb;
+    color: #3B4252;
 }
 
 .reskin-dark {

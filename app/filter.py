@@ -75,6 +75,7 @@ class Filter:
         page = page.replace('fff', theme_colors['background-color'].replace("#",""))
         if self.dark:
             page = page.replace('202124', 'ddd').replace('1967D2', '3b85ea')
+            page = page.replace('<footer>', '<footer class="dark">')
 
         return page
 
