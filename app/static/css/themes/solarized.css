@@ -1,0 +1,91 @@
+html {
+    background-color: #eee8d5 !important;
+    color:#002b36;
+}
+
+html.dark {
+    background-color: #002b36 !important;
+    color: #eee8d5 !important;
+}
+
+body.dark {
+    background-color: #002b36 !important;
+    color: #eee8d5 !important;
+}
+
+body.dark>a:link div{
+    color: #2aa198 !important;
+}
+
+div {
+    color: #073642; 
+}
+
+
+a:visited h3 div {
+    color: #2aa198 !important;
+}
+
+body.dark * a:visited h3 div{
+    color: #2aa198 !important;
+}
+
+a:link h3 div {
+    color: #6c71c4 
+}
+
+a:link div {
+    color: #81a1c1 !important;
+}
+
+div span.dark {
+    color: #eee8d5 !important;
+}
+
+div span {
+    color: #3B4252;
+}
+
+input {
+    background-color: #eee8d5 !important;
+    color: #3B4252 !important;
+}
+
+body.dark * input {
+    background-color: #586e75 !important;
+    color: #eee8d5 !important;
+}
+
+body.dark * #search-bar {
+    width: 100%;
+    border: 1px solid #e9e9e9;
+    color: #eee8d5;
+    background-color: #4C566A;
+
+}
+
+
+#search-bar {
+    color: #4C566A;
+    background-color: #ffffff ;
+}
+
+footer {
+    background-color: #eee8d5 ;
+    color: #3B4252;
+}
+
+footer.dark{
+    background-color: #002b36 !important;
+    color: #ECEFF4;
+} 
+
+.reskin {
+    background-color: #eee8d5;
+    color: #073642;
+}
+
+.reskin-dark {
+    background-color: #073642;
+    color: #eee8d5;
+}
