@@ -1,4 +1,26 @@
+html.dark {
+    background-color: #222 !important;
+}
+
+body.dark {
+    background-color: #222 !important;
+}
+
+body.dark>#search-bar-autocomplete-list  div{
+    padding: 10px;
+    cursor: pointer;
+    color: #ddd;
+    background-color: #000;
+    border-bottom: 1px solid #fff;
+}
+
+
 .reskin {
     background-color: #fff;
     color: #333;
+}
+
+.reskin-dark {
+    background-color: #000;
+    color: #fff;
 }

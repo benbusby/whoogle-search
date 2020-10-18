@@ -25,6 +25,10 @@ a:visited h3 div {
     color: #A3BE8C !important;
 }
 
+body.dark * a:visited h3 div{
+    color: #A3BE8C !important;
+}
+
 a:link h3 div {
     color: #4C566A 
 }
@@ -33,12 +37,12 @@ a:link div {
     color: #81a1c1 !important;
 }
 
-div span {
-    color: #3B4252;
+div span.dark {
+    color: #f9fafb !important;
 }
 
-div span.dark {
-    color: #f9fafb;
+div span {
+    color: #3B4252;
 }
 
 input {
@@ -46,8 +50,22 @@ input {
     color: #3B4252 !important;
 }
 
+body.dark * input {
+    background-color: #4C566A !important;
+    color: #f9fafb !important;
+}
+
+body.dark * #search-bar {
+    width: 100%;
+    border: 1px solid #e9e9e9;
+    color: #f9fafb;
+    background-color: #4C566A;
+
+}
+
+
 #search-bar {
-    color: #4C566A !important;
+    color: #4C566A;
     background-color: #ffffff ;
 }
 

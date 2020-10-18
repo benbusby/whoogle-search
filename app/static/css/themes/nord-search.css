@@ -25,6 +25,21 @@
     border-bottom: 1px solid #242424;
 }
 
+body.dark * div#search-bar-autocomplete-list div{
+    padding: 10px;
+    cursor: pointer;
+    color: #ECEFF4 !important;
+    background-color: #3B4252 !important;
+    border-bottom: 1px solid #fff;
+}
+
+body.dark * div#search-bar-autocomplete-list div:hover {
+    background-color: #4C566A !important;
+    color: #ECEFF4 !important;
+}
+
+
+
 .autocomplete-items div:hover {
     background-color: #4C566A !important;
     color: #ECEFF4 !important;
