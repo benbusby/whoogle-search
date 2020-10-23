@@ -28,11 +28,6 @@
         {% else %}
             <link rel="stylesheet" href="/static/css/{{ 'dark-' if config['dark'] else '' }}theme.css" />
         {% endif %}
-        {% if config['theme'] %}
-            <link rel="stylesheet" href="/static/css/themes/{{config['theme']}}.css" />
-        {% else %}
-            <link rel="stylesheet" href="/static/css/{{ 'dark-' if config['dark'] else '' }}theme.css" />
-        {% endif %}
         <title>Whoogle Search</title>
     </head>
 
