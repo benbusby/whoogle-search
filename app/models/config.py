@@ -300,9 +300,9 @@ class Config:
         {'name': 'Zimbabwe', 'value': 'countryZW'}
     ]
 
-    THEMES = list(set([theme_name.split('.css')[0]
+    THEMES = set([theme_name.split('.css')[0]
                        for theme_name in os.listdir('app/static/css/themes/') 
-                       if "-search.css" not in theme_name]))
+                       if "-search.css" not in theme_name])
 
     def __init__(self, **kwargs):
         self.url = ''

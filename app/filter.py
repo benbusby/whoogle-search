@@ -58,7 +58,7 @@ class Filter:
                 selector_name = ".reskin-dark"
             else:
                 selector_name = ".reskin"
-            reskin_selector = [i for i in sheet if i.selectorText==selector_name]
+            reskin_selector = [i for i in sheet if i.selectorText == selector_name]
             if len(reskin_selector) == 0:
                 return result
             for css_prop in reskin_selector[0].style:
