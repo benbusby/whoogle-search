@@ -1,8 +1,12 @@
+from app.models.config import Config
 from lxml import etree
 import random
 import requests
 from requests import Response
 import urllib.parse as urlparse
+import os
+from stem import Signal
+from stem.control import Controller
 
 # Core Google search URLs
 SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
@@ -13,6 +17,12 @@ DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 
 # Valid query params
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
+
+
+def acquire_tor_conn():
+    with Controller.from_port(port=9051) as c:
+        c.authenticate()
+        c.signal(Signal.NEWNYM)
 
 
 def gen_user_agent(is_mobile):
@@ -85,10 +95,30 @@ def gen_query(query, args, config, near_city=None):
 
 
 class Request:
-    def __init__(self, normal_ua, language='lang_en'):
-        self.language = language
+    def __init__(self, normal_ua, root_path, config: Config):
+        self.language = config.lang_search
         self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
         self.modified_user_agent = gen_user_agent(self.mobile)
+
+        # Set up proxy, if previously configured
+        if os.environ.get('WHOOGLE_PROXY_LOC'):
+            auth_str = ''
+            if os.environ.get('WHOOGLE_PROXY_USER'):
+                auth_str = os.environ.get('WHOOGLE_PROXY_USER') + \
+                           ':' + os.environ.get('WHOOGLE_PROXY_PASS')
+            self.proxies = {
+                'http': os.environ.get('WHOOGLE_PROXY_TYPE') + '://' +
+                        auth_str + os.environ.get('WHOOGLE_PROXY_LOC'),
+            }
+            self.proxies['https'] = self.proxies['http'].replace('http', 'https')
+        else:
+            self.proxies = {
+                'http': 'socks5://127.0.0.1:9050',
+                'https': 'socks5://127.0.0.1:9050'
+            } if config.tor else {}
+        self.tor = config.tor
+        self.tor_valid = False
+        self.root_path = root_path
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -103,9 +133,28 @@ class Request:
 
         return []
 
-    def send(self, base_url=SEARCH_URL, query='') -> Response:
+    def send(self, base_url=SEARCH_URL, query='', attempt=0) -> Response:
         headers = {
             'User-Agent': self.modified_user_agent
         }
 
-        return requests.get(base_url + query, headers=headers)
+        # Make sure that the tor connection is valid, if enabled
+        if self.tor:
+            tor_check = requests.get('https://check.torproject.org/', proxies=self.proxies, headers=headers)
+            self.tor_valid = 'Congratulations' in tor_check.text
+            # TODO: Throw error if the connection isn't valid?
+
+        response = requests.get(base_url + query, proxies=self.proxies, headers=headers)
+
+        # Retry query with new identity if using Tor (max 5 attempts)
+        if 'form id="captcha-form"' in response.text:
+            attempt += 1
+            if attempt > 5:
+                return requests.get(self.root_path + 'tor-reject?q=' + query)
+            acquire_tor_conn()
+            return self.send(base_url, query, attempt)
+
+        return response
+
+
+acquire_tor_conn()

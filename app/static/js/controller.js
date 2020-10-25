@@ -1,6 +1,6 @@
 // Whoogle configurations that use boolean values and checkboxes
 CONFIG_BOOLS = [
-    "nojs", "dark", "safe", "alts", "new_tab", "get_only"
+    "nojs", "dark", "safe", "alts", "new_tab", "get_only", "tor"
 ];
 
 // Whoogle configurations that use string values and input fields

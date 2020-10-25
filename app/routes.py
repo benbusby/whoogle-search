@@ -62,13 +62,16 @@ def before_request_func():
 
     if https_only and request.url.startswith('http://'):
         return redirect(request.url.replace('http://', 'https://', 1), code=308)
-    
+
     g.user_config = Config(**session['config'])
 
     if not g.user_config.url:
         g.user_config.url = request.url_root.replace('http://', 'https://') if https_only else request.url_root
 
-    g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang_search)
+    g.user_request = Request(
+        request.headers.get('User-Agent'),
+        request.url_root,
+        config=g.user_config)
     g.app_location = g.user_config.url
 
 
@@ -138,7 +141,7 @@ def autocomplete():
     elif request.data:
         q = urlparse.unquote_plus(request.data.decode('utf-8').replace('q=', ''))
 
-    return jsonify([q, g.user_request.autocomplete(q)])
+    return jsonify([q, g.user_request.autocomplete(q) if not g.user_config.tor else []])
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -160,7 +163,7 @@ def search():
 
     # Generate response and number of external elements from the page
     response, elements = search_util.generate_response()
-    if search_util.feeling_lucky:
+    if search_util.feeling_lucky or elements < 0:
         return redirect(response, code=303)
 
     # Keep count of external elements to fetch before element key can be regenerated
@@ -269,6 +272,12 @@ def window():
     return render_template('display.html', response=results)
 
 
+@app.route('/tor-reject', methods=['GET'])
+def tor_reject():
+    return render_template('error.html',
+            query=request.args.get('q') + ' - Tor rejection')
+
+
 def run_app():
     parser = argparse.ArgumentParser(description='Whoogle Search console runner')
     parser.add_argument('--port', default=5000, metavar='<port number>',
@@ -281,12 +290,26 @@ def run_app():
                         help='Enforces HTTPS redirects for all requests')
     parser.add_argument('--userpass', default='', metavar='<username:password>',
                         help='Sets a username/password basic auth combo (default None)')
+    parser.add_argument('--proxyauth', default='', metavar='<username:password>',
+                        help='Sets a username/password for a HTTP/SOCKS proxy (default None)')
+    parser.add_argument('--proxytype', default='', metavar='<socks4|socks5|http>',
+                        help='Sets a proxy type for all connections (default None)')
+    parser.add_argument('--proxyurl', default='', metavar='<location:port>',
+                        help='Sets a proxy location for all connections (default None)')
     args = parser.parse_args()
 
     if args.userpass:
         user_pass = args.userpass.split(':')
         os.environ['WHOOGLE_USER'] = user_pass[0]
         os.environ['WHOOGLE_PASS'] = user_pass[1]
+
+    if args.proxyauth or args.proxytype or args.proxyurl:
+        if args.proxyauth:
+            proxy_user_pass = args.proxyauth.split(':')
+            os.environ['WHOOGLE_PROXY_USER'] = proxy_user_pass[0]
+            os.environ['WHOOGLE_PROXY_PASS'] = proxy_user_pass[1]
+        os.environ['WHOOGLE_PROXY_TYPE'] = args.proxytype
+        os.environ['WHOOGLE_PROXY_LOC'] = args.proxyurl
 
     os.environ['HTTPS_ONLY'] = '1' if args.https_only else ''
 
