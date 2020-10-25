@@ -1,7 +1,9 @@
 language: python
 python: 3.6
 before_install:
-    - sudo apt-get -y install libgnutls28-dev
+    - sudo apt-get -y install libgnutls28-dev tor
+    - sudo cat rc/torrc > /etc/tor/torrc
+    - sudo systemctl tor start
 install:
     - pip install -r requirements.txt
 script:

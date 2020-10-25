@@ -19,7 +19,7 @@ DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
 
 
-def acquire_tor_conn():
+def acquire_tor_identity():
     with Controller.from_port(port=9051) as c:
         c.authenticate()
         c.signal(Signal.NEWNYM)
@@ -151,10 +151,10 @@ class Request:
             attempt += 1
             if attempt > 5:
                 return requests.get(self.root_path + 'tor-reject?q=' + query)
-            acquire_tor_conn()
+            acquire_tor_identity()
             return self.send(base_url, query, attempt)
 
         return response
 
 
-acquire_tor_conn()
+acquire_tor_identity()
