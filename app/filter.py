@@ -31,9 +31,6 @@ class Filter:
 
     def reskin(self, page):
         # Aesthetic only re-skinning
-        page = page.replace('>G<', '>Wh<')
-        pattern = re.compile('4285f4|ea4335|fbcc05|34a853|fbbc05', re.IGNORECASE)
-        page = pattern.sub('685e79', page)
         if self.dark:
             page = page.replace('fff', '000').replace('202124', 'ddd').replace('1967D2', '3b85ea')
 
@@ -55,6 +52,7 @@ class Filter:
         self.remove_ads()
         self.fix_question_section()
         self.update_styling(soup)
+
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
@@ -147,7 +145,9 @@ class Filter:
     def update_link(self, link):
         # Replace href with only the intended destination (no "utm" type tags)
         href = link['href'].replace('https://www.google.com', '')
-        if '/advanced_search' in href:
+        if '/advanced_search' in href or 'tbm=shop' in href:
+            # TODO: The "Shopping" tab requires further filtering (see #136)
+            # Temporarily removing all links to that tab for now.
             link.decompose()
             return
         elif self.new_tab:
