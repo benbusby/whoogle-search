@@ -71,14 +71,11 @@ class RoutingUtils:
         full_query = gen_query(self.query, self.request_params, self.config, content_filter.near)
         get_body = g.user_request.send(query=full_query)
 
-        if '/tor-reject' in get_body.text:
-            # Skip formatting if this is a Tor error page
-            return get_body, -1
-
         # Produce cleanable html soup from response
         html_soup = BeautifulSoup(content_filter.reskin(get_body.text), 'html.parser')
-        html_soup.insert(
-            0, BeautifulSoup(TOR_BANNER, features='lxml') if g.user_request.tor_valid else BeautifulSoup(""))
+        html_soup.insert(0, BeautifulSoup(
+            TOR_BANNER,
+            features='lxml') if g.user_request.tor_valid else BeautifulSoup("", features="lxml"))
 
         if self.feeling_lucky:
             return get_first_link(html_soup), 1

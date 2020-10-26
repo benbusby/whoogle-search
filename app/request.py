@@ -2,10 +2,10 @@ from app.models.config import Config
 from lxml import etree
 import random
 import requests
-from requests import Response
+from requests import Response, ConnectionError
 import urllib.parse as urlparse
 import os
-from stem import Signal
+from stem import Signal, SocketError
 from stem.control import Controller
 
 # Core Google search URLs
@@ -19,13 +19,36 @@ DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
 
 
-def acquire_tor_identity():
-    with Controller.from_port(port=9051) as c:
-        c.authenticate()
-        c.signal(Signal.NEWNYM)
+class TorError(Exception):
+    """Exception raised for errors in Tor requests.
+
+    Attributes:
+        message -- a message describing the error that occurred
+    """
+
+    def __init__(self, message, disable=False):
+        self.message = message
+        self.disable = disable
+        super().__init__(self.message)
 
 
-def gen_user_agent(is_mobile):
+def send_tor_signal(new_identity=False) -> bool:
+    if new_identity:
+        print('Requesting new identity...')
+
+    try:
+        with Controller.from_port(port=9051) as c:
+            c.authenticate()
+            c.signal(Signal.NEWNYM if new_identity else Signal.HEARTBEAT)
+            os.environ['TOR_AVAILABLE'] = '1'
+            return True
+    except (SocketError, ConnectionRefusedError, ConnectionError):
+        os.environ['TOR_AVAILABLE'] = '0'
+
+    return False
+
+
+def gen_user_agent(is_mobile) -> str:
     mozilla = random.choice(['Moo', 'Woah', 'Bro', 'Slow']) + 'zilla'
     firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
     linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
@@ -36,7 +59,7 @@ def gen_user_agent(is_mobile):
     return DESKTOP_UA.format(mozilla, linux, firefox)
 
 
-def gen_query(query, args, config, near_city=None):
+def gen_query(query, args, config, near_city=None) -> str:
     param_dict = {key: '' for key in VALID_PARAMS}
 
     # Use :past(hour/day/week/month/year) if available
@@ -95,7 +118,19 @@ def gen_query(query, args, config, near_city=None):
 
 
 class Request:
+    """Class used for handling all outbound requests, including search queries,
+    search suggestions, and loading of external content (images, audio, etc).
+
+    Attributes:
+        normal_ua -- the user's current user agent
+        root_path -- the root path of the whoogle instance
+        config -- the user's current whoogle configuration
+    """
     def __init__(self, normal_ua, root_path, config: Config):
+        # Send heartbeat to Tor, used in determining if the user can or cannot
+        # enable Tor for future requests
+        send_tor_signal()
+
         self.language = config.lang_search
         self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
         self.modified_user_agent = gen_user_agent(self.mobile)
@@ -123,7 +158,16 @@ class Request:
     def __getitem__(self, name):
         return getattr(self, name)
 
-    def autocomplete(self, query):
+    def autocomplete(self, query) -> list:
+        """Sends a query to Google's search suggestion service
+
+        Args:
+            query: The in-progress query to send
+
+        Returns:
+            list: The list of matches for possible search suggestions
+
+        """
         ac_query = dict(hl=self.language, q=query)
         response = self.send(base_url=AUTOCOMPLETE_URL, query=urlparse.urlencode(ac_query)).text
 
@@ -134,27 +178,43 @@ class Request:
         return []
 
     def send(self, base_url=SEARCH_URL, query='', attempt=0) -> Response:
+        """Sends an outbound request to a URL. Optionally sends the request using Tor, if
+        enabled by the user.
+
+        Args:
+            base_url: The URL to use in the request
+            query: The optional query string for the request
+            attempt: The number of attempts made for the request (used for cycling
+                through Tor identities, if enabled)
+
+        Returns:
+            Response: The Response object returned by the requests call
+
+        """
         headers = {
             'User-Agent': self.modified_user_agent
         }
+
+        if self.tor and not send_tor_signal(new_identity=attempt > 0):  # Request new identity if the last one failed
+            raise TorError("Tor was previously enabled, but the connection has been dropped. Please check your " +
+                           "Tor configuration and try again.", disable=True)
 
         # Make sure that the tor connection is valid, if enabled
         if self.tor:
             tor_check = requests.get('https://check.torproject.org/', proxies=self.proxies, headers=headers)
             self.tor_valid = 'Congratulations' in tor_check.text
-            # TODO: Throw error if the connection isn't valid?
+
+            if not self.tor_valid:
+                raise TorError("Tor connection succeeded, but the connection could not be validated by torproject.org",
+                               disable=True)
 
         response = requests.get(base_url + query, proxies=self.proxies, headers=headers)
 
-        # Retry query with new identity if using Tor (max 5 attempts)
-        if 'form id="captcha-form"' in response.text:
+        # Retry query with new identity if using Tor (max 10 attempts)
+        if 'form id="captcha-form"' in response.text and self.tor:
             attempt += 1
-            if attempt > 5:
-                return requests.get(self.root_path + 'tor-reject?q=' + query)
-            acquire_tor_identity()
+            if attempt > 10:
+                raise TorError("Tor query failed -- max attempts exceeded 10")
             return self.send(base_url, query, attempt)
 
         return response
-
-
-acquire_tor_identity()

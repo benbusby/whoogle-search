@@ -9,12 +9,12 @@ import uuid
 from functools import wraps
 
 import waitress
-from flask import jsonify, make_response, request, redirect, render_template, send_file, session
+from flask import jsonify, make_response, request, redirect, render_template, send_file, session, url_for
 from requests import exceptions
 
 from app import app
 from app.models.config import Config
-from app.request import Request
+from app.request import Request, TorError
 from app.utils.session_utils import valid_user_session
 from app.utils.routing_utils import *
 
@@ -72,6 +72,7 @@ def before_request_func():
         request.headers.get('User-Agent'),
         request.url_root,
         config=g.user_config)
+
     g.app_location = g.user_config.url
 
 
@@ -106,11 +107,15 @@ def unknown_page(e):
 def index():
     # Reset keys
     session['fernet_keys'] = generate_user_keys(g.cookies_disabled)
+    error_message = session['error_message'] if 'error_message' in session else ''
+    session['error_message'] = ''
 
     return render_template('index.html',
                            languages=Config.LANGUAGES,
                            countries=Config.COUNTRIES,
                            config=g.user_config,
+                           error_message=error_message,
+                           tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
 
 
@@ -141,6 +146,8 @@ def autocomplete():
     elif request.data:
         q = urlparse.unquote_plus(request.data.decode('utf-8').replace('q=', ''))
 
+    # Return a list of suggestions for the query
+    # Note: If Tor is enabled, this returns nothing, as the request is almost always rejected
     return jsonify([q, g.user_request.autocomplete(q) if not g.user_config.tor else []])
 
 
@@ -162,7 +169,13 @@ def search():
         return redirect('/')
 
     # Generate response and number of external elements from the page
-    response, elements = search_util.generate_response()
+    try:
+        response, elements = search_util.generate_response()
+    except TorError as e:
+        session['error_message'] = e.message + ("\\n\\nTor config is now disabled!" if e.disable else "")
+        session['config']['tor'] = False if e.disable else session['config']['tor']
+        return redirect(url_for('.index'))
+
     if search_util.feeling_lucky or elements < 0:
         return redirect(response, code=303)
 
@@ -270,12 +283,6 @@ def window():
         pass
 
     return render_template('display.html', response=results)
-
-
-@app.route('/tor-reject', methods=['GET'])
-def tor_reject():
-    return render_template('error.html',
-            query=request.args.get('q') + ' - Tor rejection')
 
 
 def run_app():
