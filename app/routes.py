@@ -301,7 +301,7 @@ def run_app():
                         help='Sets a username/password for a HTTP/SOCKS proxy (default None)')
     parser.add_argument('--proxytype', default='', metavar='<socks4|socks5|http>',
                         help='Sets a proxy type for all connections (default None)')
-    parser.add_argument('--proxyurl', default='', metavar='<location:port>',
+    parser.add_argument('--proxyloc', default='', metavar='<location:port>',
                         help='Sets a proxy location for all connections (default None)')
     args = parser.parse_args()
 
@@ -310,13 +310,13 @@ def run_app():
         os.environ['WHOOGLE_USER'] = user_pass[0]
         os.environ['WHOOGLE_PASS'] = user_pass[1]
 
-    if args.proxyauth or args.proxytype or args.proxyurl:
+    if args.proxytype and args.proxyloc:
         if args.proxyauth:
             proxy_user_pass = args.proxyauth.split(':')
             os.environ['WHOOGLE_PROXY_USER'] = proxy_user_pass[0]
             os.environ['WHOOGLE_PROXY_PASS'] = proxy_user_pass[1]
         os.environ['WHOOGLE_PROXY_TYPE'] = args.proxytype
-        os.environ['WHOOGLE_PROXY_LOC'] = args.proxyurl
+        os.environ['WHOOGLE_PROXY_LOC'] = args.proxyloc
 
     os.environ['HTTPS_ONLY'] = '1' if args.https_only else ''
 
