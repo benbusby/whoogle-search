@@ -195,7 +195,8 @@ class Request:
             'User-Agent': self.modified_user_agent
         }
 
-        if self.tor and not send_tor_signal(Signal.NEWNYM):  # Request new identity if the last one failed
+        # Validate Tor connection and request new identity if the last one failed
+        if self.tor and not send_tor_signal(Signal.NEWNYM if attempt > 0 else Signal.HEARTBEAT):
             raise TorError("Tor was previously enabled, but the connection has been dropped. Please check your " +
                            "Tor configuration and try again.", disable=True)
 
