@@ -1,4 +1,3 @@
-User tor
 DataDirectory /var/lib/tor
 ControlPort 9051
 CookieAuthentication 1

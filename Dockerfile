@@ -1,9 +1,13 @@
 FROM python:3.8-slim
 
 WORKDIR /usr/src/app
-RUN apt-get update && apt-get install -y build-essential libcurl4-openssl-dev libssl-dev tor
-RUN cat rc/torrc > /etc/tor/torrc
-RUN service tor start
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    tor
+
+COPY rc/torrc /etc/tor/torrc
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -36,4 +40,4 @@ COPY . .
 
 EXPOSE $EXPOSE_PORT
 
-CMD ["./run"]
+CMD service tor start && ./run
