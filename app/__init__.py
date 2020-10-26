@@ -4,6 +4,7 @@ from app.utils.gen_ddg_bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
 import os
+from stem import Signal
 
 app = Flask(__name__, static_folder=os.path.dirname(os.path.abspath(__file__)) + '/static')
 app.user_elements = {}
@@ -34,6 +35,6 @@ if not os.path.exists(app.config['BANG_PATH']):
 Session(app)
 
 # Attempt to acquire tor identity, to determine if Tor config is available
-send_tor_signal()
+send_tor_signal(Signal.HEARTBEAT)
 
 from app import routes

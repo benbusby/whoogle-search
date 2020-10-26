@@ -24,6 +24,9 @@ class TorError(Exception):
 
     Attributes:
         message -- a message describing the error that occurred
+        disable -- optionally disables Tor in the user config (note:
+            this should only happen if the connection has been dropped
+            altogether).
     """
 
     def __init__(self, message, disable=False):
@@ -32,14 +35,11 @@ class TorError(Exception):
         super().__init__(self.message)
 
 
-def send_tor_signal(new_identity=False) -> bool:
-    if new_identity:
-        print('Requesting new identity...')
-
+def send_tor_signal(signal: Signal) -> bool:
     try:
         with Controller.from_port(port=9051) as c:
             c.authenticate()
-            c.signal(Signal.NEWNYM if new_identity else Signal.HEARTBEAT)
+            c.signal(signal)
             os.environ['TOR_AVAILABLE'] = '1'
             return True
     except (SocketError, ConnectionRefusedError, ConnectionError):
@@ -129,7 +129,7 @@ class Request:
     def __init__(self, normal_ua, root_path, config: Config):
         # Send heartbeat to Tor, used in determining if the user can or cannot
         # enable Tor for future requests
-        send_tor_signal()
+        send_tor_signal(Signal.HEARTBEAT)
 
         self.language = config.lang_search
         self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
@@ -195,7 +195,7 @@ class Request:
             'User-Agent': self.modified_user_agent
         }
 
-        if self.tor and not send_tor_signal(new_identity=attempt > 0):  # Request new identity if the last one failed
+        if self.tor and not send_tor_signal(Signal.NEWNYM):  # Request new identity if the last one failed
             raise TorError("Tor was previously enabled, but the connection has been dropped. Please check your " +
                            "Tor configuration and try again.", disable=True)
 
