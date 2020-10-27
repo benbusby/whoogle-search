@@ -143,7 +143,7 @@ class Request:
                            ':' + os.environ.get('WHOOGLE_PROXY_PASS')
             self.proxies = {
                 'http': os.environ.get('WHOOGLE_PROXY_TYPE') + '://' +
-                        auth_str + os.environ.get('WHOOGLE_PROXY_LOC'),
+                        auth_str + '@' + os.environ.get('WHOOGLE_PROXY_LOC'),
             }
             self.proxies['https'] = self.proxies['http'].replace('http', 'https')
         else:
