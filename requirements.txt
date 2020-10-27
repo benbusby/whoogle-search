@@ -2,7 +2,7 @@ beautifulsoup4==4.8.2
 bs4==0.0.1
 cffi==1.13.2
 Click==7.0
-cryptography==2.8
+cryptography==3.2
 Flask==1.1.1
 Flask-Session==0.3.2
 itsdangerous==1.1.0
