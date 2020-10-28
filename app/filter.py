@@ -107,14 +107,14 @@ class Filter:
             element_src = 'https:' + element_src
         elif element_src.startswith(LOGO_URL):
             # Re-brand with Whoogle logo
-            element['src'] = '/static/img/logo.png'
+            element['src'] = 'static/img/logo.png'
             element['style'] = 'height:40px;width:162px'
             return
         elif element_src.startswith(GOOG_IMG):
             element['src'] = BLANK_B64
             return
 
-        element['src'] = '/element?url=' + self.encrypt_path(element_src, is_element=True) + \
+        element['src'] = 'element?url=' + self.encrypt_path(element_src, is_element=True) + \
                          '&type=' + urlparse.quote(mime)
         # TODO: Non-mobile image results link to website instead of image
         # if not self.mobile:
@@ -145,7 +145,7 @@ class Filter:
     def update_link(self, link):
         # Replace href with only the intended destination (no "utm" type tags)
         href = link['href'].replace('https://www.google.com', '')
-        if '/advanced_search' in href or 'tbm=shop' in href:
+        if 'advanced_search' in href or 'tbm=shop' in href:
             # TODO: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
             link.decompose()
@@ -163,7 +163,7 @@ class Filter:
             # "li:1" implies the query should be interpreted verbatim, so we wrap it in double quotes
             if 'li:1' in href:
                 query_link = '"' + query_link + '"'
-            new_search = '/search?q=' + self.encrypt_path(query_link)
+            new_search = 'search?q=' + self.encrypt_path(query_link)
 
             query_params = parse_qs(urlparse.urlparse(href).query)
             for param in VALID_PARAMS:
