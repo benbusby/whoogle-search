@@ -136,6 +136,10 @@ def opensearch():
 @app.route('/autocomplete', methods=['GET', 'POST'])
 def autocomplete():
     q = g.request_params.get('q')
+    if not q:
+        # FF will occasionally (incorrectly) send the q field without a
+        # mimetype in the format "b'q=<query>'" through the request.data field
+        q = str(request.data).replace('q=', '')
 
     # Search bangs if the query begins with "!", but not "! " (feeling lucky)
     if q.startswith('!') and len(q) > 1 and not q.startswith('! '):
