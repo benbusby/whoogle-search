@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     tor
 
-COPY rc/torrc /etc/tor/torrc
+COPY misc/tor/torrc /etc/tor/torrc
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -40,4 +40,4 @@ COPY . .
 
 EXPOSE $EXPOSE_PORT
 
-CMD service tor start && ./run
+CMD misc/tor/start-tor.sh & ./run
