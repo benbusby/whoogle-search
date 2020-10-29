@@ -59,7 +59,7 @@ def before_request_func():
 
     if https_only and request.url.startswith('http://'):
         return redirect(request.url.replace('http://', 'https://', 1), code=308)
-
+    
     g.user_config = Config(**session['config'])
 
     if not g.user_config.url:

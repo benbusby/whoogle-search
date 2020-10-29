@@ -34,7 +34,7 @@
             <form id="search-form" action="/search" method="{{ 'get' if config.get_only else 'post' }}">
                 <div class="search-fields">
                     <div class="autocomplete">
-                        <input type="text" name="q" id="search-bar" autofocus="autofocus">
+                        <input type="text" name="q" id="search-bar" autofocus="autofocus" autocomplete="off">
                     </div>
                     <input type="submit" id="search-submit" value="Search">
                 </div>
