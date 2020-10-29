@@ -1,8 +1,10 @@
+from app.request import send_tor_signal
 from app.utils.session_utils import generate_user_keys
 from app.utils.gen_ddg_bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
 import os
+from stem import Signal
 
 app = Flask(__name__, static_folder=os.path.dirname(os.path.abspath(__file__)) + '/static')
 app.user_elements = {}
@@ -25,11 +27,15 @@ if not os.path.exists(app.config['CONFIG_PATH']):
 if not os.path.exists(app.config['SESSION_FILE_DIR']):
     os.makedirs(app.config['SESSION_FILE_DIR'])
 
-# (Re)generate DDG bang filter, and create path if it doesn't exist yet
+# Generate DDG bang filter, and create path if it doesn't exist yet
 if not os.path.exists(app.config['BANG_PATH']):
     os.makedirs(app.config['BANG_PATH'])
-gen_bangs_json(app.config['BANG_FILE'])
+if not os.path.exists(app.config['BANG_FILE']):
+    gen_bangs_json(app.config['BANG_FILE'])
 
 Session(app)
+
+# Attempt to acquire tor identity, to determine if Tor config is available
+send_tor_signal(Signal.HEARTBEAT)
 
 from app import routes
