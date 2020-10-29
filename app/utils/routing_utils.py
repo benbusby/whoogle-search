@@ -7,6 +7,9 @@ from flask import g
 from typing import Any, Tuple
 
 
+TOR_BANNER = '<hr><h1 style="text-align: center">You are using Tor</h1><hr>'
+
+
 class RoutingUtils:
     def __init__(self, request, config, session, cookies_disabled=False):
         self.request_params = request.args if request.method == 'GET' else request.form
@@ -66,10 +69,13 @@ class RoutingUtils:
 
         content_filter = Filter(self.session['fernet_keys'], mobile=mobile, config=self.config)
         full_query = gen_query(self.query, self.request_params, self.config, content_filter.near)
-        get_body = g.user_request.send(query=full_query).text
+        get_body = g.user_request.send(query=full_query)
 
         # Produce cleanable html soup from response
-        html_soup = BeautifulSoup(content_filter.reskin(get_body), 'html.parser')
+        html_soup = BeautifulSoup(content_filter.reskin(get_body.text), 'html.parser')
+        html_soup.insert(0, BeautifulSoup(
+            TOR_BANNER,
+            features='lxml') if g.user_request.tor_valid else BeautifulSoup("", features="lxml"))
 
         if self.feeling_lucky:
             return get_first_link(html_soup), 1

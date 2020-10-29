@@ -305,6 +305,7 @@ class Config:
         self.safe = False
         self.dark = False
         self.nojs = False
+        self.tor = False
         self.near = ''
         self.alts = False
         self.new_tab = False

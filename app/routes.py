@@ -9,12 +9,12 @@ import uuid
 from functools import wraps
 
 import waitress
-from flask import jsonify, make_response, request, redirect, render_template, send_file, session
+from flask import jsonify, make_response, request, redirect, render_template, send_file, session, url_for
 from requests import exceptions
 
 from app import app
 from app.models.config import Config
-from app.request import Request
+from app.request import Request, TorError
 from app.utils.session_utils import valid_user_session
 from app.utils.routing_utils import *
 
@@ -62,13 +62,17 @@ def before_request_func():
 
     if https_only and request.url.startswith('http://'):
         return redirect(request.url.replace('http://', 'https://', 1), code=308)
-    
+
     g.user_config = Config(**session['config'])
 
     if not g.user_config.url:
         g.user_config.url = request.url_root.replace('http://', 'https://') if https_only else request.url_root
 
-    g.user_request = Request(request.headers.get('User-Agent'), language=g.user_config.lang_search)
+    g.user_request = Request(
+        request.headers.get('User-Agent'),
+        request.url_root,
+        config=g.user_config)
+
     g.app_location = g.user_config.url
 
 
@@ -103,11 +107,15 @@ def unknown_page(e):
 def index():
     # Reset keys
     session['fernet_keys'] = generate_user_keys(g.cookies_disabled)
+    error_message = session['error_message'] if 'error_message' in session else ''
+    session['error_message'] = ''
 
     return render_template('index.html',
                            languages=Config.LANGUAGES,
                            countries=Config.COUNTRIES,
                            config=g.user_config,
+                           error_message=error_message,
+                           tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
 
 
@@ -138,7 +146,9 @@ def autocomplete():
     elif request.data:
         q = urlparse.unquote_plus(request.data.decode('utf-8').replace('q=', ''))
 
-    return jsonify([q, g.user_request.autocomplete(q)])
+    # Return a list of suggestions for the query
+    # Note: If Tor is enabled, this returns nothing, as the request is almost always rejected
+    return jsonify([q, g.user_request.autocomplete(q) if not g.user_config.tor else []])
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -159,8 +169,14 @@ def search():
         return redirect('/')
 
     # Generate response and number of external elements from the page
-    response, elements = search_util.generate_response()
-    if search_util.feeling_lucky:
+    try:
+        response, elements = search_util.generate_response()
+    except TorError as e:
+        session['error_message'] = e.message + ("\\n\\nTor config is now disabled!" if e.disable else "")
+        session['config']['tor'] = False if e.disable else session['config']['tor']
+        return redirect(url_for('.index'))
+
+    if search_util.feeling_lucky or elements < 0:
         return redirect(response, code=303)
 
     # Keep count of external elements to fetch before element key can be regenerated
@@ -281,12 +297,26 @@ def run_app():
                         help='Enforces HTTPS redirects for all requests')
     parser.add_argument('--userpass', default='', metavar='<username:password>',
                         help='Sets a username/password basic auth combo (default None)')
+    parser.add_argument('--proxyauth', default='', metavar='<username:password>',
+                        help='Sets a username/password for a HTTP/SOCKS proxy (default None)')
+    parser.add_argument('--proxytype', default='', metavar='<socks4|socks5|http>',
+                        help='Sets a proxy type for all connections (default None)')
+    parser.add_argument('--proxyloc', default='', metavar='<location:port>',
+                        help='Sets a proxy location for all connections (default None)')
     args = parser.parse_args()
 
     if args.userpass:
         user_pass = args.userpass.split(':')
         os.environ['WHOOGLE_USER'] = user_pass[0]
         os.environ['WHOOGLE_PASS'] = user_pass[1]
+
+    if args.proxytype and args.proxyloc:
+        if args.proxyauth:
+            proxy_user_pass = args.proxyauth.split(':')
+            os.environ['WHOOGLE_PROXY_USER'] = proxy_user_pass[0]
+            os.environ['WHOOGLE_PROXY_PASS'] = proxy_user_pass[1]
+        os.environ['WHOOGLE_PROXY_TYPE'] = args.proxytype
+        os.environ['WHOOGLE_PROXY_LOC'] = args.proxyloc
 
     os.environ['HTTPS_ONLY'] = '1' if args.https_only else ''
 

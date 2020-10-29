@@ -29,6 +29,12 @@
 	<title>Whoogle Search</title>
     </head>
     <body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
+    <script>
+        {% if error_message|length > 0 %}
+            let error = "{{ error_message|safe }}";
+            alert(error);
+        {% endif %}
+    </script>
         <div class="search-container">
             <img class="logo" src="/static/img/logo.png">
             <form id="search-form" action="/search" method="{{ 'get' if config.get_only else 'post' }}">
@@ -109,6 +115,10 @@
                         <div class="config-div">
                             <label for="config-new-tab">Open Links in New Tab: </label>
                             <input type="checkbox" name="new_tab" id="config-new-tab">
+                        </div>
+                        <div class="config-div">
+                            <label for="config-tor">Use Tor: {{ '' if tor_available else 'Unavailable' }}</label>
+                            <input type="checkbox" name="tor" id="config-tor" {{ '' if tor_available else 'hidden' }}>
                         </div>
                         <div class="config-div">
                             <label for="config-get-only">GET Requests Only: </label>

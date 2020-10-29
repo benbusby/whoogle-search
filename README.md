@@ -25,6 +25,7 @@ Contents
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
 - No referrer header
+- Tor and HTTP/SOCKS proxy support
 - Autocomplete/search suggestions
 - POST request search and suggestion queries (when possible)
 - View images at full res without site redirect (currently mobile only)
@@ -35,7 +36,7 @@ Contents
 - Optional location-based searching (i.e. results near \<city\>)
 - Optional NoJS mode to disable all Javascript in results
 
-<sup>*If deployed to a remote server</sup>
+<sup>*If deployed to a remote server, or configured to send requests through a VPN, Tor, proxy, etc.</sup>
 
 ## Dependencies
 If using Heroku Quick Deploy, **you can skip this section**.
