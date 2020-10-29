@@ -31,7 +31,7 @@ const setupSearchLayout = () => {
 const fillConfigValues = () => {
     // Request existing config info
     let xhrGET = new XMLHttpRequest();
-    xhrGET.open("GET", "/config");
+    xhrGET.open("GET", "config");
     xhrGET.onload = function() {
         if (xhrGET.readyState === 4 && xhrGET.status !== 200) {
             alert("Error loading Whoogle config");
@@ -82,7 +82,7 @@ const loadConfig = event => {
     }
 
     let xhrPUT = new XMLHttpRequest();
-    xhrPUT.open("PUT", "/config?name=" + config + ".conf");
+    xhrPUT.open("PUT", "config?name=" + config + ".conf");
     xhrPUT.onload = function() {
         if (xhrPUT.readyState === 4 && xhrPUT.status !== 200) {
             alert("Error loading Whoogle config");
@@ -104,7 +104,7 @@ const saveConfig = event => {
     }
 
     let configForm = document.getElementById("config-form");
-    configForm.action = '/config?name=' + config + ".conf";
+    configForm.action = 'config?name=' + config + ".conf";
     configForm.submit();
 };
 
