@@ -5,12 +5,14 @@ services:
     image: benbusby/whoogle-search
     container_name: whoogle-search
     environment:
-      - WHOOGLE_USER=username # remove to disable
-      - WHOOGLE_PASS=password # remove to disable
-      - WHOOGLE_PROXY_USER=username # remove to disable
-      - WHOOGLE_PROXY_PASS=password # remove to disable
-      - WHOOGLE_PROXY_TYPE=socks5 # remove to disable
-      - WHOOGLE_PROXY_LOC=ip # remove to disable
+      # Basic auth configuration, remove to disable
+      - WHOOGLE_USER=username
+      - WHOOGLE_PASS=password
+      # Proxy configuration, remove to disable
+      - WHOOGLE_PROXY_USER=username
+      - WHOOGLE_PROXY_PASS=password
+      - WHOOGLE_PROXY_TYPE=socks5
+      - WHOOGLE_PROXY_LOC=ip
     ports:
       - 5000:5000
     restart: unless-stopped
