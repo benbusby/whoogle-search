@@ -49,8 +49,8 @@ If using Heroku Quick Deploy, **you can skip this section**.
   - Ubuntu: `sudo apt-get install -y libcurl4-openssl-dev libssl-dev`
   - Arch: `pacman -S curl openssl`
 
-## Envirorment variables
-You may use envirorment variables to customize your Whoogle instance:
+## Environment variables
+You may use environment variables to customize your Whoogle instance:
 
 | Variable           | Description                                                    |
 | ------------------ | -------------------------------------------------------------- |
@@ -181,7 +181,7 @@ docker build --tag whoogle-search:1.0 .
 docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
 ```
 
-You may want to set the envirorment:
+You may want to set the environment:
 
 ```bash
 docker run --publish 5000:5000 --detach --name whoogle-search \
@@ -209,7 +209,7 @@ heroku open
 ```
 
 This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Whoogle and even [set it as your primary search engine](https://github.com/benbusby/whoogle#set-whoogle-as-your-primary-search-engine).
-You can also edit envirorment variables from your app’s Settings tab in the Heroku Dashboard.
+You can also edit environment variables from your app’s Settings tab in the Heroku Dashboard.
 
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
@@ -286,7 +286,7 @@ Note: You should have your own domain name and [an https certificate](https://le
 
 - Heroku: Ensure that the `Root URL` configuration on the home page begins with `https://` and not `http://`
 - Docker build: Add `--build-arg use_https=1` to your run command
-- Docker image: st the envirorment variable HTTPS_ONLY=1
+- Docker image: st the environment variable HTTPS_ONLY=1
 - Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
 
