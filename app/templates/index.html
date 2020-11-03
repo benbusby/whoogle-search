@@ -26,7 +26,14 @@
         {% if config.dark %}
             <link rel="stylesheet" href="static/css/dark-theme.css"/>
         {% endif %}
-	<title>Whoogle Search</title>
+        <noscript>
+            <style>
+                #main { display: inherit !important; }
+                .content { max-height: 520px; padding: 18px; border-radius: 10px; }
+                .collapsible { display: none; }
+            </style>
+        </noscript>
+        <title>Whoogle Search</title>
     </head>
     <body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
     <script>
