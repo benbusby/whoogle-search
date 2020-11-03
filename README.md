@@ -49,6 +49,20 @@ If using Heroku Quick Deploy, **you can skip this section**.
   - Ubuntu: `sudo apt-get install -y libcurl4-openssl-dev libssl-dev`
   - Arch: `pacman -S curl openssl`
 
+## Envirorment variables
+You may use envirorment variables to customize your Whoogle instance:
+
+| Variable           | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS should also be used. |
+| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER should also be used. |
+| WHOOGLE_PROXY_USER | The username of the proxy server.                              |
+| WHOOGLE_PROXY_PASS | The password of the proxy server.                              |
+| WHOOGLE_PROXY_TYPE | The type of the proxy server. For example "socks5".           |
+| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                 |
+| EXPOSE_PORT        | The port where Whoogle will be exposed.                        |
+| HTTPS_ONLY         | Enforce HTTPS. Se the setion below.                            |
+
 ## Install
 There are a few different ways to begin using the app, depending on your preferences:
 
@@ -167,6 +181,19 @@ docker build --tag whoogle-search:1.0 .
 docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
 ```
 
+You may want to set the envirorment:
+
+```bash
+docker run --publish 5000:5000 --detach --name whoogle-search \
+  -e WHOOGLE_USER=username \
+  -e WHOOGLE_PASS=password \
+  -e WHOOGLE_PROXY_USER=username \
+  -e WHOOGLE_PROXY_PASS=password \
+  -e WHOOGLE_PROXY_TYPE=socks5 \
+  -e WHOOGLE_PROXY_LOC=ip \
+  whoogle-search:1.0
+```
+
 And kill with: `docker rm --force whoogle-search`
 
 #### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
@@ -182,6 +209,7 @@ heroku open
 ```
 
 This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Whoogle and even [set it as your primary search engine](https://github.com/benbusby/whoogle#set-whoogle-as-your-primary-search-engine).
+You can also edit envirorment variables from your app’s Settings tab in the Heroku Dashboard.
 
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
@@ -257,7 +285,8 @@ Only needed if your setup requires Flask to redirect to HTTPS on its own -- gene
 Note: You should have your own domain name and [an https certificate](https://letsencrypt.org/getting-started/) in order for this to work properly.
 
 - Heroku: Ensure that the `Root URL` configuration on the home page begins with `https://` and not `http://`
-- Docker: Add `--build-arg use_https=1` to your run command
+- Docker build: Add `--build-arg use_https=1` to your run command
+- Docker image: st the envirorment variable HTTPS_ONLY=1
 - Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
 

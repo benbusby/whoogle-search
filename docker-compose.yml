@@ -4,6 +4,13 @@ services:
   whoogle-search:
     image: benbusby/whoogle-search
     container_name: whoogle-search
+    environment:
+      - WHOOGLE_USER=username # empty to disable
+      - WHOOGLE_PASS=password # empty to disable
+      - WHOOGLE_PROXY_USER=username # empty to disable
+      - WHOOGLE_PROXY_PASS=password # empty to disable
+      - WHOOGLE_PROXY_TYPE=socks5 # empty to disable
+      - WHOOGLE_PROXY_LOC=ip # empty to disable
     ports:
       - 5000:5000
     restart: unless-stopped
