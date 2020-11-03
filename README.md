@@ -111,6 +111,7 @@ optional arguments:
   --debug               Activates debug mode for the server (default False)
   --https-only          Enforces HTTPS redirects for all requests (default False)
 ```
+You may want to set the environment variables in the host OS.
 
 ### E) Manual
 Clone the repo and run the following commands to start the app in a local-only environment:
@@ -123,6 +124,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ./run
 ```
+You may want to set the environment variables in the host OS.
 
 #### systemd Configuration
 After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
@@ -132,6 +134,14 @@ After building the virtual environment, you can add the following to `/lib/syste
 Description=Whoogle
 
 [Service]
+# Basic auth configuration, remove to disable
+Environment=WHOOGLE_USER=username
+Environment=WHOOGLE_PASS=password
+# Proxy configuration, remove to disable
+Environment=WHOOGLE_PROXY_USER=username
+Environment=WHOOGLE_PROXY_PASS=password
+Environment=WHOOGLE_PROXY_TYPE=socks5
+Environment=WHOOGLE_PROXY_LOC=ip
 Type=simple
 User=root
 WorkingDirectory=<whoogle_directory>
@@ -209,7 +219,7 @@ heroku open
 ```
 
 This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Whoogle and even [set it as your primary search engine](https://github.com/benbusby/whoogle#set-whoogle-as-your-primary-search-engine).
-You can also edit environment variables from your app’s Settings tab in the Heroku Dashboard.
+You may also edit environment variables from your app’s Settings tab in the Heroku Dashboard.
 
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
