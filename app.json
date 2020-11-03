@@ -16,12 +16,12 @@
   "stack": "container",
   "env": {
     "WHOOGLE_USER": {
-      "description": "The username for basic auth. WHOOGLE_PASS should also be used. Leave empty to disable.",
+      "description": "The username for basic auth. WHOOGLE_PASS must also be set if used. Leave empty to disable.",
       "value": "",
       "required": false
     },
     "WHOOGLE_PASS": {
-      "description": "The password for basic auth. WHOOGLE_USER should also be used. Leave empty to disable.",
+      "description": "The password for basic auth. WHOOGLE_USER must also be set if used. Leave empty to disable.",
       "value": "",
       "required": false
     },

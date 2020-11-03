@@ -49,19 +49,19 @@ If using Heroku Quick Deploy, **you can skip this section**.
   - Ubuntu: `sudo apt-get install -y libcurl4-openssl-dev libssl-dev`
   - Arch: `pacman -S curl openssl`
 
-## Environment variables
-You may use environment variables to customize your Whoogle instance:
+## Environment Variables
+There are a few optional environment variables available for customizing a Whoogle instance:
 
 | Variable           | Description                                                    |
 | ------------------ | -------------------------------------------------------------- |
-| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS should also be used. |
-| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER should also be used. |
+| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used. |
+| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used. |
 | WHOOGLE_PROXY_USER | The username of the proxy server.                              |
 | WHOOGLE_PROXY_PASS | The password of the proxy server.                              |
-| WHOOGLE_PROXY_TYPE | The type of the proxy server. For example "socks5".           |
+| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".           |
 | WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                 |
 | EXPOSE_PORT        | The port where Whoogle will be exposed.                        |
-| HTTPS_ONLY         | Enforce HTTPS. Se the setion below.                            |
+| HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement))                            |
 
 ## Install
 There are a few different ways to begin using the app, depending on your preferences:
@@ -191,7 +191,7 @@ docker build --tag whoogle-search:1.0 .
 docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
 ```
 
-You may want to set the environment:
+Optionally, you can also enable some of the following environment variables to further customize your instance:
 
 ```bash
 docker run --publish 5000:5000 --detach --name whoogle-search \
@@ -296,7 +296,7 @@ Note: You should have your own domain name and [an https certificate](https://le
 
 - Heroku: Ensure that the `Root URL` configuration on the home page begins with `https://` and not `http://`
 - Docker build: Add `--build-arg use_https=1` to your run command
-- Docker image: st the environment variable HTTPS_ONLY=1
+- Docker image: Set the environment variable HTTPS_ONLY=1
 - Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
 
