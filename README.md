@@ -12,10 +12,11 @@ Contents
 1. [Features](#features)
 2. [Dependencies](#dependencies)
 3. [Install/Deploy](#install)
-4. [Usage](#usage)
-5. [Extra Steps](#extra-steps)
-6. [FAQ](#faq)
-7. [Screenshots](#screenshots)
+4. [Environment Variables](#environment-variables)
+5. [Usage](#usage)
+6. [Extra Steps](#extra-steps)
+7. [FAQ](#faq)
+8. [Screenshots](#screenshots)
 
 ## Features
 - No ads or sponsored content
@@ -48,20 +49,6 @@ If using Heroku Quick Deploy, **you can skip this section**.
   - macOS: `brew install openssl curl-openssl`
   - Ubuntu: `sudo apt-get install -y libcurl4-openssl-dev libssl-dev`
   - Arch: `pacman -S curl openssl`
-
-## Environment Variables
-There are a few optional environment variables available for customizing a Whoogle instance:
-
-| Variable           | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used. |
-| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used. |
-| WHOOGLE_PROXY_USER | The username of the proxy server.                              |
-| WHOOGLE_PROXY_PASS | The password of the proxy server.                              |
-| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".           |
-| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                 |
-| EXPOSE_PORT        | The port where Whoogle will be exposed.                        |
-| HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement))                            |
 
 ## Install
 There are a few different ways to begin using the app, depending on your preferences:
@@ -111,7 +98,7 @@ optional arguments:
   --debug               Activates debug mode for the server (default False)
   --https-only          Enforces HTTPS redirects for all requests (default False)
 ```
-You may want to set the environment variables in the host OS.
+See the [available environment variables](#environment-variables) for additional configuration.
 
 ### E) Manual
 Clone the repo and run the following commands to start the app in a local-only environment:
@@ -124,7 +111,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ./run
 ```
-You may want to set the environment variables in the host OS.
+See the [available environment variables](#environment-variables) for additional configuration.
 
 #### systemd Configuration
 After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
@@ -134,14 +121,14 @@ After building the virtual environment, you can add the following to `/lib/syste
 Description=Whoogle
 
 [Service]
-# Basic auth configuration, remove to disable
-Environment=WHOOGLE_USER=username
-Environment=WHOOGLE_PASS=password
-# Proxy configuration, remove to disable
-Environment=WHOOGLE_PROXY_USER=username
-Environment=WHOOGLE_PROXY_PASS=password
-Environment=WHOOGLE_PROXY_TYPE=socks5
-Environment=WHOOGLE_PROXY_LOC=ip
+# Basic auth configuration, uncomment to enable
+#Environment=WHOOGLE_USER=<username>
+#Environment=WHOOGLE_PASS=<password>
+# Proxy configuration, uncomment to enable
+#Environment=WHOOGLE_PROXY_USER=<proxy username>
+#Environment=WHOOGLE_PROXY_PASS=<proxy password>
+#Environment=WHOOGLE_PROXY_TYPE=<proxy type (http|proxy4|proxy5)
+#Environment=WHOOGLE_PROXY_LOC=<proxy host/ip>
 Type=simple
 User=root
 WorkingDirectory=<whoogle_directory>
@@ -229,6 +216,20 @@ Depending on your preferences, you can also deploy the app yourself on your own 
   - Your own URL (I suppose this is optional, but recommended)
   - SSL certificates (free through [Let's Encrypt](https://letsencrypt.org/getting-started/))
   - A bit more experience or willingness to work through issues
+
+## Environment Variables
+There are a few optional environment variables available for customizing a Whoogle instance:
+
+| Variable           | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used. |
+| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used. |
+| WHOOGLE_PROXY_USER | The username of the proxy server.                              |
+| WHOOGLE_PROXY_PASS | The password of the proxy server.                              |
+| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".           |
+| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                 |
+| EXPOSE_PORT        | The port where Whoogle will be exposed.                        |
+| HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement))                            |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.

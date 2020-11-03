@@ -4,15 +4,15 @@ services:
   whoogle-search:
     image: benbusby/whoogle-search
     container_name: whoogle-search
-    environment:
-      # Basic auth configuration, remove to disable
-      - WHOOGLE_USER=username
-      - WHOOGLE_PASS=password
-      # Proxy configuration, remove to disable
-      - WHOOGLE_PROXY_USER=username
-      - WHOOGLE_PROXY_PASS=password
-      - WHOOGLE_PROXY_TYPE=socks5
-      - WHOOGLE_PROXY_LOC=ip
+    #environment: # Uncomment to configure environment variables
+      # Basic auth configuration, uncomment to enable
+      #- WHOOGLE_USER=<auth username>
+      #- WHOOGLE_PASS=<auth password>
+      # Proxy configuration, uncomment to enable
+      #- WHOOGLE_PROXY_USER=<proxy username>
+      #- WHOOGLE_PROXY_PASS=<proxy password>
+      #- WHOOGLE_PROXY_TYPE=<proxy type (http|socks4|socks5)
+      #- WHOOGLE_PROXY_LOC=<proxy host/ip>
     ports:
       - 5000:5000
     restart: unless-stopped
