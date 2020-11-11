@@ -325,3 +325,39 @@ class Config:
 
     def __contains__(self, name):
         return hasattr(self, name)
+
+    def is_safe_key(self, key) -> bool:
+        """Establishes a group of config options that are safe to set
+        in the url.
+
+        Args:
+            key (str) -- the key to check against
+
+        Returns:
+            bool -- True/False depending on if the key is in the "safe"
+            array
+        """
+
+        return key in [
+            'lang_search',
+            'lang_interface',
+            'ctry',
+            'dark'
+        ]
+
+    def from_params(self, params) -> 'Config':
+        """Modify user config with search parameters. This is primarily
+        used for specifying configuration on a search-by-search basis on
+        public instances.
+
+        Args:
+            params -- the url arguments (can be any deemed safe by is_safe())
+
+        Returns:
+            Config -- a modified config object
+        """
+        for param_key in params.keys():
+            if not self.is_safe_key(param_key):
+                continue
+            self[param_key] = params.get(param_key)
+        return self

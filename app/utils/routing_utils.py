@@ -81,4 +81,14 @@ class RoutingUtils:
             return get_first_link(html_soup), 1
         else:
             formatted_results = content_filter.clean(html_soup)
+
+            # Append user config to all search links, if available
+            param_str = ''.join('&{}={}'.format(k, v) 
+                    for k, v in self.request_params.to_dict(flat=True).items()
+                    if self.config.is_safe_key(k))
+            for link in formatted_results.find_all('a', href=True):
+                if 'search?' not in link['href'] or link['href'].index('search?') > 1:
+                    continue
+                link['href'] += param_str
+
             return formatted_results, content_filter.elements

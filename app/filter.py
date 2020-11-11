@@ -53,7 +53,6 @@ class Filter:
         self.fix_question_section()
         self.update_styling(soup)
 
-
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
 

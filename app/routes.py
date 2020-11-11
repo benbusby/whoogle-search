@@ -161,6 +161,9 @@ def search():
     # Reset element counter
     app.user_elements[session['uuid']] = 0
 
+    # Update user config if specified in search args
+    g.user_config = g.user_config.from_params(g.request_params)
+
     search_util = RoutingUtils(request, g.user_config, session, cookies_disabled=g.cookies_disabled)
     query = search_util.new_search_query()
 
