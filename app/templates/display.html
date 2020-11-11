@@ -1,17 +1,17 @@
 <html class="{{ 'dark' if dark_mode else '' }}">
     <head>
-        <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
-        <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
+        <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="static/img/favicon.ico" type="image/x-icon">
+        <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="referrer" content="no-referrer">
-        <script type="text/javascript" src="/static/js/autocomplete.js"></script>
+        <script type="text/javascript" src="static/js/autocomplete.js"></script>
         {% if theme %}
-            <link rel="stylesheet" href="/static/css/themes/{{ theme }}.css" />
-            <link rel="stylesheet" href="/static/css/themes/{{ theme }}-search.css" />
+            <link rel="stylesheet" href="static/css/themes/{{ theme }}.css" />
+            <link rel="stylesheet" href="static/css/themes/{{ theme }}-search.css" />
         {% else %}
-            <link rel="stylesheet" href="/static/css/{{ 'dark-' if dark_mode else '' }}theme.css" />
-            <link rel="stylesheet" href="/static/css/{{ 'search-dark' if dark_mode else 'search-light' }}.css">
+            <link rel="stylesheet" href="static/css/{{ 'dark-' if dark_mode else '' }}theme.css" />
+            <link rel="stylesheet" href="static/css/{{ 'search-dark' if dark_mode else 'search-light' }}.css">
         {% endif %}
         <link rel="stylesheet" href="/static/css/header.css">
         <title>{{ query }} - Whoogle Search</title>

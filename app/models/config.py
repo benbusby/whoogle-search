@@ -312,6 +312,7 @@ class Config:
         self.safe = False
         self.dark = False
         self.nojs = False
+        self.tor = False
         self.near = ''
         self.theme = 'whoogle'
         self.alts = False
