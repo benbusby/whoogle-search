@@ -126,10 +126,12 @@ def opensearch():
     if opensearch_url.endswith('/'):
         opensearch_url = opensearch_url[:-1]
 
+    get_only = g.user_config.get_only or 'Chrome' in request.headers.get('User-Agent')
+
     return render_template(
         'opensearch.xml',
         main_url=opensearch_url,
-        request_type='' if g.user_config.get_only else 'method="post"'
+        request_type='' if get_only else 'method="post"'
     ), 200, {'Content-Disposition': 'attachment; filename="opensearch.xml"'}
 
 
