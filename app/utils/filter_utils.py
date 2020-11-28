@@ -18,7 +18,7 @@ BLACKLIST = [
 
 SITE_ALTS = {
     'twitter.com': 'nitter.net',
-    'youtube.com': 'invidiou.site',
+    'youtube.com': 'invidious.snopyta.org',
     'instagram.com': 'bibliogram.art/u'
 }
 
@@ -43,7 +43,7 @@ def get_site_alt(link: str):
         link = link.replace(site_key, SITE_ALTS[site_key])
         break
 
-    return link
+    return link.replace('www.', '')
 
 
 def filter_link_args(query_link):
