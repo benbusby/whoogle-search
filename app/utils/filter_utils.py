@@ -43,7 +43,7 @@ def get_site_alt(link: str):
         link = link.replace(site_key, SITE_ALTS[site_key])
         break
 
-    return link.replace('www.', '')
+    return link.replace('www.', '').replace('//m.', '//')
 
 
 def filter_link_args(query_link):
