@@ -1,4 +1,4 @@
-# Whoogle Search
+![Whoogle Search](docs/banner.png)
 
 [![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -318,7 +318,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Screenshots
 #### Desktop
-![Whoogle Desktop](app/static/img/docs/screenshot_desktop.jpg)
+![Whoogle Desktop](docs/screenshot_desktop.jpg)
 
 #### Mobile
-![Whoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)
+![Whoogle Mobile](docs/screenshot_mobile.jpg)
