@@ -129,6 +129,12 @@ Description=Whoogle
 #Environment=WHOOGLE_PROXY_PASS=<proxy password>
 #Environment=WHOOGLE_PROXY_TYPE=<proxy type (http|proxy4|proxy5)
 #Environment=WHOOGLE_PROXY_LOC=<proxy host/ip>
+# Site alternative configurations, uncomment to enable
+# Note: If not set, the feature will still be available
+# with default values. 
+#Environment=WHOOGLE_ALT_TW=nitter.net
+#Environment=WHOOGLE_ALT_YT=invidious.snopyta.org
+#Environment=WHOOGLE_ALT_IG=bibliogram.art/u
 Type=simple
 User=root
 WorkingDirectory=<whoogle_directory>
@@ -229,7 +235,10 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".           |
 | WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                 |
 | EXPOSE_PORT        | The port where Whoogle will be exposed.                        |
-| HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement))                            |
+| HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
+| WHOOGLE_ALT_TW     | The twitter.com alternative to use when site alternatives are enabled in the config. |
+| WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config. |
+| WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config. |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
