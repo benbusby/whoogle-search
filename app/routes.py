@@ -57,10 +57,12 @@ def before_request_func():
     if session['uuid'] not in app.user_elements:
         app.user_elements.update({session['uuid']: 0})
 
-    # Always redirect to https if HTTPS_ONLY is set (otherwise default to False)
+    # Handle https upgrade
     https_only = os.getenv('HTTPS_ONLY', False)
+    is_heroku = request.url.endswith('.herokuapp.com')
+    is_http = request.url.startswith('http://')
 
-    if https_only and request.url.startswith('http://'):
+    if (is_heroku and is_http) or (https_only and is_http):
         return redirect(request.url.replace('http://', 'https://', 1), code=308)
 
     g.user_config = Config(**session['config'])
