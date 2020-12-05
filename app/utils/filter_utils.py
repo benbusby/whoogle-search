@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
@@ -17,9 +18,9 @@ BLACKLIST = [
 ]
 
 SITE_ALTS = {
-    'twitter.com': 'nitter.net',
-    'youtube.com': 'invidious.snopyta.org',
-    'instagram.com': 'bibliogram.art/u'
+    'twitter.com': os.getenv('WHOOGLE_ALT_TW', 'nitter.net'),
+    'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'invidious.snopyta.org'),
+    'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'bibliogram.art/u')
 }
 
 

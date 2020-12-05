@@ -3,6 +3,8 @@ from app.filter import Filter
 from app.utils.session_utils import generate_user_keys
 from datetime import datetime
 from dateutil.parser import *
+import json
+import os
 
 
 def get_search_results(data):
@@ -41,6 +43,18 @@ def test_post_results(client):
     # than 10 result divs
     assert len(get_search_results(rv.data)) >= 10
     assert len(get_search_results(rv.data)) <= 15
+
+
+def test_site_alts(client):
+    rv = client.post('/search', data=dict(q='twitter official account'))
+    assert b'twitter.com/Twitter' in rv.data
+
+    client.post('/config', data=dict(alts=True))
+    assert json.loads(client.get('/config').data)['alts']
+
+    rv = client.post('/search', data=dict(q='twitter official account'))
+    assert b'twitter.com/Twitter' not in rv.data
+    assert b'nitter.net/Twitter' in rv.data
 
 
 def test_recent_results(client):
