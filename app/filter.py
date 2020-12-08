@@ -74,7 +74,8 @@ class Filter:
         footer = soup.find('footer')
         if footer:
             # Remove divs that have multiple links beyond just page navigation
-            [_.decompose() for _ in footer.find_all('div', recursive=False) if len(_.find_all('a', href=True)) > 2]
+            [_.decompose() for _ in footer.find_all('div', recursive=False) 
+                    if len(_.find_all('a', href=True)) > 3]
 
         header = soup.find('header')
         if header:
