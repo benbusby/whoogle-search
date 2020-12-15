@@ -11,6 +11,14 @@ div {
     color: #fff !important;
 }
 
+li a {
+    color: #4b8eaa !important;
+}
+
+li {
+    color: #fff !important;
+}
+
 a:visited h3 div {
     color: #bbbbff !important;
 }
