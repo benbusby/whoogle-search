@@ -95,9 +95,26 @@ class Filter:
         if not self.main_divs:
             return
 
-        question_divs = [_ for _ in self.main_divs.find_all('div', recursive=False) if len(_.find_all('h2')) > 0]
+        question_divs = [_ for _ in self.main_divs.find_all(
+            'div', recursive=False
+            ) if len(_.find_all('h2')) > 0]
+
+        if len(question_divs) == 0:
+            return
+
+        # Wrap section in details element to allow collapse/expand
+        details = BeautifulSoup(features='lxml').new_tag('details')
+        summary = BeautifulSoup(features='lxml').new_tag('summary')
+        summary.string = question_divs[0].find('h2').text
+        question_divs[0].find('h2').decompose()
+        details.append(summary)
+        question_divs[0].wrap(details)
+
         for question_div in question_divs:
-            questions = [_ for _ in question_div.find_all('div', recursive=True) if _.text.endswith('?')]
+            questions = [_ for _ in question_div.find_all(
+                'div', recursive=True
+                ) if _.text.endswith('?')]
+
             for question in questions:
                 question['style'] = 'padding: 10px; font-style: italic;'
 

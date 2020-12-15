@@ -32,3 +32,8 @@
     background-color: #685e79 !important;
     color: #ffffff;
 }
+
+details summary {
+    padding: 10px;
+    font-weight: bold;
+}
