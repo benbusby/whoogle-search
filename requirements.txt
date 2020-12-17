@@ -16,6 +16,7 @@ lxml==4.5.1
 MarkupSafe==1.1.1
 more-itertools==8.3.0
 packaging==20.4
+pep8==1.7.1
 pluggy==0.13.1
 py==1.8.1
 pycparser==2.19
