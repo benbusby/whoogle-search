@@ -128,7 +128,7 @@ class Config:
         {'name': 'Fiji', 'value': 'countryFJ'},
         {'name': 'Finland', 'value': 'countryFI'},
         {'name': 'France', 'value': 'countryFR'},
-        {'name': 'France\, Metropolitan', 'value': 'countryFX'},
+        {'name': r'France\, Metropolitan', 'value': 'countryFX'},
         {'name': 'French Guiana', 'value': 'countryGF'},
         {'name': 'French Polynesia', 'value': 'countryPF'},
         {'name': 'French Southern Territories', 'value': 'countryTF'},
@@ -167,7 +167,8 @@ class Config:
         {'name': 'Kazakhstan', 'value': 'countryKZ'},
         {'name': 'Kenya', 'value': 'countryKE'},
         {'name': 'Kiribati', 'value': 'countryKI'},
-        {'name': 'Korea, Democratic People\'s Republic of', 'value': 'countryKP'},
+        {'name': 'Korea, Democratic People\'s Republic of',
+         'value': 'countryKP'},
         {'name': 'Korea, Republic of', 'value': 'countryKR'},
         {'name': 'Kuwait', 'value': 'countryKW'},
         {'name': 'Kyrgyzstan', 'value': 'countryKG'},
@@ -181,7 +182,8 @@ class Config:
         {'name': 'Lithuania', 'value': 'countryLT'},
         {'name': 'Luxembourg', 'value': 'countryLU'},
         {'name': 'Macao', 'value': 'countryMO'},
-        {'name': 'Macedonia, the Former Yugosalv Republic of', 'value': 'countryMK'},
+        {'name': 'Macedonia, the Former Yugosalv Republic of',
+         'value': 'countryMK'},
         {'name': 'Madagascar', 'value': 'countryMG'},
         {'name': 'Malawi', 'value': 'countryMW'},
         {'name': 'Malaysia', 'value': 'countryMY'},
@@ -253,7 +255,8 @@ class Config:
         {'name': 'Solomon Islands', 'value': 'countrySB'},
         {'name': 'Somalia', 'value': 'countrySO'},
         {'name': 'South Africa', 'value': 'countryZA'},
-        {'name': 'South Georgia and the South Sandwich Islands', 'value': 'countryGS'},
+        {'name': 'South Georgia and the South Sandwich Islands',
+         'value': 'countryGS'},
         {'name': 'Spain', 'value': 'countryES'},
         {'name': 'Sri Lanka', 'value': 'countryLK'},
         {'name': 'Sudan', 'value': 'countrySD'},
@@ -310,6 +313,12 @@ class Config:
         self.alts = False
         self.new_tab = False
         self.get_only = False
+        self.safe_keys = [
+            'lang_search',
+            'lang_interface',
+            'ctry',
+            'dark'
+        ]
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -338,12 +347,7 @@ class Config:
             array
         """
 
-        return key in [
-            'lang_search',
-            'lang_interface',
-            'ctry',
-            'dark'
-        ]
+        return key in self.safe_keys
 
     def from_params(self, params) -> 'Config':
         """Modify user config with search parameters. This is primarily

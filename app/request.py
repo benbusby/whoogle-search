@@ -8,9 +8,9 @@ import os
 from stem import Signal, SocketError
 from stem.control import Controller
 
-# Core Google search URLs
 SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
-AUTOCOMPLETE_URL = 'https://suggestqueries.google.com/complete/search?client=toolbar&'
+AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
+                    'complete/search?client=toolbar&')
 
 MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
 DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
@@ -72,11 +72,16 @@ def gen_query(query, args, config, near_city=None) -> str:
         result_tbs = args.get('tbs')
         param_dict['tbs'] = '&tbs=' + result_tbs
 
-        # Occasionally the 'tbs' param provided by google also contains a field for 'lr', but formatted
-        # strangely. This is a (admittedly not very elegant) solution for this.
-        # Ex/ &tbs=qdr:h,lr:lang_1pl --> the lr param needs to be extracted and have the "1" digit removed in this case
+        # Occasionally the 'tbs' param provided by google also contains a
+        # field for 'lr', but formatted strangely. This is a rough solution
+        # for this.
+        #
+        # Example:
+        # &tbs=qdr:h,lr:lang_1pl
+        # -- the lr param needs to be extracted and remove the leading '1'
         sub_lang = [_ for _ in result_tbs.split(',') if 'lr:' in _]
-        sub_lang = sub_lang[0][sub_lang[0].find('lr:') + 3:len(sub_lang[0])] if len(sub_lang) > 0 else ''
+        sub_lang = sub_lang[0][sub_lang[0].find('lr:') +
+                               3:len(sub_lang[0])] if len(sub_lang) > 0 else ''
 
     # Ensure search query is parsable
     query = urlparse.quote(query)
@@ -93,20 +98,26 @@ def gen_query(query, args, config, near_city=None) -> str:
     if near_city:
         param_dict['near'] = '&near=' + urlparse.quote(near_city)
 
-    # Set language for results (lr) if source isn't set, otherwise use the result
-    # language param provided by google (but with the strange digit(s) removed)
+    # Set language for results (lr) if source isn't set, otherwise use the
+    # result language param provided in the results
     if 'source' in args:
         param_dict['source'] = '&source=' + args.get('source')
-        param_dict['lr'] = ('&lr=' + ''.join([_ for _ in sub_lang if not _.isdigit()])) if sub_lang else ''
+        param_dict['lr'] = ('&lr=' + ''.join(
+            [_ for _ in sub_lang if not _.isdigit()]
+        )) if sub_lang else ''
     else:
-        param_dict['lr'] = ('&lr=' + config.lang_search) if config.lang_search else ''
+        param_dict['lr'] = (
+                '&lr=' + config.lang_search
+        ) if config.lang_search else ''
 
-    # Set autocorrected search ignore
+    # 'nfpr' defines the exclusion of results from an auto-corrected query
     if 'nfpr' in args:
         param_dict['nfpr'] = '&nfpr=' + args.get('nfpr')
 
     param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
-    param_dict['hl'] = ('&hl=' + config.lang_interface.replace('lang_', '')) if config.lang_interface else ''
+    param_dict['hl'] = (
+            '&hl=' + config.lang_interface.replace('lang_', '')
+    ) if config.lang_interface else ''
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 
     for val in param_dict.values():
@@ -126,6 +137,7 @@ class Request:
         root_path -- the root path of the whoogle instance
         config -- the user's current whoogle configuration
     """
+
     def __init__(self, normal_ua, root_path, config: Config):
         # Send heartbeat to Tor, used in determining if the user can or cannot
         # enable Tor for future requests
@@ -143,9 +155,10 @@ class Request:
                            ':' + os.environ.get('WHOOGLE_PROXY_PASS')
             self.proxies = {
                 'http': os.environ.get('WHOOGLE_PROXY_TYPE') + '://' +
-                        auth_str + '@' + os.environ.get('WHOOGLE_PROXY_LOC'),
+                auth_str + '@' + os.environ.get('WHOOGLE_PROXY_LOC'),
             }
-            self.proxies['https'] = self.proxies['http'].replace('http', 'https')
+            self.proxies['https'] = self.proxies['http'].replace('http',
+                                                                 'https')
         else:
             self.proxies = {
                 'http': 'socks5://127.0.0.1:9050',
@@ -169,7 +182,8 @@ class Request:
 
         """
         ac_query = dict(hl=self.language, q=query)
-        response = self.send(base_url=AUTOCOMPLETE_URL, query=urlparse.urlencode(ac_query)).text
+        response = self.send(base_url=AUTOCOMPLETE_URL,
+                             query=urlparse.urlencode(ac_query)).text
 
         if response:
             dom = etree.fromstring(response)
@@ -178,14 +192,14 @@ class Request:
         return []
 
     def send(self, base_url=SEARCH_URL, query='', attempt=0) -> Response:
-        """Sends an outbound request to a URL. Optionally sends the request using Tor, if
-        enabled by the user.
+        """Sends an outbound request to a URL. Optionally sends the request
+        using Tor, if enabled by the user.
 
         Args:
             base_url: The URL to use in the request
             query: The optional query string for the request
-            attempt: The number of attempts made for the request (used for cycling
-                through Tor identities, if enabled)
+            attempt: The number of attempts made for the request
+                (used for cycling through Tor identities, if enabled)
 
         Returns:
             Response: The Response object returned by the requests call
@@ -195,21 +209,30 @@ class Request:
             'User-Agent': self.modified_user_agent
         }
 
-        # Validate Tor connection and request new identity if the last one failed
-        if self.tor and not send_tor_signal(Signal.NEWNYM if attempt > 0 else Signal.HEARTBEAT):
-            raise TorError("Tor was previously enabled, but the connection has been dropped. Please check your " +
-                           "Tor configuration and try again.", disable=True)
+        # Validate Tor conn and request new identity if the last one failed
+        if self.tor and not send_tor_signal(
+                Signal.NEWNYM if attempt > 0 else Signal.HEARTBEAT):
+            raise TorError(
+                "Tor was previously enabled, but the connection has been "
+                "dropped. Please check your Tor configuration and try again.",
+                disable=True)
 
         # Make sure that the tor connection is valid, if enabled
         if self.tor:
-            tor_check = requests.get('https://check.torproject.org/', proxies=self.proxies, headers=headers)
+            tor_check = requests.get('https://check.torproject.org/',
+                                     proxies=self.proxies, headers=headers)
             self.tor_valid = 'Congratulations' in tor_check.text
 
             if not self.tor_valid:
-                raise TorError("Tor connection succeeded, but the connection could not be validated by torproject.org",
-                               disable=True)
+                raise TorError(
+                    "Tor connection succeeded, but the connection could not "
+                    "be validated by torproject.org",
+                    disable=True)
 
-        response = requests.get(base_url + query, proxies=self.proxies, headers=headers)
+        response = requests.get(
+            base_url + query,
+            proxies=self.proxies,
+            headers=headers)
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:
