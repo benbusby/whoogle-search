@@ -6,20 +6,35 @@ from flask_session import Session
 import os
 from stem import Signal
 
-app = Flask(__name__, static_folder=os.path.dirname(os.path.abspath(__file__)) + '/static')
+app = Flask(__name__, static_folder=os.path.dirname(
+    os.path.abspath(__file__)) + '/static')
 app.user_elements = {}
 app.default_key_set = generate_user_keys()
 app.no_cookie_ips = []
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['VERSION_NUMBER'] = '0.2.1'
-app.config['APP_ROOT'] = os.getenv('APP_ROOT', os.path.dirname(os.path.abspath(__file__)))
-app.config['STATIC_FOLDER'] = os.getenv('STATIC_FOLDER', os.path.join(app.config['APP_ROOT'], 'static'))
-app.config['CONFIG_PATH'] = os.getenv('CONFIG_VOLUME', os.path.join(app.config['STATIC_FOLDER'], 'config'))
-app.config['DEFAULT_CONFIG'] = os.path.join(app.config['CONFIG_PATH'], 'config.json')
-app.config['SESSION_FILE_DIR'] = os.path.join(app.config['CONFIG_PATH'], 'session')
-app.config['BANG_PATH'] = os.getenv('CONFIG_VOLUME', os.path.join(app.config['STATIC_FOLDER'], 'bangs'))
-app.config['BANG_FILE'] = os.path.join(app.config['BANG_PATH'], 'bangs.json')
+app.config['APP_ROOT'] = os.getenv(
+    'APP_ROOT',
+    os.path.dirname(os.path.abspath(__file__)))
+app.config['STATIC_FOLDER'] = os.getenv(
+    'STATIC_FOLDER',
+    os.path.join(app.config['APP_ROOT'], 'static'))
+app.config['CONFIG_PATH'] = os.getenv(
+    'CONFIG_VOLUME',
+    os.path.join(app.config['STATIC_FOLDER'], 'config'))
+app.config['DEFAULT_CONFIG'] = os.path.join(
+    app.config['CONFIG_PATH'],
+    'config.json')
+app.config['SESSION_FILE_DIR'] = os.path.join(
+    app.config['CONFIG_PATH'],
+    'session')
+app.config['BANG_PATH'] = os.getenv(
+    'CONFIG_VOLUME',
+    os.path.join(app.config['STATIC_FOLDER'], 'bangs'))
+app.config['BANG_FILE'] = os.path.join(
+    app.config['BANG_PATH'],
+    'bangs.json')
 
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])
@@ -38,4 +53,4 @@ Session(app)
 # Attempt to acquire tor identity, to determine if Tor config is available
 send_tor_signal(Signal.HEARTBEAT)
 
-from app import routes
+from app import routes  # noqa
