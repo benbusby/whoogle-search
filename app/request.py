@@ -225,8 +225,8 @@ class Request:
 
             if not self.tor_valid:
                 raise TorError(
-                    "Tor connection succeeded, but the connection could not be "
-                    "validated by torproject.org",
+                    "Tor connection succeeded, but the connection could not "
+                    "be validated by torproject.org",
                     disable=True)
 
         response = requests.get(

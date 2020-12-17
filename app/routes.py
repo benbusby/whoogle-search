@@ -45,7 +45,9 @@ def auth_required(f):
 
 @app.before_request
 def before_request_func():
-    g.request_params = request.args if request.method == 'GET' else request.form
+    g.request_params = (
+        request.args if request.method == 'GET' else request.form
+    )
     g.cookies_disabled = False
 
     # Generate session values for user if unavailable
@@ -69,7 +71,9 @@ def before_request_func():
     is_http = request.url.startswith('http://')
 
     if (is_heroku and is_http) or (https_only and is_http):
-        return redirect(request.url.replace('http://', 'https://', 1), code=308)
+        return redirect(
+            request.url.replace('http://', 'https://', 1),
+            code=308)
 
     g.user_config = Config(**session['config'])
 
@@ -324,7 +328,7 @@ def window():
     get_body = get_body.replace('href="/',
                                 'href="' + request.args.get('location') + '"')
 
-    results = BeautifulSoup(get_body, 'html.parser')
+    results = bsoup(get_body, 'html.parser')
 
     for script in results('script'):
         script.decompose()
