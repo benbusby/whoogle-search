@@ -7,14 +7,16 @@ SKIP_ARGS = ['ref_src', 'utm']
 FULL_RES_IMG = '<br/><a href="{}">Full Image</a>'
 GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
 LOGO_URL = GOOG_IMG + '_desk'
-BLANK_B64 = '''
-data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkwAIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC
-'''
+BLANK_B64 = ('data:image/png;base64,'
+             'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkw'
+             'AIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC')
 
+# Ad keywords
 BLACKLIST = [
-    'ad', 'anuncio', 'annuncio', 'annonce', 'Anzeige', '广告', '廣告', 'Reklama', 'Реклама', 'Anunț', '광고',
-    'annons', 'Annonse', 'Iklan', '広告', 'Augl.', 'Mainos', 'Advertentie', 'إعلان', 'Գովազդ', 'विज्ञापन', 'Reklam',
-    'آگهی', 'Reklāma', 'Reklaam', 'Διαφήμιση', 'מודעה', 'Hirdetés', 'Anúncio'
+    'ad', 'anuncio', 'annuncio', 'annonce', 'Anzeige', '广告', '廣告', 'Reklama',
+    'Реклама', 'Anunț', '광고', 'annons', 'Annonse', 'Iklan', '広告', 'Augl.',
+    'Mainos', 'Advertentie', 'إعلان', 'Գովազդ', 'विज्ञापन', 'Reklam', 'آگهی',
+    'Reklāma', 'Reklaam', 'Διαφήμιση', 'מודעה', 'Hirdetés', 'Anúncio'
 ]
 
 SITE_ALTS = {
@@ -25,7 +27,8 @@ SITE_ALTS = {
 
 
 def has_ad_content(element: str):
-    return element.upper() in (value.upper() for value in BLACKLIST) or 'ⓘ' in element
+    return element.upper() in (value.upper() for value in BLACKLIST) \
+           or 'ⓘ' in element
 
 
 def get_first_link(soup):
