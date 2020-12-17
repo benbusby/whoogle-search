@@ -111,8 +111,8 @@ class Filter:
             return
 
         # Wrap section in details element to allow collapse/expand
-        details = BeautifulSoup('html.parser').new_tag('details')
-        summary = BeautifulSoup('html.parser').new_tag('summary')
+        details = BeautifulSoup(features='lxml').new_tag('details')
+        summary = BeautifulSoup(features='lxml').new_tag('summary')
         summary.string = question_divs[0].find('h2').text
         question_divs[0].find('h2').decompose()
         details.append(summary)

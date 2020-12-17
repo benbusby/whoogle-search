@@ -3,6 +3,7 @@ from app.utils.session_utils import generate_user_keys
 from app.utils.gen_ddg_bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
+import json
 import os
 from stem import Signal
 
@@ -17,6 +18,10 @@ app.config['VERSION_NUMBER'] = '0.2.1'
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',
     os.path.dirname(os.path.abspath(__file__)))
+app.config['LANGUAGES'] = json.load(open(
+    os.path.join(app.config['APP_ROOT'], '../misc/languages.json')))
+app.config['COUNTRIES'] = json.load(open(
+    os.path.join(app.config['APP_ROOT'], '../misc/countries.json')))
 app.config['STATIC_FOLDER'] = os.getenv(
     'STATIC_FOLDER',
     os.path.join(app.config['APP_ROOT'], 'static'))

@@ -131,8 +131,8 @@ def index():
     session['error_message'] = ''
 
     return render_template('index.html',
-                           languages=Config.LANGUAGES,
-                           countries=Config.COUNTRIES,
+                           languages=app.config['LANGUAGES'],
+                           countries=app.config['COUNTRIES'],
                            config=g.user_config,
                            error_message=error_message,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
