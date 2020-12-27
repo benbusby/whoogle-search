@@ -53,3 +53,10 @@ header {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     overflow: hidden;
 }
+
+.tracking-link {
+    font-size: large;
+    text-align: center;
+    margin: 15px;
+    display: block;
+}
