@@ -1,5 +1,5 @@
 from app.models.config import Config
-from lxml import etree
+import xml.etree.ElementTree as ET
 import random
 import requests
 from requests import Response, ConnectionError
@@ -185,11 +185,12 @@ class Request:
         response = self.send(base_url=AUTOCOMPLETE_URL,
                              query=urlparse.urlencode(ac_query)).text
 
-        if response:
-            dom = etree.fromstring(response)
-            return dom.xpath('//suggestion/@data')
+        if not response:
+            return []
 
-        return []
+        root = ET.fromstring(response)
+        return [_.attrib['data'] for _ in
+                root.findall('.//suggestion/[@data]')]
 
     def send(self, base_url=SEARCH_URL, query='', attempt=0) -> Response:
         """Sends an outbound request to a URL. Optionally sends the request

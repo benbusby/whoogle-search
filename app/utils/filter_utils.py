@@ -75,7 +75,7 @@ def filter_link_args(query_link):
 
 
 def gen_nojs(sibling):
-    nojs_link = BeautifulSoup(features='lxml').new_tag('a')
+    nojs_link = BeautifulSoup(features='html.parser').new_tag('a')
     nojs_link['href'] = '/window?location=' + sibling['href']
     nojs_link['style'] = 'display:block;width:100%;'
     nojs_link.string = 'NoJS Link: ' + nojs_link['href']
