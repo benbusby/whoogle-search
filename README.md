@@ -162,6 +162,9 @@ sudo systemctl start whoogle
 2. Clone and deploy the docker app using a method below:
 
 #### Docker CLI
+
+***Note:** For ARM machines, use the `buildx-experimental` Docker tag.*
+
 Through Docker Hub:
 ```bash
 docker pull benbusby/whoogle-search
