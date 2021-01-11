@@ -39,11 +39,11 @@ ENV HTTPS_ONLY=$use_https
 ARG whoogle_port=5000
 ENV EXPOSE_PORT=$whoogle_port
 
-ARG twitter_alt=''
+ARG twitter_alt='nitter.net'
 ENV WHOOGLE_ALT_TW=$twitter_alt
-ARG youtube_alt=''
+ARG youtube_alt='invidious.snopyta.org'
 ENV WHOOGLE_ALT_YT=$youtube_alt
-ARG instagram_alt=''
+ARG instagram_alt='bibliogram.art/u'
 ENV WHOOGLE_ALT_YT=$instagram_alt
 
 COPY . .
