@@ -1,6 +1,6 @@
 const handleUserInput = searchBar => {
     let xhrRequest = new XMLHttpRequest();
-    xhrRequest.open("POST", "/autocomplete");
+    xhrRequest.open("POST", "autocomplete");
     xhrRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhrRequest.onload = function () {
         if (xhrRequest.readyState === 4 && xhrRequest.status !== 200) {
@@ -93,8 +93,14 @@ const autocomplete = (searchInput, autocompleteResults) => {
         removeActive(suggestion);
         suggestion[currentFocus].classList.add("autocomplete-active");
 
-        // Autofill search bar with suggestion content
-        searchBar.value = suggestion[currentFocus].textContent;
+        // Autofill search bar with suggestion content (minus the "bang name" if using a bang operator)
+        let searchContent = suggestion[currentFocus].textContent;
+        if (searchContent.indexOf('(') > 0) {
+            searchBar.value = searchContent.substring(0, searchContent.indexOf('('));
+        } else {
+            searchBar.value = searchContent;
+        }
+
         searchBar.focus();
     };
 

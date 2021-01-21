@@ -9,7 +9,7 @@
     <Param name="q" value="{searchTerms}"/>
   </Url>
   <Url type="application/x-suggestions+json" {{ request_type|safe }} template="{{ main_url }}/autocomplete">
-    <Param name="q" value="{searchTerms}"/>
+      <Param name="q" value="{searchTerms}"/>
   </Url>
   <moz:SearchForm>{{ main_url }}/search</moz:SearchForm>
 </OpenSearchDescription>

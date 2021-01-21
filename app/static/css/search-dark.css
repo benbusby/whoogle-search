@@ -21,7 +21,7 @@
     padding: 10px;
     cursor: pointer;
     color: #fff;
-    background-color: #000;
+    background-color: #222;
     border-bottom: 1px solid #242424;
 }
 
@@ -32,4 +32,9 @@
 .autocomplete-active {
     background-color: #685e79 !important;
     color: #ffffff;
+}
+
+details summary {
+    padding: 10px;
+    font-weight: bold;
 }

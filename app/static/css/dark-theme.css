@@ -1,5 +1,5 @@
 html {
-    background-color: #000 !important;
+    background-color: #222 !important;
 }
 
 body {
@@ -7,7 +7,14 @@ body {
 }
 
 div {
-    /*background-color: #111 !important;*/
+    color: #fff !important;
+}
+
+li a {
+    color: #4b8eaa !important;
+}
+
+li {
     color: #fff !important;
 }
 
@@ -34,9 +41,17 @@ input {
 
 #search-bar {
     color: #fff !important;
-    background-color: #000 !important;
+    background-color: #222 !important;
 }
 
 .search-container {
-    background-color: #000 !important;
+    background-color: #222 !important;
+}
+
+.ZINbbc{
+    background-color: #1a1a1a !important;   
+}
+
+.bRsWnc{
+    background-color: #1a1a1a !important;   
 }

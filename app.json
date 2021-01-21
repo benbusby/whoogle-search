@@ -1,8 +1,64 @@
 {
-    "name": "Whoogle Search",
-    "description": "A lightweight, privacy-oriented, containerized Google search proxy for desktop/mobile that removes Javascript, AMP links, tracking, and ads/sponsored content",
-    "repository": "https://github.com/benbusby/whoogle-search",
-    "logo": "https://raw.githubusercontent.com/benbusby/whoogle-search/master/app/static/img/favicon/ms-icon-150x150.png",
-    "keywords": ["search", "metasearch", "flask", "docker", "heroku", "adblock", "degoogle", "privacy"],
-    "stack": "container"
+  "name": "Whoogle Search",
+  "description": "A lightweight, privacy-oriented, containerized Google search proxy for desktop/mobile that removes Javascript, AMP links, tracking, and ads/sponsored content",
+  "repository": "https://github.com/benbusby/whoogle-search",
+  "logo": "https://raw.githubusercontent.com/benbusby/whoogle-search/master/app/static/img/favicon/ms-icon-150x150.png",
+  "keywords": [
+    "search",
+    "metasearch",
+    "flask",
+    "docker",
+    "heroku",
+    "adblock",
+    "degoogle",
+    "privacy"
+  ],
+  "stack": "container",
+  "env": {
+    "WHOOGLE_USER": {
+      "description": "The username for basic auth. WHOOGLE_PASS must also be set if used. Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PASS": {
+      "description": "The password for basic auth. WHOOGLE_USER must also be set if used. Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PROXY_USER": {
+      "description": "The username of the proxy server. Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PROXY_PASS": {
+      "description": "The password of the proxy server. Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PROXY_TYPE": {
+      "description": "The type of the proxy server. For example \"socks5\". Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_PROXY_LOC": {
+      "description": "The location of the proxy server (host or ip). Leave empty to disable.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_ALT_TW": {
+      "description": "The site to use as a replacement for twitter.com when site alternatives are enabled in the config.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_ALT_YT": {
+      "description": "The site to use as a replacement for youtube.com when site alternatives are enabled in the config.",
+      "value": "",
+      "required": false
+    },
+    "WHOOGLE_ALT_IG": {
+      "description": "The site to use as a replacement for instagram.com when site alternatives are enabled in the config.",
+      "value": "",
+      "required": false
+    }
+  }
 }

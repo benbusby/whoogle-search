@@ -1,11 +1,11 @@
-# Whoogle Search
+![Whoogle Search](docs/banner.png)
 
 [![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/benbusby/whoogle-search.svg?branch=master)](https://travis-ci.com/benbusby/whoogle-search)
+[![pep8](https://github.com/benbusby/whoogle-search/workflows/pep8/badge.svg)](https://github.com/benbusby/whoogle-search/actions?query=workflow%3Apep8)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/benbusby/whoogle-search)](https://hub.docker.com/r/benbusby/whoogle-search)
-[![Gitter](https://img.shields.io/gitter/room/benbusby/whoogle-search)](https://gitter.im/whoogle-search/community)
 
 Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
@@ -13,10 +13,11 @@ Contents
 1. [Features](#features)
 2. [Dependencies](#dependencies)
 3. [Install/Deploy](#install)
-4. [Usage](#usage)
-5. [Extra Steps](#extra-steps)
-6. [FAQ](#faq)
-7. [Screenshots](#screenshots)
+4. [Environment Variables](#environment-variables)
+5. [Usage](#usage)
+6. [Extra Steps](#extra-steps)
+7. [FAQ](#faq)
+8. [Screenshots](#screenshots)
 
 ## Features
 - No ads or sponsored content
@@ -26,16 +27,18 @@ Contents
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
 - No referrer header
+- Tor and HTTP/SOCKS proxy support
 - Autocomplete/search suggestions
 - POST request search and suggestion queries (when possible)
 - View images at full res without site redirect (currently mobile only)
 - Dark mode
 - Randomly generated User Agent
 - Easy to install/deploy
+- DDG-style bang (i.e. `!<tag> <query>`) searches
 - Optional location-based searching (i.e. results near \<city\>)
 - Optional NoJS mode to disable all Javascript in results
 
-<sup>*If deployed to a remote server</sup>
+<sup>*If deployed to a remote server, or configured to send requests through a VPN, Tor, proxy, etc.</sup>
 
 ## Dependencies
 If using Heroku Quick Deploy, **you can skip this section**.
@@ -65,7 +68,7 @@ Provides:
 [![Run on Repl.it](https://repl.it/badge/github/benbusby/whoogle-search)](https://repl.it/github/benbusby/whoogle-search)
 
 Provides:
-- Free deployment of app (can be ran without account)
+- Free deployment of app
 - Free HTTPS url (https://\<app name\>.\<username\>\.repl\.co)
     - Supports custom domains
 - Downtime after periods of inactivity \([solution 1](https://repl.it/talk/ask/use-this-pingmat1replco-just-enter/28821/101298), [solution 2](https://repl.it/talk/learn/How-to-use-and-setup-UptimeRobot/9003)\)
@@ -96,6 +99,7 @@ optional arguments:
   --debug               Activates debug mode for the server (default False)
   --https-only          Enforces HTTPS redirects for all requests (default False)
 ```
+See the [available environment variables](#environment-variables) for additional configuration.
 
 ### E) Manual
 Clone the repo and run the following commands to start the app in a local-only environment:
@@ -108,6 +112,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ./run
 ```
+See the [available environment variables](#environment-variables) for additional configuration.
 
 #### systemd Configuration
 After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
@@ -117,6 +122,20 @@ After building the virtual environment, you can add the following to `/lib/syste
 Description=Whoogle
 
 [Service]
+# Basic auth configuration, uncomment to enable
+#Environment=WHOOGLE_USER=<username>
+#Environment=WHOOGLE_PASS=<password>
+# Proxy configuration, uncomment to enable
+#Environment=WHOOGLE_PROXY_USER=<proxy username>
+#Environment=WHOOGLE_PROXY_PASS=<proxy password>
+#Environment=WHOOGLE_PROXY_TYPE=<proxy type (http|proxy4|proxy5)
+#Environment=WHOOGLE_PROXY_LOC=<proxy host/ip>
+# Site alternative configurations, uncomment to enable
+# Note: If not set, the feature will still be available
+# with default values. 
+#Environment=WHOOGLE_ALT_TW=nitter.net
+#Environment=WHOOGLE_ALT_YT=invidious.snopyta.org
+#Environment=WHOOGLE_ALT_IG=bibliogram.art/u
 Type=simple
 User=root
 WorkingDirectory=<whoogle_directory>
@@ -143,6 +162,9 @@ sudo systemctl start whoogle
 2. Clone and deploy the docker app using a method below:
 
 #### Docker CLI
+
+***Note:** For ARM machines, use the `buildx-experimental` Docker tag.*
+
 Through Docker Hub:
 ```bash
 docker pull benbusby/whoogle-search
@@ -166,6 +188,19 @@ docker build --tag whoogle-search:1.0 .
 docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
 ```
 
+Optionally, you can also enable some of the following environment variables to further customize your instance:
+
+```bash
+docker run --publish 5000:5000 --detach --name whoogle-search \
+  -e WHOOGLE_USER=username \
+  -e WHOOGLE_PASS=password \
+  -e WHOOGLE_PROXY_USER=username \
+  -e WHOOGLE_PROXY_PASS=password \
+  -e WHOOGLE_PROXY_TYPE=socks5 \
+  -e WHOOGLE_PROXY_LOC=ip \
+  whoogle-search:1.0
+```
+
 And kill with: `docker rm --force whoogle-search`
 
 #### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
@@ -181,6 +216,7 @@ heroku open
 ```
 
 This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Whoogle and even [set it as your primary search engine](https://github.com/benbusby/whoogle#set-whoogle-as-your-primary-search-engine).
+You may also edit environment variables from your app’s Settings tab in the Heroku Dashboard.
 
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
@@ -190,6 +226,23 @@ Depending on your preferences, you can also deploy the app yourself on your own 
   - Your own URL (I suppose this is optional, but recommended)
   - SSL certificates (free through [Let's Encrypt](https://letsencrypt.org/getting-started/))
   - A bit more experience or willingness to work through issues
+
+## Environment Variables
+There are a few optional environment variables available for customizing a Whoogle instance:
+
+| Variable           | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used. |
+| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used. |
+| WHOOGLE_PROXY_USER | The username of the proxy server.                              |
+| WHOOGLE_PROXY_PASS | The password of the proxy server.                              |
+| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".           |
+| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                 |
+| EXPOSE_PORT        | The port where Whoogle will be exposed.                        |
+| HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
+| WHOOGLE_ALT_TW     | The twitter.com alternative to use when site alternatives are enabled in the config. |
+| WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config. |
+| WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config. |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
@@ -256,7 +309,8 @@ Only needed if your setup requires Flask to redirect to HTTPS on its own -- gene
 Note: You should have your own domain name and [an https certificate](https://letsencrypt.org/getting-started/) in order for this to work properly.
 
 - Heroku: Ensure that the `Root URL` configuration on the home page begins with `https://` and not `http://`
-- Docker: Add `--build-arg use_https=1` to your run command
+- Docker build: Add `--build-arg use_https=1` to your run command
+- Docker image: Set the environment variable HTTPS_ONLY=1
 - Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
 
@@ -277,7 +331,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Screenshots
 #### Desktop
-![Whoogle Desktop](app/static/img/docs/screenshot_desktop.jpg)
+![Whoogle Desktop](docs/screenshot_desktop.jpg)
 
 #### Mobile
-![Whoogle Mobile](app/static/img/docs/screenshot_mobile.jpg)
+![Whoogle Mobile](docs/screenshot_mobile.jpg)

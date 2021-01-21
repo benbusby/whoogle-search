@@ -4,6 +4,21 @@ services:
   whoogle-search:
     image: benbusby/whoogle-search
     container_name: whoogle-search
+    #environment: # Uncomment to configure environment variables
+      # Basic auth configuration, uncomment to enable
+      #- WHOOGLE_USER=<auth username>
+      #- WHOOGLE_PASS=<auth password>
+      # Proxy configuration, uncomment to enable
+      #- WHOOGLE_PROXY_USER=<proxy username>
+      #- WHOOGLE_PROXY_PASS=<proxy password>
+      #- WHOOGLE_PROXY_TYPE=<proxy type (http|socks4|socks5)
+      #- WHOOGLE_PROXY_LOC=<proxy host/ip>
+      # Site alternative configurations, uncomment to enable
+      # Note: If not set, the feature will still be available
+      # with default values. 
+      #- WHOOGLE_ALT_TW=nitter.net
+      #- WHOOGLE_ALT_YT=invidious.snopyta.org
+      #- WHOOGLE_ALT_IG=bibliogram.art/u
     ports:
       - 5000:5000
     restart: unless-stopped
