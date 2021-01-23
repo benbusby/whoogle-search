@@ -66,11 +66,7 @@ def before_request_func():
         app.user_elements.update({session['uuid']: 0})
 
     # Handle https upgrade
-    https_only = os.getenv('HTTPS_ONLY', False)
-    is_heroku = request.url.endswith('.herokuapp.com')
-    is_http = request.url.startswith('http://')
-
-    if (is_heroku and is_http) or (https_only and is_http):
+    if needs_https(request.url):
         return redirect(
             request.url.replace('http://', 'https://', 1),
             code=308)
@@ -80,7 +76,7 @@ def before_request_func():
     if not g.user_config.url:
         g.user_config.url = request.url_root.replace(
             'http://',
-            'https://') if https_only else request.url_root
+            'https://') if os.getenv('HTTPS_ONLY', False) else request.url_root
 
     g.user_request = Request(
         request.headers.get('User-Agent'),
@@ -145,6 +141,10 @@ def opensearch():
     opensearch_url = g.app_location
     if opensearch_url.endswith('/'):
         opensearch_url = opensearch_url[:-1]
+
+    # Enforce https for opensearch template
+    if needs_https(opensearch_url):
+        opensearch_url = opensearch_url.replace('http://', 'https://', 1)
 
     get_only = g.user_config.get_only or 'Chrome' in request.headers.get(
         'User-Agent')

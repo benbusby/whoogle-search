@@ -5,8 +5,17 @@ from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken
 from flask import g
 from typing import Any, Tuple
+import os
 
 TOR_BANNER = '<hr><h1 style="text-align: center">You are using Tor</h1><hr>'
+
+
+def needs_https(url: str) -> bool:
+    https_only = os.getenv('HTTPS_ONLY', False)
+    is_heroku = url.endswith('.herokuapp.com')
+    is_http = url.startswith('http://')
+
+    return (is_heroku and is_http) or (https_only and is_http)
 
 
 class RoutingUtils:
