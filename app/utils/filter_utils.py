@@ -4,6 +4,7 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
 SKIP_ARGS = ['ref_src', 'utm']
+SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
 FULL_RES_IMG = '<br/><a href="{}">Full Image</a>'
 GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
 LOGO_URL = GOOG_IMG + '_desk'
@@ -22,7 +23,8 @@ BLACKLIST = [
 SITE_ALTS = {
     'twitter.com': os.getenv('WHOOGLE_ALT_TW', 'nitter.net'),
     'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'invidious.snopyta.org'),
-    'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'bibliogram.art/u')
+    'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'bibliogram.art/u'),
+    'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'libredd.it')
 }
 
 
@@ -47,7 +49,10 @@ def get_site_alt(link: str):
         link = link.replace(site_key, SITE_ALTS[site_key])
         break
 
-    return link.replace('www.', '').replace('//m.', '//')
+    for prefix in SKIP_PREFIX:
+        link = link.replace(prefix, '//')
+
+    return link
 
 
 def filter_link_args(query_link):

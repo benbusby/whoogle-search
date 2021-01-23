@@ -136,6 +136,7 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_TW=nitter.net
 #Environment=WHOOGLE_ALT_YT=invidious.snopyta.org
 #Environment=WHOOGLE_ALT_IG=bibliogram.art/u
+#Environment=WHOOGLE_ALT_RD=libredd.it
 Type=simple
 User=root
 WorkingDirectory=<whoogle_directory>
