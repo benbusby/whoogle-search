@@ -47,17 +47,22 @@
     },
     "WHOOGLE_ALT_TW": {
       "description": "The site to use as a replacement for twitter.com when site alternatives are enabled in the config.",
-      "value": "",
+      "value": "nitter.net",
       "required": false
     },
     "WHOOGLE_ALT_YT": {
       "description": "The site to use as a replacement for youtube.com when site alternatives are enabled in the config.",
-      "value": "",
+      "value": "invidious.snopyta.org",
       "required": false
     },
     "WHOOGLE_ALT_IG": {
       "description": "The site to use as a replacement for instagram.com when site alternatives are enabled in the config.",
-      "value": "",
+      "value": "bibliogram.art/u",
+      "required": false
+    },
+    "WHOOGLE_ALT_RD": {
+      "description": "The site to use as a replacement for reddit.com when site alternatives are enabled in the config.",
+      "value": "libredd.it",
       "required": false
     }
   }

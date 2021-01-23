@@ -45,6 +45,8 @@ ARG youtube_alt='invidious.snopyta.org'
 ENV WHOOGLE_ALT_YT=$youtube_alt
 ARG instagram_alt='bibliogram.art/u'
 ENV WHOOGLE_ALT_YT=$instagram_alt
+ARG reddit_alt='libredd.it'
+ENV WHOOGLE_ALT_RD=$reddit_alt
 
 COPY . .
 
