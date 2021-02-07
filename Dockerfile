@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libffi-dev \
     tor
 
-COPY misc/tor/torrc /etc/tor/torrc
+COPY config/tor/torrc /etc/tor/torrc
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -50,4 +50,4 @@ COPY . .
 
 EXPOSE $EXPOSE_PORT
 
-CMD misc/tor/start-tor.sh & ./run
+CMD config/tor/start-tor.sh & ./run
