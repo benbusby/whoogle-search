@@ -14,14 +14,14 @@ app.default_key_set = generate_user_keys()
 app.no_cookie_ips = []
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['VERSION_NUMBER'] = '0.3.0'
+app.config['VERSION_NUMBER'] = '0.3.1'
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',
     os.path.dirname(os.path.abspath(__file__)))
 app.config['LANGUAGES'] = json.load(open(
-    os.path.join(app.config['APP_ROOT'], '../misc/languages.json')))
+    os.path.join(app.config['APP_ROOT'], 'misc/languages.json')))
 app.config['COUNTRIES'] = json.load(open(
-    os.path.join(app.config['APP_ROOT'], '../misc/countries.json')))
+    os.path.join(app.config['APP_ROOT'], 'misc/countries.json')))
 app.config['STATIC_FOLDER'] = os.getenv(
     'STATIC_FOLDER',
     os.path.join(app.config['APP_ROOT'], 'static'))

@@ -1,4 +1,5 @@
 graft app/static
 graft app/templates
+graft app/misc
 include requirements.txt
 global-exclude *.pyc
