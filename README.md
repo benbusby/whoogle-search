@@ -17,7 +17,8 @@ Contents
 5. [Usage](#usage)
 6. [Extra Steps](#extra-steps)
 7. [FAQ](#faq)
-8. [Screenshots](#screenshots)
+8. [Public Instances](#public-instances)
+9. [Screenshots](#screenshots)
 
 ## Features
 - No ads or sponsored content
@@ -329,6 +330,14 @@ I'm a huge fan of Searx though and encourage anyone to use that instead if they 
 **Why does the image results page look different?**
 
 A lot of the app currently piggybacks on Google's existing support for fetching results pages with Javascript disabled. To their credit, they've done an excellent job with styling pages, but it seems that the image results page - particularly on mobile - is a little rough. Moving forward, with enough interest, I'd like to transition to fetching the results and parsing them into a unique Whoogle-fied interface that I can style myself.
+
+## Public Instances
+
+*Note: Use public instances at your own discretion. Maintainers of Whoogle do not personally validate the integrity of these instances, and popular public instances are more likely to be rate-limited or blocked.*
+
+- https://whoogle.sdf.org
+- https://whoogle.tormentasolar.win/
+- https://whoogle.himiko.cloud
 
 ## Screenshots
 #### Desktop
