@@ -15,6 +15,7 @@
 	});
 
 	document.addEventListener('keydown', (e) => {
+		if (e.target.tagName === 'INPUT') return true;
 		if (typeof keymap[e.key] === 'function') {
 			e.preventDefault();
 			keymap[e.key]();
