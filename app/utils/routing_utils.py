@@ -71,8 +71,9 @@ class RoutingUtils:
         return self.query
 
     def bang_operator(self, bangs_dict: dict) -> str:
+        split_query = self.query.split(' ')
         for operator in bangs_dict.keys():
-            if self.query.split(' ')[0] != operator:
+            if operator not in split_query:
                 continue
 
             return bangs_dict[operator]['url'].format(
