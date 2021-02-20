@@ -127,27 +127,23 @@ class Filter:
                 question['style'] = 'padding: 10px; font-style: italic;'
 
     def update_element_src(self, element, mime):
-        element_src = element['src']
-        if element_src.startswith('//'):
-            element_src = 'https:' + element_src
-        elif element_src.startswith(LOGO_URL):
+        src = element['src']
+
+        if src.startswith('//'):
+            src = 'https:' + src
+
+        if src.startswith(LOGO_URL):
             # Re-brand with Whoogle logo
             element['src'] = 'static/img/logo.png'
             element['style'] = 'height:40px;width:162px'
             return
-        elif element_src.startswith(GOOG_IMG):
+        elif src.startswith(GOOG_IMG) or GOOG_STATIC in src:
             element['src'] = BLANK_B64
             return
 
         element['src'] = 'element?url=' + self.encrypt_path(
-            element_src,
+            src,
             is_element=True) + '&type=' + urlparse.quote(mime)
-
-        # FIXME: Non-mobile image results link to website instead of image
-        # if not self.mobile:
-        # img.append(
-        #     BeautifulSoup(FULL_RES_IMG.format(element_src),
-        #     'html.parser'))
 
     def update_styling(self, soup):
         # Remove unnecessary button(s)

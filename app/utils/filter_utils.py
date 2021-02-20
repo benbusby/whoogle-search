@@ -5,7 +5,7 @@ from urllib.parse import parse_qs
 
 SKIP_ARGS = ['ref_src', 'utm']
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
-FULL_RES_IMG = '<br/><a href="{}">Full Image</a>'
+GOOG_STATIC = 'www.gstatic.com'
 GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
 LOGO_URL = GOOG_IMG + '_desk'
 BLANK_B64 = ('data:image/png;base64,'
