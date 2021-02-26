@@ -136,7 +136,6 @@ def index():
 
 
 @app.route('/opensearch.xml', methods=['GET'])
-@auth_required
 def opensearch():
     opensearch_url = g.app_location
     if opensearch_url.endswith('/'):
