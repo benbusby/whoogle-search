@@ -4,18 +4,17 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libxml2-dev \
     libxslt-dev \
+    libssl-dev \
     libffi-dev
 
 COPY requirements.txt .
 
 RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r requirements.txt
 
-
 FROM python:3.8-slim
 
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
-    libssl-dev \
     tor \
     && rm -rf /var/lib/apt/lists/*
 
