@@ -1,18 +1,23 @@
-FROM python:3.8-slim
+FROM python:3.8-slim as builder
 
-WORKDIR /usr/src/app
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libcurl4-openssl-dev \
-    libssl-dev \
     libxml2-dev \
     libxslt-dev \
-    libffi-dev \
-    tor
+    libffi-dev
 
-COPY config/tor/torrc /etc/tor/torrc
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+
+RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r requirements.txt
+
+
+FROM python:3.8-slim
+
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    tor \
+    && rm -rf /var/lib/apt/lists/*
 
 ARG config_dir=/config
 RUN mkdir -p $config_dir
@@ -48,7 +53,13 @@ ENV WHOOGLE_ALT_YT=$instagram_alt
 ARG reddit_alt='libredd.it'
 ENV WHOOGLE_ALT_RD=$reddit_alt
 
-COPY . .
+WORKDIR /whoogle
+
+COPY --from=builder /install /usr/local
+COPY config/tor/torrc /etc/tor/torrc
+COPY config/tor/start-tor.sh config/tor/start-tor.sh
+COPY app/ app/
+COPY run .
 
 EXPOSE $EXPOSE_PORT
 
