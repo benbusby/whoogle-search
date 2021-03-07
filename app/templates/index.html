@@ -36,12 +36,6 @@
         <title>Whoogle Search</title>
     </head>
     <body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
-    <script>
-        {% if error_message|length > 0 %}
-            let error = "{{ error_message|safe }}";
-            alert(error);
-        {% endif %}
-    </script>
         <div class="search-container">
             <img class="logo" src="static/img/logo.png">
             <form id="search-form" action="search" method="{{ 'get' if config.get_only else 'post' }}">

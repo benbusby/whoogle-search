@@ -87,7 +87,7 @@ def before_request_func():
 
 
 @app.after_request
-def after_request_func(response):
+def after_request_func(resp):
     if app.user_elements[session['uuid']] <= 0 and '/element' in request.url:
         # Regenerate element key if all elements have been served to user
         session['fernet_keys'][
@@ -108,7 +108,11 @@ def after_request_func(response):
         for key in session_list:
             session.pop(key)
 
-    return response
+    resp.headers['Content-Security-Policy'] = app.config['CSP']
+    if os.environ.get('HTTPS_ONLY', False):
+        resp.headers['Content-Security-Policy'] += 'upgrade-insecure-requests'
+
+    return resp
 
 
 @app.errorhandler(404)
@@ -122,15 +126,17 @@ def unknown_page(e):
 def index():
     # Reset keys
     session['fernet_keys'] = generate_user_keys(g.cookies_disabled)
-    error_message = session[
-        'error_message'] if 'error_message' in session else ''
-    session['error_message'] = ''
+
+    # Redirect if an error was raised
+    if 'error_message' in session and session['error_message']:
+        error_message = session['error_message']
+        session['error_message'] = ''
+        return render_template('error.html', error_message=error_message)
 
     return render_template('index.html',
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
                            config=g.user_config,
-                           error_message=error_message,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
 
@@ -286,7 +292,9 @@ def url():
     if len(q) > 0 and 'http' in q:
         return redirect(q)
     else:
-        return render_template('error.html', query=q)
+        return render_template(
+            'error.html',
+            error_message='Unable to resolve query: ' + q)
 
 
 @app.route('/imgres')
