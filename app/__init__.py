@@ -40,6 +40,13 @@ app.config['BANG_PATH'] = os.getenv(
 app.config['BANG_FILE'] = os.path.join(
     app.config['BANG_PATH'],
     'bangs.json')
+app.config['CSP'] = 'default-src \'none\';' \
+                    'img-src \'self\';' \
+                    'style-src \'self\' \'unsafe-inline\';' \
+                    'script-src \'self\';' \
+                    'media-src \'self\';' \
+                    'connect-src \'self\';' \
+                    'form-action \'self\';'
 
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])
