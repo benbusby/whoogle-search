@@ -1,6 +1,6 @@
 from app.request import send_tor_signal
-from app.utils.session_utils import generate_user_keys
-from app.utils.gen_ddg_bangs import gen_bangs_json
+from app.utils.session import generate_user_keys
+from app.utils.bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
 import json

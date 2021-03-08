@@ -1,5 +1,5 @@
 from app.filter import Filter, get_first_link
-from app.utils.session_utils import generate_user_keys
+from app.utils.session import generate_user_keys
 from app.request import gen_query
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken
@@ -11,6 +11,18 @@ TOR_BANNER = '<hr><h1 style="text-align: center">You are using Tor</h1><hr>'
 
 
 def needs_https(url: str) -> bool:
+    """Checks if the current instance needs to be upgraded to HTTPS
+
+    Note that all Heroku instances are available by default over HTTPS, but
+    do not automatically set up a redirect when visited over HTTP.
+
+    Args:
+        url: The instance url
+
+    Returns:
+        bool: True/False representing the need to upgrade
+
+    """
     https_only = os.getenv('HTTPS_ONLY', False)
     is_heroku = url.endswith('.herokuapp.com')
     is_http = url.startswith('http://')
@@ -18,7 +30,15 @@ def needs_https(url: str) -> bool:
     return (is_heroku and is_http) or (https_only and is_http)
 
 
-class RoutingUtils:
+class Search:
+    """Search query preprocessor - used before submitting the query or
+    redirecting to another site
+
+    Attributes:
+        request: the incoming flask request
+        config: the current user config settings
+        session: the flask user session
+    """
     def __init__(self, request, config, session, cookies_disabled=False):
         method = request.method
         self.request_params = request.args if method == 'GET' else request.form
@@ -31,19 +51,28 @@ class RoutingUtils:
         self.search_type = self.request_params.get(
             'tbm') if 'tbm' in self.request_params else ''
 
-    def __getitem__(self, name):
+    def __getitem__(self, name) -> Any:
         return getattr(self, name)
 
-    def __setitem__(self, name, value):
+    def __setitem__(self, name, value) -> None:
         return setattr(self, name, value)
 
-    def __delitem__(self, name):
+    def __delitem__(self, name) -> None:
         return delattr(self, name)
 
-    def __contains__(self, name):
+    def __contains__(self, name) -> bool:
         return hasattr(self, name)
 
     def new_search_query(self) -> str:
+        """Parses a plaintext query into a valid string for submission
+
+        Also decrypts the query string, if encrypted (in the case of
+        paginated results).
+
+        Returns:
+            str: A valid query string
+
+        """
         # Generate a new element key each time a new search is performed
         self.session['fernet_keys']['element_key'] = generate_user_keys(
             cookies_disabled=self.cookies_disabled)['element_key']
@@ -70,17 +99,18 @@ class RoutingUtils:
         self.query = q[2:] if self.feeling_lucky else q
         return self.query
 
-    def bang_operator(self, bangs_dict: dict) -> str:
-        split_query = self.query.split(' ')
-        for operator in bangs_dict.keys():
-            if operator not in split_query:
-                continue
-
-            return bangs_dict[operator]['url'].format(
-                self.query.replace(operator, '').strip())
-        return ''
-
     def generate_response(self) -> Tuple[Any, int]:
+        """Generates a response for the user's query
+
+        Returns:
+            Tuple[Any, int]: A tuple in the format (response, # of elements)
+                             For example, in the case of a "feeling lucky"
+                             search, the response is a result URL, with no
+                             encrypted elements to account for. Otherwise, the
+                             response is a BeautifulSoup response body, with
+                             N encrypted elements to track before key regen.
+
+        """
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
 
         content_filter = Filter(
@@ -102,7 +132,7 @@ class RoutingUtils:
             if g.user_request.tor_valid else bsoup('', 'html.parser'))
 
         if self.feeling_lucky:
-            return get_first_link(html_soup), 1
+            return get_first_link(html_soup), 0
         else:
             formatted_results = content_filter.clean(html_soup)
 
