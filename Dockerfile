@@ -62,4 +62,7 @@ COPY run .
 
 EXPOSE $EXPOSE_PORT
 
+HEALTHCHECK  --interval=5m --timeout=5s \
+  CMD wget --no-verbose --tries=1 http://localhost:${EXPOSE_PORT}/ || exit 1
+
 CMD config/tor/start-tor.sh & ./run

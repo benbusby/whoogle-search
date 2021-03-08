@@ -38,8 +38,8 @@ def has_ad_content(element: str) -> bool:
         bool: True/False for the element containing an ad
 
     """
-    return element.upper() in (value.upper() for value in BLACKLIST) \
-           or 'ⓘ' in element
+    return (element.upper() in (value.upper() for value in BLACKLIST)
+            or 'ⓘ' in element)
 
 
 def get_first_link(soup: BeautifulSoup) -> str:
