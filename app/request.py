@@ -23,8 +23,8 @@ class TorError(Exception):
     """Exception raised for errors in Tor requests.
 
     Attributes:
-        message -- a message describing the error that occurred
-        disable -- optionally disables Tor in the user config (note:
+        message: a message describing the error that occurred
+        disable: optionally disables Tor in the user config (note:
             this should only happen if the connection has been dropped
             altogether).
     """
@@ -133,9 +133,9 @@ class Request:
     search suggestions, and loading of external content (images, audio, etc).
 
     Attributes:
-        normal_ua -- the user's current user agent
-        root_path -- the root path of the whoogle instance
-        config -- the user's current whoogle configuration
+        normal_ua: the user's current user agent
+        root_path: the root path of the whoogle instance
+        config: the user's current whoogle configuration
     """
 
     def __init__(self, normal_ua, root_path, config: Config):

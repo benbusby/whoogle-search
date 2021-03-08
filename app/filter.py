@@ -1,5 +1,5 @@
 from app.request import VALID_PARAMS
-from app.utils.filter_utils import *
+from app.utils.results import *
 from bs4.element import ResultSet
 from cryptography.fernet import Fernet
 import re
@@ -208,7 +208,7 @@ class Filter:
 
             # Add no-js option
             if self.nojs:
-                gen_nojs(link)
+                append_nojs(link)
         else:
             link['href'] = href
 

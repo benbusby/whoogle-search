@@ -16,8 +16,9 @@ from requests import exceptions
 from app import app
 from app.models.config import Config
 from app.request import Request, TorError
-from app.utils.session_utils import valid_user_session
-from app.utils.routing_utils import *
+from app.utils.bangs import resolve_bang
+from app.utils.session import valid_user_session
+from app.utils.search import *
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE']))
@@ -199,13 +200,13 @@ def search():
     # Update user config if specified in search args
     g.user_config = g.user_config.from_params(g.request_params)
 
-    search_util = RoutingUtils(request, g.user_config, session,
-                               cookies_disabled=g.cookies_disabled)
+    search_util = Search(request, g.user_config, session,
+                         cookies_disabled=g.cookies_disabled)
     query = search_util.new_search_query()
 
-    resolved_bangs = search_util.bang_operator(bang_json)
-    if resolved_bangs != '':
-        return redirect(resolved_bangs)
+    bang = resolve_bang(query=query, bangs_dict=bang_json)
+    if bang != '':
+        return redirect(bang)
 
     # Redirect to home if invalid/blank search
     if not query:
