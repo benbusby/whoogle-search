@@ -56,7 +56,7 @@ If using Heroku Quick Deploy, **you can skip this section**.
 There are a few different ways to begin using the app, depending on your preferences:
 
 ### A) [Heroku Quick Deploy](https://heroku.com/about)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search/tree/heroku-app)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search/tree/heroku-app-beta)
 
 *Note: Requires a (free) Heroku account*
 
@@ -248,6 +248,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_TW     | The twitter.com alternative to use when site alternatives are enabled in the config. |
 | WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config. |
 | WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config. |
+| WHOOGLE_ALT_RD     | The reddit.com alternative to use when site alternatives are enabled in the config. |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
