@@ -7,6 +7,12 @@ assignees: ''
 
 ---
 
+<!--
+DO NOT REQUEST UI/THEME/GUI/APPEARANCE IMPROVEMENTS HERE
+THESE SHOULD GO IN ISSUE #60
+REQUESTING A NEW FEATURE SHOULD BE STRICTLY RELATED TO NEW FUNCTIONALITY
+-->
+
 **Describe the feature you'd like to see added**
 A short description of the feature, and what it would accomplish.
 
