@@ -5,11 +5,10 @@
         <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="referrer" content="no-referrer">
-        <link rel="stylesheet" href="static/css/{{ 'search-dark' if dark_mode else 'search' }}.css">
+        <link rel="stylesheet" href="static/css/variables.css">
         <link rel="stylesheet" href="static/css/header.css">
-        {% if dark_mode %}
-            <link rel="stylesheet" href="static/css/dark-theme.css"/>
-        {% endif %}
+        <link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
+        <style>{{ config.style }}</style>
         <title>{{ query }} - Whoogle Search</title>
     </head>
     <body>
@@ -17,7 +16,7 @@
     {{ response|safe }}
     </body>
     <footer>
-        <p style="color: {{ '#fff' if dark_mode else '#000' }};">
+        <p style="color: {{ '#fff' if config.dark else '#000' }};">
             Whoogle Search v{{ version_number }} ||
             <a style="color: #685e79" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
         </p>
