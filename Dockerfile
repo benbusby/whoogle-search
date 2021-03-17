@@ -55,8 +55,8 @@ ENV WHOOGLE_ALT_RD=$reddit_alt
 WORKDIR /whoogle
 
 COPY --from=builder /install /usr/local
-COPY config/tor/torrc /etc/tor/torrc
-COPY config/tor/start-tor.sh config/tor/start-tor.sh
+COPY misc/tor/torrc /etc/tor/torrc
+COPY misc/tor/start-tor.sh misc/tor/start-tor.sh
 COPY app/ app/
 COPY run .
 
@@ -65,4 +65,4 @@ EXPOSE $EXPOSE_PORT
 HEALTHCHECK  --interval=5m --timeout=5s \
   CMD wget --no-verbose --tries=1 http://localhost:${EXPOSE_PORT}/ || exit 1
 
-CMD config/tor/start-tor.sh & ./run
+CMD misc/tor/start-tor.sh & ./run
