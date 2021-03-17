@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Assumes this is being executed from a session that has already logged
 # into Heroku with "heroku login -i" beforehand.
 # 
@@ -8,22 +8,22 @@
 
 HEROKU_CLI_SITE="https://devcenter.heroku.com/articles/heroku-cli"
 
-if ! type "heroku" > /dev/null; then
+if ! [[ -x "$(command -v heroku)" ]]; then
     echo "Must have heroku cli installed: $HEROKU_CLI_SITE"
     exit 1
 fi
 
 cd "$(builtin cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/../"
 
-if [ $# -ne 1 ]; then
-    echo "Must provide the name of the Whoogle instance to regenerate"
+if [[ $# -ne 1 ]]; then
+    echo -e "Must provide the name of the Whoogle instance to regenerate"
     exit 1
 fi
 
 APP_NAME="$1"
 
-heroku apps:destroy $APP_NAME --confirm $APP_NAME
-heroku apps:create $APP_NAME
+heroku apps:destroy "$APP_NAME" --confirm "$APP_NAME"
+heroku apps:create "$APP_NAME"
 heroku container:login
 heroku container:push web
 heroku container:release web
