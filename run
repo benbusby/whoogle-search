@@ -15,6 +15,7 @@ export STATIC_FOLDER="$APP_ROOT/static"
 # Check for regular vs test run
 if [[ "$SUBDIR" == "test" ]]; then
     # Set up static files for testing
+    rm -rf "$STATIC_FOLDER"
     ln -s "$SCRIPT_DIR/app/static" "$STATIC_FOLDER"
     pytest -sv
 else
