@@ -41,6 +41,7 @@ app.config['BANG_FILE'] = os.path.join(
     app.config['BANG_PATH'],
     'bangs.json')
 app.config['CSP'] = 'default-src \'none\';' \
+                    'manifest-src \'self\';' \
                     'img-src \'self\';' \
                     'style-src \'self\' \'unsafe-inline\';' \
                     'script-src \'self\';' \
