@@ -1,6 +1,6 @@
 {
  "name": "Whoogle Search",
- "short_name": "Whoogle Search",
+ "short_name": "Whoogle",
  "display": "fullscreen",
  "scope": "/",
  "start_url": "$APP_ROOT/templates/index.html",
