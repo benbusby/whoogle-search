@@ -12,7 +12,7 @@
                         <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
                                style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
                                        color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
-                                       border: {{ '2px solid var(--whoogle-dark-accent)' if config.dark else '' }};"
+                                       border: {{ '2px solid var(--whoogle-dark-accent)' if config.dark else '' }}; border-radius: 8px;"
                                spellcheck="false" type="text" value="{{ query }}">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
@@ -37,7 +37,7 @@
                                spellcheck="false" type="text" value="{{ query }}"
                                style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
                                        color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
-                                       border: {{ '2px solid var(--whoogle-dark-accent)' if config.dark else '' }};">
+                                       border: {{ '2px solid var(--whoogle-dark-accent)' if config.dark else '' }}; border-radius: 8px;">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>

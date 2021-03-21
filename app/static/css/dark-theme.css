@@ -67,7 +67,6 @@ select {
 
 #search-bar {
     border: 2px solid var(--whoogle-dark-accent) !important;
-    border-radius: 8px;
     color: var(--whoogle-dark-text) !important;
 }
 
