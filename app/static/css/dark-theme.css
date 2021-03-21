@@ -28,19 +28,19 @@ textarea {
 }
 
 a:visited h3 div {
-    color: var(--whoogle-result-visited) !important;
+    color: var(--whoogle-dark-result-visited) !important;
 }
 
 a:link h3 div {
-    color: var(--whoogle-result-title) !important;
+    color: var(--whoogle-dark-result-title) !important;
 }
 
 a:link div {
-    color: var(--whoogle-result-url) !important;
+    color: var(--whoogle-dark-result-url) !important;
 }
 
 div span {
-    color: var(--whoogle-secondary-text) !important;
+    color: var(--whoogle-dark-secondary-text) !important;
 }
 
 input {
@@ -104,7 +104,7 @@ select {
 }
 
 .active:after {
-    color: var(--whoogle-contrast-text);
+    color: var(--whoogle-dark-contrast-text);
 }
 
 #gh-link {
