@@ -7,7 +7,6 @@ from urllib.parse import parse_qs
 from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.abspath(os.getcwd()), '.env'))
 
-
 SKIP_ARGS = ['ref_src', 'utm']
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
 GOOG_STATIC = 'www.gstatic.com'
