@@ -3,6 +3,10 @@ import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
+# For .env reading
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.abspath(os.getcwd()), '.env'))
+
 SKIP_ARGS = ['ref_src', 'utm']
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
 GOOG_STATIC = 'www.gstatic.com'
@@ -12,6 +16,7 @@ BLANK_B64 = ('data:image/png;base64,'
              'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkw'
              'AIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC')
 
+
 # Ad keywords
 BLACKLIST = [
     'ad', 'anuncio', 'annuncio', 'annonce', 'Anzeige', '广告', '廣告', 'Reklama',
@@ -20,20 +25,42 @@ BLACKLIST = [
     'Reklāma', 'Reklaam', 'Διαφήμιση', 'מודעה', 'Hirdetés', 'Anúncio'
 ]
 
-SITE_ALTS = {
-    'twitter.com': os.getenv('WHOOGLE_ALT_TW', 'nitter.net'),
-    'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'invidious.snopyta.org'),
-    'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'bibliogram.art/u'),
-    'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'libredd.it')
-}
+# Setting up ALTs site Links
+SITE_ALTS = {}
+def get_alt_links():
+  print("Setting up alternative social media site..")
+  tw,yt,ig,rd = os.getenv("twitter"),os.getenv("youtube"),os.getenv("instagram"),os.getenv("reddit")
+  if tw != None and tw != "":
+      SITE_ALTS['twitter.com']=tw
+  else:
+    SITE_ALTS['twitter.com']=os.getenv('WHOOGLE_ALT_TW', 'nitter.net')
 
+  if yt != None and yt != "":
+      SITE_ALTS['youtube.com']=yt
+  else:
+    SITE_ALTS['youtube.com']=os.getenv('WHOOGLE_ALT_YT', 'invalid.com')
+ 
+  if ig != None and ig != "":
+      SITE_ALTS['instagram.com']=os.getenv("instagram")
+  else:
+    SITE_ALTS['instagram.com']=os.getenv('WHOOGLE_ALT_IG', 'bibliogram.art/u')
+ 
+  if rd != None and rd != "":
+      SITE_ALTS['reddit.com']=os.getenv("reddit")
+  else:
+    SITE_ALTS['reddit.com']=os.getenv('WHOOGLE_ALT_RD', 'libredd.it')
+
+get_alt_links()
 
 def has_ad_content(element: str) -> bool:
     """Inspects an HTML element for ad related content
+
     Args:
         element: The HTML element to inspect
+
     Returns:
         bool: True/False for the element containing an ad
+
     """
     return (element.upper() in (value.upper() for value in BLACKLIST)
             or 'ⓘ' in element)
@@ -41,10 +68,13 @@ def has_ad_content(element: str) -> bool:
 
 def get_first_link(soup: BeautifulSoup) -> str:
     """Retrieves the first result link from the query response
+
     Args:
         soup: The BeautifulSoup response body
+
     Returns:
         str: A str link to the first result
+
     """
     # Replace hrefs with only the intended destination (no "utm" type tags)
     for a in soup.find_all('a', href=True):
@@ -55,11 +85,15 @@ def get_first_link(soup: BeautifulSoup) -> str:
 
 def get_site_alt(link: str) -> str:
     """Returns an alternative to a particular site, if one is configured
+
     Args:
         link: A string result URL to check against the SITE_ALTS map
+
     Returns:
         str: An updated (or ignored) result link
+
     """
+      
     for site_key in SITE_ALTS.keys():
         if site_key not in link:
             continue
@@ -75,10 +109,13 @@ def get_site_alt(link: str) -> str:
 
 def filter_link_args(link: str) -> str:
     """Filters out unnecessary URL args from a result link
+
     Args:
         link: The string result link to check for extraneous URL params
+
     Returns:
         str: An updated (or ignored) result link
+
     """
     parsed_link = urlparse.urlparse(link)
     link_args = parse_qs(parsed_link.query)
@@ -105,10 +142,13 @@ def filter_link_args(link: str) -> str:
 
 def append_nojs(result: BeautifulSoup) -> None:
     """Appends a no-Javascript alternative for a search result
+
     Args:
         result: The search result to append a no-JS link to
+
     Returns:
         None
+
     """
     nojs_link = BeautifulSoup(features='html.parser').new_tag('a')
     nojs_link['href'] = '/window?location=' + result['href']
