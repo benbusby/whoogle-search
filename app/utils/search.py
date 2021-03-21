@@ -8,6 +8,7 @@ from typing import Any, Tuple
 import os
 
 TOR_BANNER = '<hr><h1 style="text-align: center">You are using Tor</h1><hr>'
+CAPTCHA = 'div class="g-recaptcha"'
 
 
 def needs_https(url: str) -> bool:
@@ -28,6 +29,10 @@ def needs_https(url: str) -> bool:
     is_http = url.startswith('http://')
 
     return (is_heroku and is_http) or (https_only and is_http)
+
+
+def has_captcha(site_contents: str) -> bool:
+    return CAPTCHA in site_contents
 
 
 class Search:
