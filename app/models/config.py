@@ -1,8 +1,15 @@
+from flask import current_app
+import os
+
+
 class Config:
     def __init__(self, **kwargs):
+        app_config = current_app.config
         self.url = ''
         self.lang_search = ''
         self.lang_interface = ''
+        self.style = open(os.path.join(app_config['STATIC_FOLDER'],
+                                       'css/variables.css')).read()
         self.ctry = ''
         self.safe = False
         self.dark = False

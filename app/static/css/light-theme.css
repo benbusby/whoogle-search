@@ -1,0 +1,130 @@
+html {
+    background: var(--whoogle-background) !important;
+}
+
+body {
+    background: var(--whoogle-background) !important;
+}
+
+div {
+    color: var(--whoogle-text) !important;
+}
+
+label {
+    color: var(--whoogle-contrast-text) !important;
+}
+
+li a {
+    color: #4b8eaa !important;
+}
+
+li {
+    color: var(--whoogle-text) !important;
+}
+
+textarea {
+    background: var(--whoogle-background) !important;
+    color: var(--whoogle-text) !important;
+}
+
+select {
+    background: var(--whoogle-background) !important;
+    color: var(--whoogle-text) !important;
+}
+
+.ZINbbc {
+    background-color: var(--whoogle-result-bg) !important;   
+}
+
+.bRsWnc {
+    background-color: var(--whoogle-result-bg) !important;   
+}
+
+a:visited h3 div {
+    color: var(--whoogle-result-visited) !important;
+}
+
+a:link h3 div {
+    color: var(--whoogle-result-title) !important;
+}
+
+a:link div {
+    color: var(--whoogle-result-url) !important;
+}
+
+div span {
+    color: var(--whoogle-secondary-text) !important;
+}
+
+input {
+    background-color: var(--whoogle-background) !important;
+    color: var(--whoogle-text) !important;
+}
+
+#search-bar {
+    color: var(--whoogle-text) !important;
+    background-color: var(--whoogle-background);
+}
+
+.home-search {
+    border: 3px solid var(--whoogle-accent) !important;
+}
+
+.search-container {
+    background-color: var(--whoogle-background) !important;
+}
+
+#search-submit {
+    border: 1px solid var(--whoogle-accent) !important;
+    background: var(--whoogle-accent) !important;
+    color: var(--whoogle-background) !important;
+}
+
+.info-text {
+    color: var(--whoogle-contrast-text) !important;
+    opacity: 75%;
+}
+
+.collapsible {
+    color: var(--whoogle-accent) !important;
+}
+
+.collapsible:after {
+    color: var(--whoogle-accent) !important;
+}
+
+.active {
+    background-color: var(--whoogle-accent) !important;
+    color: var(--whoogle-contrast-text) !important;
+}
+
+.content {
+    background-color: var(--whoogle-accent) !important;
+    color: var(--whoogle-contrast-text) !important;
+}
+
+.active:after {
+    color: var(--whoogle-contrast-text);
+}
+
+#gh-link {
+    color: var(--whoogle-accent);
+}
+
+.autocomplete-items {
+    border: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div {
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div:hover {
+    background-color: #e9e9e9;
+}
+
+.autocomplete-active {
+    background-color: var(--whoogle-accent) !important;
+    color: var(--whoogle-background) !important;
+}
