@@ -63,7 +63,7 @@ input {
 
 #search-bar {
     color: var(--whoogle-text) !important;
-    background-color: var(--whoogle-background) !important;
+    background-color: var(--whoogle-background);
 }
 
 .home-search {

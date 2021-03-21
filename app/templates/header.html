@@ -10,9 +10,9 @@
                 <div class="H0PQec" style="width: 100%;">
                     <div class="sbc esbc autocomplete">
                         <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
-                               style="background-color: {{ 'var(--whoogle-dark-background)' if config.dark else 'var(--whoogle-background)' }};
+                               style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
                                        color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
-                                       border: {{ '1px solid var(--whoogle-dark-accent)' if config.dark else '' }}"
+                                       border: {{ '2px solid var(--whoogle-dark-accent)' if config.dark else '' }};"
                                spellcheck="false" type="text" value="{{ query }}">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
@@ -35,9 +35,9 @@
                     <div style="width: 100%; display: flex">
                         <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
                                spellcheck="false" type="text" value="{{ query }}"
-                               style="background-color: {{ 'var(--whoogle-dark-background)' if config.dark else 'var(--whoogle-background)' }};
+                               style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
                                        color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
-                                       border: {{ '1px solid var(--whoogle-dark-accent)' if config.dark else '' }}">
+                                       border: {{ '2px solid var(--whoogle-dark-accent)' if config.dark else '' }};">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>
