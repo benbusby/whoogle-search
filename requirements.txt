@@ -31,3 +31,4 @@ urllib3==1.25.9
 waitress==1.4.3
 wcwidth==0.1.9
 Werkzeug==0.16.0
+python-dotenv
