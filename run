@@ -12,12 +12,14 @@ SUBDIR="${1:-app}"
 export APP_ROOT="$SCRIPT_DIR/$SUBDIR"
 export STATIC_FOLDER="$APP_ROOT/static"
 
-mkdir -p "$STATIC_FOLDER"
-
 # Check for regular vs test run
 if [[ "$SUBDIR" == "test" ]]; then
+    # Set up static files for testing
+    rm -rf "$STATIC_FOLDER"
+    ln -s "$SCRIPT_DIR/app/static" "$STATIC_FOLDER"
     pytest -sv
 else
+    mkdir -p "$STATIC_FOLDER"
     python3 -um app \
       --host "${ADDRESS:-0.0.0.0}" \
       --port "${PORT:-"${EXPOSE_PORT:-5000}"}"

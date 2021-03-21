@@ -18,13 +18,13 @@ app.config['VERSION_NUMBER'] = '0.3.2'
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',
     os.path.dirname(os.path.abspath(__file__)))
-app.config['LANGUAGES'] = json.load(open(
-    os.path.join(app.config['APP_ROOT'], 'misc/languages.json')))
-app.config['COUNTRIES'] = json.load(open(
-    os.path.join(app.config['APP_ROOT'], 'misc/countries.json')))
 app.config['STATIC_FOLDER'] = os.getenv(
     'STATIC_FOLDER',
     os.path.join(app.config['APP_ROOT'], 'static'))
+app.config['LANGUAGES'] = json.load(open(
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json')))
+app.config['COUNTRIES'] = json.load(open(
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json')))
 app.config['CONFIG_PATH'] = os.getenv(
     'CONFIG_VOLUME',
     os.path.join(app.config['STATIC_FOLDER'], 'config'))

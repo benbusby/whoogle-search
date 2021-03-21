@@ -233,12 +233,12 @@ def search():
         'display.html',
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
-        dark_mode=g.user_config.dark,
+        config=g.user_config,
         response=response,
         version_number=app.config['VERSION_NUMBER'],
         search_header=(render_template(
             'header.html',
-            dark_mode=g.user_config.dark,
+            config=g.user_config,
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile)
