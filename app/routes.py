@@ -229,20 +229,23 @@ def search():
     # the element key can be regenerated
     app.user_elements[session['uuid']] = elements
 
+    # Return 503 if temporarily blocked by captcha
+    resp_code = 503 if has_captcha(str(response)) else 200
+
     return render_template(
         'display.html',
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
-        dark_mode=g.user_config.dark,
+        config=g.user_config,
         response=response,
         version_number=app.config['VERSION_NUMBER'],
         search_header=(render_template(
             'header.html',
-            dark_mode=g.user_config.dark,
+            config=g.user_config,
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile)
-                if 'isch' not in search_util.search_type else ''))
+                if 'isch' not in search_util.search_type else '')), resp_code
 
 
 @app.route('/config', methods=['GET', 'POST', 'PUT'])
