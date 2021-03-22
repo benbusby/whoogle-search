@@ -3,7 +3,6 @@
  "short_name": "Whoogle",
  "display": "fullscreen",
  "scope": "/",
- "start_url": "$APP_ROOT/templates/index.html",
  "icons": [
   {
    "src": "android-icon-36x36.png",
