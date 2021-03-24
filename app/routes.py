@@ -347,7 +347,7 @@ def window():
     return render_template('display.html', response=results)
 
 
-def run_app():
+def run_app() -> None:
     parser = argparse.ArgumentParser(
         description='Whoogle Search console runner')
     parser.add_argument(
