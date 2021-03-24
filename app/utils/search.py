@@ -24,15 +24,24 @@ def needs_https(url: str) -> bool:
         bool: True/False representing the need to upgrade
 
     """
-    https_only = os.getenv('HTTPS_ONLY', False)
+    https_only = bool(os.getenv('HTTPS_ONLY', 0))
     is_heroku = url.endswith('.herokuapp.com')
     is_http = url.startswith('http://')
 
     return (is_heroku and is_http) or (https_only and is_http)
 
 
-def has_captcha(site_contents: str) -> bool:
-    return CAPTCHA in site_contents
+def has_captcha(results: str) -> bool:
+    """Checks to see if the search results are blocked by a captcha
+
+    Args:
+        results: The search page html as a string
+
+    Returns:
+        bool: True/False indicating if a captcha element was found
+
+    """
+    return CAPTCHA in results
 
 
 class Search:
@@ -118,23 +127,23 @@ class Search:
         """
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
 
-        content_filter = Filter(
-            self.session['fernet_keys'],
-            mobile=mobile,
-            config=self.config)
-        full_query = gen_query(
-            self.query,
-            self.request_params,
-            self.config,
-            content_filter.near)
+        content_filter = Filter(self.session['fernet_keys'],
+                                mobile=mobile,
+                                config=self.config)
+        full_query = gen_query(self.query,
+                               self.request_params,
+                               self.config,
+                               content_filter.near)
         get_body = g.user_request.send(query=full_query)
 
         # Produce cleanable html soup from response
         html_soup = bsoup(content_filter.reskin(get_body.text), 'html.parser')
-        html_soup.insert(
-            0,
-            bsoup(TOR_BANNER, 'html.parser')
-            if g.user_request.tor_valid else bsoup('', 'html.parser'))
+
+        # Indicate whether or not a Tor connection is active
+        tor_banner = bsoup('', 'html.parser')
+        if g.user_request.tor_valid:
+            tor_banner = bsoup(TOR_BANNER, 'html.parser')
+        html_soup.insert(0, tor_banner)
 
         if self.feeling_lucky:
             return get_first_link(html_soup), 0

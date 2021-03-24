@@ -57,6 +57,7 @@ def get_first_link(soup: BeautifulSoup) -> str:
         # Return the first search result URL
         if 'url?q=' in a['href']:
             return filter_link_args(a['href'])
+    return ''
 
 
 def get_site_alt(link: str) -> str:
