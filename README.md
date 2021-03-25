@@ -340,7 +340,6 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 *Note: Use public instances at your own discretion. Maintainers of Whoogle do not personally validate the integrity of these instances, and popular public instances are more likely to be rate-limited or blocked.*
 
 - [https://whoogle.sdf.org](https://whoogle.sdf.org)
-- [https://whoogle.tormentasolar.win/](https://whoogle.tormentasolar.win/)
 - [https://whoogle.himiko.cloud](https://whoogle.himiko.cloud)
 - [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) or [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion)
 
