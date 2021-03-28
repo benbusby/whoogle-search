@@ -54,8 +54,7 @@ def before_request_func():
     # Generate session values for user if unavailable
     if not valid_user_session(session):
         session['config'] = json.load(open(app.config['DEFAULT_CONFIG'])) \
-            if os.path.exists(app.config['DEFAULT_CONFIG']) else {
-            'url': request.url_root}
+            if os.path.exists(app.config['DEFAULT_CONFIG']) else {}
         session['uuid'] = str(uuid.uuid4())
         session['fernet_keys'] = generate_user_keys(True)
 

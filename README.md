@@ -237,21 +237,37 @@ Depending on your preferences, you can also deploy the app yourself on your own 
 ## Environment Variables
 There are a few optional environment variables available for customizing a Whoogle instance. These can be set manually, or copied into `whoogle.env` and enabled by setting `WHOOGLE_DOTENV=1`.
 
-| Variable           | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| WHOOGLE_DOTENV     | Load environment variables in `whoogle.env`                    |
-| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used. |
-| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used. |
-| WHOOGLE_PROXY_USER | The username of the proxy server.                              |
-| WHOOGLE_PROXY_PASS | The password of the proxy server.                              |
-| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".           |
-| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                 |
-| EXPOSE_PORT        | The port where Whoogle will be exposed.                        |
+| Variable           | Description                                                                               |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| WHOOGLE_DOTENV     | Load environment variables in `whoogle.env`                                               |
+| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used.                       |
+| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used.                       |
+| WHOOGLE_PROXY_USER | The username of the proxy server.                                                         |
+| WHOOGLE_PROXY_PASS | The password of the proxy server.                                                         |
+| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".                       |
+| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                                            |
+| EXPOSE_PORT        | The port where Whoogle will be exposed.                                                   |
 | HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
-| WHOOGLE_ALT_TW     | The twitter.com alternative to use when site alternatives are enabled in the config. |
-| WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config. |
-| WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config. |
-| WHOOGLE_ALT_RD     | The reddit.com alternative to use when site alternatives are enabled in the config. |
+| WHOOGLE_ALT_TW     | The twitter.com alternative to use when site alternatives are enabled in the config.      |
+| WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config.      |
+| WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config.    |
+| WHOOGLE_ALT_RD     | The reddit.com alternative to use when site alternatives are enabled in the config.       |
+
+### Config Environment Variables
+These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
+
+| Variable                | Description                                                     |
+| ----------------------- | --------------------------------------------------------------- |
+| WHOOGLE_CONFIG_COUNTRY  | Filter results by hosting country                               |
+| WHOOGLE_CONFIG_LANGUAGE | Set interface and search result language                        |
+| WHOOGLE_CONFIG_DARK     | Enable dark theme                                               |
+| WHOOGLE_CONFIG_SAFE     | Enable safe searches                                            |
+| WHOOGLE_CONFIG_ALTS     | Use social media site alternatives (nitter, invidious, etc)     |
+| WHOOGLE_CONFIG_TOR      | Use Tor routing (if available)                                  |
+| WHOOGLE_CONFIG_NEW_TAB  | Always open results in new tab                                  |
+| WHOOGLE_CONFIG_GET_ONLY | Search using GET requests only                                  |
+| WHOOGLE_CONFIG_URL      | The root url of the instance (`https://<your url>/`)            |
+| WHOOGLE_CONFIG_STYLE    | The custom CSS to use for styling (must be single line)         |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
