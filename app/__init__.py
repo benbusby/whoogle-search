@@ -6,9 +6,17 @@ from flask_session import Session
 import json
 import os
 from stem import Signal
+from dotenv import load_dotenv
 
 app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + '/static')
+
+# Load .env file if enabled
+if os.getenv("WHOOGLE_DOTENV", ''):
+    dotenv_path = '../whoogle.env'
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             dotenv_path))
+
 app.user_elements = {}
 app.default_key_set = generate_user_keys()
 app.no_cookie_ips = []
