@@ -138,6 +138,8 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_YT=invidious.snopyta.org
 #Environment=WHOOGLE_ALT_IG=bibliogram.art/u
 #Environment=WHOOGLE_ALT_RD=libredd.it
+# Load values from dotenv only
+#Environment=WHOOGLE_DOTENV=1
 Type=simple
 User=root
 WorkingDirectory=<whoogle_directory>
@@ -233,10 +235,11 @@ Depending on your preferences, you can also deploy the app yourself on your own 
   - A bit more experience or willingness to work through issues
 
 ## Environment Variables
-There are a few optional environment variables available for customizing a Whoogle instance:
+There are a few optional environment variables available for customizing a Whoogle instance. These can be set manually, or copied into `whoogle.env` and enabled by setting `WHOOGLE_DOTENV=1`.
 
 | Variable           | Description                                                    |
 | ------------------ | -------------------------------------------------------------- |
+| WHOOGLE_DOTENV     | Load environment variables in `whoogle.env`                    |
 | WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used. |
 | WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used. |
 | WHOOGLE_PROXY_USER | The username of the proxy server.                              |
