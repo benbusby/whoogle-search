@@ -37,6 +37,9 @@ ENV WHOOGLE_PROXY_TYPE=$proxytype
 ARG proxyloc=''
 ENV WHOOGLE_PROXY_LOC=$proxyloc
 
+ARG whoogle_dotenv=''
+ENV WHOOGLE_DOTENV=$whoogle_dotenv
+
 ARG use_https=''
 ENV HTTPS_ONLY=$use_https
 
@@ -59,6 +62,7 @@ COPY misc/tor/torrc /etc/tor/torrc
 COPY misc/tor/start-tor.sh misc/tor/start-tor.sh
 COPY app/ app/
 COPY run .
+COPY whoogle.env .
 
 EXPOSE $EXPOSE_PORT
 

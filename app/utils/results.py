@@ -3,6 +3,7 @@ import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
+
 SKIP_ARGS = ['ref_src', 'utm']
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
 GOOG_STATIC = 'www.gstatic.com'
@@ -11,6 +12,7 @@ LOGO_URL = GOOG_IMG + '_desk'
 BLANK_B64 = ('data:image/png;base64,'
              'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkw'
              'AIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC')
+
 
 # Ad keywords
 BLACKLIST = [
@@ -70,6 +72,7 @@ def get_site_alt(link: str) -> str:
         str: An updated (or ignored) result link
 
     """
+
     for site_key in SITE_ALTS.keys():
         if site_key not in link:
             continue
