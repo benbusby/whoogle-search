@@ -25,7 +25,7 @@ def needs_https(url: str) -> bool:
 
     """
     https_only = bool(os.getenv('HTTPS_ONLY', 0))
-    is_heroku = url.endswith('.herokuapp.com')
+    is_heroku = '.herokuapp.com' in url
     is_http = url.startswith('http://')
 
     return (is_heroku and is_http) or (https_only and is_http)
