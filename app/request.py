@@ -108,7 +108,7 @@ def gen_query(query, args, config, near_city=None) -> str:
         )) if lang else ''
     else:
         param_dict['lr'] = (
-                '&lr=' + config.lang_search
+            '&lr=' + config.lang_search
         ) if config.lang_search else ''
 
     # 'nfpr' defines the exclusion of results from an auto-corrected query
@@ -117,7 +117,7 @@ def gen_query(query, args, config, near_city=None) -> str:
 
     param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
     param_dict['hl'] = (
-            '&hl=' + config.lang_interface.replace('lang_', '')
+        '&hl=' + config.lang_interface.replace('lang_', '')
     ) if config.lang_interface else ''
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 

@@ -1,29 +1,26 @@
 from cryptography.fernet import Fernet
 from flask import current_app as app
 
-REQUIRED_SESSION_VALUES = ['uuid', 'config', 'fernet_keys']
+REQUIRED_SESSION_VALUES = ['uuid', 'config', 'key']
 
 
-def generate_user_keys(cookies_disabled=False) -> dict:
-    """Generates a set of user keys
+def generate_user_key(cookies_disabled=False) -> bytes:
+    """Generates a key for encrypting searches and element URLs
 
     Args:
         cookies_disabled: Flag for whether or not cookies are disabled by the
                           user. If so, the user can only use the default key
-                          set generated on app init for queries.
+                          generated on app init for queries.
 
     Returns:
-        dict: A new Fernet key set
+        str: A unique Fernet key
 
     """
     if cookies_disabled:
-        return app.default_key_set
+        return app.default_key
 
     # Generate/regenerate unique key per user
-    return {
-        'element_key': Fernet.generate_key(),
-        'text_key': Fernet.generate_key()
-    }
+    return Fernet.generate_key()
 
 
 def valid_user_session(session: dict) -> bool:

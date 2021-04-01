@@ -56,14 +56,11 @@ def before_request_func():
         session['config'] = json.load(open(app.config['DEFAULT_CONFIG'])) \
             if os.path.exists(app.config['DEFAULT_CONFIG']) else {}
         session['uuid'] = str(uuid.uuid4())
-        session['fernet_keys'] = generate_user_keys(True)
+        session['key'] = generate_user_key(True)
 
         # Flag cookies as possibly disabled in order to prevent against
         # unnecessary session directory expansion
         g.cookies_disabled = True
-
-    if session['uuid'] not in app.user_elements:
-        app.user_elements.update({session['uuid']: 0})
 
     # Handle https upgrade
     if needs_https(request.url):
@@ -88,13 +85,6 @@ def before_request_func():
 
 @app.after_request
 def after_request_func(resp):
-    if app.user_elements[session['uuid']] <= 0 and '/element' in request.url:
-        # Regenerate element key if all elements have been served to user
-        session['fernet_keys'][
-            'element_key'] = '' if not g.cookies_disabled else \
-            app.default_key_set['element_key']
-        app.user_elements[session['uuid']] = 0
-
     # Check if address consistently has cookies blocked,
     # in which case start removing session files after creation.
     #
@@ -125,7 +115,7 @@ def unknown_page(e):
 @auth_required
 def index():
     # Reset keys
-    session['fernet_keys'] = generate_user_keys(g.cookies_disabled)
+    session['key'] = generate_user_key(g.cookies_disabled)
 
     # Redirect if an error was raised
     if 'error_message' in session and session['error_message']:
@@ -193,9 +183,6 @@ def autocomplete():
 @app.route('/search', methods=['GET', 'POST'])
 @auth_required
 def search():
-    # Reset element counter
-    app.user_elements[session['uuid']] = 0
-
     # Update user config if specified in search args
     g.user_config = g.user_config.from_params(g.request_params)
 
@@ -213,7 +200,7 @@ def search():
 
     # Generate response and number of external elements from the page
     try:
-        response, elements = search_util.generate_response()
+        response = search_util.generate_response()
     except TorError as e:
         session['error_message'] = e.message + (
             "\\n\\nTor config is now disabled!" if e.disable else "")
@@ -221,12 +208,8 @@ def search():
             'tor']
         return redirect(url_for('.index'))
 
-    if search_util.feeling_lucky or elements < 0:
+    if search_util.feeling_lucky:
         return redirect(response, code=303)
-
-    # Keep count of external elements to fetch before
-    # the element key can be regenerated
-    app.user_elements[session['uuid']] = elements
 
     # Return 503 if temporarily blocked by captcha
     resp_code = 503 if has_captcha(str(response)) else 200
@@ -309,13 +292,12 @@ def imgres():
 @app.route('/element')
 @auth_required
 def element():
-    cipher_suite = Fernet(session['fernet_keys']['element_key'])
+    cipher_suite = Fernet(session['key'])
     src_url = cipher_suite.decrypt(request.args.get('url').encode()).decode()
     src_type = request.args.get('type')
 
     try:
         file_data = g.user_request.send(base_url=src_url).content
-        app.user_elements[session['uuid']] -= 1
         tmp_mem = io.BytesIO()
         tmp_mem.write(file_data)
         tmp_mem.seek(0)
