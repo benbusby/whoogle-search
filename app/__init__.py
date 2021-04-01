@@ -1,5 +1,5 @@
 from app.request import send_tor_signal
-from app.utils.session import generate_user_keys
+from app.utils.session import generate_user_key
 from app.utils.bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
@@ -17,8 +17,7 @@ if os.getenv("WHOOGLE_DOTENV", ''):
     load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              dotenv_path))
 
-app.user_elements = {}
-app.default_key_set = generate_user_keys()
+app.default_key = generate_user_key()
 app.no_cookie_ips = []
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'

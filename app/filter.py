@@ -9,7 +9,7 @@ from urllib.parse import parse_qs
 
 
 class Filter:
-    def __init__(self, user_keys: dict, mobile=False, config=None) -> None:
+    def __init__(self, user_key: str, mobile=False, config=None) -> None:
         if config is None:
             config = {}
 
@@ -19,7 +19,7 @@ class Filter:
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.alt_redirect = config['alts'] if 'alts' in config else False
         self.mobile = mobile
-        self.user_keys = user_keys
+        self.user_key = user_key
         self.main_divs = ResultSet('')
         self._elements = 0
 
@@ -45,15 +45,11 @@ class Filter:
         if is_element:
             # Element paths are encrypted separately from text, to allow key
             # regeneration once all items have been served to the user
-            enc_path = Fernet(
-                self.user_keys['element_key']
-            ).encrypt(path.encode()).decode()
+            enc_path = Fernet(self.user_key).encrypt(path.encode()).decode()
             self._elements += 1
             return enc_path
 
-        return Fernet(
-            self.user_keys['text_key']
-        ).encrypt(path.encode()).decode()
+        return Fernet(self.user_key).encrypt(path.encode()).decode()
 
     def clean(self, soup) -> BeautifulSoup:
         self.main_divs = soup.find('div', {'id': 'main'})

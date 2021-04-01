@@ -19,13 +19,20 @@ def test_feeling_lucky(client):
 
 
 def test_ddg_bang(client):
+    # Bang at beginning of query
     rv = client.get('/search?q=!gh%20whoogle')
     assert rv._status_code == 302
     assert rv.headers.get('Location').startswith('https://github.com')
 
-    rv = client.get('/search?q=!w%20github')
+    # Move bang to end of query
+    rv = client.get('/search?q=github%20!w')
     assert rv._status_code == 302
     assert rv.headers.get('Location').startswith('https://en.wikipedia.org')
+
+    # Move bang to middle of query
+    rv = client.get('/search?q=big%20!r%20chungus')
+    assert rv._status_code == 302
+    assert rv.headers.get('Location').startswith('https://www.reddit.com')
 
 
 def test_config(client):
