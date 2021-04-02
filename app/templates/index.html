@@ -36,7 +36,9 @@
     </head>
     <body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
         <div class="search-container">
-            {{ logo|safe }}
+            <div class="logo-container">
+                {{ logo|safe }}
+            </div>
             <form id="search-form" action="search" method="{{ 'get' if config.get_only else 'post' }}">
                 <div class="search-fields">
                     <div class="autocomplete">
@@ -133,9 +135,9 @@
                             <textarea name="style" id="config-style" value="">{{ config.style }}</textarea>
                         </div>
                         <div class="config-div">
-                            <input type="submit" id="config-load" onclick="loadConfig(event)" value="Load">&nbsp;
+                            <input type="submit" id="config-load" value="Load">&nbsp;
                             <input type="submit" id="config-submit" value="Apply">&nbsp;
-                            <input type="submit" id="config-submit" onclick="saveConfig(event)" value="Save As...">
+                            <input type="submit" id="config-save" value="Save As...">
                         </div>
                     </form>
                 </div>
