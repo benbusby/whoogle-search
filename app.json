@@ -64,6 +64,51 @@
       "description": "The site to use as a replacement for reddit.com when site alternatives are enabled in the config.",
       "value": "libredd.it",
       "required": false
+    },
+    "WHOOGLE_CONFIG_COUNTRY": {
+        "description": "[CONFIG] The country to use for restricting search results (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/countries.json)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_LANGUAGE": {
+        "description": "[CONFIG] The language to use for search results and interface (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_DARK": {
+        "description": "[CONFIG] Enable dark mode (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_SAFE": {
+        "description": "[CONFIG] Use safe mode for searches (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_ALTS": {
+        "description": "[CONFIG] Use social media alternatives (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_TOR": {
+        "description": "[CONFIG] Use Tor, if available (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_NEW_TAB": {
+        "description": "[CONFIG] Always open results in new tab (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_GET_ONLY": {
+        "description": "[CONFIG] Search using GET requests only (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_STYLE": {
+        "description": "[CONFIG] Custom CSS styling (paste in CSS or leave blank)",
+        "value": "",
+        "required": false
     }
   }
 }
