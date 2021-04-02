@@ -4,8 +4,10 @@
             <form class="Pg70bf" id="search-form" method="POST">
                 <a class="logo-link mobile-logo"
                    href="/"
-                   style="display:flex; justify-content:center; align-items:center; color:#685e79; font-size:18px; ">
-                    <span style="color: {{ 'var(--whoogle-dark-logo)' if config.dark else 'var(--whoogle-logo)' }} !important">Whoogle</span>
+                   style="display:flex; justify-content:center; align-items:center;">
+                    <div style="height: 1.75em;">
+                        {{ logo|safe }}
+                    </div>
                 </a>
                 <div class="H0PQec" style="width: 100%;">
                     <div class="sbc esbc autocomplete">
@@ -26,7 +28,9 @@
     <header>
         <div class="logo-div">
             <a class="logo-link" href="/">
-                <span style="color: {{ 'var(--whoogle-dark-logo)' if config.dark else 'var(--whoogle-logo)' }} !important">Whoogle</span>
+                <div style="height: 1.65em;">
+                    {{ logo|safe }}
+                </div>
             </a>
         </div>
         <div class="search-div">
