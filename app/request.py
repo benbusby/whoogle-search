@@ -210,6 +210,12 @@ class Request:
             'User-Agent': self.modified_user_agent
         }
 
+        # FIXME: Should investigate this further to ensure the consent
+        # view is suppressed correctly
+        cookies = {
+            'CONSENT': 'PENDING+999'
+        }
+
         # Validate Tor conn and request new identity if the last one failed
         if self.tor and not send_tor_signal(
                 Signal.NEWNYM if attempt > 0 else Signal.HEARTBEAT):
@@ -233,7 +239,8 @@ class Request:
         response = requests.get(
             base_url + query,
             proxies=self.proxies,
-            headers=headers)
+            headers=headers,
+            cookies=cookies)
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:

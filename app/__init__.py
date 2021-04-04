@@ -14,7 +14,7 @@ app.default_key_set = generate_user_keys()
 app.no_cookie_ips = []
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['VERSION_NUMBER'] = '0.3.1'
+app.config['VERSION_NUMBER'] = '0.3.2'
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',
     os.path.dirname(os.path.abspath(__file__)))
