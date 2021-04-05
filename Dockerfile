@@ -16,6 +16,7 @@ FROM python:3.8-slim
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     tor \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
 ARG config_dir=/config
