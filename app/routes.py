@@ -126,7 +126,9 @@ def index():
     return render_template('index.html',
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
-                           logo=render_template('logo.html'),
+                           logo=render_template(
+                               'logo.html',
+                               config=g.user_config),
                            config=g.user_config,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
