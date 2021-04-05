@@ -77,7 +77,7 @@ select {
 #search-submit {
     border: 1px solid var(--whoogle-dark-element-bg) !important;
     background: var(--whoogle-dark-element-bg) !important;
-    color: var(--whoogle-contrast-text) !important;
+    color: var(--whoogle-dark-contrast-text) !important;
 }
 
 .info-text {
