@@ -6,12 +6,12 @@ certifi==2020.4.5.1
 cffi==1.13.2
 chardet==3.0.4
 Click==7.0
-cryptography==3.2
+cryptography==3.3.2
 Flask==1.1.1
 Flask-Session==0.3.2
 idna==2.9
 itsdangerous==1.1.0
-Jinja2==2.10.3
+Jinja2==2.11.3
 MarkupSafe==1.1.1
 more-itertools==8.3.0
 packaging==20.4
@@ -31,3 +31,4 @@ urllib3==1.25.9
 waitress==1.4.3
 wcwidth==0.1.9
 Werkzeug==0.16.0
+python-dotenv==0.16.0

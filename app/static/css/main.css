@@ -9,7 +9,12 @@ body {
     padding-bottom: 10px;
 }
 
+.logo-container {
+    max-height: 500px;
+}
+
 .search-container {
+    background: transparent !important;
     width: 80%;
     position: absolute;
     top: 50%;
@@ -26,29 +31,21 @@ body {
 }
 
 #search-bar {
+    background: transparent !important;
     width: 100%;
-    border: 3px solid #685e79;
     padding: 5px;
     height: 40px;
     outline: none;
     font-size: 24px;
-    color: #685e79;
     border-radius: 10px 10px 0 0;
     max-width: 600px;
     background: rgba(0, 0, 0, 0);
 }
 
-#search-bar:focus {
-    color: #685e79;
-}
-
 #search-submit {
     width: 100%;
     height: 40px;
-    border: 1px solid #685e79;
-    background: #685e79 !important;
     text-align: center;
-    color: #fff;
     cursor: pointer;
     font-size: 20px;
     align-content: center;
@@ -70,7 +67,6 @@ button::-moz-focus-inner {
 .collapsible {
     outline: 0;
     background-color: rgba(0, 0, 0, 0);
-    color: #685e79;
     cursor: pointer;
     padding: 18px;
     width: 100%;
@@ -81,14 +77,8 @@ button::-moz-focus-inner {
     border-radius: 10px 10px 0 0;
 }
 
-.active {
-    background-color: #685e79;
-    color: white;
-}
-
 .collapsible:after {
     content: '\002B';
-    color: #685e79;
     font-weight: bold;
     float: right;
     margin-left: 5px;
@@ -96,7 +86,6 @@ button::-moz-focus-inner {
 
 .active:after {
     content: "\2212";
-    color: white;
 }
 
 .content {
@@ -104,19 +93,11 @@ button::-moz-focus-inner {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
-    background-color: #685e79;
-    color: white;
     border-radius: 0 0 10px 10px;
 }
 
 .open {
     padding-bottom: 20px;
-}
-
-.ua-span {
-    color: white;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
 }
 
 .hidden {
@@ -134,4 +115,50 @@ footer {
 .info-text {
     font-style: italic;
     font-size: 12px;
+}
+
+#config-style {
+    resize: none;
+    overflow-y: scroll;
+    width: 100%;
+    height: 100px;
+}
+
+.whoogle-logo {
+    display: none;
+}
+
+.whoogle-svg {
+    width: 80%;
+    display: block;
+    margin: auto;
+    padding-bottom: 10px;
+}
+
+.autocomplete {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+details summary {
+    padding: 10px;
+    font-weight: bold;
 }

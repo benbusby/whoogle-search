@@ -60,3 +60,9 @@ header {
     margin: 15px;
     display: block;
 }
+
+
+#main>div:focus-within {
+    border-radius: 8px;
+    box-shadow: 0 0 6px 1px #2375e8;
+}

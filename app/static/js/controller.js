@@ -1,14 +1,3 @@
-// Whoogle configurations that use boolean values and checkboxes
-CONFIG_BOOLS = [
-    "nojs", "dark", "safe", "alts", "new_tab", "get_only", "tor"
-];
-
-// Whoogle configurations that use string values and input fields
-CONFIG_STRS = [
-    "near", "url"
-];
-
-
 const setupSearchLayout = () => {
     // Setup search field
     const searchBar = document.getElementById("search-bar");
@@ -28,33 +17,6 @@ const setupSearchLayout = () => {
     });
 };
 
-const fillConfigValues = () => {
-    // Request existing config info
-    let xhrGET = new XMLHttpRequest();
-    xhrGET.open("GET", "config");
-    xhrGET.onload = function() {
-        if (xhrGET.readyState === 4 && xhrGET.status !== 200) {
-            alert("Error loading Whoogle config");
-            return;
-        }
-
-        // Allow for updating/saving config values
-        let configSettings = JSON.parse(xhrGET.responseText);
-
-        CONFIG_STRS.forEach(function(item) {
-            let configElement = document.getElementById("config-" + item.replace("_", "-"));
-            configElement.value = configSettings[item] ? configSettings[item] : "";
-        });
-
-        CONFIG_BOOLS.forEach(function(item) {
-            let configElement = document.getElementById("config-" + item.replace("_", "-"));
-            configElement.checked = !!configSettings[item];
-        });
-    };
-
-    xhrGET.send();
-};
-
 const setupConfigLayout = () => {
     // Setup whoogle config
     const collapsible = document.getElementById("config-collapsible");
@@ -69,8 +31,6 @@ const setupConfigLayout = () => {
 
         content.classList.toggle("open");
     });
-
-    fillConfigValues();
 };
 
 const loadConfig = event => {
@@ -115,6 +75,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     setupSearchLayout();
     setupConfigLayout();
+
+    document.getElementById("config-load").addEventListener("click", loadConfig);
+    document.getElementById("config-save").addEventListener("click", saveConfig);
 
     // Focusing on the search input field requires a delay for elements to finish
     // loading (seemingly only on FF)

@@ -28,7 +28,7 @@ const checkForTracking = () => {
                 /^[0-9]{15}$/
             ]
         }
-    }
+    };
     
     // Creates a link to a UPS/USPS/FedEx tracking page
     const createTrackingLink = href => {
@@ -37,7 +37,7 @@ const checkForTracking = () => {
         link.innerHTML = "View Tracking Info";
         link.href = href;
         mainDiv.prepend(link);
-    }
+    };
 
     // Compares the query against a set of regex patterns
     // for tracking numbers
@@ -48,12 +48,12 @@ const checkForTracking = () => {
                 return true;
             }
         });
-    }
+    };
 
     for (const key of Object.keys(matchTracking)) {
         compareQuery(matchTracking[key]);
     }
-}
+};
 
 document.addEventListener("DOMContentLoaded", function() {
     checkForTracking();

@@ -1,5 +1,5 @@
 from app import app
-from app.utils.session_utils import generate_user_keys
+from app.utils.session import generate_user_key
 import pytest
 import random
 
@@ -18,6 +18,6 @@ def client():
     with app.test_client() as client:
         with client.session_transaction() as session:
             session['uuid'] = 'test'
-            session['fernet_keys'] = generate_user_keys()
+            session['key'] = generate_user_key()
             session['config'] = {}
         yield client

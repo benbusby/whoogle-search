@@ -17,7 +17,8 @@ Contents
 5. [Usage](#usage)
 6. [Extra Steps](#extra-steps)
 7. [FAQ](#faq)
-8. [Screenshots](#screenshots)
+8. [Public Instances](#public-instances)
+9. [Screenshots](#screenshots)
 
 ## Features
 - No ads or sponsored content
@@ -55,7 +56,7 @@ If using Heroku Quick Deploy, **you can skip this section**.
 There are a few different ways to begin using the app, depending on your preferences:
 
 ### A) [Heroku Quick Deploy](https://heroku.com/about)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search/tree/heroku-app)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search/tree/heroku-app-beta)
 
 *Note: Requires a (free) Heroku account*
 
@@ -136,6 +137,9 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_TW=nitter.net
 #Environment=WHOOGLE_ALT_YT=invidious.snopyta.org
 #Environment=WHOOGLE_ALT_IG=bibliogram.art/u
+#Environment=WHOOGLE_ALT_RD=libredd.it
+# Load values from dotenv only
+#Environment=WHOOGLE_DOTENV=1
 Type=simple
 User=root
 WorkingDirectory=<whoogle_directory>
@@ -218,6 +222,9 @@ heroku open
 This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Whoogle and even [set it as your primary search engine](https://github.com/benbusby/whoogle#set-whoogle-as-your-primary-search-engine).
 You may also edit environment variables from your app’s Settings tab in the Heroku Dashboard.
 
+#### Arch Linux & Arch-based Distributions
+There is an [AUR package available](https://aur.archlinux.org/packages/whoogle-git/), as well as a pre-built and daily updated package available at [Chaotic-AUR](https://chaotic.cx).
+
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
 
@@ -228,21 +235,39 @@ Depending on your preferences, you can also deploy the app yourself on your own 
   - A bit more experience or willingness to work through issues
 
 ## Environment Variables
-There are a few optional environment variables available for customizing a Whoogle instance:
+There are a few optional environment variables available for customizing a Whoogle instance. These can be set manually, or copied into `whoogle.env` and enabled by setting `WHOOGLE_DOTENV=1`.
 
-| Variable           | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used. |
-| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used. |
-| WHOOGLE_PROXY_USER | The username of the proxy server.                              |
-| WHOOGLE_PROXY_PASS | The password of the proxy server.                              |
-| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".           |
-| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                 |
-| EXPOSE_PORT        | The port where Whoogle will be exposed.                        |
+| Variable           | Description                                                                               |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| WHOOGLE_DOTENV     | Load environment variables in `whoogle.env`                                               |
+| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used.                       |
+| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used.                       |
+| WHOOGLE_PROXY_USER | The username of the proxy server.                                                         |
+| WHOOGLE_PROXY_PASS | The password of the proxy server.                                                         |
+| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".                       |
+| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                                            |
+| EXPOSE_PORT        | The port where Whoogle will be exposed.                                                   |
 | HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
-| WHOOGLE_ALT_TW     | The twitter.com alternative to use when site alternatives are enabled in the config. |
-| WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config. |
-| WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config. |
+| WHOOGLE_ALT_TW     | The twitter.com alternative to use when site alternatives are enabled in the config.      |
+| WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config.      |
+| WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config.    |
+| WHOOGLE_ALT_RD     | The reddit.com alternative to use when site alternatives are enabled in the config.       |
+
+### Config Environment Variables
+These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
+
+| Variable                | Description                                                     |
+| ----------------------- | --------------------------------------------------------------- |
+| WHOOGLE_CONFIG_COUNTRY  | Filter results by hosting country                               |
+| WHOOGLE_CONFIG_LANGUAGE | Set interface and search result language                        |
+| WHOOGLE_CONFIG_DARK     | Enable dark theme                                               |
+| WHOOGLE_CONFIG_SAFE     | Enable safe searches                                            |
+| WHOOGLE_CONFIG_ALTS     | Use social media site alternatives (nitter, invidious, etc)     |
+| WHOOGLE_CONFIG_TOR      | Use Tor routing (if available)                                  |
+| WHOOGLE_CONFIG_NEW_TAB  | Always open results in new tab                                  |
+| WHOOGLE_CONFIG_GET_ONLY | Search using GET requests only                                  |
+| WHOOGLE_CONFIG_URL      | The root url of the instance (`https://<your url>/`)            |
+| WHOOGLE_CONFIG_STYLE    | The custom CSS to use for styling (must be single line)         |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
@@ -328,6 +353,16 @@ I'm a huge fan of Searx though and encourage anyone to use that instead if they 
 **Why does the image results page look different?**
 
 A lot of the app currently piggybacks on Google's existing support for fetching results pages with Javascript disabled. To their credit, they've done an excellent job with styling pages, but it seems that the image results page - particularly on mobile - is a little rough. Moving forward, with enough interest, I'd like to transition to fetching the results and parsing them into a unique Whoogle-fied interface that I can style myself.
+
+## Public Instances
+
+*Note: Use public instances at your own discretion. Maintainers of Whoogle do not personally validate the integrity of these instances, and popular public instances are more likely to be rate-limited or blocked.*
+
+- [https://whoogle.sdf.org](https://whoogle.sdf.org)
+- [https://whoogle.himiko.cloud](https://whoogle.himiko.cloud)
+- [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) or [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion)
+- [https://search.garudalinux.org](https://search.garudalinux.org)
+- [https://whooglesearch.net/](https://whooglesearch.net/)
 
 ## Screenshots
 #### Desktop

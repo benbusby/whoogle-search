@@ -1,0 +1,26 @@
+/* Colors */
+:root {
+    /* LIGHT THEME COLORS */
+    --whoogle-logo: #685e79;
+    --whoogle-page-bg: #ffffff;
+    --whoogle-element-bg: #685e79;
+    --whoogle-text: #000000;
+    --whoogle-contrast-text: #ffffff;
+    --whoogle-secondary-text: #70757a;
+    --whoogle-result-bg: #ffffff;
+    --whoogle-result-title: #1967d2;
+    --whoogle-result-url: #0d652d;
+    --whoogle-result-visited: #4b11a8;
+
+    /* DARK THEME COLORS */
+    --whoogle-dark-logo: #685e79;
+    --whoogle-dark-page-bg: #222222;
+    --whoogle-dark-element-bg: #685e79;
+    --whoogle-dark-text: #ffffff;
+    --whoogle-dark-contrast-text: #000000;
+    --whoogle-dark-secondary-text: #bbbbbb;
+    --whoogle-dark-result-bg: #000000;
+    --whoogle-dark-result-title: #1967d2;
+    --whoogle-dark-result-url: #4b11a8;
+    --whoogle-dark-result-visited: #bbbbff;
+}

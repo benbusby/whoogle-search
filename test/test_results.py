@@ -1,13 +1,13 @@
 from bs4 import BeautifulSoup
 from app.filter import Filter
-from app.utils.session_utils import generate_user_keys
+from app.utils.session import generate_user_key
 from datetime import datetime
 from dateutil.parser import *
 
 
 def get_search_results(data):
-    secret_key = generate_user_keys()
-    soup = Filter(user_keys=secret_key).clean(
+    secret_key = generate_user_key()
+    soup = Filter(user_key=secret_key).clean(
         BeautifulSoup(data, 'html.parser'))
 
     main_divs = soup.find('div', {'id': 'main'})

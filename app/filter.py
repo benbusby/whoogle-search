@@ -1,14 +1,16 @@
 from app.request import VALID_PARAMS
-from app.utils.filter_utils import *
-from bs4.element import ResultSet
+from app.utils.results import *
+from bs4 import BeautifulSoup
+from bs4.element import ResultSet, Tag
 from cryptography.fernet import Fernet
+from flask import render_template
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
 
 class Filter:
-    def __init__(self, user_keys: dict, mobile=False, config=None):
+    def __init__(self, user_key: str, mobile=False, config=None) -> None:
         if config is None:
             config = {}
 
@@ -18,7 +20,7 @@ class Filter:
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.alt_redirect = config['alts'] if 'alts' in config else False
         self.mobile = mobile
-        self.user_keys = user_keys
+        self.user_key = user_key
         self.main_divs = ResultSet('')
         self._elements = 0
 
@@ -29,7 +31,7 @@ class Filter:
     def elements(self):
         return self._elements
 
-    def reskin(self, page):
+    def reskin(self, page: str) -> str:
         # Aesthetic only re-skinning
         if self.dark:
             page = page.replace(
@@ -39,22 +41,18 @@ class Filter:
 
         return page
 
-    def encrypt_path(self, msg, is_element=False):
+    def encrypt_path(self, path, is_element=False) -> str:
         # Encrypts path to avoid plaintext results in logs
         if is_element:
             # Element paths are encrypted separately from text, to allow key
             # regeneration once all items have been served to the user
-            enc_path = Fernet(
-                self.user_keys['element_key']
-            ).encrypt(msg.encode()).decode()
+            enc_path = Fernet(self.user_key).encrypt(path.encode()).decode()
             self._elements += 1
             return enc_path
 
-        return Fernet(
-            self.user_keys['text_key']
-        ).encrypt(msg.encode()).decode()
+        return Fernet(self.user_key).encrypt(path.encode()).decode()
 
-    def clean(self, soup):
+    def clean(self, soup) -> BeautifulSoup:
         self.main_divs = soup.find('div', {'id': 'main'})
         self.remove_ads()
         self.fix_question_section()
@@ -90,7 +88,12 @@ class Filter:
 
         return soup
 
-    def remove_ads(self):
+    def remove_ads(self) -> None:
+        """Removes ads found in the list of search result divs
+
+        Returns:
+            None (The soup object is modified directly)
+        """
         if not self.main_divs:
             return
 
@@ -99,7 +102,16 @@ class Filter:
                        if has_ad_content(_.text)]
             _ = div.decompose() if len(div_ads) else None
 
-    def fix_question_section(self):
+    def fix_question_section(self) -> None:
+        """Collapses the "People Also Asked" section into a "details" element
+
+        These sections are typically the only sections in the results page that
+        are structured as <div><h2>Title</h2><div>...</div></div>, so they are
+        extracted by checking all result divs for h2 children.
+
+        Returns:
+            None (The soup object is modified directly)
+        """
         if not self.main_divs:
             return
 
@@ -126,30 +138,33 @@ class Filter:
             for question in questions:
                 question['style'] = 'padding: 10px; font-style: italic;'
 
-    def update_element_src(self, element, mime):
-        element_src = element['src']
-        if element_src.startswith('//'):
-            element_src = 'https:' + element_src
-        elif element_src.startswith(LOGO_URL):
+    def update_element_src(self, element: Tag, mime: str) -> None:
+        """Encrypts the original src of an element and rewrites the element src
+        to use the "/element?src=" pass-through.
+
+        Returns:
+            None (The soup element is modified directly)
+
+        """
+        src = element['src']
+
+        if src.startswith('//'):
+            src = 'https:' + src
+
+        if src.startswith(LOGO_URL):
             # Re-brand with Whoogle logo
-            element['src'] = 'static/img/logo.png'
-            element['style'] = 'height:40px;width:162px'
+            element.replace_with(BeautifulSoup(render_template('logo.html')))
             return
-        elif element_src.startswith(GOOG_IMG):
+        elif src.startswith(GOOG_IMG) or GOOG_STATIC in src:
             element['src'] = BLANK_B64
             return
 
         element['src'] = 'element?url=' + self.encrypt_path(
-            element_src,
+            src,
             is_element=True) + '&type=' + urlparse.quote(mime)
 
-        # FIXME: Non-mobile image results link to website instead of image
-        # if not self.mobile:
-        # img.append(
-        #     BeautifulSoup(FULL_RES_IMG.format(element_src),
-        #     'html.parser'))
-
-    def update_styling(self, soup):
+    def update_styling(self, soup) -> None:
+        """"""
         # Remove unnecessary button(s)
         for button in soup.find_all('button'):
             button.decompose()
@@ -172,7 +187,17 @@ class Filter:
         except AttributeError:
             pass
 
-    def update_link(self, link):
+    def update_link(self, link: Tag) -> None:
+        """Update internal link paths with encrypted path, otherwise remove
+        unnecessary redirects and/or marketing params from the url
+
+        Args:
+            link: A bs4 Tag element to inspect and update
+
+        Returns:
+            None (the tag is updated directly)
+
+        """
         # Replace href with only the intended destination (no "utm" type tags)
         href = link['href'].replace('https://www.google.com', '')
         if 'advanced_search' in href or 'tbm=shop' in href:
@@ -212,7 +237,7 @@ class Filter:
 
             # Add no-js option
             if self.nojs:
-                gen_nojs(link)
+                append_nojs(link)
         else:
             link['href'] = href
 

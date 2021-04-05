@@ -1,30 +1,37 @@
 from app.request import send_tor_signal
-from app.utils.session_utils import generate_user_keys
-from app.utils.gen_ddg_bangs import gen_bangs_json
+from app.utils.session import generate_user_key
+from app.utils.bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
 import json
 import os
 from stem import Signal
+from dotenv import load_dotenv
 
 app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + '/static')
-app.user_elements = {}
-app.default_key_set = generate_user_keys()
+
+# Load .env file if enabled
+if os.getenv("WHOOGLE_DOTENV", ''):
+    dotenv_path = '../whoogle.env'
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             dotenv_path))
+
+app.default_key = generate_user_key()
 app.no_cookie_ips = []
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['VERSION_NUMBER'] = '0.3.2'
+app.config['VERSION_NUMBER'] = '0.4.0'
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',
     os.path.dirname(os.path.abspath(__file__)))
-app.config['LANGUAGES'] = json.load(open(
-    os.path.join(app.config['APP_ROOT'], 'misc/languages.json')))
-app.config['COUNTRIES'] = json.load(open(
-    os.path.join(app.config['APP_ROOT'], 'misc/countries.json')))
 app.config['STATIC_FOLDER'] = os.getenv(
     'STATIC_FOLDER',
     os.path.join(app.config['APP_ROOT'], 'static'))
+app.config['LANGUAGES'] = json.load(open(
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json')))
+app.config['COUNTRIES'] = json.load(open(
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json')))
 app.config['CONFIG_PATH'] = os.getenv(
     'CONFIG_VOLUME',
     os.path.join(app.config['STATIC_FOLDER'], 'config'))
@@ -40,6 +47,14 @@ app.config['BANG_PATH'] = os.getenv(
 app.config['BANG_FILE'] = os.path.join(
     app.config['BANG_PATH'],
     'bangs.json')
+app.config['CSP'] = 'default-src \'none\';' \
+                    'manifest-src \'self\';' \
+                    'img-src \'self\';' \
+                    'style-src \'self\' \'unsafe-inline\';' \
+                    'script-src \'self\';' \
+                    'media-src \'self\';' \
+                    'connect-src \'self\';' \
+                    'form-action \'self\';'
 
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])
