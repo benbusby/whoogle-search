@@ -76,6 +76,9 @@ document.addEventListener("DOMContentLoaded", function() {
     setupSearchLayout();
     setupConfigLayout();
 
+    document.getElementById("config-load").addEventListener("click", loadConfig);
+    document.getElementById("config-save").addEventListener("click", saveConfig);
+
     // Focusing on the search input field requires a delay for elements to finish
     // loading (seemingly only on FF)
     setTimeout(function() { document.getElementById("search-bar").focus(); }, 250);

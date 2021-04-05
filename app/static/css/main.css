@@ -9,6 +9,10 @@ body {
     padding-bottom: 10px;
 }
 
+.logo-container {
+    max-height: 500px;
+}
+
 .search-container {
     background: transparent !important;
     width: 80%;
