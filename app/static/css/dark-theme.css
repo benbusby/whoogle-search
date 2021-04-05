@@ -1,9 +1,9 @@
 html {
-    background: var(--whoogle-dark-background) !important;
+    background: var(--whoogle-dark-page-bg) !important;
 }
 
 body {
-    background: var(--whoogle-dark-background) !important;
+    background: var(--whoogle-dark-page-bg) !important;
 }
 
 div {
@@ -23,7 +23,7 @@ li {
 }
 
 textarea {
-    background: var(--whoogle-dark-background) !important;
+    background: var(--whoogle-dark-page-bg) !important;
     color: var(--whoogle-dark-text) !important;
 }
 
@@ -44,17 +44,17 @@ div span {
 }
 
 input {
-    background-color: var(--whoogle-dark-background) !important;
+    background-color: var(--whoogle-dark-page-bg) !important;
     color: var(--whoogle-dark-text) !important;
 }
 
 select {
-    background: var(--whoogle-dark-background) !important;
+    background: var(--whoogle-dark-page-bg) !important;
     color: var(--whoogle-dark-text) !important;
 }
 
 .search-container {
-    background-color: var(--whoogle-dark-background) !important;
+    background-color: var(--whoogle-dark-page-bg) !important;
 }
 
 .ZINbbc {
@@ -66,7 +66,7 @@ select {
 }
 
 #search-bar {
-    border: 2px solid var(--whoogle-dark-accent) !important;
+    border: 2px solid var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-dark-text) !important;
 }
 
@@ -75,9 +75,9 @@ select {
 }
 
 #search-submit {
-    border: 1px solid var(--whoogle-dark-accent) !important;
-    background: var(--whoogle-dark-accent) !important;
-    color: var(--whoogle-dark-background) !important;
+    border: 1px solid var(--whoogle-dark-element-bg) !important;
+    background: var(--whoogle-dark-element-bg) !important;
+    color: var(--whoogle-dark-contrast-text) !important;
 }
 
 .info-text {
@@ -86,20 +86,20 @@ select {
 }
 
 .collapsible {
-    color: var(--whoogle-dark-accent) !important;
+    color: var(--whoogle-dark-element-bg) !important;
 }
 
 .collapsible:after {
-    color: var(--whoogle-dark-accent) !important;
+    color: var(--whoogle-dark-element-bg) !important;
 }
 
 .active {
-    background-color: var(--whoogle-dark-accent) !important;
+    background-color: var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-dark-contrast-text) !important;
 }
 
 .content {
-    background-color: var(--whoogle-dark-accent) !important;
+    background-color: var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-contrast-text) !important;
 }
 
@@ -108,7 +108,7 @@ select {
 }
 
 #gh-link {
-    color: var(--whoogle-dark-accent);
+    color: var(--whoogle-dark-element-bg);
 }
 
 .autocomplete-items {
@@ -126,6 +126,6 @@ select {
 }
 
 .autocomplete-active {
-    background-color: var(--whoogle-dark-accent) !important;
-    color: var(--whoogle-dark-background) !important;
+    background-color: var(--whoogle-dark-element-bg) !important;
+    color: var(--whoogle-dark-contrast-text) !important;
 }

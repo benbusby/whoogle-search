@@ -126,6 +126,9 @@ def index():
     return render_template('index.html',
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
+                           logo=render_template(
+                               'logo.html',
+                               config=g.user_config),
                            config=g.user_config,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
@@ -224,6 +227,7 @@ def search():
         search_header=(render_template(
             'header.html',
             config=g.user_config,
+            logo=render_template('logo.html'),
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile)
