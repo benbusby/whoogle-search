@@ -18,6 +18,7 @@ class Config:
         self.tor = bool(os.getenv('WHOOGLE_CONFIG_TOR', False))
         self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
         self.new_tab = bool(os.getenv('WHOOGLE_CONFIG_NEW_TAB', False))
+        self.view_image = bool(os.getenv('WHOOGLE_CONFIG_VIEW_IMAGE', False))
         self.get_only = bool(os.getenv('WHOOGLE_CONFIG_GET_ONLY', False))
         self.safe_keys = [
             'lang_search',
