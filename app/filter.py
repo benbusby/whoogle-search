@@ -153,7 +153,8 @@ class Filter:
 
         if src.startswith(LOGO_URL):
             # Re-brand with Whoogle logo
-            element.replace_with(BeautifulSoup(render_template('logo.html', dark=self.dark)))
+            element.replace_with(BeautifulSoup(
+                render_template('logo.html', dark=self.dark)))
             return
         elif src.startswith(GOOG_IMG) or GOOG_STATIC in src:
             element['src'] = BLANK_B64
