@@ -17,9 +17,9 @@
     {{ response|safe }}
     </body>
     <footer>
-        <p style="color: {{ '#fff' if config.dark else '#000' }};">
+        <p style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};">
             Whoogle Search v{{ version_number }} ||
-            <a style="color: #685e79" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
+            <a id="gh-link" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
         </p>
     </footer>
 	<script src="static/js/autocomplete.js"></script>
