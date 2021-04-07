@@ -68,6 +68,8 @@ Provides:
 ### B) [Repl.it](https://repl.it)
 [![Run on Repl.it](https://repl.it/badge/github/benbusby/whoogle-search)](https://repl.it/github/benbusby/whoogle-search)
 
+*Note: Requires a (free) Replit account*
+
 Provides:
 - Free deployment of app
 - Free HTTPS url (https://\<app name\>.\<username\>\.repl\.co)
