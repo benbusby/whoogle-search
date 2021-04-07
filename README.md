@@ -363,7 +363,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 - [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) or [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion)
 - [https://search.garudalinux.org](https://search.garudalinux.org)
 - [https://whooglesearch.net/](https://whooglesearch.net/)
-
+- [https://search.whoogle.tech/](https://search.whoogle.tech/)
 ## Screenshots
 #### Desktop
 ![Whoogle Desktop](docs/screenshot_desktop.jpg)
