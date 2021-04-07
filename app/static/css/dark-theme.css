@@ -65,6 +65,10 @@ select {
     background-color: var(--whoogle-dark-result-bg) !important;   
 }
 
+.BVG0Nb {
+    background-color: var(--whoogle-dark-page-bg) !important;
+}
+
 #search-bar {
     border: 2px solid var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-dark-text) !important;
