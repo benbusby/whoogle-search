@@ -67,7 +67,7 @@ COPY whoogle.env .
 
 EXPOSE $EXPOSE_PORT
 
-HEALTHCHECK  --interval=5m --timeout=5s \
+HEALTHCHECK  --interval=30s --timeout=5s \
   CMD wget --no-verbose --tries=1 http://localhost:${EXPOSE_PORT}/ || exit 1
 
 CMD misc/tor/start-tor.sh & ./run
