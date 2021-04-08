@@ -68,6 +68,8 @@ Provides:
 ### B) [Repl.it](https://repl.it)
 [![Run on Repl.it](https://repl.it/badge/github/benbusby/whoogle-search)](https://repl.it/github/benbusby/whoogle-search)
 
+*Note: Requires a (free) Replit account*
+
 Provides:
 - Free deployment of app
 - Free HTTPS url (https://\<app name\>.\<username\>\.repl\.co)
@@ -363,7 +365,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 - [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) or [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion)
 - [https://search.garudalinux.org](https://search.garudalinux.org)
 - [https://whooglesearch.net/](https://whooglesearch.net/)
-
+- [https://search.whoogle.tech/](https://search.whoogle.tech/)
 ## Screenshots
 #### Desktop
 ![Whoogle Desktop](docs/screenshot_desktop.jpg)
