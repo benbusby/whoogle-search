@@ -49,14 +49,13 @@ def send_tor_signal(signal: Signal) -> bool:
 
 
 def gen_user_agent(is_mobile) -> str:
-    mozilla = random.choice(['Moo', 'Woah', 'Bro', 'Slow']) + 'zilla'
     firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
     linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
 
     if is_mobile:
-        return MOBILE_UA.format(mozilla, firefox)
+        return MOBILE_UA.format("Mozilla", firefox)
 
-    return DESKTOP_UA.format(mozilla, linux, firefox)
+    return DESKTOP_UA.format("Mozilla", linux, firefox)
 
 
 def gen_query(query, args, config, near_city=None) -> str:
