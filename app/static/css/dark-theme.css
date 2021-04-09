@@ -65,6 +65,10 @@ select {
     background-color: var(--whoogle-dark-result-bg) !important;   
 }
 
+.BVG0Nb {
+    background-color: var(--whoogle-dark-page-bg) !important;
+}
+
 #search-bar {
     border: 2px solid var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-dark-text) !important;
@@ -86,11 +90,11 @@ select {
 }
 
 .collapsible {
-    color: var(--whoogle-dark-element-bg) !important;
+    color: var(--whoogle-dark-text);
 }
 
 .collapsible:after {
-    color: var(--whoogle-dark-element-bg) !important;
+    color: var(--whoogle-dark-text);
 }
 
 .active {
@@ -104,11 +108,11 @@ select {
 }
 
 .active:after {
-    color: var(--whoogle-dark-contrast-text);
+    color: var(--whoogle-dark-contrast-text) !important;
 }
 
 #gh-link {
-    color: var(--whoogle-dark-element-bg);
+    color: var(--whoogle-dark-contrast-text);
 }
 
 .autocomplete-items {

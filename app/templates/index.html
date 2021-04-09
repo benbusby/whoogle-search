@@ -144,10 +144,10 @@
             </div>
         </div>
         <footer>
-            <p style="color: {{ '#fff' if config.dark else '#000' }};">
-                Whoogle Search v{{ version_number }} ||
-                <a id="gh-link" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
-            </p>
+			<p style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};">
+				Whoogle Search v{{ version_number }} ||
+				<a id="gh-link" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
+			</p>
         </footer>
     </body>
 </html>

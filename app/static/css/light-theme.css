@@ -86,11 +86,11 @@ input {
 }
 
 .collapsible {
-    color: var(--whoogle-element-bg) !important;
+    color: var(--whoogle-text) !important;
 }
 
 .collapsible:after {
-    color: var(--whoogle-element-bg) !important;
+    color: var(--whoogle-text);
 }
 
 .active {
