@@ -4,6 +4,7 @@ from app.utils.bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
 import json
+import logging.config
 import os
 from stem import Signal
 from dotenv import load_dotenv
@@ -21,7 +22,7 @@ app.default_key = generate_user_key()
 app.no_cookie_ips = []
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['VERSION_NUMBER'] = '0.4.0'
+app.config['VERSION_NUMBER'] = '0.4.1'
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',
     os.path.dirname(os.path.abspath(__file__)))
@@ -74,3 +75,9 @@ Session(app)
 send_tor_signal(Signal.HEARTBEAT)
 
 from app import routes  # noqa
+
+# Disable logging from imported modules
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': True,
+})
