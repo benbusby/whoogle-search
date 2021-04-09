@@ -153,7 +153,9 @@ class Filter:
 
         if src.startswith(LOGO_URL):
             # Re-brand with Whoogle logo
-            element.replace_with(BeautifulSoup(render_template('logo.html')))
+            element.replace_with(BeautifulSoup(
+                render_template('logo.html', dark=self.dark),
+                features='html.parser'))
             return
         elif src.startswith(GOOG_IMG) or GOOG_STATIC in src:
             element['src'] = BLANK_B64
@@ -164,7 +166,6 @@ class Filter:
             is_element=True) + '&type=' + urlparse.quote(mime)
 
     def update_styling(self, soup) -> None:
-        """"""
         # Remove unnecessary button(s)
         for button in soup.find_all('button'):
             button.decompose()
