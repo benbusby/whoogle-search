@@ -13,14 +13,14 @@
     --whoogle-result-visited: #4b11a8;
 
     /* DARK THEME COLORS */
-    --whoogle-dark-logo: #685e79;
-    --whoogle-dark-page-bg: #222222;
-    --whoogle-dark-element-bg: #685e79;
-    --whoogle-dark-text: #ffffff;
-    --whoogle-dark-contrast-text: #000000;
-    --whoogle-dark-secondary-text: #bbbbbb;
-    --whoogle-dark-result-bg: #000000;
-    --whoogle-dark-result-title: #1967d2;
-    --whoogle-dark-result-url: #4b11a8;
-    --whoogle-dark-result-visited: #bbbbff;
+    --whoogle-dark-logo: #888888;
+    --whoogle-dark-page-bg: #080808;
+    --whoogle-dark-element-bg: #111111;
+    --whoogle-dark-text: #dddddd;
+    --whoogle-dark-contrast-text: #aaaaaa;
+    --whoogle-dark-secondary-text: #8a8b8c;
+    --whoogle-dark-result-bg: #111111;
+    --whoogle-dark-result-title: #dddddd;
+    --whoogle-dark-result-url: #eceff4;
+    --whoogle-dark-result-visited: #959595;
 }
