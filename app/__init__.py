@@ -4,6 +4,7 @@ from app.utils.bangs import gen_bangs_json
 from flask import Flask
 from flask_session import Session
 import json
+import logging.config
 import os
 from stem import Signal
 from dotenv import load_dotenv
@@ -74,3 +75,9 @@ Session(app)
 send_tor_signal(Signal.HEARTBEAT)
 
 from app import routes  # noqa
+
+# Disable logging from imported modules
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': True,
+})
