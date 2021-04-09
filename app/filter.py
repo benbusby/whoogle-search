@@ -206,9 +206,7 @@ class Filter:
             # Temporarily removing all links to that tab for now.
             link.decompose()
             return
-        elif (self.new_tab
-                and not href.startswith('/search')
-                and not href.startswith('/?safe')):
+        elif self.new_tab:
             link['target'] = '_blank'
 
         result_link = urlparse.urlparse(href)
