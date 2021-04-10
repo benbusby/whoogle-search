@@ -232,6 +232,7 @@ class Filter:
                 param_val = query_params[param][0]
                 new_search += '&' + param + '=' + param_val
             link['href'] = new_search
+            link['target'] = '_self'
         elif 'url?q=' in href:
             # Strip unneeded arguments
             link['href'] = filter_link_args(query_link)
