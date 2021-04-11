@@ -256,7 +256,8 @@ class Filter:
             link_desc[0].replace_with(get_site_alt(link_desc[0]))
 
     def view_image(self, soup) -> BeautifulSoup:
-        """Replaces the soup with a new one that handles mobile results.
+        """Replaces the soup with a new one that handles mobile results and
+        adds the link of the image full res to the results.
 
         Args:
             soup: A BeautifulSoup object containing the image mobile results.
@@ -264,8 +265,7 @@ class Filter:
         Returns:
             BeautifulSoup: The new BeautifulSoup object
         """
-        with open("tmp.html", "w") as f:
-            f.write(soup.prettify())
+
         # get some tags that are unchanged between mobile and pc versions
         search_input = soup.find_all('td', attrs={'class': "O4cRJf"})[0]
         search_options = soup.find_all('div', attrs={'class': "M7pB2"})[0]
