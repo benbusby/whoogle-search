@@ -366,6 +366,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 - [https://search.garudalinux.org](https://search.garudalinux.org)
 - [https://whooglesearch.net/](https://whooglesearch.net/)
 - [https://search.whoogle.tech/](https://search.whoogle.tech/)
+- [https://search.flawcra.cc/](https://search.flawcra.cc/)
 ## Screenshots
 #### Desktop
 ![Whoogle Desktop](docs/screenshot_desktop.jpg)
