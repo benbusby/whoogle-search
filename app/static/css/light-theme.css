@@ -15,7 +15,7 @@ label {
 }
 
 li a {
-    color: #4b8eaa !important;
+    color: var(--whoogle-result-url) !important;
 }
 
 li {
@@ -112,16 +112,16 @@ input {
 }
 
 .autocomplete-items {
-    border: 1px solid #d4d4d4;
+    border: 1px solid var(--whoogle-element-bg);
 }
 
 .autocomplete-items div {
-    background-color: #fff;
-    border-bottom: 1px solid #d4d4d4;
+    background-color: var(--whoogle-page-bg);
+    border-bottom: 1px solid var(--whoogle-element-bg);
 }
 
 .autocomplete-items div:hover {
-    background-color: #e9e9e9;
+    background-color: var(--whoogle-element-bg);
 }
 
 .autocomplete-active {
