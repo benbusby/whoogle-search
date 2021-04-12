@@ -56,9 +56,9 @@
       </div>
     </div>
     <table class="GpQGbf">
-      {% for i in range(length // 4) %}
+      {% for i in range((length // 4) + 1) %}
       <tr>
-        {% for j in range(4) %}
+        {% for j in range([length - (i*4), 4]|min) %}
           <td align="center" class="e3goi">
           <div class="svla5d">
             <div>
