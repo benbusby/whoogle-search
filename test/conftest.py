@@ -5,7 +5,7 @@ import random
 
 demo_config = {
     'near': random.choice(['Seattle', 'New York', 'San Francisco']),
-    'dark_mode': str(random.getrandbits(1)),
+    'dark': str(random.getrandbits(1)),
     'nojs': str(random.getrandbits(1)),
     'lang_interface': random.choice(app.config['LANGUAGES'])['value'],
     'lang_search': random.choice(app.config['LANGUAGES'])['value'],
