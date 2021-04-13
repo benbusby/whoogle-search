@@ -15,7 +15,7 @@ label {
 }
 
 li a {
-    color: #4b8eaa !important;
+    color: var(--whoogle-dark-result-url) !important;
 }
 
 li {
@@ -116,17 +116,18 @@ select {
 }
 
 .autocomplete-items {
-    border: 1px solid #685e79;
+    border: 1px solid var(--whoogle-dark-element-bg);
 }
 
 .autocomplete-items div {
-    color: #fff;
-    background-color: #222;
-    border-bottom: 1px solid #242424;
+    color: var(--whoogle-dark-text);
+    background-color: var(--whoogle-dark-page-bg);
+    border-bottom: 1px solid var(--whoogle-dark-element-bg);
 }
 
 .autocomplete-items div:hover {
-    background-color: #404040;
+    background-color: var(--whoogle-dark-element-bg);
+    color: var(--whoogle-dark-contrast-text) !important;
 }
 
 .autocomplete-active {
