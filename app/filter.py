@@ -294,7 +294,8 @@ class Filter:
 
         soup = BeautifulSoup(render_template('imageresults.html',
                                              length=len(results),
-                                             results=results),
+                                             results=results,
+                                             view_label="View Image"),
                              features='html.parser')
         # replace search input object
         soup.find_all('td',
