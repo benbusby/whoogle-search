@@ -4,22 +4,31 @@ import os
 
 class Config:
     def __init__(self, **kwargs):
+        def read_config_bool(var: str) -> bool:
+            val = os.getenv(var, '0')
+            if val.isdigit():
+                return bool(int(val))
+            return False
+
         app_config = current_app.config
         self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
         self.lang_search = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
         self.lang_interface = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
-        self.style = open(os.path.join(app_config['STATIC_FOLDER'],
-                                       'css/variables.css')).read()
+        self.style = os.getenv(
+            'WHOOGLE_CONFIG_STYLE',
+            open(os.path.join(app_config['STATIC_FOLDER'],
+                              'css/variables.css')).read())
         self.ctry = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
-        self.safe = bool(os.getenv('WHOOGLE_CONFIG_SAFE', False))
-        self.dark = bool(os.getenv('WHOOGLE_CONFIG_DARK', False))
-        self.alts = bool(os.getenv('WHOOGLE_CONFIG_ALTS', False))
-        self.nojs = bool(os.getenv('WHOOGLE_CONFIG_NOJS', False))
-        self.tor = bool(os.getenv('WHOOGLE_CONFIG_TOR', False))
+        self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
+        self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')
+        self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
+        self.nojs = read_config_bool('WHOOGLE_CONFIG_NOJS')
+        self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
         self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
-        self.new_tab = bool(os.getenv('WHOOGLE_CONFIG_NEW_TAB', False))
-        self.view_image = bool(os.getenv('WHOOGLE_CONFIG_VIEW_IMAGE', False))
-        self.get_only = bool(os.getenv('WHOOGLE_CONFIG_GET_ONLY', False))
+        self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
+        self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
+        self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
+
         self.safe_keys = [
             'lang_search',
             'lang_interface',
@@ -27,10 +36,13 @@ class Config:
             'dark'
         ]
 
-        for key, value in kwargs.items():
-            if not value:
-                continue
-            setattr(self, key, value)
+        # Skip setting custom config if there isn't one
+        if kwargs:
+            for attr in self.get_mutable_attrs():
+                if attr not in kwargs.keys():
+                    setattr(self, attr, '')
+                else:
+                    setattr(self, attr, kwargs[attr])
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -43,6 +55,11 @@ class Config:
 
     def __contains__(self, name):
         return hasattr(self, name)
+
+    def get_mutable_attrs(self):
+        return {name: attr for name, attr in self.__dict__.items()
+                if not name.startswith("__")
+                and (type(attr) is bool or type(attr) is str)}
 
     def is_safe_key(self, key) -> bool:
         """Establishes a group of config options that are safe to set
