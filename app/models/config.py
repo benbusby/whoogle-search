@@ -4,6 +4,12 @@ import os
 
 class Config:
     def __init__(self, **kwargs):
+        def read_config_bool(var: str) -> bool:
+            val = os.getenv(var, '0')
+            if val.isdigit():
+                return bool(int(val))
+            return False
+
         app_config = current_app.config
         self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
         self.lang_search = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
@@ -13,14 +19,14 @@ class Config:
             open(os.path.join(app_config['STATIC_FOLDER'],
                               'css/variables.css')).read())
         self.ctry = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
-        self.safe = int(os.getenv('WHOOGLE_CONFIG_SAFE', '0'))
-        self.dark = int(os.getenv('WHOOGLE_CONFIG_DARK', '0'))
-        self.alts = int(os.getenv('WHOOGLE_CONFIG_ALTS', '0'))
-        self.nojs = int(os.getenv('WHOOGLE_CONFIG_NOJS', '0'))
-        self.tor = int(os.getenv('WHOOGLE_CONFIG_TOR', '0'))
+        self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
+        self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')
+        self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
+        self.nojs = read_config_bool('WHOOGLE_CONFIG_NOJS')
+        self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
         self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
-        self.new_tab = int(os.getenv('WHOOGLE_CONFIG_NEW_TAB', '0'))
-        self.get_only = int(os.getenv('WHOOGLE_CONFIG_GET_ONLY', '0'))
+        self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
+        self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
         self.safe_keys = [
             'lang_search',
             'lang_interface',
@@ -51,7 +57,7 @@ class Config:
     def get_mutable_attrs(self):
         return {name: attr for name, attr in self.__dict__.items()
                 if not name.startswith("__")
-                and (type(attr) is int or type(attr) is str)}
+                and (type(attr) is bool or type(attr) is str)}
 
     def is_safe_key(self, key) -> bool:
         """Establishes a group of config options that are safe to set
