@@ -121,8 +121,8 @@
                         <div class="config-div config-div-view-image">
                           <label for="config-view-image">View image: </label>
                           <input type="checkbox" name="view_image" id="config-view-image" {{ 'checked' if config.view_image else '' }}>
-                          <div><span class="info-text"> — Adds the View Image option.
-                            The thumbnails are blurry because mobile thumbnails are smaller.</span></div> 
+                          <div><span class="info-text"> — Adds the "View Image" option to image search results.
+                            Note: This will cause image result thumbnails to be lower resolution.</span></div> 
                         </div>
                         <div class="config-div config-div-tor">
                             <label for="config-tor">Use Tor: {{ '' if tor_available else 'Unavailable' }}</label>
