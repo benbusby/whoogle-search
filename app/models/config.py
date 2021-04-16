@@ -27,7 +27,9 @@ class Config:
         self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
         self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
         self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
+        self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
         self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
+
         self.safe_keys = [
             'lang_search',
             'lang_interface',

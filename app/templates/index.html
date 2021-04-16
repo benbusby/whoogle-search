@@ -1,153 +1,159 @@
 <html>
-    <head>
-        <link rel="apple-touch-icon" sizes="57x57" href="static/img/favicon/apple-icon-57x57.png">
-        <link rel="apple-touch-icon" sizes="60x60" href="static/img/favicon/apple-icon-60x60.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="static/img/favicon/apple-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="static/img/favicon/apple-icon-76x76.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="static/img/favicon/apple-icon-114x114.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="static/img/favicon/apple-icon-120x120.png">
-        <link rel="apple-touch-icon" sizes="144x144" href="static/img/favicon/apple-icon-144x144.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="static/img/favicon/apple-icon-152x152.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="static/img/favicon/apple-icon-180x180.png">
-        <link rel="icon" type="image/png" sizes="192x192"  href="static/img/favicon/android-icon-192x192.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="static/img/favicon/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="96x96" href="static/img/favicon/favicon-96x96.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="static/img/favicon/favicon-16x16.png">
-        <link rel="manifest" href="static/img/favicon/manifest.json">
-        <meta name="referrer" content="no-referrer">
-        <meta name="msapplication-TileColor" content="#ffffff">
-        <meta name="msapplication-TileImage" content="static/img/favicon/ms-icon-144x144.png">
-        <script type="text/javascript" src="static/js/autocomplete.js"></script>
-        <script type="text/javascript" src="static/js/controller.js"></script>
-        <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="static/css/variables.css">
-        <link rel="stylesheet" href="static/css/main.css">
-        <link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
-        <noscript>
-            <style>
-                #main { display: inherit !important; }
-                .content { max-height: 720px; padding: 18px; border-radius: 10px; }
-                .collapsible { display: none; }
-            </style>
-        </noscript>
-        <style>{{ config.style }}</style>
-        <title>Whoogle Search</title>
-    </head>
-    <body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
-        <div class="search-container">
-            <div class="logo-container">
-                {{ logo|safe }}
-            </div>
-            <form id="search-form" action="search" method="{{ 'get' if config.get_only else 'post' }}">
-                <div class="search-fields">
-                    <div class="autocomplete">
-                        <input 
-                            type="text" 
-                            name="q" 
-                            id="search-bar" 
-                            class="home-search" 
-                            autofocus="autofocus" 
-                            autocapitalize="none"
-                            spellcheck="false"
-                            autocorrect="off"
-                            autocomplete="off">
-                    </div>
-                    <input type="submit" id="search-submit" value="Search">
-                </div>
-            </form>
-	    {% if not config_disabled %}
-		    <br/>
-		    <button id="config-collapsible" class="collapsible">Configuration</button>
-		    <div class="content">
+	<head>
+		<link rel="apple-touch-icon" sizes="57x57" href="static/img/favicon/apple-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="static/img/favicon/apple-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="static/img/favicon/apple-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="static/img/favicon/apple-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="static/img/favicon/apple-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="static/img/favicon/apple-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="static/img/favicon/apple-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="static/img/favicon/apple-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="static/img/favicon/apple-icon-180x180.png">
+		<link rel="icon" type="image/png" sizes="192x192"  href="static/img/favicon/android-icon-192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="static/img/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="static/img/favicon/favicon-96x96.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="static/img/favicon/favicon-16x16.png">
+		<link rel="manifest" href="static/img/favicon/manifest.json">
+		<meta name="referrer" content="no-referrer">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="msapplication-TileImage" content="static/img/favicon/ms-icon-144x144.png">
+		<script type="text/javascript" src="static/js/autocomplete.js"></script>
+		<script type="text/javascript" src="static/js/controller.js"></script>
+		<link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="static/css/variables.css">
+		<link rel="stylesheet" href="static/css/main.css">
+		<link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
+		<noscript>
+			<style>
+				#main { display: inherit !important; }
+				.content { max-height: 720px; padding: 18px; border-radius: 10px; }
+				.collapsible { display: none; }
+			</style>
+		</noscript>
+		<style>{{ config.style }}</style>
+		<title>Whoogle Search</title>
+	</head>
+	<body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
+		<div class="search-container">
+			<div class="logo-container">
+				{{ logo|safe }}
+			</div>
+			<form id="search-form" action="search" method="{{ 'get' if config.get_only else 'post' }}">
+				<div class="search-fields">
+					<div class="autocomplete">
+						<input
+							type="text"
+							name="q"
+							id="search-bar"
+							class="home-search"
+							autofocus="autofocus"
+							autocapitalize="none"
+							spellcheck="false"
+							autocorrect="off"
+							autocomplete="off">
+					</div>
+					<input type="submit" id="search-submit" value="Search">
+				</div>
+			</form>
+		{% if not config_disabled %}
+			<br/>
+			<button id="config-collapsible" class="collapsible">Configuration</button>
+			<div class="content">
 			<div class="config-fields">
-			    <form id="config-form" action="config" method="post">
+				<form id="config-form" action="config" method="post">
 				<div class="config-div config-div-ctry">
-				    <label for="config-ctry">Filter Results by Country: </label>
-				    <select name="ctry" id="config-ctry">
+					<label for="config-ctry">Filter Results by Country: </label>
+					<select name="ctry" id="config-ctry">
 					{% for ctry in countries %}
-					    <option value="{{ ctry.value }}"
-						    {% if ctry.value in config.ctry %}
-						    selected
-						    {% endif %}>
+						<option value="{{ ctry.value }}"
+							{% if ctry.value in config.ctry %}
+							selected
+							{% endif %}>
 						{{ ctry.name }}
-					    </option>
+						</option>
 					{% endfor %}
-				    </select>
-				    <div><span class="info-text"> — Note: If enabled, a website will only appear in the results if it is *hosted* in the selected country.</span></div>
+					</select>
+					<div><span class="info-text"> — Note: If enabled, a website will only appear in the results if it is *hosted* in the selected country.</span></div>
 				</div>
 				<div class="config-div config-div-lang">
-				    <label for="config-lang-interface">Interface Language: </label>
-				    <select name="lang_interface" id="config-lang-interface">
+					<label for="config-lang-interface">Interface Language: </label>
+					<select name="lang_interface" id="config-lang-interface">
 					{% for lang in languages %}
 					<option value="{{ lang.value }}"
-					    {% if lang.value in config.lang_interface %}
+						{% if lang.value in config.lang_interface %}
 						selected
-					    {% endif %}>
-					    {{ lang.name }}
+						{% endif %}>
+						{{ lang.name }}
 					</option>
 					{% endfor %}
-				    </select>
+					</select>
 				</div>
 				<div class="config-div config-div-search-lang">
-				    <label for="config-lang-search">Search Language: </label>
-				    <select name="lang_search" id="config-lang-search">
+					<label for="config-lang-search">Search Language: </label>
+					<select name="lang_search" id="config-lang-search">
 					{% for lang in languages %}
 					<option value="{{ lang.value }}"
-					    {% if lang.value in config.lang_search %}
+						{% if lang.value in config.lang_search %}
 						selected
-					    {% endif %}>
-					    {{ lang.name }}
+						{% endif %}>
+						{{ lang.name }}
 					</option>
 					{% endfor %}
-				    </select>
+					</select>
 				</div>
 				<div class="config-div config-div-near">
-				    <label for="config-near">Near: </label>
-				    <input type="text" name="near" id="config-near" placeholder="City Name" value="{{ config.near }}">
+					<label for="config-near">Near: </label>
+					<input type="text" name="near" id="config-near" placeholder="City Name" value="{{ config.near }}">
 				</div>
-                <div class="config-div config-div-block">
-                    <label for="config-block">Block: </label>
-                    <input type="text" name="block" id="config-block" placeholder="Comma-separated site list" value="{{ config.block }}">
-                </div>
+				<div class="config-div config-div-block">
+					<label for="config-block">Block: </label>
+					<input type="text" name="block" id="config-block" placeholder="Comma-separated site list" value="{{ config.block }}">
+				</div>
 				<div class="config-div config-div-nojs">
-				    <label for="config-nojs">Show NoJS Links: </label>
-				    <input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
+					<label for="config-nojs">Show NoJS Links: </label>
+					<input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
 				</div>
 				<div class="config-div config-div-dark">
-				    <label for="config-dark">Dark Mode: </label>
-				    <input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>
+					<label for="config-dark">Dark Mode: </label>
+					<input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>
 				</div>
 				<div class="config-div config-div-safe">
-				    <label for="config-safe">Safe Search: </label>
-				    <input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
+					<label for="config-safe">Safe Search: </label>
+					<input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
 				</div>
 				<div class="config-div config-div-alts">
-				    <label class="tooltip" for="config-alts">Replace Social Media Links: </label>
-				    <input type="checkbox" name="alts" id="config-alts" {{ 'checked' if config.alts else '' }}>
-				    <div><span class="info-text"> — Replaces Twitter/YouTube/Instagram/Reddit links
+					<label class="tooltip" for="config-alts">Replace Social Media Links: </label>
+					<input type="checkbox" name="alts" id="config-alts" {{ 'checked' if config.alts else '' }}>
+					<div><span class="info-text"> — Replaces Twitter/YouTube/Instagram/Reddit links
 					with Nitter/Invidious/Bibliogram/Libreddit links.</span></div>
 				</div>
 				<div class="config-div config-div-new-tab">
-				    <label for="config-new-tab">Open Links in New Tab: </label>
-				    <input type="checkbox" name="new_tab" id="config-new-tab" {{ 'checked' if config.new_tab else '' }}>
+					<label for="config-new-tab">Open Links in New Tab: </label>
+					<input type="checkbox" name="new_tab" id="config-new-tab" {{ 'checked' if config.new_tab else '' }}>
+				</div>
+				<div class="config-div config-div-view-image">
+					<label for="config-view-image">Full Size Image Search: </label>
+					<input type="checkbox" name="view_image" id="config-view-image" {{ 'checked' if config.view_image else '' }}>
+					<div><span class="info-text"> — (Experimental) Adds the "View Image" option on desktop to view full size images in search results.
+					This will cause image result thumbnails to be lower resolution.</span></div>
 				</div>
 				<div class="config-div config-div-tor">
-				    <label for="config-tor">Use Tor: {{ '' if tor_available else 'Unavailable' }}</label>
-				    <input type="checkbox" name="tor" id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
+					<label for="config-tor">Use Tor: {{ '' if tor_available else 'Unavailable' }}</label>
+					<input type="checkbox" name="tor" id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
 				</div>
 				<div class="config-div config-div-get-only">
-				    <label for="config-get-only">GET Requests Only: </label>
-				    <input type="checkbox" name="get_only" id="config-get-only" {{ 'checked' if config.get_only else '' }}>
+					<label for="config-get-only">GET Requests Only: </label>
+					<input type="checkbox" name="get_only" id="config-get-only" {{ 'checked' if config.get_only else '' }}>
 				</div>
 				<div class="config-div config-div-root-url">
-				    <label for="config-url">Root URL: </label>
-				    <input type="text" name="url" id="config-url" value="{{ config.url }}">
+					<label for="config-url">Root URL: </label>
+					<input type="text" name="url" id="config-url" value="{{ config.url }}">
 				</div>
 				<div class="config-div config-div-custom-css">
-				    <label for="config-style">Custom CSS:</label>
-				    <textarea 
-					name="style" 
+					<label for="config-style">Custom CSS:</label>
+					<textarea
+					name="style"
 					id="config-style"
 					autocapitalize="off"
 					autocomplete="off"
@@ -155,23 +161,23 @@
 					autocorrect="off"
 					value="">
 					{{ config.style }}
-				    </textarea>
+					</textarea>
 				</div>
 				<div class="config-div">
-				    <input type="submit" id="config-load" value="Load">&nbsp;
-				    <input type="submit" id="config-submit" value="Apply">&nbsp;
-				    <input type="submit" id="config-save" value="Save As...">
+					<input type="submit" id="config-load" value="Load">&nbsp;
+					<input type="submit" id="config-submit" value="Apply">&nbsp;
+					<input type="submit" id="config-save" value="Save As...">
 				</div>
-			    </form>
+				</form>
 			</div>
-		    </div>
-	    {% endif %}
-	    </div>
-        <footer>
+			</div>
+		{% endif %}
+		</div>
+		<footer>
 			<p style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};">
 				Whoogle Search v{{ version_number }} ||
 				<a id="gh-link" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
 			</p>
-        </footer>
-    </body>
+		</footer>
+	</body>
 </html>

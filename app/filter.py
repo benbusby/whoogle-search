@@ -254,3 +254,65 @@ class Filter:
 
             # Replace link destination
             link_desc[0].replace_with(get_site_alt(link_desc[0]))
+
+    def view_image(self, soup) -> BeautifulSoup:
+        """Replaces the soup with a new one that handles mobile results and
+        adds the link of the image full res to the results.
+
+        Args:
+            soup: A BeautifulSoup object containing the image mobile results.
+
+        Returns:
+            BeautifulSoup: The new BeautifulSoup object
+        """
+
+        # get some tags that are unchanged between mobile and pc versions
+        search_input = soup.find_all('td', attrs={'class': "O4cRJf"})[0]
+        search_options = soup.find_all('div', attrs={'class': "M7pB2"})[0]
+        cor_suggested = soup.find_all('table', attrs={'class': "By0U9"})
+        next_pages = soup.find_all('table', attrs={'class': "uZgmoc"})[0]
+        information = soup.find_all('div', attrs={'class': "TuS8Ad"})[0]
+
+        results = []
+        # find results div
+        results_div = soup.find_all('div', attrs={'class': "nQvrDb"})[0]
+        # find all the results
+        results_all = results_div.find_all('div', attrs={'class': "lIMUZd"})
+
+        for item in results_all:
+            urls = item.find('a')['href'].split('&imgrefurl=')
+
+            img_url = urlparse.unquote(urls[0].replace('/imgres?imgurl=', ''))
+            webpage = urlparse.unquote(urls[1].split('&')[0])
+            img_tbn = urlparse.unquote(item.find('a').find('img')['src'])
+            results.append({
+                'domain': urlparse.urlparse(webpage).netloc,
+                'img_url': img_url,
+                'webpage': webpage,
+                'img_tbn': img_tbn
+            })
+
+        soup = BeautifulSoup(render_template('imageresults.html',
+                                             length=len(results),
+                                             results=results,
+                                             view_label="View Image"),
+                             features='html.parser')
+        # replace search input object
+        soup.find_all('td',
+                      attrs={'class': "O4cRJf"})[0].replaceWith(search_input)
+        # replace search options object (All, Images, Videos, etc.)
+        soup.find_all('div',
+                      attrs={'class': "M7pB2"})[0].replaceWith(search_options)
+        # replace correction suggested by google object if exists
+        if len(cor_suggested):
+            soup.find_all(
+                'table',
+                attrs={'class': "By0U9"}
+            )[0].replaceWith(cor_suggested[0])
+        # replace next page object at the bottom of the page
+        soup.find_all('table',
+                      attrs={'class': "uZgmoc"})[0].replaceWith(next_pages)
+        # replace information about user connection at the bottom of the page
+        soup.find_all('div',
+                      attrs={'class': "TuS8Ad"})[0].replaceWith(information)
+        return soup

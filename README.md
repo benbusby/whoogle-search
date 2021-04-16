@@ -103,17 +103,25 @@ Sandboxed temporary instance:
 
 ```bash
 $ whoogle-search --help
-usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug]
-                      [--https-only]
+usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug] [--https-only] [--userpass <username:password>]
+                      [--proxyauth <username:password>] [--proxytype <socks4|socks5|http>] [--proxyloc <location:port>]
 
 Whoogle Search console runner
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            Show this help message and exit
   --port <port number>  Specifies a port to run on (default 5000)
   --host <ip address>   Specifies the host address to use (default 127.0.0.1)
   --debug               Activates debug mode for the server (default False)
-  --https-only          Enforces HTTPS redirects for all requests (default False)
+  --https-only          Enforces HTTPS redirects for all requests
+  --userpass <username:password>
+                        Sets a username/password basic auth combo (default None)
+  --proxyauth <username:password>
+                        Sets a username/password for a HTTP/SOCKS proxy (default None)
+  --proxytype <socks4|socks5|http>
+                        Sets a proxy type for all connections (default None)
+  --proxyloc <location:port>
+                        Sets a proxy location for all connections (default None)
 ```
 See the [available environment variables](#environment-variables) for additional configuration.
 
@@ -286,6 +294,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_ALTS            | Use social media site alternatives (nitter, invidious, etc)     |
 | WHOOGLE_CONFIG_TOR             | Use Tor routing (if available)                                  |
 | WHOOGLE_CONFIG_NEW_TAB         | Always open results in new tab                                  |
+| WHOOGLE_CONFIG_VIEW_IMAGE      | Enable View Image option                                        |
 | WHOOGLE_CONFIG_GET_ONLY        | Search using GET requests only                                  |
 | WHOOGLE_CONFIG_URL             | The root url of the instance (`https://<your url>/`)            |
 | WHOOGLE_CONFIG_STYLE           | The custom CSS to use for styling (should be single line)       |
