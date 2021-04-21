@@ -20,10 +20,11 @@
                             class="noHIxc" 
                             name="q"
                             style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
-                                       color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
-                                       border: {{ '2px solid var(--whoogle-dark-element-bg)' if config.dark else '' }}; border-radius: 8px;"
+                                   color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
+                                   border: {{ '2px solid var(--whoogle-dark-element-bg)' if config.dark else '' }}; border-radius: 8px;"
                             type="text" 
                             value="{{ query }}">
+                        <input style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }}" id="search-reset" type="reset" value="x">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>
@@ -56,8 +57,8 @@
                             type="text"
                             value="{{ query }}"
                             style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
-                                       color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
-                                       border: {{ '2px solid var(--whoogle-dark-element-bg)' if config.dark else '' }}; border-radius: 8px;">
+                                   color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
+                                   border: {{ '2px solid var(--whoogle-dark-element-bg)' if config.dark else '0px' }}; border-radius: 8px;">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>
