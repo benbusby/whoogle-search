@@ -42,7 +42,16 @@
             <form id="search-form" action="search" method="{{ 'get' if config.get_only else 'post' }}">
                 <div class="search-fields">
                     <div class="autocomplete">
-                        <input type="text" name="q" id="search-bar" class="home-search" autofocus="autofocus" autocapitalize="none" autocomplete="off">
+                        <input 
+                            type="text" 
+                            name="q" 
+                            id="search-bar" 
+                            class="home-search" 
+                            autofocus="autofocus" 
+                            autocapitalize="none"
+                            spellcheck="false"
+                            autocorrect="off"
+                            autocomplete="off">
                     </div>
                     <input type="submit" id="search-submit" value="Search">
                 </div>
@@ -132,7 +141,16 @@
                         </div>
                         <div class="config-div config-div-custom-css">
                             <label for="config-style">Custom CSS:</label>
-                            <textarea name="style" id="config-style" value="">{{ config.style }}</textarea>
+                            <textarea 
+                                name="style" 
+                                id="config-style"
+                                autocapitalize="off"
+                                autocomplete="off"
+                                spellcheck="false"
+                                autocorrect="off"
+                                value="">
+                                {{ config.style }}
+                            </textarea>
                         </div>
                         <div class="config-div">
                             <input type="submit" id="config-load" value="Load">&nbsp;
