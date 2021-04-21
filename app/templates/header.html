@@ -11,11 +11,19 @@
                 </a>
                 <div class="H0PQec" style="width: 100%;">
                     <div class="sbc esbc autocomplete">
-                        <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
-                               style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
+                        <input 
+                            id="search-bar" 
+                            autocapitalize="none" 
+                            autocomplete="off" 
+                            autocorrect="off"
+                            spellcheck="false" 
+                            class="noHIxc" 
+                            name="q"
+                            style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
                                        color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
                                        border: {{ '2px solid var(--whoogle-dark-element-bg)' if config.dark else '' }}; border-radius: 8px;"
-                               spellcheck="false" type="text" value="{{ query }}">
+                            type="text" 
+                            value="{{ query }}">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>
@@ -37,9 +45,17 @@
             <form id="search-form" class="search-form" id="sf" method="POST">
                 <div class="autocomplete" style="width: 100%; flex: 1">
                     <div style="width: 100%; display: flex">
-                        <input id="search-bar" autocapitalize="none" autocomplete="off" class="noHIxc" name="q"
-                               spellcheck="false" type="text" value="{{ query }}"
-                               style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
+                        <input 
+                            id="search-bar" 
+                            autocapitalize="none" 
+                            autocomplete="off" 
+                            autocorrect="off"
+                            class="noHIxc" 
+                            name="q"
+                            spellcheck="false"
+                            type="text"
+                            value="{{ query }}"
+                            style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
                                        color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
                                        border: {{ '2px solid var(--whoogle-dark-element-bg)' if config.dark else '' }}; border-radius: 8px;">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
