@@ -64,5 +64,6 @@ document.addEventListener("DOMContentLoaded", function() {
     resetBtn.addEventListener("click", event => {
         event.preventDefault();
         search.value = "";
+        search.focus();
     });
 });
