@@ -129,6 +129,7 @@ def index():
                            logo=render_template(
                                'logo.html',
                                dark=g.user_config.dark),
+                           config_disabled=os.getenv('WHOOGLE_CONFIG_DISABLE_CHANGE', ''),
                            config=g.user_config,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
@@ -237,39 +238,40 @@ def search():
 @app.route('/config', methods=['GET', 'POST', 'PUT'])
 @auth_required
 def config():
-    if request.method == 'GET':
-        return json.dumps(g.user_config.__dict__)
-    elif request.method == 'PUT':
-        if 'name' in request.args:
-            config_pkl = os.path.join(
-                app.config['CONFIG_PATH'],
-                request.args.get('name'))
-            session['config'] = (pickle.load(open(config_pkl, 'rb'))
-                                 if os.path.exists(config_pkl)
-                                 else session['config'])
-            return json.dumps(session['config'])
-        else:
-            return json.dumps({})
-    else:
-        config_data = request.form.to_dict()
-        if 'url' not in config_data or not config_data['url']:
-            config_data['url'] = g.user_config.url
-
-        # Save config by name to allow a user to easily load later
-        if 'name' in request.args:
-            pickle.dump(
-                config_data,
-                open(os.path.join(
+    if os.getenv('WHOOGLE_CONFIG_DISABLE_CHANGE', '') != '':
+        if request.method == 'GET':
+            return json.dumps(g.user_config.__dict__)
+        elif request.method == 'PUT':
+            if 'name' in request.args:
+                config_pkl = os.path.join(
                     app.config['CONFIG_PATH'],
-                    request.args.get('name')), 'wb'))
+                    request.args.get('name'))
+                session['config'] = (pickle.load(open(config_pkl, 'rb'))
+                                     if os.path.exists(config_pkl)
+                                     else session['config'])
+                return json.dumps(session['config'])
+            else:
+                return json.dumps({})
+        else:
+            config_data = request.form.to_dict()
+            if 'url' not in config_data or not config_data['url']:
+                config_data['url'] = g.user_config.url
 
-        # Overwrite default config if user has cookies disabled
-        if g.cookies_disabled:
-            open(app.config['DEFAULT_CONFIG'], 'w').write(
-                json.dumps(config_data, indent=4))
+            # Save config by name to allow a user to easily load later
+            if 'name' in request.args:
+                pickle.dump(
+                    config_data,
+                    open(os.path.join(
+                        app.config['CONFIG_PATH'],
+                        request.args.get('name')), 'wb'))
 
-        session['config'] = config_data
-        return redirect(config_data['url'])
+            # Overwrite default config if user has cookies disabled
+            if g.cookies_disabled:
+                open(app.config['DEFAULT_CONFIG'], 'w').write(
+                    json.dumps(config_data, indent=4))
+
+            session['config'] = config_data
+            return redirect(config_data['url'])
 
 
 @app.route('/url', methods=['GET'])
