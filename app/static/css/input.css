@@ -1,0 +1,14 @@
+#search-bar {
+    background: transparent !important;
+    padding-right: 50px;
+}
+
+#search-reset {
+    all: unset;
+    margin-left: -50px;
+    text-align: center;
+    background-color: transparent !important;
+    cursor: pointer;
+    height: 40px;
+    width: 50px;
+}

@@ -122,6 +122,7 @@ input {
 
 .autocomplete-items div:hover {
     background-color: var(--whoogle-element-bg);
+    color: var(--whoogle-contrast-text) !important;
 }
 
 .autocomplete-active {
