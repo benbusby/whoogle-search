@@ -12,7 +12,7 @@ class Config:
 
         app_config = current_app.config
         self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
-        self.lang_search = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
+        self.lang_search = os.getenv('WHOOGLE_CONFIG_SEARCH_LANGUAGE', '')
         self.lang_interface = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
         self.style = os.getenv(
             'WHOOGLE_CONFIG_STYLE',
@@ -36,11 +36,12 @@ class Config:
 
         # Skip setting custom config if there isn't one
         if kwargs:
-            for attr in self.get_mutable_attrs():
-                if attr not in kwargs.keys():
-                    setattr(self, attr, '')
-                else:
+            mutable_attrs = self.get_mutable_attrs()
+            for attr in mutable_attrs:
+                if attr in kwargs.keys():
                     setattr(self, attr, kwargs[attr])
+                elif attr not in kwargs.keys() and mutable_attrs[attr] == bool:
+                    setattr(self, attr, False)
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -55,7 +56,7 @@ class Config:
         return hasattr(self, name)
 
     def get_mutable_attrs(self):
-        return {name: attr for name, attr in self.__dict__.items()
+        return {name: type(attr) for name, attr in self.__dict__.items()
                 if not name.startswith("__")
                 and (type(attr) is bool or type(attr) is str)}
 
