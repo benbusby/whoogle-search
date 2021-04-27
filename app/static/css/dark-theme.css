@@ -70,7 +70,7 @@ select {
 }
 
 #search-bar {
-    border: 2px solid var(--whoogle-dark-element-bg) !important;
+    border-color: var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-dark-text) !important;
 }
 
