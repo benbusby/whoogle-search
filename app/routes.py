@@ -241,7 +241,7 @@ def config():
     config_disabled = app.config['CONFIG_DISABLE']
     if request.method == 'GET':
         return json.dumps(g.user_config.__dict__)
-    elif request.method == 'PUT' and not config_disabled: 
+    elif request.method == 'PUT' and not config_disabled:
         if 'name' in request.args:
             config_pkl = os.path.join(
                 app.config['CONFIG_PATH'],
@@ -273,7 +273,7 @@ def config():
         session['config'] = config_data
         return redirect(config_data['url'])
     else:
-        return json.dumps({})
+        return redirect(url_for('.index'), code=403)
 
 
 @app.route('/url', methods=['GET'])
