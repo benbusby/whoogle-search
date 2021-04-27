@@ -80,6 +80,11 @@
         "value": "",
         "required": false
     },
+    "WHOOGLE_CONFIG_DISABLE": {
+        "description": "[CONFIG] Disable ability for client to change config (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
     "WHOOGLE_CONFIG_DARK": {
         "description": "[CONFIG] Enable dark mode (set to 1 or leave blank)",
         "value": "",
