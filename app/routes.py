@@ -129,7 +129,7 @@ def index():
                            logo=render_template(
                                'logo.html',
                                dark=g.user_config.dark),
-                           config_disabled=os.getenv('WHOOGLE_CONFIG_DISABLE_CHANGE', ''),
+                           config_disabled=app.config['CONFIG_DISABLE'],
                            config=g.user_config,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
@@ -238,9 +238,10 @@ def search():
 @app.route('/config', methods=['GET', 'POST', 'PUT'])
 @auth_required
 def config():
+    config_disabled = app.config['CONFIG_DISABLE']
     if request.method == 'GET':
         return json.dumps(g.user_config.__dict__)
-    elif request.method == 'PUT' and os.getenv('WHOOGLE_CONFIG_DISABLE_CHANGE', '') == '':
+    elif request.method == 'PUT' and not config_disabled: 
         if 'name' in request.args:
             config_pkl = os.path.join(
                 app.config['CONFIG_PATH'],
@@ -251,7 +252,7 @@ def config():
             return json.dumps(session['config'])
         else:
             return json.dumps({})
-    elif os.getenv('WHOOGLE_CONFIG_DISABLE_CHANGE', '') == '':
+    elif not config_disabled:
         config_data = request.form.to_dict()
         if 'url' not in config_data or not config_data['url']:
             config_data['url'] = g.user_config.url
