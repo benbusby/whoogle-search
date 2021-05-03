@@ -37,8 +37,8 @@ services:
       #- WHOOGLE_ALT_YT=invidious.snopyta.org
       #- WHOOGLE_ALT_IG=bibliogram.art/u
       #- WHOOGLE_ALT_RD=libredd.it
-      # Load environment variables from whoogle.env
-      #- WHOOGLE_DOTENV=1
+    #env_file: # Alternatively, load variables from whoogle.env
+      #- whoogle.env
     ports:
       - 5000:5000
     restart: unless-stopped
