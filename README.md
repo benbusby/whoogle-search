@@ -237,7 +237,11 @@ Depending on your preferences, you can also deploy the app yourself on your own 
   - A bit more experience or willingness to work through issues
 
 ## Environment Variables
-There are a few optional environment variables available for customizing a Whoogle instance. These can be set manually, or copied into `whoogle.env` and enabled by setting `WHOOGLE_DOTENV=1`.
+There are a few optional environment variables available for customizing a Whoogle instance. These can be set manually, or copied into `whoogle.env` and enabled for your preferred deployment method:
+
+- Local runs: Set `WHOOGLE_DOTENV=1` before running
+- With `docker-compose`: Uncomment the `env_file` option
+- With `docker build/run`: Add `--env-file ./whoogle.env` to your command
 
 | Variable           | Description                                                                               |
 | ------------------ | ----------------------------------------------------------------------------------------- |
