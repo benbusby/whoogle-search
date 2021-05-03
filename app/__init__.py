@@ -39,6 +39,7 @@ app.config['CONFIG_PATH'] = os.getenv(
 app.config['DEFAULT_CONFIG'] = os.path.join(
     app.config['CONFIG_PATH'],
     'config.json')
+app.config['CONFIG_DISABLE'] = os.getenv('WHOOGLE_CONFIG_DISABLE', '')
 app.config['SESSION_FILE_DIR'] = os.path.join(
     app.config['CONFIG_PATH'],
     'session')

@@ -1,3 +1,5 @@
+from app import app
+
 import json
 
 from test.conftest import demo_config
@@ -51,6 +53,17 @@ def test_config(client):
     rv = client.get('/search?q=test' + custom_config)
     assert rv._status_code == 200
     assert custom_config.replace('&', '&amp;') in str(rv.data)
+
+    # Test disabling changing config from client
+    app.config['CONFIG_DISABLE'] = 1
+    dark_mod = not demo_config['dark']
+    demo_config['dark'] = dark_mod
+    rv = client.post('/config', data=demo_config)
+    assert rv._status_code == 403
+
+    rv = client.get('/config')
+    config = json.loads(rv.data)
+    assert config['dark'] != dark_mod
 
 
 def test_opensearch(client):

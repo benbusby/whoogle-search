@@ -56,111 +56,113 @@
                     <input type="submit" id="search-submit" value="Search">
                 </div>
             </form>
-            <br/>
-            <button id="config-collapsible" class="collapsible">Configuration</button>
-            <div class="content">
-                <div class="config-fields">
-                    <form id="config-form" action="config" method="post">
-                        <div class="config-div config-div-ctry">
-                            <label for="config-ctry">Filter Results by Country: </label>
-                            <select name="ctry" id="config-ctry">
-                                {% for ctry in countries %}
-                                    <option value="{{ ctry.value }}"
-                                            {% if ctry.value in config.ctry %}
-                                            selected
-                                            {% endif %}>
-                                        {{ ctry.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                            <div><span class="info-text"> — Note: If enabled, a website will only appear in the results if it is *hosted* in the selected country.</span></div>
-                        </div>
-                        <div class="config-div config-div-lang">
-                            <label for="config-lang-interface">Interface Language: </label>
-                            <select name="lang_interface" id="config-lang-interface">
-                                {% for lang in languages %}
-                                <option value="{{ lang.value }}"
-                                    {% if lang.value in config.lang_interface %}
-                                        selected
-                                    {% endif %}>
-                                    {{ lang.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="config-div config-div-search-lang">
-                            <label for="config-lang-search">Search Language: </label>
-                            <select name="lang_search" id="config-lang-search">
-                                {% for lang in languages %}
-                                <option value="{{ lang.value }}"
-                                    {% if lang.value in config.lang_search %}
-                                        selected
-                                    {% endif %}>
-                                    {{ lang.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="config-div config-div-near">
-                            <label for="config-near">Near: </label>
-                            <input type="text" name="near" id="config-near" placeholder="City Name" value="{{ config.near }}">
-                        </div>
-                        <div class="config-div config-div-nojs">
-                            <label for="config-nojs">Show NoJS Links: </label>
-                            <input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
-                        </div>
-                        <div class="config-div config-div-dark">
-                            <label for="config-dark">Dark Mode: </label>
-                            <input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>
-                        </div>
-                        <div class="config-div config-div-safe">
-                            <label for="config-safe">Safe Search: </label>
-                            <input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
-                        </div>
-                        <div class="config-div config-div-alts">
-                            <label class="tooltip" for="config-alts">Replace Social Media Links: </label>
-                            <input type="checkbox" name="alts" id="config-alts" {{ 'checked' if config.alts else '' }}>
-                            <div><span class="info-text"> — Replaces Twitter/YouTube/Instagram/Reddit links
-                                with Nitter/Invidious/Bibliogram/Libreddit links.</span></div>
-                        </div>
-                        <div class="config-div config-div-new-tab">
-                            <label for="config-new-tab">Open Links in New Tab: </label>
-                            <input type="checkbox" name="new_tab" id="config-new-tab" {{ 'checked' if config.new_tab else '' }}>
-                        </div>
-                        <div class="config-div config-div-tor">
-                            <label for="config-tor">Use Tor: {{ '' if tor_available else 'Unavailable' }}</label>
-                            <input type="checkbox" name="tor" id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
-                        </div>
-                        <div class="config-div config-div-get-only">
-                            <label for="config-get-only">GET Requests Only: </label>
-                            <input type="checkbox" name="get_only" id="config-get-only" {{ 'checked' if config.get_only else '' }}>
-                        </div>
-                        <div class="config-div config-div-root-url">
-                            <label for="config-url">Root URL: </label>
-                            <input type="text" name="url" id="config-url" value="{{ config.url }}">
-                        </div>
-                        <div class="config-div config-div-custom-css">
-                            <label for="config-style">Custom CSS:</label>
-                            <textarea 
-                                name="style" 
-                                id="config-style"
-                                autocapitalize="off"
-                                autocomplete="off"
-                                spellcheck="false"
-                                autocorrect="off"
-                                value="">
-                                {{ config.style }}
-                            </textarea>
-                        </div>
-                        <div class="config-div">
-                            <input type="submit" id="config-load" value="Load">&nbsp;
-                            <input type="submit" id="config-submit" value="Apply">&nbsp;
-                            <input type="submit" id="config-save" value="Save As...">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+	    {% if not config_disabled %}
+		    <br/>
+		    <button id="config-collapsible" class="collapsible">Configuration</button>
+		    <div class="content">
+			<div class="config-fields">
+			    <form id="config-form" action="config" method="post">
+				<div class="config-div config-div-ctry">
+				    <label for="config-ctry">Filter Results by Country: </label>
+				    <select name="ctry" id="config-ctry">
+					{% for ctry in countries %}
+					    <option value="{{ ctry.value }}"
+						    {% if ctry.value in config.ctry %}
+						    selected
+						    {% endif %}>
+						{{ ctry.name }}
+					    </option>
+					{% endfor %}
+				    </select>
+				    <div><span class="info-text"> — Note: If enabled, a website will only appear in the results if it is *hosted* in the selected country.</span></div>
+				</div>
+				<div class="config-div config-div-lang">
+				    <label for="config-lang-interface">Interface Language: </label>
+				    <select name="lang_interface" id="config-lang-interface">
+					{% for lang in languages %}
+					<option value="{{ lang.value }}"
+					    {% if lang.value in config.lang_interface %}
+						selected
+					    {% endif %}>
+					    {{ lang.name }}
+					</option>
+					{% endfor %}
+				    </select>
+				</div>
+				<div class="config-div config-div-search-lang">
+				    <label for="config-lang-search">Search Language: </label>
+				    <select name="lang_search" id="config-lang-search">
+					{% for lang in languages %}
+					<option value="{{ lang.value }}"
+					    {% if lang.value in config.lang_search %}
+						selected
+					    {% endif %}>
+					    {{ lang.name }}
+					</option>
+					{% endfor %}
+				    </select>
+				</div>
+				<div class="config-div config-div-near">
+				    <label for="config-near">Near: </label>
+				    <input type="text" name="near" id="config-near" placeholder="City Name" value="{{ config.near }}">
+				</div>
+				<div class="config-div config-div-nojs">
+				    <label for="config-nojs">Show NoJS Links: </label>
+				    <input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
+				</div>
+				<div class="config-div config-div-dark">
+				    <label for="config-dark">Dark Mode: </label>
+				    <input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>
+				</div>
+				<div class="config-div config-div-safe">
+				    <label for="config-safe">Safe Search: </label>
+				    <input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
+				</div>
+				<div class="config-div config-div-alts">
+				    <label class="tooltip" for="config-alts">Replace Social Media Links: </label>
+				    <input type="checkbox" name="alts" id="config-alts" {{ 'checked' if config.alts else '' }}>
+				    <div><span class="info-text"> — Replaces Twitter/YouTube/Instagram/Reddit links
+					with Nitter/Invidious/Bibliogram/Libreddit links.</span></div>
+				</div>
+				<div class="config-div config-div-new-tab">
+				    <label for="config-new-tab">Open Links in New Tab: </label>
+				    <input type="checkbox" name="new_tab" id="config-new-tab" {{ 'checked' if config.new_tab else '' }}>
+				</div>
+				<div class="config-div config-div-tor">
+				    <label for="config-tor">Use Tor: {{ '' if tor_available else 'Unavailable' }}</label>
+				    <input type="checkbox" name="tor" id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
+				</div>
+				<div class="config-div config-div-get-only">
+				    <label for="config-get-only">GET Requests Only: </label>
+				    <input type="checkbox" name="get_only" id="config-get-only" {{ 'checked' if config.get_only else '' }}>
+				</div>
+				<div class="config-div config-div-root-url">
+				    <label for="config-url">Root URL: </label>
+				    <input type="text" name="url" id="config-url" value="{{ config.url }}">
+				</div>
+				<div class="config-div config-div-custom-css">
+				    <label for="config-style">Custom CSS:</label>
+				    <textarea 
+					name="style" 
+					id="config-style"
+					autocapitalize="off"
+					autocomplete="off"
+					spellcheck="false"
+					autocorrect="off"
+					value="">
+					{{ config.style }}
+				    </textarea>
+				</div>
+				<div class="config-div">
+				    <input type="submit" id="config-load" value="Load">&nbsp;
+				    <input type="submit" id="config-submit" value="Apply">&nbsp;
+				    <input type="submit" id="config-save" value="Save As...">
+				</div>
+			    </form>
+			</div>
+		    </div>
+	    {% endif %}
+	    </div>
         <footer>
 			<p style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};">
 				Whoogle Search v{{ version_number }} ||
