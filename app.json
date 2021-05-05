@@ -85,6 +85,11 @@
         "value": "",
         "required": false
     },
+    "WHOOGLE_CONFIG_BLOCK": {
+        "description": "[CONFIG] Block websites from search results (comma-separated list)",
+        "value": "",
+        "required": false
+    },
     "WHOOGLE_CONFIG_DARK": {
         "description": "[CONFIG] Enable dark mode (set to 1 or leave blank)",
         "value": "",
