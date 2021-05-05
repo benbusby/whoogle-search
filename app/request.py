@@ -120,6 +120,10 @@ def gen_query(query, args, config, near_city=None) -> str:
     ) if config.lang_interface else ''
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 
+    # Block all sites specified in the user config
+    for blocked in config.block.split(','):
+        query += (' -site:' + blocked) if blocked else ''
+
     for val in param_dict.values():
         if not val:
             continue
