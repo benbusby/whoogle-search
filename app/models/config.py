@@ -18,6 +18,7 @@ class Config:
             'WHOOGLE_CONFIG_STYLE',
             open(os.path.join(app_config['STATIC_FOLDER'],
                               'css/variables.css')).read())
+        self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
         self.ctry = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
         self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
         self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')
