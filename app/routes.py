@@ -2,7 +2,6 @@ import argparse
 import base64
 import io
 import json
-import os
 import pickle
 import urllib.parse as urlparse
 import uuid
@@ -17,7 +16,7 @@ from app import app
 from app.models.config import Config
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.session import valid_user_session
+from app.utils.session import generate_user_key, valid_user_session
 from app.utils.search import *
 
 # Load DDG bang json files only on init

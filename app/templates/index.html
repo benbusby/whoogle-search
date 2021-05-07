@@ -106,6 +106,10 @@
 				    <label for="config-near">Near: </label>
 				    <input type="text" name="near" id="config-near" placeholder="City Name" value="{{ config.near }}">
 				</div>
+                <div class="config-div config-div-block">
+                    <label for="config-block">Block: </label>
+                    <input type="text" name="block" id="config-block" placeholder="Comma-separated site list" value="{{ config.block }}">
+                </div>
 				<div class="config-div config-div-nojs">
 				    <label for="config-nojs">Show NoJS Links: </label>
 				    <input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>

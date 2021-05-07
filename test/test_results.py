@@ -3,6 +3,9 @@ from app.filter import Filter
 from app.utils.session import generate_user_key
 from datetime import datetime
 from dateutil.parser import *
+from urllib.parse import urlparse
+
+from test.conftest import demo_config
 
 
 def get_search_results(data):
@@ -44,6 +47,29 @@ def test_post_results(client):
     # than 10 result divs
     assert len(get_search_results(rv.data)) >= 10
     assert len(get_search_results(rv.data)) <= 15
+
+
+def test_block_results(client):
+    rv = client.post('/search', data=dict(q='pinterest'))
+    assert rv._status_code == 200
+
+    has_pinterest = False
+    for link in BeautifulSoup(rv.data, 'html.parser').find_all('a', href=True):
+        if 'pinterest.com' in urlparse(link['href']).netloc:
+            has_pinterest = True
+            break
+
+    assert has_pinterest
+
+    demo_config['block'] = 'pinterest.com'
+    rv = client.post('/config', data=demo_config)
+    assert rv._status_code == 302
+
+    rv = client.post('/search', data=dict(q='pinterest'))
+    assert rv._status_code == 200
+
+    for link in BeautifulSoup(rv.data, 'html.parser').find_all('a', href=True):
+        assert 'pinterest.com' not in urlparse(link['href']).netloc
 
 
 # TODO: Unit test the site alt method instead -- the results returned
