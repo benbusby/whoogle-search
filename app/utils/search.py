@@ -1,5 +1,4 @@
 from app.filter import Filter, get_first_link
-from app.utils.session import generate_user_key
 from app.request import gen_query
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken

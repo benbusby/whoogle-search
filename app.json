@@ -71,7 +71,22 @@
         "required": false
     },
     "WHOOGLE_CONFIG_LANGUAGE": {
-        "description": "[CONFIG] The language to use for search results and interface (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
+        "description": "[CONFIG] The language to use for the interface (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_SEARCH_LANGUAGE": {
+        "description": "[CONFIG] The language to use for search results (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_DISABLE": {
+        "description": "[CONFIG] Disable ability for client to change config (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
+    "WHOOGLE_CONFIG_BLOCK": {
+        "description": "[CONFIG] Block websites from search results (comma-separated list)",
         "value": "",
         "required": false
     },

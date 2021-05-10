@@ -57,4 +57,13 @@ const checkForTracking = () => {
 
 document.addEventListener("DOMContentLoaded", function() {
     checkForTracking();
+
+    // Clear input if reset button tapped
+    const search = document.getElementById("search-bar");
+    const resetBtn = document.getElementById("search-reset");
+    resetBtn.addEventListener("click", event => {
+        event.preventDefault();
+        search.value = "";
+        search.focus();
+    });
 });
