@@ -11,6 +11,7 @@
     --whoogle-result-title: #1967d2;
     --whoogle-result-url: #0d652d;
     --whoogle-result-visited: #4b11a8;
+    --whoogle-divider: #dfe1e5;
 
     /* DARK THEME COLORS */
     --whoogle-dark-logo: #888888;
@@ -23,4 +24,5 @@
     --whoogle-dark-result-title: #dddddd;
     --whoogle-dark-result-url: #eceff4;
     --whoogle-dark-result-visited: #959595;
+    --whoogle-dark-divider: #111111;
 }

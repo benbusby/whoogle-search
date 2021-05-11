@@ -40,6 +40,19 @@ select {
     background-color: var(--whoogle-result-bg) !important;   
 }
 
+.x54gtf {
+    background-color: var(--whoogle-divider) !important;
+}
+
+.Q0HXG {
+    background-color: var(--whoogle-divider) !important;
+}
+
+.LKSyXe {
+    background-color: var(--whoogle-divider) !important;
+}
+
+
 a:visited h3 div {
     color: var(--whoogle-result-visited) !important;
 }
