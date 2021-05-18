@@ -16,7 +16,7 @@ FROM python:3.8-slim
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     tor \
-    wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 ARG config_dir=/config
@@ -68,6 +68,6 @@ COPY whoogle.env .
 EXPOSE $EXPOSE_PORT
 
 HEALTHCHECK  --interval=30s --timeout=5s \
-  CMD wget -qO- --no-verbose --tries=1 http://localhost:${EXPOSE_PORT}/ || exit 1
+  CMD curl -f http://localhost:${EXPOSE_PORT}/healthz || exit 1
 
 CMD misc/tor/start-tor.sh & ./run

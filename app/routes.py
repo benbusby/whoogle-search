@@ -110,6 +110,11 @@ def unknown_page(e):
     return redirect(g.app_location)
 
 
+@app.route('/healthz', methods=['GET'])
+def healthz():
+    return ''
+
+
 @app.route('/', methods=['GET'])
 @auth_required
 def index():
