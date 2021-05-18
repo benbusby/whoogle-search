@@ -1,4 +1,5 @@
 from app.models.config import Config
+from datetime import datetime
 import xml.etree.ElementTree as ET
 import random
 import requests
@@ -216,8 +217,11 @@ class Request:
 
         # FIXME: Should investigate this further to ensure the consent
         # view is suppressed correctly
+        now = datetime.now()
         cookies = {
-            'CONSENT': 'PENDING+999'
+            'CONSENT': 'YES+cb.{:d}{:02d}{:02d}-17-p0.de+F+678'.format(
+                now.year, now.month, now.day
+            )
         }
 
         # Validate Tor conn and request new identity if the last one failed
