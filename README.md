@@ -13,9 +13,19 @@ Contents
 1. [Features](#features)
 2. [Dependencies](#dependencies)
 3. [Install/Deploy](#install)
-4. [Environment Variables](#environment-variables)
+    1. [Heroku Quick Deploy](https://github.com/benbusby/whoogle-search#a-heroku-quick-deploy)
+    2. [Repl.it](https://github.com/benbusby/whoogle-search#b-replit)
+    3. [pipx](https://github.com/benbusby/whoogle-search#c-pipx)
+    4. [pip](https://github.com/benbusby/whoogle-search#d-pip)
+    5. [Manual](https://github.com/benbusby/whoogle-search#e-manual)
+    6. [Docker](https://github.com/benbusby/whoogle-search#f-manual-docker)
+    7. [Arch/AUR](https://github.com/benbusby/whoogle-search#arch-linux--arch-based-distributions)
+4. [Environment Variables and Configuration](#environment-variables)
 5. [Usage](#usage)
 6. [Extra Steps](#extra-steps)
+    1. [Set Primary Search Engine](https://github.com/benbusby/whoogle-search#set-whoogle-as-your-primary-search-engine)
+    2. [Prevent Downtime (Heroku Only)](https://github.com/benbusby/whoogle-search#prevent-downtime-heroku-only)
+    3. [Manual HTTPS Enforcement](https://github.com/benbusby/whoogle-search#https-enforcement)
 7. [FAQ](#faq)
 8. [Public Instances](#public-instances)
 9. [Screenshots](#screenshots)
@@ -286,7 +296,7 @@ To filter by a range of time, append ":past <time>" to the end of your search, w
 ### Set Whoogle as your primary search engine
 *Note: If you're using a reverse proxy to run Whoogle Search, make sure the "Root URL" config option on the home page is set to your URL before going through these steps.*
 
-Update browser settings:
+Browser settings:
   - Firefox (Desktop)
     - Navigate to your app's url, and click the 3 dot menu in the address bar. At the bottom, there should be an option to "Add Search Engine". Once you've clicked this, open your Firefox Preferences menu, click "Search" in the left menu, and use the available dropdown to select "Whoogle" from the list.
   - Firefox (iOS)
@@ -316,16 +326,11 @@ Update browser settings:
 		   - Keyword: `whoogle`
 
 	  2. Go to `Default Results` and click the `Setup fallback results` button. Click `+` and add Whoogle, then  drag it to the top.
-  - Others (TODO)
-
-### Customizing and Configuration
-Whoogle currently allows a few minor configuration settings, accessible from the home page:
-  - "Near"
-    - Set to a city name to narrow your results to a general geographic region. This can be useful if you rely on being able to search for things like "pizza places" and see results in your city, rather than results from wherever the server is located.
-  - Dark Mode
-    - Sets background to pure black
-  - NoJS Mode (Experimental)
-    - Adds a separate link for each search result that will open the webpage without any javascript content served. Can be useful if you're seeking a no-javascript experience on mobile, but otherwise could just be accomplished with a browser plugin.
+  - Chrome/Chromium-based Browsers
+    - Automatic
+      - Visit the home page of your Whoogle Search instance -- this may automatically add the search engine to your list of search engines. If not, you can add it manually.
+    - Manual
+      - Under search engines > manage search engines > add, manually enter your Whoogle instance details with a `<whoogle url>/search?q=%s` formatted search URL.
 
 ### Prevent Downtime (Heroku only)
 Part of the deal with Heroku's free tier is that you're allocated 550 hours/month (meaning it can't stay active 24/7), and the app is temporarily shut down after 30 minutes of inactivity. Once it becomes inactive, any Whoogle searches will still work, but it'll take an extra 10-15 seconds for the app to come back online before displaying the result, which can be frustrating if you're in a hurry.
@@ -346,8 +351,6 @@ Note: You should have your own domain name and [an https certificate](https://le
 - Docker image: Set the environment variable HTTPS_ONLY=1
 - Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
-
-Available config values are `near`, `nojs`, `dark` and `url`.
 
 ## FAQ
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
