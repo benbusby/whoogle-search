@@ -370,6 +370,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 - [https://whooglesearch.net/](https://whooglesearch.net/)
 - [https://search.whoogle.tech/](https://search.whoogle.tech/)
 - [https://search.flawcra.cc/](https://search.flawcra.cc/)
+- [https://search.exonip.de/](https://search.exonip.de/)
 
 ## Screenshots
 #### Desktop
