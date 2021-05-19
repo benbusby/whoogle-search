@@ -29,6 +29,9 @@ Contents
 7. [FAQ](#faq)
 8. [Public Instances](#public-instances)
 9. [Screenshots](#screenshots)
+10. Mirrors (read-only)
+    1. [GitLab](https://gitlab.com/benbusby/whoogle-search)
+    2. [Gogs](https://gogs.benbusby.com/benbusby/whoogle-search)
 
 ## Features
 - No ads or sponsored content
