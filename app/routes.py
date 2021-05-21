@@ -159,6 +159,14 @@ def opensearch():
     ), 200, {'Content-Disposition': 'attachment; filename="opensearch.xml"'}
 
 
+@app.route('/search.html', methods=['GET'])
+def search_html():
+    search_url = g.app_location
+    if search_url.endswith('/'):
+        search_url = search_url[:-1]
+    return render_template('search.html', url=search_url)
+
+
 @app.route('/autocomplete', methods=['GET', 'POST'])
 def autocomplete():
     q = g.request_params.get('q')
