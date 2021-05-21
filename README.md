@@ -285,6 +285,7 @@ These environment variables allow setting default config values, but can be over
 
 | Variable                       | Description                                                     |
 | ------------------------------ | --------------------------------------------------------------- |
+| WHOOGLE_CONFIG_DISABLE         | Hide config from UI and disallow changes to config by client    |
 | WHOOGLE_CONFIG_COUNTRY         | Filter results by hosting country                               |
 | WHOOGLE_CONFIG_LANGUAGE        | Set interface language                                          |
 | WHOOGLE_CONFIG_SEARCH_LANGUAGE | Set search result language                                      |
