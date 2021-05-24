@@ -1,0 +1,31 @@
+{
+    "lang_en": {
+        "default-none": "Default (none specified)",
+        "search": "Search",
+        "config": "Configuration",
+        "config-country": "Filter Results by Country",
+        "config-country-help": "Note: If enabled, a website will only appear in the search results if it is *hosted* in the selected country.",
+        "config-lang": "Interface Language",
+        "config-lang-search": "Search Language",
+        "config-near": "Near",
+        "config-near-help": "City Name",
+        "config-block": "Block",
+        "config-block-help": "Comma-separated site list",
+        "config-nojs": "Show NoJS Links",
+        "config-dark": "Dark Mode",
+        "config-safe": "Safe Search",
+        "config-alts": "Replace Social Media Links",
+        "config-alts-help": "Replaces Twitter/YouTube/Instagram/etc links with privacy respecting alternatives.",
+        "config-new-tab": "Open Links in New Tab",
+        "config-images": "Full Size Image Search",
+        "config-images-help": "(Experimental) Adds the 'View Image' option to desktop image searches. This will cause image result thumbnails to be lower resolution.",
+        "config-tor": "Use Tor",
+        "config-get-only": "GET Requests Only",
+        "config-url": "Root URL",
+        "config-css": "Custom CSS",
+        "load": "Load",
+        "apply": "Apply",
+        "save-as": "Save As...",
+        "github-link": "View on GitHub"
+    }
+}
