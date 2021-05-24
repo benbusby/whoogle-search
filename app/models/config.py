@@ -10,13 +10,13 @@ class Config:
                 return bool(int(val))
             return False
 
-        self.app_config = current_app.config
+        app_config = current_app.config
         self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
         self.lang_search = os.getenv('WHOOGLE_CONFIG_SEARCH_LANGUAGE', '')
         self.lang_interface = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
         self.style = os.getenv(
             'WHOOGLE_CONFIG_STYLE',
-            open(os.path.join(self.app_config['STATIC_FOLDER'],
+            open(os.path.join(app_config['STATIC_FOLDER'],
                               'css/variables.css')).read())
         self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
         self.ctry = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
@@ -85,7 +85,7 @@ class Config:
             str -- the localization language string
         """
         if (self.lang_interface and
-                self.lang_interface in self.app_config['TRANSLATIONS']):
+                self.lang_interface in current_app.config['TRANSLATIONS']):
             return self.lang_interface
 
         return 'lang_en'

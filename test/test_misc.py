@@ -1,5 +1,6 @@
 from cryptography.fernet import Fernet
 
+from app import app
 from app.utils.session import generate_user_key, valid_user_session
 
 
@@ -13,6 +14,12 @@ def test_valid_session(client):
     assert not valid_user_session({'key': '', 'config': {}})
     with client.session_transaction() as session:
         assert valid_user_session(session)
+
+
+def test_valid_translation_keys(client):
+    valid_lang_keys = [_['value'] for _ in app.config['LANGUAGES']]
+    for translation_key in app.config['TRANSLATIONS']:
+        assert translation_key in valid_lang_keys
 
 
 def test_query_decryption(client):
