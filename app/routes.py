@@ -130,6 +130,9 @@ def index():
     return render_template('index.html',
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
+                           translation=app.config['TRANSLATIONS'][
+                               g.user_config.get_localization_lang()
+                           ],
                            logo=render_template(
                                'logo.html',
                                dark=g.user_config.dark),
@@ -235,6 +238,9 @@ def search():
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
         config=g.user_config,
+        translation=app.config['TRANSLATIONS'][
+            g.user_config.get_localization_lang()
+        ],
         response=response,
         version_number=app.config['VERSION_NUMBER'],
         search_header=(render_template(

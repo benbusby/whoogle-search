@@ -77,6 +77,19 @@ class Config:
 
         return key in self.safe_keys
 
+    def get_localization_lang(self):
+        """Returns the correct language to use for localization, but falls
+        back to english if not set.
+
+        Returns:
+            str -- the localization language string
+        """
+        if (self.lang_interface and
+                self.lang_interface in current_app.config['TRANSLATIONS']):
+            return self.lang_interface
+
+        return 'lang_en'
+
     def from_params(self, params) -> 'Config':
         """Modify user config with search parameters. This is primarily
         used for specifying configuration on a search-by-search basis on

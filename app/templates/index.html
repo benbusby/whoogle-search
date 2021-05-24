@@ -53,17 +53,17 @@
 							autocorrect="off"
 							autocomplete="off">
 					</div>
-					<input type="submit" id="search-submit" value="Search">
+					<input type="submit" id="search-submit" value="{{ translation['search'] }}">
 				</div>
 			</form>
 		{% if not config_disabled %}
 			<br/>
-			<button id="config-collapsible" class="collapsible">Configuration</button>
+			<button id="config-collapsible" class="collapsible">{{ translation['config'] }}</button>
 			<div class="content">
 			<div class="config-fields">
 				<form id="config-form" action="config" method="post">
 				<div class="config-div config-div-ctry">
-					<label for="config-ctry">Filter Results by Country: </label>
+					<label for="config-ctry">{{ translation['config-country'] }}: </label>
 					<select name="ctry" id="config-ctry">
 					{% for ctry in countries %}
 						<option value="{{ ctry.value }}"
@@ -74,10 +74,10 @@
 						</option>
 					{% endfor %}
 					</select>
-					<div><span class="info-text"> — Note: If enabled, a website will only appear in the results if it is *hosted* in the selected country.</span></div>
+					<div><span class="info-text"> — {{ translation['config-country-help'] }}</span></div>
 				</div>
 				<div class="config-div config-div-lang">
-					<label for="config-lang-interface">Interface Language: </label>
+					<label for="config-lang-interface">{{ translation['config-lang'] }}: </label>
 					<select name="lang_interface" id="config-lang-interface">
 					{% for lang in languages %}
 					<option value="{{ lang.value }}"
@@ -90,7 +90,7 @@
 					</select>
 				</div>
 				<div class="config-div config-div-search-lang">
-					<label for="config-lang-search">Search Language: </label>
+					<label for="config-lang-search">{{ translation['config-lang-search'] }}: </label>
 					<select name="lang_search" id="config-lang-search">
 					{% for lang in languages %}
 					<option value="{{ lang.value }}"
@@ -103,55 +103,53 @@
 					</select>
 				</div>
 				<div class="config-div config-div-near">
-					<label for="config-near">Near: </label>
+					<label for="config-near">{{ translation['config-near'] }}: </label>
 					<input type="text" name="near" id="config-near" placeholder="City Name" value="{{ config.near }}">
 				</div>
 				<div class="config-div config-div-block">
-					<label for="config-block">Block: </label>
+					<label for="config-block">{{ translation['config-block'] }}: </label>
 					<input type="text" name="block" id="config-block" placeholder="Comma-separated site list" value="{{ config.block }}">
 				</div>
 				<div class="config-div config-div-nojs">
-					<label for="config-nojs">Show NoJS Links: </label>
+					<label for="config-nojs">{{ translation['config-nojs'] }}: </label>
 					<input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
 				</div>
 				<div class="config-div config-div-dark">
-					<label for="config-dark">Dark Mode: </label>
+					<label for="config-dark">{{ translation['config-dark'] }}: </label>
 					<input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>
 				</div>
 				<div class="config-div config-div-safe">
-					<label for="config-safe">Safe Search: </label>
+					<label for="config-safe">{{ translation['config-safe'] }}: </label>
 					<input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
 				</div>
 				<div class="config-div config-div-alts">
-					<label class="tooltip" for="config-alts">Replace Social Media Links: </label>
+					<label class="tooltip" for="config-alts">{{ translation['config-alts'] }}: </label>
 					<input type="checkbox" name="alts" id="config-alts" {{ 'checked' if config.alts else '' }}>
-					<div><span class="info-text"> — Replaces Twitter/YouTube/Instagram/Reddit links
-					with Nitter/Invidious/Bibliogram/Libreddit links.</span></div>
+					<div><span class="info-text"> — {{ translation['config-alts-help'] }}</span></div>
 				</div>
 				<div class="config-div config-div-new-tab">
-					<label for="config-new-tab">Open Links in New Tab: </label>
+					<label for="config-new-tab">{{ translation['config-new-tab'] }}: </label>
 					<input type="checkbox" name="new_tab" id="config-new-tab" {{ 'checked' if config.new_tab else '' }}>
 				</div>
 				<div class="config-div config-div-view-image">
-					<label for="config-view-image">Full Size Image Search: </label>
+					<label for="config-view-image">{{ translation['config-images'] }}: </label>
 					<input type="checkbox" name="view_image" id="config-view-image" {{ 'checked' if config.view_image else '' }}>
-					<div><span class="info-text"> — (Experimental) Adds the "View Image" option on desktop to view full size images in search results.
-					This will cause image result thumbnails to be lower resolution.</span></div>
+					<div><span class="info-text"> — {{ translation['config-images-help'] }}</span></div>
 				</div>
 				<div class="config-div config-div-tor">
-					<label for="config-tor">Use Tor: {{ '' if tor_available else 'Unavailable' }}</label>
+					<label for="config-tor">{{ translation['config-tor'] }}: {{ '' if tor_available else 'Unavailable' }}</label>
 					<input type="checkbox" name="tor" id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
 				</div>
 				<div class="config-div config-div-get-only">
-					<label for="config-get-only">GET Requests Only: </label>
+					<label for="config-get-only">{{ translation['config-get-only'] }}: </label>
 					<input type="checkbox" name="get_only" id="config-get-only" {{ 'checked' if config.get_only else '' }}>
 				</div>
 				<div class="config-div config-div-root-url">
-					<label for="config-url">Root URL: </label>
+					<label for="config-url">{{ translation['config-url'] }}: </label>
 					<input type="text" name="url" id="config-url" value="{{ config.url }}">
 				</div>
 				<div class="config-div config-div-custom-css">
-					<label for="config-style">Custom CSS:</label>
+					<label for="config-style">{{ translation['config-css'] }}:</label>
 					<textarea
 					name="style"
 					id="config-style"
@@ -164,9 +162,9 @@
 					</textarea>
 				</div>
 				<div class="config-div">
-					<input type="submit" id="config-load" value="Load">&nbsp;
-					<input type="submit" id="config-submit" value="Apply">&nbsp;
-					<input type="submit" id="config-save" value="Save As...">
+					<input type="submit" id="config-load" value="{{ translation['load'] }}">&nbsp;
+					<input type="submit" id="config-submit" value="{{ translation['apply'] }}">&nbsp;
+					<input type="submit" id="config-save" value="{{ translation['save-as'] }}">
 				</div>
 				</form>
 			</div>
@@ -176,7 +174,7 @@
 		<footer>
 			<p style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};">
 				Whoogle Search v{{ version_number }} ||
-				<a id="gh-link" href="https://github.com/benbusby/whoogle-search">View on GitHub</a>
+				<a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
 			</p>
 		</footer>
 	</body>
