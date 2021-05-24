@@ -27,7 +27,9 @@ class Config:
         self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
         self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
         self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
+        self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
         self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
+
         self.safe_keys = [
             'lang_search',
             'lang_interface',
@@ -74,6 +76,19 @@ class Config:
         """
 
         return key in self.safe_keys
+
+    def get_localization_lang(self):
+        """Returns the correct language to use for localization, but falls
+        back to english if not set.
+
+        Returns:
+            str -- the localization language string
+        """
+        if (self.lang_interface and
+                self.lang_interface in current_app.config['TRANSLATIONS']):
+            return self.lang_interface
+
+        return 'lang_en'
 
     def from_params(self, params) -> 'Config':
         """Modify user config with search parameters. This is primarily

@@ -26,10 +26,11 @@ Contents
     1. [Set Primary Search Engine](#set-whoogle-as-your-primary-search-engine)
     2. [Prevent Downtime (Heroku Only)](#prevent-downtime-heroku-only)
     3. [Manual HTTPS Enforcement](#https-enforcement)
-7. [FAQ](#faq)
-8. [Public Instances](#public-instances)
-9. [Screenshots](#screenshots)
-10. Mirrors (read-only)
+7. [Contributing](#contributing)
+8. [FAQ](#faq)
+9. [Public Instances](#public-instances)
+10. [Screenshots](#screenshots)
+11. Mirrors (read-only)
     1. [GitLab](https://gitlab.com/benbusby/whoogle-search)
     2. [Gogs](https://gogs.benbusby.com/benbusby/whoogle-search)
 
@@ -103,17 +104,25 @@ Sandboxed temporary instance:
 
 ```bash
 $ whoogle-search --help
-usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug]
-                      [--https-only]
+usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug] [--https-only] [--userpass <username:password>]
+                      [--proxyauth <username:password>] [--proxytype <socks4|socks5|http>] [--proxyloc <location:port>]
 
 Whoogle Search console runner
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            Show this help message and exit
   --port <port number>  Specifies a port to run on (default 5000)
   --host <ip address>   Specifies the host address to use (default 127.0.0.1)
   --debug               Activates debug mode for the server (default False)
-  --https-only          Enforces HTTPS redirects for all requests (default False)
+  --https-only          Enforces HTTPS redirects for all requests
+  --userpass <username:password>
+                        Sets a username/password basic auth combo (default None)
+  --proxyauth <username:password>
+                        Sets a username/password for a HTTP/SOCKS proxy (default None)
+  --proxytype <socks4|socks5|http>
+                        Sets a proxy type for all connections (default None)
+  --proxyloc <location:port>
+                        Sets a proxy location for all connections (default None)
 ```
 See the [available environment variables](#environment-variables) for additional configuration.
 
@@ -277,6 +286,7 @@ These environment variables allow setting default config values, but can be over
 
 | Variable                       | Description                                                     |
 | ------------------------------ | --------------------------------------------------------------- |
+| WHOOGLE_CONFIG_DISABLE         | Hide config from UI and disallow changes to config by client    |
 | WHOOGLE_CONFIG_COUNTRY         | Filter results by hosting country                               |
 | WHOOGLE_CONFIG_LANGUAGE        | Set interface language                                          |
 | WHOOGLE_CONFIG_SEARCH_LANGUAGE | Set search result language                                      |
@@ -286,6 +296,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_ALTS            | Use social media site alternatives (nitter, invidious, etc)     |
 | WHOOGLE_CONFIG_TOR             | Use Tor routing (if available)                                  |
 | WHOOGLE_CONFIG_NEW_TAB         | Always open results in new tab                                  |
+| WHOOGLE_CONFIG_VIEW_IMAGE      | Enable View Image option                                        |
 | WHOOGLE_CONFIG_GET_ONLY        | Search using GET requests only                                  |
 | WHOOGLE_CONFIG_URL             | The root url of the instance (`https://<your url>/`)            |
 | WHOOGLE_CONFIG_STYLE           | The custom CSS to use for styling (should be single line)       |
@@ -355,6 +366,56 @@ Note: You should have your own domain name and [an https certificate](https://le
 - Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
 
+## Contributing
+
+Under the hood, Whoogle is a basic Flask app with the following structure:
+
+- `app/`
+  - `routes.py`: Primary app entrypoint, contains all API routes
+  - `request.py`: Handles all outbound requests, including proxied/Tor connectivity
+  - `filter.py`: Functions and utilities used for filtering out content from upstream Google search results
+  - `utils/`
+    - `bangs.py`: All logic related to handling DDG-style "bang" queries
+    - `results.py`: Utility functions for interpreting/modifying individual search results
+    - `search.py`: Creates and handles new search queries
+    - `session.py`: Miscellaneous methods related to user sessions
+  - `templates/`
+    - `index.html`: The home page template
+    - `display.html`: The search results template
+    - `header.html`: A general "top of the page" query header for desktop and mobile
+    - `search.html`: An iframe-able search page
+    - `logo.html`: A template consisting mostly of the Whoogle logo as an SVG (separated to help keep `index.html` a bit cleaner)
+    - `opensearch.xml`: A template used for supporting [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/OpenSearch).
+    - `imageresults.html`: An "exprimental" template used for supporting the "Full Size" image feature on desktop.
+  - `static/<css|js>`
+    - CSS/Javascript files, should be self-explanatory
+  - `static/settings`
+    - Key-value JSON files for establishing valid configuration values
+    
+
+If you're new to the project, the easiest way to get started would be to try fixing [an open bug report](https://github.com/benbusby/whoogle-search/issues?q=is%3Aissue+is%3Aopen+label%3Abug). If there aren't any open, or if the open ones are too stale, try taking on a [feature request](https://github.com/benbusby/whoogle-search/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement). Generally speaking, if you can write something that has any potential of breaking down in the future, you should write a test for it.
+
+The project follows the [PEP 8 Style Guide](https://www.python.org/dev/peps/pep-0008/), but is liable to change. Static typing should always be used when possible. Function documentation is greatly appreciated, and typically follows the below format:
+
+```python
+def contains(x: list, y: int) -> bool:
+    """Check a list (x) for the presence of an element (y)
+
+    Args:
+        x: The list to inspect
+        y: The int to look for
+
+    Returns:
+        bool: True if the list contains the item, otherwise False
+    """
+
+    return y in x
+``` 
+
+#### Translating
+
+Whoogle currently supports translations using [`translations.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/languages.json). Language values in this file need to match the "value" of the according language in [`languages.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/languages.json) (i.e. "lang_en" for English, "lang_es" for Spanish, etc). After you add a new set of translations to `translations.json`, open a PR with your changes and they will be merged in as soon as possible.
+
 ## FAQ
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
@@ -379,6 +440,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 - [https://whooglesearch.net/](https://whooglesearch.net/)
 - [https://search.flawcra.cc/](https://search.flawcra.cc/)
 - [https://search.exonip.de/](https://search.exonip.de/)
+- [https://whoogle.silkky.cloud/](https://whoogle.silkky.cloud/)
 ## Screenshots
 #### Desktop
 ![Whoogle Desktop](docs/screenshot_desktop.jpg)

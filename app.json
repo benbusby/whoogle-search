@@ -115,6 +115,11 @@
         "value": "",
         "required": false
     },
+    "WHOOGLE_CONFIG_VIEW_IMAGE": {
+      "description": "[CONFIG] Enable View Image option (set to 1 or leave blank)",
+      "value": "",
+      "required": false
+  },
     "WHOOGLE_CONFIG_GET_ONLY": {
         "description": "[CONFIG] Search using GET requests only (set to 1 or leave blank)",
         "value": "",

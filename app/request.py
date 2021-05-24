@@ -151,6 +151,8 @@ class Request:
         self.language = config.lang_search
         self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
         self.modified_user_agent = gen_user_agent(self.mobile)
+        if not self.mobile:
+            self.modified_user_agent_mobile = gen_user_agent(True)
 
         # Set up proxy, if previously configured
         if os.environ.get('WHOOGLE_PROXY_LOC'):
@@ -197,7 +199,8 @@ class Request:
         return [_.attrib['data'] for _ in
                 root.findall('.//suggestion/[@data]')]
 
-    def send(self, base_url=SEARCH_URL, query='', attempt=0) -> Response:
+    def send(self, base_url=SEARCH_URL, query='', attempt=0,
+             force_mobile=False) -> Response:
         """Sends an outbound request to a URL. Optionally sends the request
         using Tor, if enabled by the user.
 
@@ -211,8 +214,13 @@ class Request:
             Response: The Response object returned by the requests call
 
         """
+        if force_mobile and not self.mobile:
+            modified_user_agent = self.modified_user_agent_mobile
+        else:
+            modified_user_agent = self.modified_user_agent
+
         headers = {
-            'User-Agent': self.modified_user_agent
+            'User-Agent': modified_user_agent
         }
 
         # FIXME: Should investigate this further to ensure the consent
