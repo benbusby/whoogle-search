@@ -6,7 +6,7 @@ services:
   whoogle-search:
     image: benbusby/whoogle-search
     container_name: whoogle-search
-    restart: on-failure:5
+    restart: unless-stopped
     pids_limit: 50
     mem_limit: 256mb
     memswap_limit: 256mb
@@ -41,4 +41,3 @@ services:
       #- whoogle.env
     ports:
       - 5000:5000
-    restart: unless-stopped
