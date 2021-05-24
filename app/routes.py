@@ -131,7 +131,7 @@ def index():
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
                            translation=app.config['TRANSLATIONS'][
-                               g.user_config.get_interface_lang()
+                               g.user_config.get_localization_lang()
                            ],
                            logo=render_template(
                                'logo.html',
@@ -239,7 +239,7 @@ def search():
         search_type=search_util.search_type,
         config=g.user_config,
         translation=app.config['TRANSLATIONS'][
-            g.user_config.get_interface_lang()
+            g.user_config.get_localization_lang()
         ],
         response=response,
         version_number=app.config['VERSION_NUMBER'],
