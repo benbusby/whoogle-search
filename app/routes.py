@@ -13,6 +13,7 @@ from flask import jsonify, make_response, request, redirect, render_template, \
 from requests import exceptions
 
 from app import app
+from app.filter import strip_blocked_sites
 from app.models.config import Config
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
@@ -246,7 +247,7 @@ def search():
             'header.html',
             config=g.user_config,
             logo=render_template('logo.html', dark=g.user_config.dark),
-            query=urlparse.unquote(query),
+            query=strip_blocked_sites(urlparse.unquote(query)),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile)
                 if 'isch' not in search_util.search_type else '')), resp_code
