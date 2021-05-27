@@ -54,5 +54,33 @@
         "apply": "Aplicar",
         "save-as": "Guardar como...",
         "github-link": "Ver en GitHub"
+    },
+    "lang_it": {
+        "search": "Cerca",
+        "config": "Impostazioni",
+        "config-country": "Filtra risultati per paese",
+        "config-country-help": "Nota: se abilitato, il sito sarà presente tra i risultati se e soltanto se il server risiede nel paese selezionato",
+        "config-lang": "Lingua dell'interfaccia",
+        "config-lang-search": "Lingua della ricerca",
+        "config-near": "Vicino",
+        "config-near-help": "Nome della città",
+        "config-block": "Blocca",
+        "config-block-help": "Lista di siti separati da virgole",
+        "config-nojs": "Mostra link NoJS",
+        "config-dark": "Modalità Notte",
+        "config-safe": "Ricerca Sicura",
+        "config-alts": "Sostituisci link dei social",
+        "config-alts-help": "Sostituisci link di Twitter/YouTube/Instagram/etc con alternative che rispettano la privacy.",
+        "config-new-tab": "Apri i link in una nuova scheda",
+        "config-images": "Ricerca Immagini",
+        "config-images-help": "(Sperimentale) Aggiunge la modalità 'Ricerca Immagini'. Questo ridurrà drasticamente la qualità delle miniature durante la ricerca.",
+        "config-tor": "Usa Tor",
+        "config-get-only": "Utilizza solo richieste GET",
+        "config-url": "Root URL",
+        "config-css": "CSS Personalizzato",
+        "load": "Carica",
+        "apply": "Applica",
+        "save-as": "Salva Come...",
+        "github-link": "Guarda su GitHub"
     }
 }

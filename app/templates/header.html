@@ -20,9 +20,9 @@
                             class="noHIxc" 
                             name="q"
                             style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
-                                   color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
+                                   color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};"
                             type="text" 
-                            value="{{ query[:query.find('-site:')] if '-site:' in query else query }}">
+                            value="{{ query }}">
                         <input style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }}" id="search-reset" type="reset" value="x">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
@@ -54,7 +54,7 @@
                             name="q"
                             spellcheck="false"
                             type="text"
-                            value="{{ query[:query.find('-site:')] if '-site:' in query else query }}"
+                            value="{{ query }}"
                             style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
                                    color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
                                    border-bottom: {{ '2px solid var(--whoogle-dark-element-bg)' if config.dark else '0px' }};">
