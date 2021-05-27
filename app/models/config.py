@@ -25,7 +25,7 @@ class Config:
         self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
         self.nojs = read_config_bool('WHOOGLE_CONFIG_NOJS')
         self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
-        self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
+        self.near = os.getenv('WHOOGLE_CONFIG_NEAR', 'Torino')
         self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
         self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
         self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
