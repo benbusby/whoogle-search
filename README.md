@@ -15,11 +15,12 @@ Contents
 3. [Install/Deploy](#install)
     1. [Heroku Quick Deploy](#a-heroku-quick-deploy)
     2. [Repl.it](#b-replit)
-    3. [pipx](#c-pipx)
-    4. [pip](#d-pip)
-    5. [Manual](#e-manual)
-    6. [Docker](#f-manual-docker)
-    7. [Arch/AUR](#arch-linux--arch-based-distributions)
+    3. [Fly.io](#c-flyio)
+    4. [pipx](#d-pipx)
+    5. [pip](#e-pip)
+    6. [Manual](#f-manual)
+    7. [Docker](#g-manual-docker)
+    8. [Arch/AUR](#arch-linux--arch-based-distributions)
 4. [Environment Variables and Configuration](#environment-variables)
 5. [Usage](#usage)
 6. [Extra Steps](#extra-steps)
@@ -90,7 +91,33 @@ Provides:
     - Supports custom domains
 - Downtime after periods of inactivity \([solution 1](https://repl.it/talk/ask/use-this-pingmat1replco-just-enter/28821/101298), [solution 2](https://repl.it/talk/learn/How-to-use-and-setup-UptimeRobot/9003)\)
 
-### C) [pipx](https://github.com/pipxproject/pipx#install-pipx)
+### C) [Fly.io](https://fly.io)
+
+You will need a [Fly.io](https://fly.io) account to do this. Fly requires a credit card to deploy anything, but you can have up to 3 shared-CPU VMs running full-time each month for free.
+
+#### Install the CLI:
+
+```bash
+curl -L https://fly.io/install.sh | sh
+```
+
+#### Deploy your app
+
+```bash
+fly apps create --org personal --port 5000
+# Choose a name and the Image builder
+# Enter `benbusby/whoogle-search:latest` as the image name
+fly deploy
+```
+
+Your app is now available at `https://<app-name>.fly.dev`.
+
+You can customize the `fly.toml`:
+- Remove the non-https service
+- Add environment variables under the `[env]` key
+  - Use `fly secrets set NAME=value` for more sensitive values like `WHOOGLE_PASS` and `WHOOGLE_PROXY_PASS`.
+
+### D) [pipx](https://github.com/pipxproject/pipx#install-pipx)
 Persistent install:
 
 `pipx install git+https://github.com/benbusby/whoogle-search.git`
@@ -99,7 +126,7 @@ Sandboxed temporary instance:
 
 `pipx run --spec git+https://github.com/benbusby/whoogle-search.git whoogle-search`
 
-### D) pip
+### E) pip
 `pip install whoogle-search`
 
 ```bash
@@ -126,7 +153,7 @@ optional arguments:
 ```
 See the [available environment variables](#environment-variables) for additional configuration.
 
-### E) Manual
+### F) Manual
 Clone the repo and run the following commands to start the app in a local-only environment:
 
 ```bash
@@ -183,7 +210,7 @@ sudo systemctl enable whoogle
 sudo systemctl start whoogle
 ```
 
-### F) Manual (Docker)
+### G) Manual (Docker)
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).
