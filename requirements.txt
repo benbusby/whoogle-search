@@ -27,7 +27,7 @@ python-dateutil==2.8.1
 requests==2.23.0
 soupsieve==1.9.5
 stem==1.8.0
-urllib3==1.25.9
+urllib3==1.26.5
 waitress==1.4.3
 wcwidth==0.1.9
 Werkzeug==0.16.0
