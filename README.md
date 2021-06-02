@@ -154,6 +154,9 @@ optional arguments:
 See the [available environment variables](#environment-variables) for additional configuration.
 
 ### F) Manual
+
+*Note: `Content-Security-Policy` headers are already sent by Whoogle -- you don't/shouldn't need to apply a CSP header yourself*
+
 Clone the repo and run the following commands to start the app in a local-only environment:
 
 ```bash
