@@ -24,7 +24,7 @@ pyparsing==2.4.7
 PySocks==1.7.1
 pytest==5.4.1
 python-dateutil==2.8.1
-requests==2.23.0
+requests==2.25.1
 soupsieve==1.9.5
 stem==1.8.0
 urllib3==1.26.5
