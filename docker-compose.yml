@@ -28,7 +28,7 @@ services:
       # Proxy configuration, uncomment to enable
       #- WHOOGLE_PROXY_USER=<proxy username>
       #- WHOOGLE_PROXY_PASS=<proxy password>
-      #- WHOOGLE_PROXY_TYPE=<proxy type (http|socks4|socks5)
+      #- WHOOGLE_PROXY_TYPE=<proxy type (http|https|socks4|socks5)
       #- WHOOGLE_PROXY_LOC=<proxy host/ip>
       # Site alternative configurations, uncomment to enable
       # Note: If not set, the feature will still be available
