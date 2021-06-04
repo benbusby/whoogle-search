@@ -166,17 +166,26 @@ class Request:
             self.modified_user_agent_mobile = gen_user_agent(True)
 
         # Set up proxy, if previously configured
-        if os.environ.get('WHOOGLE_PROXY_LOC'):
+        proxy_path = os.environ.get('WHOOGLE_PROXY_LOC', '')
+        if proxy_path:
+            proxy_type = os.environ.get('WHOOGLE_PROXY_TYPE', '')
+            proxy_user = os.environ.get('WHOOGLE_PROXY_USER', '')
+            proxy_pass = os.environ.get('WHOOGLE_PROXY_PASS', '')
             auth_str = ''
-            if os.environ.get('WHOOGLE_PROXY_USER', ''):
-                auth_str = os.environ.get('WHOOGLE_PROXY_USER', '') + \
-                           ':' + os.environ.get('WHOOGLE_PROXY_PASS', '')
+            if proxy_user:
+                auth_str = proxy_user + ':' + proxy_pass
             self.proxies = {
-                'http': os.environ.get('WHOOGLE_PROXY_TYPE', '') + '://' +
-                auth_str + '@' + os.environ.get('WHOOGLE_PROXY_LOC', ''),
+                'https': proxy_type + '://' +
+                ((auth_str + '@') if auth_str else '') + proxy_path,
             }
-            self.proxies['https'] = self.proxies['http'].replace('http',
-                                                                 'https')
+
+            # Need to ensure both HTTP and HTTPS are in the proxy dict,
+            # regardless of underlying protocol
+            if proxy_type == 'https':
+                self.proxies['http'] = self.proxies['https'].replace(
+                    'https', 'http')
+            else:
+                self.proxies['http'] = self.proxies['https']
         else:
             self.proxies = {
                 'http': 'socks5://127.0.0.1:9050',
