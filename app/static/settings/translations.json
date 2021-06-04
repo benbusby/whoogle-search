@@ -138,5 +138,33 @@
         "apply": "Applica",
         "save-as": "Salva Come...",
         "github-link": "Guarda su GitHub"
+    },
+    "lang_pt": {
+        "search": "Buscar",
+        "config": "Configuração",
+        "config-country": "Filtrar Resultados por País",
+        "config-country-help": "Observação: Se ativado, um site só aparecerá nos resultados da pesquisa se estiver *hospedado* no país selecionado.",
+        "config-lang": "Idioma da Interface",
+        "config-lang-search": "Idioma da Busca",
+        "config-near": "Perto",
+        "config-near-help": "Nome da Cidade",
+        "config-block": "Bloquear",
+        "config-block-help": "Lista de sites separados por vírgulas",
+        "config-nojs": "Mostrar Links NoJS",
+        "config-dark": "Modo Escuro",
+        "config-safe": "Busca Segura",
+        "config-alts": "Substituir Links de Redes Sociais",
+        "config-alts-help": "Substitui os links do Twitter/YouTube/Instagram/etc. por alternativas que respeitam sua privacidade.",
+        "config-new-tab": "Abrir Links em Nova Aba",
+        "config-images": "Busca de Imagem em Tamanho Real",
+        "config-images-help": "(Experimental) Adiciona a opção 'Exibir Imagem' às buscas de imagens no modo 'para computador'. Isso fará com que as miniaturas do resultado da imagem sejam de menor resolução.",
+        "config-tor": "Usar Tor",
+        "config-get-only": "Apenas Solicitações GET",
+        "config-url": "URL Fonte",
+        "config-css": "CSS Personalizado",
+        "load": "Carregar",
+        "apply": "Aplicar",
+        "save-as": "Salvar Como...",
+        "github-link": "Ver no GitHub"
     }
 }
