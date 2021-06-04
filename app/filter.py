@@ -9,19 +9,6 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
 
-def strip_blocked_sites(query: str) -> str:
-    """Strips the blocked site list from the query, if one is being
-    used.
-
-    Args:
-        query: The query string
-
-    Returns:
-        str: The query string without any "-site:..." filters
-    """
-    return query[:query.find('-site:')] if '-site:' in query else query
-
-
 def extract_q(q_str: str, href: str) -> str:
     """Extracts the 'q' element from a result link. This is typically
     either the link to a result's website, or a string.
@@ -35,6 +22,19 @@ def extract_q(q_str: str, href: str) -> str:
         str: The 'q' element of the link, or an empty string
     """
     return parse_qs(q_str)['q'][0] if ('&q=' in href or '?q=' in href) else ''
+
+
+def clean_query(query: str) -> str:
+    """Strips the blocked site list from the query, if one is being
+    used.
+
+    Args:
+        query: The query string
+
+    Returns:
+        str: The query string without any "-site:..." filters
+    """
+    return query[:query.find('-site:')] if '-site:' in query else query
 
 
 class Filter:
@@ -268,7 +268,7 @@ class Filter:
         else:
             if href.startswith(MAPS_URL):
                 # Maps links don't work if a site filter is applied
-                link['href'] = MAPS_URL + "?q=" + strip_blocked_sites(q)
+                link['href'] = MAPS_URL + "?q=" + clean_query(q)
             else:
                 link['href'] = href
 
