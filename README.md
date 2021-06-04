@@ -183,7 +183,7 @@ Description=Whoogle
 # Proxy configuration, uncomment to enable
 #Environment=WHOOGLE_PROXY_USER=<proxy username>
 #Environment=WHOOGLE_PROXY_PASS=<proxy password>
-#Environment=WHOOGLE_PROXY_TYPE=<proxy type (http|proxy4|proxy5)
+#Environment=WHOOGLE_PROXY_TYPE=<proxy type (http|https|proxy4|proxy5)
 #Environment=WHOOGLE_PROXY_LOC=<proxy host/ip>
 # Site alternative configurations, uncomment to enable
 # Note: If not set, the feature will still be available
