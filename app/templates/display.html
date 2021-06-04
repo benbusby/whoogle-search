@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="static/css/header.css">
         <link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
         <style>{{ config.style }}</style>
-        <title>{{ query }} - Whoogle Search</title>
+        <title>{{ clean_query(query) }} - Whoogle Search</title>
     </head>
     <body>
     {{ search_header|safe }}
