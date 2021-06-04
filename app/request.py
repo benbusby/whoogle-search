@@ -20,6 +20,9 @@ DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 # Valid query params
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
 
+# Fallback language if none have been configured
+DEFAULT_LANG = 'lang_en'
+
 
 class TorError(Exception):
     """Exception raised for errors in Tor requests.
@@ -108,23 +111,28 @@ def gen_query(query, args, config, near_city=None) -> str:
             [_ for _ in lang if not _.isdigit()]
         )) if lang else ''
     else:
-        param_dict['lr'] = (
-            '&lr=' + config.lang_search
-        ) if config.lang_search else ''
+        param_dict['lr'] = '&lr=' + (
+            config.lang_search if config.lang_search else DEFAULT_LANG
+        )
 
     # 'nfpr' defines the exclusion of results from an auto-corrected query
     if 'nfpr' in args:
         param_dict['nfpr'] = '&nfpr=' + args.get('nfpr')
 
     param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
-    param_dict['hl'] = (
-        '&hl=' + config.lang_interface.replace('lang_', '')
-    ) if config.lang_interface else ''
+    param_dict['hl'] = '&hl=' + (
+        config.lang_interface.replace('lang_', '')
+        if config.lang_interface else DEFAULT_LANG.replace('lang_', '')
+    )
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 
     # Block all sites specified in the user config
-    for blocked in config.block.split(','):
-        query += (' -site:' + blocked) if blocked else ''
+    unquoted_query = urlparse.unquote(query)
+    for blocked_site in config.block.replace(' ', '').split(','):
+        if not blocked_site:
+            continue
+        block = (' -site:' + blocked_site)
+        query += block if block not in unquoted_query else ''
 
     for val in param_dict.values():
         if not val:
@@ -149,7 +157,9 @@ class Request:
         # enable Tor for future requests
         send_tor_signal(Signal.HEARTBEAT)
 
-        self.language = config.lang_search
+        self.language = (
+            config.lang_search if config.lang_search else DEFAULT_LANG
+        )
         self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
         self.modified_user_agent = gen_user_agent(self.mobile)
         if not self.mobile:
@@ -210,6 +220,8 @@ class Request:
             query: The optional query string for the request
             attempt: The number of attempts made for the request
                 (used for cycling through Tor identities, if enabled)
+            force_mobile: Optional flag to enable a mobile user agent
+                (used for fetching full size images in search results)
 
         Returns:
             Response: The Response object returned by the requests call

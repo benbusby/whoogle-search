@@ -1,3 +1,4 @@
+from app.filter import clean_query
 from app.request import send_tor_signal
 from app.utils.session import generate_user_key
 from app.utils.bangs import gen_bangs_json
@@ -59,6 +60,9 @@ app.config['CSP'] = 'default-src \'none\';' \
                     'media-src \'self\';' \
                     'connect-src \'self\';' \
                     'form-action \'self\';'
+
+# Templating functions
+app.jinja_env.globals.update(clean_query=clean_query)
 
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])
