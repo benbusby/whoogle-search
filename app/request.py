@@ -20,9 +20,6 @@ DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 # Valid query params
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
 
-# Fallback language if none have been configured
-DEFAULT_LANG = 'lang_en'
-
 
 class TorError(Exception):
     """Exception raised for errors in Tor requests.
@@ -112,7 +109,7 @@ def gen_query(query, args, config, near_city=None) -> str:
         )) if lang else ''
     else:
         param_dict['lr'] = '&lr=' + (
-            config.lang_search if config.lang_search else DEFAULT_LANG
+            config.lang_search if config.lang_search else ''
         )
 
     # 'nfpr' defines the exclusion of results from an auto-corrected query
@@ -122,7 +119,7 @@ def gen_query(query, args, config, near_city=None) -> str:
     param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
     param_dict['hl'] = '&hl=' + (
         config.lang_interface.replace('lang_', '')
-        if config.lang_interface else DEFAULT_LANG.replace('lang_', '')
+        if config.lang_interface else ''
     )
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 
@@ -158,7 +155,7 @@ class Request:
         send_tor_signal(Signal.HEARTBEAT)
 
         self.language = (
-            config.lang_search if config.lang_search else DEFAULT_LANG
+            config.lang_search if config.lang_search else ''
         )
         self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
         self.modified_user_agent = gen_user_agent(self.mobile)
