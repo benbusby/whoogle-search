@@ -60,6 +60,7 @@ def test_translate_search(client):
     assert 'iframe' in str_data
     assert 'lingva.ml/auto/en/ hola' in str_data
 
+
 def test_block_results(client):
     rv = client.post('/search', data=dict(q='pinterest'))
     assert rv._status_code == 200
