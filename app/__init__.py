@@ -53,6 +53,7 @@ app.config['BANG_FILE'] = os.path.join(
     app.config['BANG_PATH'],
     'bangs.json')
 app.config['CSP'] = 'default-src \'none\';' \
+                    'frame-src lingva.ml;' \
                     'manifest-src \'self\';' \
                     'img-src \'self\' data:;' \
                     'style-src \'self\' \'unsafe-inline\';' \
@@ -75,6 +76,14 @@ if not os.path.exists(app.config['BANG_PATH']):
     os.makedirs(app.config['BANG_PATH'])
 if not os.path.exists(app.config['BANG_FILE']):
     gen_bangs_json(app.config['BANG_FILE'])
+
+# The alternative to Google Translate is treated a bit differently than other
+# social media site alternatives, in that it is used for any translation
+# related searches.
+translate_url = os.getenv('WHOOGLE_ALT_TL', 'https://lingva.ml')
+if not translate_url.startswith('http'):
+    translate_url = 'https://' + translate_url
+app.config['TRANSLATE_URL'] = translate_url
 
 Session(app)
 

@@ -65,6 +65,11 @@
       "value": "libredd.it",
       "required": false
     },
+    "WHOOGLE_ALT_TL": {
+      "description": "The Google Translate alternative to use for all searches following the 'translate ___' structure.",
+      "value": "lingva.ml",
+      "required": false
+    },
     "WHOOGLE_CONFIG_COUNTRY": {
         "description": "[CONFIG] The country to use for restricting search results (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/countries.json)",
         "value": "",
