@@ -15,6 +15,12 @@
     </head>
     <body>
     {{ search_header|safe }}
+    {% if is_translation %}
+    <iframe 
+        id="lingva-iframe"
+        src="{{ lingva_url }}/auto/{{ translate_to }}/{{ translate_str }}">
+    </iframe>
+    {% endif %}
     {{ response|safe }}
     </body>
     <footer>

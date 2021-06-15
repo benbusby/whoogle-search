@@ -52,7 +52,17 @@ app.config['BANG_PATH'] = os.getenv(
 app.config['BANG_FILE'] = os.path.join(
     app.config['BANG_PATH'],
     'bangs.json')
+
+# The alternative to Google Translate is treated a bit differently than other
+# social media site alternatives, in that it is used for any translation
+# related searches.
+translate_url = os.getenv('WHOOGLE_ALT_TL', 'https://lingva.ml')
+if not translate_url.startswith('http'):
+    translate_url = 'https://' + translate_url
+app.config['TRANSLATE_URL'] = translate_url
+
 app.config['CSP'] = 'default-src \'none\';' \
+                    'frame-src ' + translate_url + ';' \
                     'manifest-src \'self\';' \
                     'img-src \'self\' data:;' \
                     'style-src \'self\' \'unsafe-inline\';' \
