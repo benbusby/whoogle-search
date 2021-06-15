@@ -25,3 +25,9 @@ details summary {
     padding: 10px;
     font-weight: bold;
 }
+
+#lingva-iframe {
+    width: 100%;
+    height: 650px;
+    border: 0;
+}

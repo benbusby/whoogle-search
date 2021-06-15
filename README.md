@@ -193,6 +193,7 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_YT=invidious.snopyta.org
 #Environment=WHOOGLE_ALT_IG=bibliogram.art/u
 #Environment=WHOOGLE_ALT_RD=libredd.it
+#Environment=WHOOGLE_ALT_TL=lingva.ml
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
@@ -311,6 +312,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config.      |
 | WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config.    |
 | WHOOGLE_ALT_RD     | The reddit.com alternative to use when site alternatives are enabled in the config.       |
+| WHOOGLE_ALT_TL     | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.

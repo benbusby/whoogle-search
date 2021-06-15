@@ -1,4 +1,33 @@
 {
+    "lang_en": {
+        "search": "Search",
+        "config": "Configuration",
+        "config-country": "Filter Results by Country",
+        "config-country-help": "Note: If enabled, a website will only appear in the search results if it is *hosted* in the selected country.",
+        "config-lang": "Interface Language",
+        "config-lang-search": "Search Language",
+        "config-near": "Near",
+        "config-near-help": "City Name",
+        "config-block": "Block",
+        "config-block-help": "Comma-separated site list",
+        "config-nojs": "Show NoJS Links",
+        "config-dark": "Dark Mode",
+        "config-safe": "Safe Search",
+        "config-alts": "Replace Social Media Links",
+        "config-alts-help": "Replaces Twitter/YouTube/Instagram/etc links with privacy respecting alternatives.",
+        "config-new-tab": "Open Links in New Tab",
+        "config-images": "Full Size Image Search",
+        "config-images-help": "(Experimental) Adds the 'View Image' option to desktop image searches. This will cause image result thumbnails to be lower resolution.",
+        "config-tor": "Use Tor",
+        "config-get-only": "GET Requests Only",
+        "config-url": "Root URL",
+        "config-css": "Custom CSS",
+        "load": "Load",
+        "apply": "Apply",
+        "save-as": "Save As...",
+        "github-link": "View on GitHub",
+        "translate": "translate"
+    },
     "lang_nl": {
         "search": "Zoeken",
         "config": "Instellingen",
@@ -25,7 +54,8 @@
         "load": "Laden",
         "apply": "Opslaan",
         "save-as": "Opslaan Als...",
-        "github-link": "Bekijk op GitHub"
+        "github-link": "Bekijk op GitHub",
+        "translate": "vertalen"
     },
     "lang_de": {
         "search": "Suchen",
@@ -53,35 +83,8 @@
         "load": "Laden",
         "apply": "Übernehmen",
         "save-as": "Speichern unter...",
-        "github-link": "Auf GitHub öffnen"
-    },
-    "lang_en": {
-        "search": "Search",
-        "config": "Configuration",
-        "config-country": "Filter Results by Country",
-        "config-country-help": "Note: If enabled, a website will only appear in the search results if it is *hosted* in the selected country.",
-        "config-lang": "Interface Language",
-        "config-lang-search": "Search Language",
-        "config-near": "Near",
-        "config-near-help": "City Name",
-        "config-block": "Block",
-        "config-block-help": "Comma-separated site list",
-        "config-nojs": "Show NoJS Links",
-        "config-dark": "Dark Mode",
-        "config-safe": "Safe Search",
-        "config-alts": "Replace Social Media Links",
-        "config-alts-help": "Replaces Twitter/YouTube/Instagram/etc links with privacy respecting alternatives.",
-        "config-new-tab": "Open Links in New Tab",
-        "config-images": "Full Size Image Search",
-        "config-images-help": "(Experimental) Adds the 'View Image' option to desktop image searches. This will cause image result thumbnails to be lower resolution.",
-        "config-tor": "Use Tor",
-        "config-get-only": "GET Requests Only",
-        "config-url": "Root URL",
-        "config-css": "Custom CSS",
-        "load": "Load",
-        "apply": "Apply",
-        "save-as": "Save As...",
-        "github-link": "View on GitHub"
+        "github-link": "Auf GitHub öffnen",
+        "translate": "Übersetzen"
     },
     "lang_es": {
         "search": "Buscar",
@@ -109,7 +112,8 @@
         "load": "Cargar",
         "apply": "Aplicar",
         "save-as": "Guardar como...",
-        "github-link": "Ver en GitHub"
+        "github-link": "Ver en GitHub",
+        "translate": "traducir"
     },
     "lang_it": {
         "search": "Cerca",
@@ -137,7 +141,8 @@
         "load": "Carica",
         "apply": "Applica",
         "save-as": "Salva Come...",
-        "github-link": "Guarda su GitHub"
+        "github-link": "Guarda su GitHub",
+        "translate": "tradurre"
     },
     "lang_pt": {
         "search": "Buscar",
@@ -165,7 +170,8 @@
         "load": "Carregar",
         "apply": "Aplicar",
         "save-as": "Salvar Como...",
-        "github-link": "Ver no GitHub"
+        "github-link": "Ver no GitHub",
+        "translate": "traduzir"
     },
     "lang_zh-CN": {
         "search": "搜索",
@@ -193,7 +199,8 @@
         "load": "载入",
         "apply": "应用",
         "save-as": "另存为...",
-        "github-link": "在 GitHub 上查看"
+        "github-link": "在 GitHub 上查看",
+        "translate": "翻译"
     },
     "lang_si": {
         "search": "සොයන්න",
@@ -221,6 +228,7 @@
         "load": "පූරනය කරන්න",
         "apply": "යොදන්න",
         "save-as": "...ලෙස සුරකින්න",
-        "github-link": "ගිට්හබ් හි බලන්න"
+        "github-link": "ගිට්හබ් හි බලන්න",
+        "translate": "පරිවර්තනය කරන්න"
     }
 }

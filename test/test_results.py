@@ -35,8 +35,9 @@ def test_get_results(client):
 
     # Depending on the search, there can be more
     # than 10 result divs
-    assert len(get_search_results(rv.data)) >= 10
-    assert len(get_search_results(rv.data)) <= 15
+    results = get_search_results(rv.data)
+    assert len(results) >= 10
+    assert len(results) <= 15
 
 
 def test_post_results(client):
@@ -45,8 +46,19 @@ def test_post_results(client):
 
     # Depending on the search, there can be more
     # than 10 result divs
-    assert len(get_search_results(rv.data)) >= 10
-    assert len(get_search_results(rv.data)) <= 15
+    results = get_search_results(rv.data)
+    assert len(results) >= 10
+    assert len(results) <= 15
+
+
+def test_translate_search(client):
+    rv = client.post('/search', data=dict(q='translate hola'))
+    assert rv._status_code == 200
+
+    # Pretty weak test, but better than nothing
+    str_data = str(rv.data)
+    assert 'iframe' in str_data
+    assert 'lingva.ml/auto/en/ hola' in str_data
 
 
 def test_block_results(client):
