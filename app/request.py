@@ -157,7 +157,8 @@ class Request:
         self.language = (
             config.lang_search if config.lang_search else ''
         )
-        self.mobile = 'Android' in normal_ua or 'iPhone' in normal_ua
+        self.mobile = bool(normal_ua) and ('Android' in normal_ua
+                                           or 'iPhone' in normal_ua)
         self.modified_user_agent = gen_user_agent(self.mobile)
         if not self.mobile:
             self.modified_user_agent_mobile = gen_user_agent(True)

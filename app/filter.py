@@ -313,12 +313,19 @@ class Filter:
             urls = item.find('a')['href'].split('&imgrefurl=')
 
             img_url = urlparse.unquote(urls[0].replace('/imgres?imgurl=', ''))
-            webpage = urlparse.unquote(urls[1].split('&')[0])
+
+            try:
+                # Try to strip out only the necessary part of the web page link
+                web_page = urlparse.unquote(urls[1].split('&')[0])
+            except IndexError:
+                web_page = urlparse.unquote(urls[1])
+
             img_tbn = urlparse.unquote(item.find('a').find('img')['src'])
+
             results.append({
-                'domain': urlparse.urlparse(webpage).netloc,
+                'domain': urlparse.urlparse(web_page).netloc,
                 'img_url': img_url,
-                'webpage': webpage,
+                'web_page': web_page,
                 'img_tbn': img_tbn
             })
 
