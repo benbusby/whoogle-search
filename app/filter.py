@@ -38,6 +38,10 @@ def clean_query(query: str) -> str:
 
 
 class Filter:
+    # Limit used for determining if a result is a "regular" result or a list
+    # type result (such as "people also asked", "related searches", etc)
+    RESULT_CHILD_LIMIT = 7
+
     def __init__(self, user_key: str, mobile=False, config=None) -> None:
         if config is None:
             config = {}
@@ -83,7 +87,7 @@ class Filter:
     def clean(self, soup) -> BeautifulSoup:
         self.main_divs = soup.find('div', {'id': 'main'})
         self.remove_ads()
-        self.fix_question_section()
+        self.collapse_sections()
         self.update_styling(soup)
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
@@ -130,41 +134,54 @@ class Filter:
                        if has_ad_content(_.text)]
             _ = div.decompose() if len(div_ads) else None
 
-    def fix_question_section(self) -> None:
-        """Collapses the "People Also Asked" section into a "details" element
+    def collapse_sections(self) -> None:
+        """Collapses long result sections ("people also asked", "related
+         searches", etc) into "details" elements
 
         These sections are typically the only sections in the results page that
-        are structured as <div><h2>Title</h2><div>...</div></div>, so they are
-        extracted by checking all result divs for h2 children.
+        have more than ~5 child divs within a primary result div.
 
         Returns:
             None (The soup object is modified directly)
         """
+        def pull_child_divs(result_div: BeautifulSoup):
+            try:
+                return result_div.findChildren(
+                    'div', recursive=False
+                )[0].findChildren(
+                    'div', recursive=False)
+            except IndexError:
+                return []
+
         if not self.main_divs:
             return
 
-        question_divs = [_ for _ in self.main_divs.find_all(
-            'div', recursive=False
-        ) if len(_.find_all('h2')) > 0]
+        # Loop through results and check for the number of child divs in each
+        for result in self.main_divs:
+            result_children = pull_child_divs(result)
+            if len(result_children) < self.RESULT_CHILD_LIMIT:
+                continue
 
-        if len(question_divs) == 0:
-            return
+            # Find and decompose the first element with an inner HTML text val.
+            # This typically extracts the title of the section (i.e. "Related
+            # Searches", "People also ask", etc)
+            label = 'Collapsed Results'
+            for elem in result_children:
+                if elem.text:
+                    label = elem.text
+                    elem.decompose()
+                    break
 
-        # Wrap section in details element to allow collapse/expand
-        details = BeautifulSoup(features='html.parser').new_tag('details')
-        summary = BeautifulSoup(features='html.parser').new_tag('summary')
-        summary.string = question_divs[0].find('h2').text
-        question_divs[0].find('h2').decompose()
-        details.append(summary)
-        question_divs[0].wrap(details)
+            # Create the new details element to wrap around the result's
+            # immediate parent
+            parent = result_children[0].parent
+            details = BeautifulSoup(features='html.parser').new_tag('details')
+            summary = BeautifulSoup(features='html.parser').new_tag('summary')
+            summary.string = label
+            details.append(summary)
 
-        for question_div in question_divs:
-            questions = [_ for _ in question_div.find_all(
-                'div', recursive=True
-            ) if _.text.endswith('?')]
-
-            for question in questions:
-                question['style'] = 'padding: 10px; font-style: italic;'
+            if parent:
+                parent.wrap(details)
 
     def update_element_src(self, element: Tag, mime: str) -> None:
         """Encrypts the original src of an element and rewrites the element src
