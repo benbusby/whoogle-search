@@ -13,6 +13,11 @@ body {
     max-height: 500px;
 }
 
+.home-search {
+    background: transparent !important;
+    border: 3px solid;
+}
+
 .search-container {
     background: transparent !important;
     width: 80%;

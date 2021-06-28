@@ -10,6 +10,7 @@
         "config-near-help": "City Name",
         "config-block": "Block",
         "config-block-help": "Comma-separated site list",
+        "config-theme": "Theme",
         "config-nojs": "Show NoJS Links",
         "config-dark": "Dark Mode",
         "config-safe": "Safe Search",
@@ -26,7 +27,10 @@
         "apply": "Apply",
         "save-as": "Save As...",
         "github-link": "View on GitHub",
-        "translate": "translate"
+        "translate": "translate",
+        "light": "light",
+        "dark": "dark",
+        "system": "system"
     },
     "lang_nl": {
         "search": "Zoeken",
@@ -39,6 +43,7 @@
         "config-near-help": "Stad",
         "config-block": "Blok",
         "config-block-help": "Lijst met sites met kommas onderscheiden",
+        "config-theme": "Thema",
         "config-nojs": "Laat NoJS links zien",
         "config-dark": "Donkere Modus",
         "config-safe": "Veilig zoeken",
@@ -55,7 +60,10 @@
         "apply": "Opslaan",
         "save-as": "Opslaan Als...",
         "github-link": "Bekijk op GitHub",
-        "translate": "vertalen"
+        "translate": "vertalen",
+        "light": "helder",
+        "dark": "donker",
+        "system": "systeeminstellingen"
     },
     "lang_de": {
         "search": "Suchen",
@@ -68,6 +76,7 @@
         "config-near-help": "Stadt-Name",
         "config-block": "Block",
         "config-block-help": "Komma-getrennte Liste von Seiten",
+        "config-theme": "Thema",
         "config-nojs": "NoJS-Links anzeigen",
         "config-dark": "Dark Mode",
         "config-safe": "Sicheres Suchen",
@@ -84,7 +93,10 @@
         "apply": "Übernehmen",
         "save-as": "Speichern unter...",
         "github-link": "Auf GitHub öffnen",
-        "translate": "Übersetzen"
+        "translate": "Übersetzen",
+        "light": "hell",
+        "dark": "dunkel",
+        "system": "Systemeinstellung"
     },
     "lang_es": {
         "search": "Buscar",
@@ -97,6 +109,7 @@
         "config-near-help": "Nombre de la Ciudad",
         "config-block": "Bloquear",
         "config-block-help": "Lista de sitios separados por comas",
+        "config-theme": "Tema",
         "config-nojs": "Mostrar Enlaces NoJS",
         "config-dark": "Modo Oscuro",
         "config-safe": "Búsqueda Segura",
@@ -113,7 +126,10 @@
         "apply": "Aplicar",
         "save-as": "Guardar como...",
         "github-link": "Ver en GitHub",
-        "translate": "traducir"
+        "translate": "traducir",
+        "light": "brillante",
+        "dark": "oscuro",
+        "system": "configuración del sistema"
     },
     "lang_it": {
         "search": "Cerca",
@@ -126,6 +142,7 @@
         "config-near-help": "Nome della città",
         "config-block": "Blocca",
         "config-block-help": "Lista di siti separati da virgole",
+        "config-theme": "Tema",
         "config-nojs": "Mostra link NoJS",
         "config-dark": "Modalità Notte",
         "config-safe": "Ricerca Sicura",
@@ -142,7 +159,10 @@
         "apply": "Applica",
         "save-as": "Salva Come...",
         "github-link": "Guarda su GitHub",
-        "translate": "tradurre"
+        "translate": "tradurre",
+        "light": "luminoso",
+        "dark": "notte",
+        "system": "impostazioni di sistema"
     },
     "lang_pt": {
         "search": "Buscar",
@@ -155,6 +175,7 @@
         "config-near-help": "Nome da Cidade",
         "config-block": "Bloquear",
         "config-block-help": "Lista de sites separados por vírgulas",
+        "config-theme": "Tema",
         "config-nojs": "Mostrar Links NoJS",
         "config-dark": "Modo Escuro",
         "config-safe": "Busca Segura",
@@ -171,7 +192,10 @@
         "apply": "Aplicar",
         "save-as": "Salvar Como...",
         "github-link": "Ver no GitHub",
-        "translate": "traduzir"
+        "translate": "traduzir",
+        "light": "brilhante",
+        "dark": "escuro",
+        "system": "configuração de sistema"
     },
     "lang_zh-CN": {
         "search": "搜索",
@@ -184,6 +208,7 @@
         "config-near-help": "城市名",
         "config-block": "屏蔽",
         "config-block-help": "逗号分隔的网站列表",
+        "config-theme": "主题",
         "config-nojs": "显示 NoJS 链接",
         "config-dark": "深色模式",
         "config-safe": "安全搜索",
@@ -200,7 +225,10 @@
         "apply": "应用",
         "save-as": "另存为...",
         "github-link": "在 GitHub 上查看",
-        "translate": "翻译"
+        "translate": "翻译",
+        "light": "明亮的",
+        "dark": "黑暗的",
+        "system": "系统设置"
     },
     "lang_si": {
         "search": "සොයන්න",
@@ -213,6 +241,7 @@
         "config-near-help": "නගරයේ නම",
         "config-block": "අවහිර",
         "config-block-help": "අල්ප විරාම වලින් වෙන් වූ අඩවි ලැයිස්තුව",
+        "config-theme": "තේමාව",
         "config-nojs": "නෝජේඑස් සබැඳි පෙන්වන්න",
         "config-dark": "අඳුරු ආකාරය",
         "config-safe": "ආරක්ෂිත සෙවීම",
@@ -229,6 +258,9 @@
         "apply": "යොදන්න",
         "save-as": "...ලෙස සුරකින්න",
         "github-link": "ගිට්හබ් හි බලන්න",
-        "translate": "පරිවර්තනය කරන්න"
+        "translate": "පරිවර්තනය කරන්න",
+        "light": "දීප්තිමත්",
+        "dark": "අඳුරු",
+        "system": "පද්ධති සැකසුම"
     }
 }

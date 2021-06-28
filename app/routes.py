@@ -130,6 +130,7 @@ def index():
     return render_template('index.html',
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
+                           themes=app.config['THEMES'],
                            translation=app.config['TRANSLATIONS'][
                                g.user_config.get_localization_lang()
                            ],

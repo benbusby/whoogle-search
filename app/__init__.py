@@ -36,6 +36,8 @@ app.config['COUNTRIES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json')))
 app.config['TRANSLATIONS'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json')))
+app.config['THEMES'] = json.load(open(
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/themes.json')))
 app.config['CONFIG_PATH'] = os.getenv(
     'CONFIG_VOLUME',
     os.path.join(app.config['STATIC_FOLDER'], 'config'))

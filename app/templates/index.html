@@ -1,4 +1,4 @@
-<html>
+<html style="background: #000;">
 	<head>
 		<link rel="apple-touch-icon" sizes="57x57" href="static/img/favicon/apple-icon-57x57.png">
 		<link rel="apple-touch-icon" sizes="60x60" href="static/img/favicon/apple-icon-60x60.png">
@@ -22,8 +22,12 @@
 		<link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="static/css/variables.css">
-		<link rel="stylesheet" href="static/css/main.css">
+        {% if config.theme  %}
+		<link rel="stylesheet" href="static/css/{{ config.theme }}-theme.css"/>
+        {% else %}
 		<link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
+        {% endif %}
+		<link rel="stylesheet" href="static/css/main.css">
 		<noscript>
 			<style>
 				#main { display: inherit !important; }
@@ -34,7 +38,7 @@
 		<style>{{ config.style }}</style>
 		<title>Whoogle Search</title>
 	</head>
-	<body id="main" style="display: none; background-color: {{ '#000' if config.dark else '#fff' }}">
+	<body id="main">
 		<div class="search-container">
 			<div class="logo-container">
 				{{ logo|safe }}
@@ -114,10 +118,24 @@
 					<label for="config-nojs">{{ translation['config-nojs'] }}: </label>
 					<input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
 				</div>
-				<div class="config-div config-div-dark">
-					<label for="config-dark">{{ translation['config-dark'] }}: </label>
-					<input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>
-				</div>
+                <div class="config-div config-div-theme">
+                    <label for="config-theme">{{ translation['config-theme'] }}: </label>
+                    <select name="theme" id="config-theme">
+                        {% for theme in themes %}
+                        <option value="{{ theme }}"
+                            {% if theme in config.theme %}
+                            selected
+                            {% endif %}>
+                            {{ translation[theme].capitalize() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- DEPRECATED -->
+				<!--<div class="config-div config-div-dark">-->
+					<!--<label for="config-dark">{{ translation['config-dark'] }}: </label>-->
+					<!--<input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>-->
+				<!--</div>-->
 				<div class="config-div config-div-safe">
 					<label for="config-safe">{{ translation['config-safe'] }}: </label>
 					<input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
@@ -172,7 +190,7 @@
 		{% endif %}
 		</div>
 		<footer>
-			<p style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};">
+			<p class="footer">
 				Whoogle Search v{{ version_number }} ||
 				<a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
 			</p>
