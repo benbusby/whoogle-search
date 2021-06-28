@@ -9,7 +9,11 @@
         <link rel="stylesheet" href="static/css/search.css">
         <link rel="stylesheet" href="static/css/variables.css">
         <link rel="stylesheet" href="static/css/header.css">
+        {% if config.theme %}
+        <link rel="stylesheet" href="static/css/{{ config.theme }}-theme.css"/>
+        {% else %}
         <link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
+        {% endif %}
         <style>{{ config.style }}</style>
         <title>{{ clean_query(query) }} - Whoogle Search</title>
     </head>
@@ -24,7 +28,7 @@
     {{ response|safe }}
     </body>
     <footer>
-        <p style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};">
+        <p class="footer">
             Whoogle Search v{{ version_number }} ||
             <a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
         </p>

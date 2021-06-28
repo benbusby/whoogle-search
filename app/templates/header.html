@@ -1,29 +1,26 @@
 {% if mobile %}
     <header>
-        <div style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;" class="bz1lBb">
+        <div class="bz1lBb header-div">
             <form class="search-form Pg70bf" id="search-form" method="POST">
-                <a class="logo-link mobile-logo"
-                   href="/"
-                   style="display:flex; justify-content:center; align-items:center;">
-                    <div style="height: 1.75em;">
+                <a class="logo-link mobile-logo" href="/">
+                    <div id="mobile-header-logo">
                         {{ logo|safe }}
                     </div>
                 </a>
-                <div class="H0PQec" style="width: 100%;">
+                <div class="H0PQec mobile-input-div">
                     <div class="sbc esbc autocomplete">
                         <input 
                             id="search-bar" 
+                            class="mobile-search-bar"
                             autocapitalize="none" 
                             autocomplete="off" 
                             autocorrect="off"
                             spellcheck="false" 
                             class="noHIxc" 
                             name="q"
-                            style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
-                                   color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};"
                             type="text" 
                             value="{{ clean_query(query) }}">
-                        <input style="color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }}" id="search-reset" type="reset" value="x">
+                        <input id="search-reset" type="reset" value="x">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>
@@ -36,14 +33,14 @@
     <header>
         <div class="logo-div">
             <a class="logo-link" href="/">
-                <div style="height: 1.65em;">
+                <div class="desktop-header-logo">
                     {{ logo|safe }}
                 </div>
             </a>
         </div>
         <div class="search-div">
             <form id="search-form" class="search-form" id="sf" method="POST">
-                <div class="autocomplete" style="width: 100%; flex: 1">
+                <div class="autocomplete header-autocomplete">
                     <div style="width: 100%; display: flex">
                         <input 
                             id="search-bar" 
@@ -54,10 +51,7 @@
                             name="q"
                             spellcheck="false"
                             type="text"
-                            value="{{ clean_query(query) }}"
-                            style="background-color: {{ 'var(--whoogle-dark-result-bg)' if config.dark else 'var(--whoogle-result-bg)' }} !important;
-                                   color: {{ 'var(--whoogle-dark-text)' if config.dark else 'var(--whoogle-text)' }};
-                                   border-bottom: {{ '2px solid var(--whoogle-dark-element-bg)' if config.dark else '0px' }};">
+                            value="{{ clean_query(query) }}">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>

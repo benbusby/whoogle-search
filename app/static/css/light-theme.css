@@ -80,7 +80,7 @@ input {
 }
 
 .home-search {
-    border: 3px solid var(--whoogle-element-bg) !important;
+    border-color: var(--whoogle-element-bg) !important;
 }
 
 .search-container {
@@ -141,4 +141,31 @@ input {
 .autocomplete-active {
     background-color: var(--whoogle-element-bg) !important;
     color: var(--whoogle-contrast-text) !important;
+}
+
+.footer {
+    color: var(--whoogle-text);
+}
+
+path {
+    fill: var(--whoogle-logo);
+}
+
+.header-div {
+    background-color: var(--whoogle-result-bg) !important;
+}
+
+#search-reset {
+    color: var(--whoogle-text) !important;
+}
+
+.mobile-search-bar {
+    background-color: var(--whoogle-result-bg) !important;
+    color: var(--whoogle-text) !important;
+}
+
+.search-bar-desktop {
+    background-color: var(--whoogle-result-bg) !important;
+    color: var(--whoogle-text);
+    border-bottom: 0px;
 }

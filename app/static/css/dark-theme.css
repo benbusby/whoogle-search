@@ -81,9 +81,15 @@ select {
     background-color: var(--whoogle-dark-divider) !important;
 }
 
+.home-search {
+    border-color: var(--whoogle-dark-element-bg) !important;
+}
+
 #search-bar {
     border-color: var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-dark-text) !important;
+    background-color: var(--whoogle-dark-result-bg) !important;
+    border-bottom: 2px solid var(--whoogle-dark-element-bg);
 }
 
 #search-bar:focus {
@@ -102,11 +108,11 @@ select {
 }
 
 .collapsible {
-    color: var(--whoogle-dark-text);
+    color: var(--whoogle-dark-text) !important;
 }
 
 .collapsible:after {
-    color: var(--whoogle-dark-text);
+    color: var(--whoogle-dark-text) !important;
 }
 
 .active {
@@ -145,4 +151,29 @@ select {
 .autocomplete-active {
     background-color: var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-dark-contrast-text) !important;
+}
+
+.footer {
+    color: var(--whoogle-dark-text);
+}
+
+path {
+    fill: var(--whoogle-dark-logo);
+}
+
+.header-div {
+    background-color: var(--whoogle-dark-result-bg) !important;
+}
+
+#search-reset {
+    color: var(--whoogle-dark-text) !important;
+}
+
+.mobile-search-bar {
+    background-color: var(--whoogle-dark-result-bg) !important;
+    color: var(--whoogle-dark-text) !important;
+}
+
+.search-bar-desktop {
+    color: var(--whoogle-dark-text) !important;
 }

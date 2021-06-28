@@ -95,9 +95,9 @@
         "value": "",
         "required": false
     },
-    "WHOOGLE_CONFIG_DARK": {
-        "description": "[CONFIG] Enable dark mode (set to 1 or leave blank)",
-        "value": "",
+    "WHOOGLE_CONFIG_THEME": {
+        "description": "[CONFIG] Set theme to 'dark', 'light', or 'system'",
+        "value": "system",
         "required": false
     },
     "WHOOGLE_CONFIG_SAFE": {

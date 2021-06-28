@@ -16,6 +16,9 @@ header {
 .mobile-logo {
     font: 22px/36px Futura, Arial, sans-serif;
     padding-left: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .logo-div {
@@ -70,4 +73,36 @@ header {
 #main>div:focus-within {
     border-radius: 8px;
     box-shadow: 0 0 6px 1px #2375e8;
+}
+
+#mobile-header-logo {
+    height: 1.75em;
+}
+
+.mobile-input-div {
+    width: 100%;
+}
+
+.mobile-search-bar {
+    display: block;
+    font-size: 16px;
+    padding: 0 0 0 8px;
+    padding-right: 0px;
+    -webkit-box-flex: 1;
+    height: 35px;
+    outline: none;
+    border: none;
+    width: 100%;
+    -webkit-tap-highlight-color: rgba(0,0,0,.00);
+    overflow: hidden;
+    border: 0px !important;
+}
+
+.desktop-header-logo {
+    height: 1.65em;
+}
+
+.header-autocomplete {
+    width: 100%;
+    flex: 1
 }

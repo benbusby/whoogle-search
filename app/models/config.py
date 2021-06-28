@@ -20,8 +20,9 @@ class Config:
                               'css/variables.css')).read())
         self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
         self.ctry = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
+        self.theme = os.getenv('WHOOGLE_CONFIG_THEME', '')
         self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
-        self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')
+        self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')  # deprecated
         self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
         self.nojs = read_config_bool('WHOOGLE_CONFIG_NOJS')
         self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
@@ -34,7 +35,8 @@ class Config:
             'lang_search',
             'lang_interface',
             'ctry',
-            'dark'
+            'dark',
+            'theme'
         ]
 
         # Skip setting custom config if there isn't one
