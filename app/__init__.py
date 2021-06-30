@@ -2,6 +2,7 @@ from app.filter import clean_query
 from app.request import send_tor_signal
 from app.utils.session import generate_user_key
 from app.utils.bangs import gen_bangs_json
+from app.utils.misc import gen_file_hash
 from flask import Flask
 from flask_session import Session
 import json
@@ -30,6 +31,9 @@ app.config['APP_ROOT'] = os.getenv(
 app.config['STATIC_FOLDER'] = os.getenv(
     'STATIC_FOLDER',
     os.path.join(app.config['APP_ROOT'], 'static'))
+app.config['BUILD_FOLDER'] = os.path.join(
+    app.config['STATIC_FOLDER'], 'build')
+app.config['CACHE_BUSTING_MAP'] = {}
 app.config['LANGUAGES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json')))
 app.config['COUNTRIES'] = json.load(open(
@@ -73,9 +77,6 @@ app.config['CSP'] = 'default-src \'none\';' \
                     'connect-src \'self\';' \
                     'form-action \'self\';'
 
-# Templating functions
-app.jinja_env.globals.update(clean_query=clean_query)
-
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])
 
@@ -87,6 +88,31 @@ if not os.path.exists(app.config['BANG_PATH']):
     os.makedirs(app.config['BANG_PATH'])
 if not os.path.exists(app.config['BANG_FILE']):
     gen_bangs_json(app.config['BANG_FILE'])
+
+# Build new mapping of static files for cache busting
+if not os.path.exists(app.config['BUILD_FOLDER']):
+    os.makedirs(app.config['BUILD_FOLDER'])
+
+cache_busting_dirs = ['css', 'js']
+for cb_dir in cache_busting_dirs:
+    full_cb_dir = os.path.join(app.config['STATIC_FOLDER'], cb_dir)
+    for cb_file in os.listdir(full_cb_dir):
+        # Create hash from current file state
+        full_cb_path = os.path.join(full_cb_dir, cb_file)
+        cb_file_link = gen_file_hash(full_cb_dir, cb_file)
+        build_path = os.path.join(app.config['BUILD_FOLDER'], cb_file_link)
+        os.symlink(full_cb_path, build_path)
+
+        # Create mapping for relative path urls
+        map_path = build_path.replace(app.config['APP_ROOT'], '')
+        if map_path.startswith('/'):
+            map_path = map_path[1:]
+        app.config['CACHE_BUSTING_MAP'][cb_file] = map_path
+
+# Templating functions
+app.jinja_env.globals.update(clean_query=clean_query)
+app.jinja_env.globals.update(
+    cb_url=lambda f: app.config['CACHE_BUSTING_MAP'][f])
 
 Session(app)
 

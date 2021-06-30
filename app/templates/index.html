@@ -17,17 +17,24 @@
 		<meta name="referrer" content="no-referrer">
 		<meta name="msapplication-TileColor" content="#ffffff">
 		<meta name="msapplication-TileImage" content="static/img/favicon/ms-icon-144x144.png">
-		<script type="text/javascript" src="static/js/autocomplete.js"></script>
-		<script type="text/javascript" src="static/js/controller.js"></script>
+        <script type="text/javascript" src="{{ cb_url('autocomplete.js') }}"></script>
+        <script type="text/javascript" src="{{ cb_url('controller.js') }}"></script>
 		<link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="static/css/variables.css">
+        <link rel="stylesheet" href="{{ cb_url('variables.css') }}">
         {% if config.theme  %}
-		<link rel="stylesheet" href="static/css/{{ config.theme }}-theme.css"/>
+            {% if config.theme == 'system' %}
+            <style>
+                @import "{{ cb_url('light-theme.css') }}" screen;
+                @import "{{ cb_url('dark-theme.css') }}" screen and (prefers-color-scheme: dark);
+            </style>
+            {% else %}
+            <link rel="stylesheet" href="{{ cb_url(config.theme + '-theme.css') }}"/>
+            {% endif %}
         {% else %}
-		<link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
+		<link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
         {% endif %}
-		<link rel="stylesheet" href="static/css/main.css">
+        <link rel="stylesheet" href="{{ cb_url('main.css') }}">
 		<noscript>
 			<style>
 				#main { display: inherit !important; }

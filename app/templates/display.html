@@ -5,14 +5,21 @@
         <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="referrer" content="no-referrer">
-        <link rel="stylesheet" href="static/css/input.css">
-        <link rel="stylesheet" href="static/css/search.css">
-        <link rel="stylesheet" href="static/css/variables.css">
-        <link rel="stylesheet" href="static/css/header.css">
-        {% if config.theme %}
-        <link rel="stylesheet" href="static/css/{{ config.theme }}-theme.css"/>
+        <link rel="stylesheet" href="{{ cb_url('input.css') }}">
+        <link rel="stylesheet" href="{{ cb_url('search.css') }}">
+        <link rel="stylesheet" href="{{ cb_url('variables.css') }}">
+        <link rel="stylesheet" href="{{ cb_url('header.css') }}">
+        {% if config.theme  %}
+            {% if config.theme == 'system' %}
+            <style>
+                @import "{{ cb_url('light-theme.css') }}" screen;
+                @import "{{ cb_url('dark-theme.css') }}" screen and (prefers-color-scheme: dark);
+            </style>
+            {% else %}
+            <link rel="stylesheet" href="{{ cb_url(config.theme + '-theme.css') }}"/>
+            {% endif %}
         {% else %}
-        <link rel="stylesheet" href="static/css/{{ 'dark' if config.dark else 'light' }}-theme.css"/>
+		<link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
         {% endif %}
         <style>{{ config.style }}</style>
         <title>{{ clean_query(query) }} - Whoogle Search</title>
@@ -33,7 +40,7 @@
             <a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
         </p>
     </footer>
-	<script src="static/js/autocomplete.js"></script>
-	<script src="static/js/utils.js"></script>
-	<script src="static/js/keyboard.js"></script>
+    <script src="{{ cb_url('autocomplete.js') }}"></script>
+    <script src="{{ cb_url('utils.js') }}"></script>
+    <script src="{{ cb_url('keyboard.js') }}"></script>
 </html>
