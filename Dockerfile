@@ -67,6 +67,9 @@ COPY app/ app/
 COPY run .
 COPY whoogle.env .
 
+# Allow writing symlinks to build dir
+RUN chown 102:102 app/static/build
+
 EXPOSE $EXPOSE_PORT
 
 HEALTHCHECK  --interval=30s --timeout=5s \

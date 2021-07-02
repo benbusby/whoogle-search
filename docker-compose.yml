@@ -16,7 +16,6 @@ services:
       - no-new-privileges
     cap_drop:
       - ALL
-    read_only: true
     tmpfs:
       - /config/:size=10M,uid=102,gid=102,mode=1700
       - /var/lib/tor/:size=10M,uid=102,gid=102,mode=1700
