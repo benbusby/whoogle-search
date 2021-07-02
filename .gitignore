@@ -12,6 +12,6 @@ app/static/custom_config
 app/static/bangs
 
 # pip stuff
-build/
+/build/
 dist/
 *.egg-info/
