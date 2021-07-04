@@ -173,8 +173,12 @@ class Filter:
                     break
 
             # Create the new details element to wrap around the result's
-            # immediate parent
-            parent = result_children[0].parent
+            # first parent
+            parent = None
+            idx = 0
+            while not parent and idx < len(result_children):
+                parent = result_children[idx].parent
+                idx += 1
             details = BeautifulSoup(features='html.parser').new_tag('details')
             summary = BeautifulSoup(features='html.parser').new_tag('summary')
             summary.string = label
