@@ -101,7 +101,12 @@ for cb_dir in cache_busting_dirs:
         full_cb_path = os.path.join(full_cb_dir, cb_file)
         cb_file_link = gen_file_hash(full_cb_dir, cb_file)
         build_path = os.path.join(app.config['BUILD_FOLDER'], cb_file_link)
-        os.symlink(full_cb_path, build_path)
+
+        try:
+            os.symlink(full_cb_path, build_path)
+        except FileExistsError:
+            # Symlink hasn't changed, ignore
+            pass
 
         # Create mapping for relative path urls
         map_path = build_path.replace(app.config['APP_ROOT'], '')
