@@ -14,8 +14,8 @@ RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r re
 FROM python:3.8-slim
 
 RUN apt-get update && apt-get install -y \
-#    libcurl4-openssl-dev \
-#    tor \
+    libcurl4-openssl-dev \
+    tor \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -61,8 +61,8 @@ ENV WHOOGLE_ALT_TL=$translate_alt
 WORKDIR /whoogle
 
 COPY --from=builder /install /usr/local
-#COPY misc/tor/torrc /etc/tor/torrc
-#COPY misc/tor/start-tor.sh misc/tor/start-tor.sh
+COPY misc/tor/torrc /etc/tor/torrc
+COPY misc/tor/start-tor.sh misc/tor/start-tor.sh
 COPY app/ app/
 COPY run .
 COPY whoogle.env .
@@ -75,4 +75,5 @@ EXPOSE $EXPOSE_PORT
 HEALTHCHECK  --interval=30s --timeout=5s \
   CMD curl -f http://localhost:${EXPOSE_PORT}/healthz || exit 1
 
-# CMD misc/tor/start-tor.sh & ./run
+ #CMD misc/tor/start-tor.sh & ./run
+CMD ./run
