@@ -1,6 +1,7 @@
 ![Whoogle Search](docs/banner.png)
 
 ### Whoogle search, light version, without TOR.
+### Orange color schema
 
 
 ### G) Manual (Docker)
