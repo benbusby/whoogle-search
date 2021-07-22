@@ -1,6 +1,6 @@
 ![Whoogle Search](docs/banner.png)
 
-### Whoogle search light without TOR.
+### Whoogle search, light version, without TOR.
 
 
 ### G) Manual (Docker)
