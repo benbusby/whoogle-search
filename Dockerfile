@@ -73,7 +73,7 @@ RUN chown 102:102 app/static/build
 EXPOSE $EXPOSE_PORT
 
 HEALTHCHECK  --interval=30s --timeout=5s \
-  CMD curl -f http://localhost:${EXPOSE_PORT}/healthz || exit 1
+  CMD curl -f http://127.0.0.1:5000/healthz || exit 1
 
  #CMD misc/tor/start-tor.sh & ./run
 CMD ./run
