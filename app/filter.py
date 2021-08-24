@@ -255,8 +255,6 @@ class Filter:
             # Temporarily removing all links to that tab for now.
             link.decompose()
             return
-        elif self.new_tab:
-            link['target'] = '_blank'
 
         result_link = urlparse.urlparse(href)
         q = extract_q(result_link.query, href)
@@ -286,6 +284,9 @@ class Filter:
             # Add no-js option
             if self.nojs:
                 append_nojs(link)
+
+            if self.new_tab:
+                link['target'] = '_blank'
         else:
             if href.startswith(MAPS_URL):
                 # Maps links don't work if a site filter is applied
