@@ -89,6 +89,10 @@ select {
     border-color: var(--whoogle-dark-element-bg) !important;
 }
 
+.sa1toc {
+	background: var(--whoogle-dark-element-bg) !important;
+}
+
 #search-bar {
     border-color: var(--whoogle-dark-element-bg) !important;
     color: var(--whoogle-dark-text) !important;
