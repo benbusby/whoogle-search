@@ -480,14 +480,20 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 *Note: Use public instances at your own discretion. Maintainers of Whoogle do not personally validate the integrity of these instances, and popular public instances are more likely to be rate-limited or blocked.*
 
-- [https://whoogle.sdf.org](https://whoogle.sdf.org)
-- [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) or [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion)
-- [https://search.garudalinux.org](https://search.garudalinux.org)
-- [https://whooglesearch.net](https://whooglesearch.net)
-- [https://search.flawcra.cc](https://search.flawcra.cc)
-- [https://search.exonip.de](https://search.exonip.de)
-- [https://whoogle.silkky.cloud](https://whoogle.silkky.cloud)
-- [https://s.alefvanboon.xyz](https://s.alefvanboon.xyz)
+| Website | Country | Cloudflare |
+|-|-|-|
+| [https://whoogle.sdf.org](https://whoogle.sdf.org) | 🇺🇸 US |
+| [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) | 🇮🇳 IN | ✅ |
+| [https://search.garudalinux.org](https://search.garudalinux.org) | 🇩🇪 DE  |  |
+| [https://whooglesearch.net](https://whooglesearch.net) | 🇺🇸 US |  |
+| [https://search.flawcra.cc](https://search.flawcra.cc) |  | ✅ |
+| [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL |  |
+| [https://whoogle.silkky.cloud](https://whoogle.silkky.cloud) | 🇫🇮 FI |  |
+| [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | ✅ |
+| [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN |  |
+
+* A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
+
 ## Screenshots
 #### Desktop
 ![Whoogle Desktop](docs/screenshot_desktop.jpg)
