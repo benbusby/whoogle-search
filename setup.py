@@ -1,6 +1,5 @@
 import os
 import setuptools
-import time
 
 long_description = open('README.md', 'r').read()
 
@@ -8,7 +7,7 @@ requirements = list(open('requirements.txt', 'r'))
 
 optional_dev_tag = ''
 if os.getenv('DEV_BUILD'):
-    optional_dev_tag = '.dev' + str(int(time.time()))
+    optional_dev_tag = '.dev' + os.getenv('DEV_BUILD')
 
 setuptools.setup(
     author='Ben Busby',

@@ -18,6 +18,8 @@ jobs:
         pip install
         build
         --user
+    - name: Set dev timestamp
+      run: echo "DEV_BUILD=$(date +%s)" >> $GITHUB_ENV
     - name: Build binary wheel and source tarball
       run: >-
         python -m
@@ -26,8 +28,6 @@ jobs:
         --wheel
         --outdir dist/
         .
-      env:
-        DEV_BUILD: 1
     - name: Publish distribution to TestPyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
