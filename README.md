@@ -223,8 +223,6 @@ sudo systemctl start whoogle
 
 #### Docker CLI
 
-***Note:** For ARM machines, use the `buildx-experimental` Docker tag.*
-
 Through Docker Hub:
 ```bash
 docker pull benbusby/whoogle-search
