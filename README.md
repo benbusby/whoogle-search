@@ -488,6 +488,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL |  |
 | [https://whoogle.silkky.cloud](https://whoogle.silkky.cloud) | 🇫🇮 FI |  |
 | [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | ✅ |
+| [https://search.flux.industries](https://search.flux.industries) | 🇩🇪 DE  | ✅ |
 | [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN |  |
 
 * A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
