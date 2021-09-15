@@ -325,6 +325,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_THEME           | Set theme mode (light, dark, or system)                         |
 | WHOOGLE_CONFIG_SAFE            | Enable safe searches                                            |
 | WHOOGLE_CONFIG_ALTS            | Use social media site alternatives (nitter, invidious, etc)     |
+| WHOOGLE_CONFIG_NEAR            | Restrict results to only those near a particular city           |
 | WHOOGLE_CONFIG_TOR             | Use Tor routing (if available)                                  |
 | WHOOGLE_CONFIG_NEW_TAB         | Always open results in new tab                                  |
 | WHOOGLE_CONFIG_VIEW_IMAGE      | Enable View Image option                                        |
