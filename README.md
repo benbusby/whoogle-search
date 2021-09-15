@@ -484,7 +484,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) | 🇮🇳 IN | ✅ |
 | [https://search.garudalinux.org](https://search.garudalinux.org) | 🇩🇪 DE  |  |
 | [https://whooglesearch.net](https://whooglesearch.net) | 🇺🇸 US |  |
-| [https://search.flawcra.cc](https://search.flawcra.cc) |  | ✅ |
+| [https://search.flawcra.cc](https://search.flawcra.cc) | 🇩🇪 DE | ✅ |
 | [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL |  |
 | [https://whoogle.silkky.cloud](https://whoogle.silkky.cloud) | 🇫🇮 FI |  |
 | [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | ✅ |
