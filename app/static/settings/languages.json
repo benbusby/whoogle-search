@@ -8,7 +8,7 @@
   {"name": "Bulgarian (български)", "value": "lang_bg"},
   {"name": "Catalan (Català)", "value": "lang_ca"},
   {"name": "Chinese, Simplified (简体中文)", "value": "lang_zh-CN"},
-  {"name": "Chinese, Traditional (繁体中文)", "value": "lang_zh-TW"},
+  {"name": "Chinese, Traditional (正體中文)", "value": "lang_zh-TW"},
   {"name": "Croatian (Hrvatski)", "value": "lang_hr"},
   {"name": "Czech (čeština)", "value": "lang_cs"},
   {"name": "Danish (Dansk)", "value": "lang_da"},
