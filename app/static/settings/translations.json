@@ -371,7 +371,7 @@
         "config-lang-search": "搜尋語言",
         "config-near": "接近",
         "config-near-help": "城市名",
-        "config-block": "阻擋",
+        "config-block": "封鎖",
         "config-block-help": "網址列表，以逗號分隔",
         "config-theme": "主題",
         "config-nojs": "顯示 NoJS 連結",
