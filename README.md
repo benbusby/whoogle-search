@@ -173,7 +173,7 @@ See the [available environment variables](#environment-variables) for additional
 #### systemd Configuration
 After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
 
-```
+```ini
 [Unit]
 Description=Whoogle
 
