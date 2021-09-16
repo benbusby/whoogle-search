@@ -110,6 +110,11 @@
         "value": "",
         "required": false
     },
+    "WHOOGLE_CONFIG_NEAR": {
+        "description": "[CONFIG] Restrict results to only those near a particular city",
+        "value": "",
+        "required": false
+    },
     "WHOOGLE_CONFIG_TOR": {
         "description": "[CONFIG] Use Tor, if available (set to 1 or leave blank)",
         "value": "",

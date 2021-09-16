@@ -173,7 +173,7 @@ See the [available environment variables](#environment-variables) for additional
 #### systemd Configuration
 After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
 
-```
+```ini
 [Unit]
 Description=Whoogle
 
@@ -325,6 +325,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_THEME           | Set theme mode (light, dark, or system)                         |
 | WHOOGLE_CONFIG_SAFE            | Enable safe searches                                            |
 | WHOOGLE_CONFIG_ALTS            | Use social media site alternatives (nitter, invidious, etc)     |
+| WHOOGLE_CONFIG_NEAR            | Restrict results to only those near a particular city           |
 | WHOOGLE_CONFIG_TOR             | Use Tor routing (if available)                                  |
 | WHOOGLE_CONFIG_NEW_TAB         | Always open results in new tab                                  |
 | WHOOGLE_CONFIG_VIEW_IMAGE      | Enable View Image option                                        |
@@ -480,15 +481,16 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 | Website | Country | Language | Cloudflare |
 |-|-|-|
-| [https://whoogle.sdf.org](https://whoogle.sdf.org) | 🇺🇸 US | Multi-choice | |
-| [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) | 🇮🇳 IN | | ✅ |
-| [https://search.garudalinux.org](https://search.garudalinux.org) | 🇩🇪 DE | Multi-choice | |
-| [https://whooglesearch.net](https://whooglesearch.net) | 🇩🇪 DE | Spanish | |
-| [https://search.flawcra.cc](https://search.flawcra.cc) | | | ✅ |
-| [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL | Multi-choice | |
-| [https://whoogle.silkky.cloud](https://whoogle.silkky.cloud) | 🇫🇮 FI | English | |
-| [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | English | ✅ |
-| [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN | | |
+| [https://whoogle.sdf.org](https://whoogle.sdf.org) | 🇺🇸 US |
+| [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) | 🇮🇳 IN | ✅ |
+| [https://search.garudalinux.org](https://search.garudalinux.org) | 🇩🇪 DE  |  |
+| [https://whooglesearch.net](https://whooglesearch.net) | 🇺🇸 US |  |
+| [https://search.flawcra.cc](https://search.flawcra.cc) | 🇩🇪 DE | ✅ |
+| [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL |  |
+| [https://whoogle.silkky.cloud](https://whoogle.silkky.cloud) | 🇫🇮 FI |  |
+| [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | ✅ |
+| [https://search.flux.industries](https://search.flux.industries) | 🇩🇪 DE  | ✅ |
+| [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN |  |
 
 * A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
 
