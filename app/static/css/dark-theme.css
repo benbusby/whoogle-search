@@ -58,6 +58,7 @@ select {
 }
 
 .ZINbbc {
+    overflow: hidden;
     background-color: var(--whoogle-dark-result-bg) !important;   
 }
 
