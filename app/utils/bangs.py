@@ -51,7 +51,8 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
              wasn't a match or didn't contain a bang operator
 
     """
-    split_query = query.split(' ')
+    splited_query = query.split(' ')
+    split_query = [split_query_lower.lower() for split_query_lower in splited_query]
     for operator in bangs_dict.keys():
         if operator not in split_query:
             continue
