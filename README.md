@@ -2,7 +2,7 @@
 
 [![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.com/benbusby/whoogle-search.svg?branch=master)](https://travis-ci.com/benbusby/whoogle-search)
+[![tests](https://github.com/benbusby/whoogle-search/actions/workflows/tests.yml/badge.svg)](https://github.com/benbusby/whoogle-search/actions/workflows/tests.yml)
 [![pep8](https://github.com/benbusby/whoogle-search/workflows/pep8/badge.svg)](https://github.com/benbusby/whoogle-search/actions?query=workflow%3Apep8)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/benbusby/whoogle-search)](https://hub.docker.com/r/benbusby/whoogle-search)
@@ -173,7 +173,7 @@ See the [available environment variables](#environment-variables) for additional
 #### systemd Configuration
 After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
 
-```
+```ini
 [Unit]
 Description=Whoogle
 
@@ -222,8 +222,6 @@ sudo systemctl start whoogle
 2. Clone and deploy the docker app using a method below:
 
 #### Docker CLI
-
-***Note:** For ARM machines, use the `buildx-experimental` Docker tag.*
 
 Through Docker Hub:
 ```bash
@@ -327,6 +325,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_THEME           | Set theme mode (light, dark, or system)                         |
 | WHOOGLE_CONFIG_SAFE            | Enable safe searches                                            |
 | WHOOGLE_CONFIG_ALTS            | Use social media site alternatives (nitter, invidious, etc)     |
+| WHOOGLE_CONFIG_NEAR            | Restrict results to only those near a particular city           |
 | WHOOGLE_CONFIG_TOR             | Use Tor routing (if available)                                  |
 | WHOOGLE_CONFIG_NEW_TAB         | Always open results in new tab                                  |
 | WHOOGLE_CONFIG_VIEW_IMAGE      | Enable View Image option                                        |
@@ -479,15 +478,21 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 ## Public Instances
 
 *Note: Use public instances at your own discretion. Maintainers of Whoogle do not personally validate the integrity of these instances, and popular public instances are more likely to be rate-limited or blocked.*
+	
+| Website | Country | Language | Cloudflare |
+|-|-|-|-|
+| [https://whoogle.sdf.org](https://whoogle.sdf.org) | 🇺🇸 US | Multi-choice |
+| [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) | 🇮🇳 IN | Unknown | ✅ |
+| [https://search.garudalinux.org](https://search.garudalinux.org) | 🇩🇪 DE | Multi-choice |  |
+| [https://whooglesearch.net](https://whooglesearch.net) | 🇩🇪 DE | Spanish |  |
+| [https://search.flawcra.cc](https://search.flawcra.cc) |🇩🇪 DE | Unknown | ✅ |
+| [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL | Multi-choice |  |
+| [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | English | ✅ |
+| [https://search.flux.industries](https://search.flux.industries) | 🇩🇪 DE  | German | ✅ |
+| [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN | Unknown |  |
 
-- [https://whoogle.sdf.org](https://whoogle.sdf.org)
-- [https://whoogle.himiko.cloud](https://whoogle.himiko.cloud)
-- [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) or [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion)
-- [https://search.garudalinux.org](https://search.garudalinux.org)
-- [https://whooglesearch.net/](https://whooglesearch.net/)
-- [https://search.flawcra.cc/](https://search.flawcra.cc/)
-- [https://search.exonip.de/](https://search.exonip.de/)
-- [https://whoogle.silkky.cloud/](https://whoogle.silkky.cloud/)
+* A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
+
 ## Screenshots
 #### Desktop
 ![Whoogle Desktop](docs/screenshot_desktop.jpg)

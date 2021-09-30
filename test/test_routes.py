@@ -36,6 +36,11 @@ def test_ddg_bang(client):
     assert rv._status_code == 302
     assert rv.headers.get('Location').startswith('https://www.reddit.com')
 
+    # Ensure bang is case insensitive
+    rv = client.get('/search?q=!GH%20whoogle')
+    assert rv._status_code == 302
+    assert rv.headers.get('Location').startswith('https://github.com')
+
 
 def test_config(client):
     rv = client.post('/config', data=demo_config)

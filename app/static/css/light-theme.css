@@ -33,6 +33,7 @@ select {
 }
 
 .ZINbbc {
+    overflow: hidden;
     background-color: var(--whoogle-result-bg) !important;   
 }
 

@@ -35,7 +35,8 @@ app.config['BUILD_FOLDER'] = os.path.join(
     app.config['STATIC_FOLDER'], 'build')
 app.config['CACHE_BUSTING_MAP'] = {}
 app.config['LANGUAGES'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json')))
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json'),
+    encoding='utf-8'))
 app.config['COUNTRIES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json')))
 app.config['TRANSLATIONS'] = json.load(open(
@@ -74,8 +75,7 @@ app.config['CSP'] = 'default-src \'none\';' \
                     'style-src \'self\' \'unsafe-inline\';' \
                     'script-src \'self\';' \
                     'media-src \'self\';' \
-                    'connect-src \'self\';' \
-                    'form-action \'self\';'
+                    'connect-src \'self\';'
 
 if not os.path.exists(app.config['CONFIG_PATH']):
     os.makedirs(app.config['CONFIG_PATH'])
