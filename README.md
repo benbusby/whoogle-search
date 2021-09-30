@@ -487,7 +487,6 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://whooglesearch.net](https://whooglesearch.net) | 🇩🇪 DE | Spanish |  |
 | [https://search.flawcra.cc](https://search.flawcra.cc) |🇩🇪 DE | Unknown | ✅ |
 | [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL | Multi-choice |  |
-| [https://whoogle.silkky.cloud](https://whoogle.silkky.cloud) | 🇫🇮 FI | English |  |
 | [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | English | ✅ |
 | [https://search.flux.industries](https://search.flux.industries) | 🇩🇪 DE  | German | ✅ |
 | [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN | Unknown |  |
