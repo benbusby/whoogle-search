@@ -13,7 +13,7 @@ setuptools.setup(
     author='Ben Busby',
     author_email='contact@benbusby.com',
     name='whoogle-search',
-    version='0.5.4' + optional_dev_tag,
+    version='0.6.0' + optional_dev_tag,
     include_package_data=True,
     install_requires=requirements,
     description='Self-hosted, ad-free, privacy-respecting metasearch engine',
