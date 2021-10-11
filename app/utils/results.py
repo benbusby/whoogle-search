@@ -78,10 +78,9 @@ def get_site_alt(link: str) -> str:
             continue
 
         link = link.replace(site_key, SITE_ALTS[site_key])
+        for prefix in SKIP_PREFIX:
+            link = link.replace(prefix, '//')
         break
-
-    for prefix in SKIP_PREFIX:
-        link = link.replace(prefix, '//')
 
     return link
 
