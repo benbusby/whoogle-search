@@ -3,6 +3,7 @@ name: pypi
 on:
   push:
     branches: main
+    tags: v*
 
 jobs:
   publish-test:
