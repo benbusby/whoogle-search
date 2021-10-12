@@ -1,6 +1,8 @@
 name: pypi
 
-on: push
+on:
+  push:
+    branches: main
 
 jobs:
   publish-test:
