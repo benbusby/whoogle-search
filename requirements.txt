@@ -1,11 +1,10 @@
 attrs==19.3.0
-beautifulsoup4==4.8.2
-bs4==0.0.1
-cachelib==0.1
+beautifulsoup4==4.10.0
+cachelib==0.4.1
 certifi==2020.4.5.1
 cffi==1.13.2
 chardet==3.0.4
-Click==7.0
+click==8.0.3
 cryptography==3.3.2
 Flask==1.1.1
 Flask-Session==0.3.2
