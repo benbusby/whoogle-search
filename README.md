@@ -198,7 +198,7 @@ Description=Whoogle
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
-User=<username>
+DynamicUser=true
 WorkingDirectory=<whoogle_directory>
 ExecStart=<whoogle_directory>/venv/bin/python3 -um app --host 0.0.0.0 --port 5000
 ExecReload=/bin/kill -HUP $MAINPID
