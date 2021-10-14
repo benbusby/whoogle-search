@@ -115,6 +115,11 @@ def healthz():
     return ''
 
 
+@app.route('/home', methods=['GET'])
+def home():
+    return redirect(url_for('.index'))
+
+
 @app.route('/', methods=['GET'])
 @auth_required
 def index():

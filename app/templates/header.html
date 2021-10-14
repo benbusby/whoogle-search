@@ -4,7 +4,7 @@
             <form class="search-form Pg70bf"
                 id="search-form"
                 method="{{ 'GET' if config.get_only else 'POST' }}">
-                <a class="logo-link mobile-logo" href="/">
+                <a class="logo-link mobile-logo" href="home">
                     <div id="mobile-header-logo">
                         {{ logo|safe }}
                     </div>
@@ -35,7 +35,7 @@
 {% else %}
     <header>
         <div class="logo-div">
-            <a class="logo-link" href="/">
+            <a class="logo-link" href="home">
                 <div class="desktop-header-logo">
                     {{ logo|safe }}
                 </div>
