@@ -8,3 +8,10 @@ def gen_file_hash(path: str, static_file: str) -> str:
     filename_split = os.path.splitext(static_file)
 
     return filename_split[0] + '.' + file_hash + filename_split[-1]
+
+
+def read_config_bool(var: str) -> bool:
+    val = os.getenv(var, '0')
+    if val.isdigit():
+        return bool(int(val))
+    return False

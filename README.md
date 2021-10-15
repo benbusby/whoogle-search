@@ -296,22 +296,23 @@ There are a few optional environment variables available for customizing a Whoog
 - With `docker-compose`: Uncomment the `env_file` option
 - With `docker build/run`: Add `--env-file ./whoogle.env` to your command
 
-| Variable           | Description                                                                               |
-| ------------------ | ----------------------------------------------------------------------------------------- |
-| WHOOGLE_DOTENV     | Load environment variables in `whoogle.env`                                               |
-| WHOOGLE_USER       | The username for basic auth. WHOOGLE_PASS must also be set if used.                       |
-| WHOOGLE_PASS       | The password for basic auth. WHOOGLE_USER must also be set if used.                       |
-| WHOOGLE_PROXY_USER | The username of the proxy server.                                                         |
-| WHOOGLE_PROXY_PASS | The password of the proxy server.                                                         |
-| WHOOGLE_PROXY_TYPE | The type of the proxy server. Can be "socks5", "socks4", or "http".                       |
-| WHOOGLE_PROXY_LOC  | The location of the proxy server (host or ip).                                            |
-| EXPOSE_PORT        | The port where Whoogle will be exposed.                                                   |
-| HTTPS_ONLY         | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
-| WHOOGLE_ALT_TW     | The twitter.com alternative to use when site alternatives are enabled in the config.      |
-| WHOOGLE_ALT_YT     | The youtube.com alternative to use when site alternatives are enabled in the config.      |
-| WHOOGLE_ALT_IG     | The instagram.com alternative to use when site alternatives are enabled in the config.    |
-| WHOOGLE_ALT_RD     | The reddit.com alternative to use when site alternatives are enabled in the config.       |
-| WHOOGLE_ALT_TL     | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
+| Variable             | Description                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| WHOOGLE_DOTENV       | Load environment variables in `whoogle.env`                                               |
+| WHOOGLE_USER         | The username for basic auth. WHOOGLE_PASS must also be set if used.                       |
+| WHOOGLE_PASS         | The password for basic auth. WHOOGLE_USER must also be set if used.                       |
+| WHOOGLE_PROXY_USER   | The username of the proxy server.                                                         |
+| WHOOGLE_PROXY_PASS   | The password of the proxy server.                                                         |
+| WHOOGLE_PROXY_TYPE   | The type of the proxy server. Can be "socks5", "socks4", or "http".                       |
+| WHOOGLE_PROXY_LOC    | The location of the proxy server (host or ip).                                            |
+| EXPOSE_PORT          | The port where Whoogle will be exposed.                                                   |
+| HTTPS_ONLY           | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
+| WHOOGLE_ALT_TW       | The twitter.com alternative to use when site alternatives are enabled in the config.      |
+| WHOOGLE_ALT_YT       | The youtube.com alternative to use when site alternatives are enabled in the config.      |
+| WHOOGLE_ALT_IG       | The instagram.com alternative to use when site alternatives are enabled in the config.    |
+| WHOOGLE_ALT_RD       | The reddit.com alternative to use when site alternatives are enabled in the config.       |
+| WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
+| WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.

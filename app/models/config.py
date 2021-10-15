@@ -1,15 +1,10 @@
+from app.utils.misc import read_config_bool
 from flask import current_app
 import os
 
 
 class Config:
     def __init__(self, **kwargs):
-        def read_config_bool(var: str) -> bool:
-            val = os.getenv(var, '0')
-            if val.isdigit():
-                return bool(int(val))
-            return False
-
         app_config = current_app.config
         self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
         self.lang_search = os.getenv('WHOOGLE_CONFIG_SEARCH_LANGUAGE', '')

@@ -16,6 +16,7 @@ from app import app
 from app.models.config import Config
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
+from app.utils.misc import read_config_bool
 from app.utils.session import generate_user_key, valid_user_session
 from app.utils.search import *
 
@@ -178,6 +179,10 @@ def search_html():
 
 @app.route('/autocomplete', methods=['GET', 'POST'])
 def autocomplete():
+    ac_var = 'WHOOGLE_AUTOCOMPLETE'
+    if os.getenv(ac_var) and not read_config_bool(ac_var):
+        return jsonify({})
+
     q = g.request_params.get('q')
     if not q:
         # FF will occasionally (incorrectly) send the q field without a
