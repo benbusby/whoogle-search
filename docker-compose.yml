@@ -37,6 +37,7 @@ services:
       #- WHOOGLE_ALT_IG=bibliogram.art/u
       #- WHOOGLE_ALT_RD=libredd.it
       #- WHOOGLE_ALT_TL=lingva.ml
+      #- WHOOGLE_ALT_MD=scribe.rip
     #env_file: # Alternatively, load variables from whoogle.env
       #- whoogle.env
     ports:

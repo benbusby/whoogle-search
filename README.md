@@ -195,6 +195,7 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_IG=bibliogram.art/u
 #Environment=WHOOGLE_ALT_RD=libredd.it
 #Environment=WHOOGLE_ALT_TL=lingva.ml
+#Environment=WHOOGLE_ALT_MD=scribe.rip
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
@@ -312,6 +313,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_IG       | The instagram.com alternative to use when site alternatives are enabled in the config.    |
 | WHOOGLE_ALT_RD       | The reddit.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
+| WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
 
 ### Config Environment Variables

@@ -57,6 +57,8 @@ ARG reddit_alt='libredd.it'
 ENV WHOOGLE_ALT_RD=$reddit_alt
 ARG translate_alt='lingva.ml'
 ENV WHOOGLE_ALT_TL=$translate_alt
+ARG medium_alt='scribe.rip'
+ENV WHOOGLE_ALT_MD=$medium_alt
 
 WORKDIR /whoogle
 
