@@ -26,7 +26,8 @@ SITE_ALTS = {
     'twitter.com': os.getenv('WHOOGLE_ALT_TW', 'nitter.net'),
     'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'invidious.snopyta.org'),
     'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'bibliogram.art/u'),
-    'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'libredd.it')
+    'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'libredd.it'),
+    'medium.com': os.getenv('WHOOGLE_ALT_MD', 'scribe.rip'),
 }
 
 
@@ -72,12 +73,15 @@ def get_site_alt(link: str) -> str:
         str: An updated (or ignored) result link
 
     """
+    # Need to replace full hostname with alternative to encapsulate
+    # subdomains as well
+    hostname = urlparse.urlparse(link).hostname
 
     for site_key in SITE_ALTS.keys():
-        if site_key not in link:
+        if not hostname or site_key not in hostname:
             continue
 
-        link = link.replace(site_key, SITE_ALTS[site_key])
+        link = link.replace(hostname, SITE_ALTS[site_key])
         for prefix in SKIP_PREFIX:
             link = link.replace(prefix, '//')
         break
