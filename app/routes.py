@@ -9,18 +9,17 @@ import uuid
 from functools import wraps
 
 import waitress
-from flask import jsonify, make_response, request, redirect, render_template, \
-    send_file, session, url_for
-from requests import exceptions
-from bs4 import BeautifulSoup as bsoup
-
 from app import app
 from app.models.config import Config
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool
-from app.utils.session import generate_user_key, valid_user_session
 from app.utils.search import *
+from app.utils.session import generate_user_key, valid_user_session
+from bs4 import BeautifulSoup as bsoup
+from flask import jsonify, make_response, request, redirect, render_template, \
+    send_file, session, url_for
+from requests import exceptions
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE']))
@@ -254,12 +253,11 @@ def search():
 
     # Feature to display IP address
     html_soup = bsoup(response, 'html.parser')
-    if(not html_soup.select_one(".EY24We")
+    if (not html_soup.select_one(".EY24We")
             and html_soup.select_one(".OXXup").get_text().lower() == "all"):
         if re.search("([^a-z0-9]|^)my *[^a-z0-9] *(ip|internet protocol)" +
-                    "($|( *[^a-z0-9] *(((addres|address|adres|adress)|a)?"+
-                    " *$)))", query.lower()):
-          
+                     "($|( *[^a-z0-9] *(((addres|address|adres|adress)|a)?" +
+                     " *$)))", query.lower()):
             # HTML IP card tag
             ip_tag = html_soup.new_tag("div")
             ip_tag["class"] = "ZINbbc xpd O9g5cc uUPGi"
@@ -293,7 +291,8 @@ def search():
 
             # Finding the element before which the IP card would be placed
             f_link = html_soup.select_one(".BNeawe.vvjwJb.AP7Wnd")
-            ref_element = first_link.find_parent(class_="ZINbbc xpd O9g5cc uUPGi")
+            ref_element = first_link.find_parent(class_="ZINbbc xpd O9g5cc" +
+                                                        " uUPGi")
 
             # Inserting the element
             ref_element.insert_before(ip_tag)
@@ -325,7 +324,7 @@ def search():
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile)
-                if 'isch' not in search_util.search_type else '')), resp_code
+                       if 'isch' not in search_util.search_type else '')), resp_code
 
 
 @app.route('/config', methods=['GET', 'POST', 'PUT'])
