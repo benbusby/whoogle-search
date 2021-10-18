@@ -291,8 +291,8 @@ def search():
 
             # Finding the element before which the IP card would be placed
             f_link = html_soup.select_one(".BNeawe.vvjwJb.AP7Wnd")
-            ref_element = first_link.find_parent(class_="ZINbbc xpd O9g5cc" +
-                                                        " uUPGi")
+            ref_element = f_link.find_parent(class_="ZINbbc xpd O9g5cc" +
+                                                    " uUPGi")
 
             # Inserting the element
             ref_element.insert_before(ip_tag)
@@ -324,7 +324,8 @@ def search():
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile)
-                       if 'isch' not in search_util.search_type else '')), resp_code
+                       if 'isch' not in
+                          search_util.search_type else '')), resp_code
 
 
 @app.route('/config', methods=['GET', 'POST', 'PUT'])
