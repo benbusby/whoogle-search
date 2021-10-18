@@ -289,7 +289,8 @@ def search():
             ip_tag.append(ip_text)
 
             # Finding the element before which the IP card would be placed
-            ref_element = html_soup.select_one(".BNeawe.vvjwJb.AP7Wnd").find_parent(class_="ZINbbc xpd O9g5cc uUPGi")
+            first_link_in_results = html_soup.select_one(".BNeawe.vvjwJb.AP7Wnd")
+            ref_element = first_link_in_results.find_parent(class_="ZINbbc xpd O9g5cc uUPGi")
 
             # Inserting the element
             ref_element.insert_before(ip_tag)
