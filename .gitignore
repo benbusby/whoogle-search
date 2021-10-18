@@ -15,3 +15,6 @@ app/static/bangs
 /build/
 dist/
 *.egg-info/
+
+# env
+whoogle.env
