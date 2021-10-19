@@ -66,8 +66,7 @@ COPY --from=builder /install /usr/local
 COPY misc/tor/torrc /etc/tor/torrc
 COPY misc/tor/start-tor.sh misc/tor/start-tor.sh
 COPY app/ app/
-COPY run .
-COPY whoogle.env .
+COPY run whoogle.env* .
 
 # Allow writing symlinks to build dir
 RUN chown 102:102 app/static/build
