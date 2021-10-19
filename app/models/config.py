@@ -15,8 +15,8 @@ class Config:
             open(os.path.join(app_config['STATIC_FOLDER'],
                               'css/variables.css')).read())
         self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
-        self.block_title = re.compile(os.getenv('WHOOGLE_CONFIG_BLOCK_TITLE', '^$'))
-        self.block_url = re.compile(os.getenv('WHOOGLE_CONFIG_BLOCK_URL', '^$'))
+        self.block_title = os.getenv('WHOOGLE_CONFIG_BLOCK_TITLE', '')
+        self.block_url = os.getenv('WHOOGLE_CONFIG_BLOCK_URL', '')
         self.ctry = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
         self.theme = os.getenv('WHOOGLE_CONFIG_THEME', '')
         self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
