@@ -45,7 +45,8 @@ class Filter:
     def __init__(self, user_key: str, mobile=False, config=None) -> None:
         if config is None:
             config = {}
-
+        else:
+            self.config = config
         self.near = config['near'] if 'near' in config else ''
         self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
@@ -87,6 +88,8 @@ class Filter:
     def clean(self, soup) -> BeautifulSoup:
         self.main_divs = soup.find('div', {'id': 'main'})
         self.remove_ads()
+        self.remove_block_titles()
+        self.remove_block_url()
         self.collapse_sections()
         self.update_styling(soup)
 
@@ -133,6 +136,23 @@ class Filter:
             div_ads = [_ for _ in div.find_all('span', recursive=True)
                        if has_ad_content(_.text)]
             _ = div.decompose() if len(div_ads) else None
+
+    def remove_block_titles(self) -> None:
+        if not self.main_divs:
+            return
+
+        for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
+            block_divs = [_ for _ in div.find_all('h3', recursive=True)
+                          if self.config.block_title.search(_.text) is not None]
+            _ = div.decompose() if len(block_divs) else None
+
+    def remove_block_url(self) -> None:
+        if not self.main_divs:
+            return
+        for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
+            block_divs = [_ for _ in div.find_all('a', recursive=True)
+                          if self.config.block_url.search(_.attrs['href']) is not None]
+            _ = div.decompose() if len(block_divs) else None
 
     def collapse_sections(self) -> None:
         """Collapses long result sections ("people also asked", "related
