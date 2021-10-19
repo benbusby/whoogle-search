@@ -122,6 +122,14 @@
 					<label for="config-block">{{ translation['config-block'] }}: </label>
 					<input type="text" name="block" id="config-block" placeholder="{{ translation['config-block-help'] }}" value="{{ config.block }}">
 				</div>
+                <div class="config-div config-div-block">
+					<label for="config-block-title">{{ translation['config-block-title'] }}: </label>
+					<input type="text" name="block_title" id="config-block" placeholder="{{ translation['config-block-title-help'] }}" value="{{ config.block_title }}">
+				</div>
+				<div class="config-div config-div-block">
+					<label for="config-block-url">{{ translation['config-block-url'] }}: </label>
+					<input type="text" name="block_url" id="config-block" placeholder="{{ translation['config-block-url-help'] }}" value="{{ config.block_url }}">
+				</div>
 				<div class="config-div config-div-nojs">
 					<label for="config-nojs">{{ translation['config-nojs'] }}: </label>
 					<input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
