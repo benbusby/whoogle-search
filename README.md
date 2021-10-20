@@ -39,7 +39,7 @@ Contents
 
 ## Features
 - No ads or sponsored content
-- No javascript
+- No JavaScript
 - No cookies
 - No tracking/linking of your personal IP address\*
 - No AMP links
