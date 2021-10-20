@@ -45,8 +45,6 @@ class Filter:
     def __init__(self, user_key: str, mobile=False, config=None) -> None:
         if config is None:
             config = {}
-        else:
-            self.config = config
         self.near = config['near'] if 'near' in config else ''
         self.dark = config['dark'] if 'dark' in config else False
         self.nojs = config['nojs'] if 'nojs' in config else False
@@ -56,6 +54,7 @@ class Filter:
         self.user_key = user_key
         self.main_divs = ResultSet('')
         self._elements = 0
+        self.config = config
 
     def __getitem__(self, name):
         return getattr(self, name)
