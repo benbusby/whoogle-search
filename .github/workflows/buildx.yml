@@ -14,6 +14,9 @@ jobs:
       - name: Wait for tests to succeed
         if: ${{ github.event.workflow_run.conclusion != 'success' }}
         run: exit 1
+      - name: Check trigger event
+        if: ${{ github.event_name != 'push' }}
+        run: exit 0
       - name: checkout code
         uses: actions/checkout@v2
       - name: install buildx
