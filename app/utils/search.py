@@ -1,5 +1,6 @@
 import os
 from typing import Any
+import re
 
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken
@@ -161,3 +162,19 @@ class Search:
                 link['href'] += param_str
 
             return str(formatted_results)
+
+    def check_kw_ip(self) -> bool:
+        """Checks for keywords related to 'my ip' in the query
+
+        Args:
+            query: Query of the client
+
+        Returns:
+            bool
+
+        """
+        if re.search("([^a-z0-9]|^)my *[^a-z0-9] *(ip|internet protocol)" +
+                     "($|( *[^a-z0-9] *(((addres|address|adres|adress)|a)?" +
+                     " *$)))", self.query.lower()):
+            return True
+        return False

@@ -186,3 +186,7 @@ path {
 .search-bar-desktop {
     color: var(--whoogle-dark-text) !important;
 }
+
+.ip-text-div{
+  color: var(--whoogle-dark-secondary-text) !important;
+}

@@ -3,7 +3,6 @@ import base64
 import io
 import json
 import pickle
-import re
 import urllib.parse as urlparse
 import uuid
 from functools import wraps
@@ -14,6 +13,7 @@ from app.models.config import Config
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool
+from app.utils.results import add_ip
 from app.utils.search import *
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
@@ -252,52 +252,9 @@ def search():
     resp_code = 503 if has_captcha(str(response)) else 200
 
     # Feature to display IP address
-    html_soup = bsoup(response, 'html.parser')
-    if (not html_soup.select_one(".EY24We")
-            and html_soup.select_one(".OXXup").get_text().lower() == "all"):
-        if re.search("([^a-z0-9]|^)my *[^a-z0-9] *(ip|internet protocol)" +
-                     "($|( *[^a-z0-9] *(((addres|address|adres|adress)|a)?" +
-                     " *$)))", query.lower()):
-            # HTML IP card tag
-            ip_tag = html_soup.new_tag("div")
-            ip_tag["class"] = "ZINbbc xpd O9g5cc uUPGi"
-
-            # What is my IP tag
-            q_tag = html_soup.new_tag("div")
-            q_tag["class"] = "kCrYT"
-            q_tag.string = "What's my IP"
-
-            # Distinction boundary
-            line = html_soup.new_tag("div")
-            line["class"] = "x54gtf"
-
-            # For IP Address html tag
-            ip_address = html_soup.new_tag("div")
-            ip_address["class"] = "kCrYT"
-            ip_address["style"] = "padding-bottom:0;"
-            ip_address.string = request.remote_addr
-
-            # Text below the IP address
-            ip_text = html_soup.new_tag("div")
-            ip_text.string = "Your public IP address"
-            ip_text["class"] = "kCrYT"
-            ip_text["style"] = "padding-top: 0; color: #9e9e9e!important;"
-
-            # Adding all the above html tags to the IP card
-            ip_tag.append(q_tag)
-            ip_tag.append(line)
-            ip_tag.append(ip_address)
-            ip_tag.append(ip_text)
-
-            # Finding the element before which the IP card would be placed
-            f_link = html_soup.select_one(".BNeawe.vvjwJb.AP7Wnd")
-            ref_element = f_link.find_parent(class_="ZINbbc xpd O9g5cc" +
-                                                    " uUPGi")
-
-            # Inserting the element
-            ref_element.insert_before(ip_tag)
-
-            response = html_soup
+    if search_util.check_kw_ip():
+        html_soup = bsoup(response,"html.parser")
+        response = add_ip(html_soup, request.remote_addr)
 
     return render_template(
         'display.html',
