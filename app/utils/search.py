@@ -166,9 +166,6 @@ class Search:
     def check_kw_ip(self) -> bool:
         """Checks for keywords related to 'my ip' in the query
 
-        Args:
-            query: Query of the client
-
         Returns:
             bool
 

@@ -253,7 +253,7 @@ def search():
 
     # Feature to display IP address
     if search_util.check_kw_ip():
-        html_soup = bsoup(response,"html.parser")
+        html_soup = bsoup(response, "html.parser")
         response = add_ip(html_soup, request.remote_addr)
 
     return render_template(
