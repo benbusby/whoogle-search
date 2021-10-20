@@ -50,11 +50,12 @@ class Filter:
         self.nojs = config['nojs'] if 'nojs' in config else False
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.alt_redirect = config['alts'] if 'alts' in config else False
+        self.block_title = config['block_title'] if 'block_title' in config else ''
+        self.block_url = config['block_url'] if 'block_url' in config else ''
         self.mobile = mobile
         self.user_key = user_key
         self.main_divs = ResultSet('')
         self._elements = 0
-        self.config = config
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -139,9 +140,9 @@ class Filter:
     def remove_block_titles(self) -> None:
         if not self.main_divs:
             return
-        if self.config.block_title == '':
+        if self.block_title == '':
             return
-        block_title = re.compile(self.config.block_title)
+        block_title = re.compile(self.block_title)
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
             block_divs = [_ for _ in div.find_all('h3', recursive=True)
                           if block_title.search(_.text) is not None]
@@ -150,9 +151,9 @@ class Filter:
     def remove_block_url(self) -> None:
         if not self.main_divs:
             return
-        if self.config.block_url == '':
+        if self.block_url == '':
             return
-        block_url = re.compile(self.config.block_url)
+        block_url = re.compile(self.block_url)
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
             block_divs = [_ for _ in div.find_all('a', recursive=True)
                           if block_url.search(_.attrs['href']) is not None]
