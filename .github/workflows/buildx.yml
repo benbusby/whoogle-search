@@ -14,9 +14,6 @@ jobs:
       - name: Wait for tests to succeed
         if: ${{ github.event.workflow_run.conclusion != 'success' }}
         run: exit 1
-      - name: Check trigger event
-        if: ${{ github.event_name != 'push' }}
-        run: exit 0
       - name: checkout code
         uses: actions/checkout@v2
       - name: install buildx
@@ -29,7 +26,7 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD }}" | \
             docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: build and push the image
-        if: startsWith(github.ref, 'refs/heads/main')
+        if: startsWith(github.ref, 'refs/heads/main') && github.actor == 'benbusby'
         run: |
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           docker buildx ls
