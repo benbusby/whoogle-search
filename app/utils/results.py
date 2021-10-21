@@ -140,7 +140,7 @@ def append_nojs(result: BeautifulSoup) -> None:
     result.append(nojs_link)
 
 
-def add_ip(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
+def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
     """Adds the client's IP address to the search results
         if query contains keywords
 
