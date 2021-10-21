@@ -50,8 +50,10 @@ class Filter:
         self.nojs = config['nojs'] if 'nojs' in config else False
         self.new_tab = config['new_tab'] if 'new_tab' in config else False
         self.alt_redirect = config['alts'] if 'alts' in config else False
-        self.block_title = config['block_title'] if 'block_title' in config else ''
-        self.block_url = config['block_url'] if 'block_url' in config else ''
+        self.block_title = (
+            config['block_title'] if 'block_title' in config else '')
+        self.block_url = (
+            config['block_url'] if 'block_url' in config else '')
         self.mobile = mobile
         self.user_key = user_key
         self.main_divs = ResultSet('')
