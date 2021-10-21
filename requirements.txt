@@ -2,7 +2,7 @@ attrs==19.3.0
 beautifulsoup4==4.10.0
 cachelib==0.4.1
 certifi==2020.4.5.1
-cffi==1.13.2
+cffi==1.15.0
 chardet==3.0.4
 click==8.0.3
 cryptography==3.3.2
