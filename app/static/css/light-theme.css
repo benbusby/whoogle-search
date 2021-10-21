@@ -174,3 +174,7 @@ path {
     color: var(--whoogle-text);
     border-bottom: 0px;
 }
+
+.ip-text-div{
+  color: var(--whoogle-secondary-text) !important;
+}

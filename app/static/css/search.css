@@ -31,3 +31,11 @@ details summary {
     height: 650px;
     border: 0;
 }
+
+.ip-address-div {
+    padding-bottom: 0 !important;
+}
+
+.ip-text-div {
+    padding-top: 0 !important;
+}
