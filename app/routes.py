@@ -5,6 +5,7 @@ import json
 import pickle
 import urllib.parse as urlparse
 import uuid
+from datetime import timedelta
 from functools import wraps
 
 import waitress
@@ -20,6 +21,7 @@ from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for
 from requests import exceptions
+from requests.models import PreparedRequest
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE']))
@@ -45,31 +47,73 @@ def auth_required(f):
     return decorated
 
 
+def session_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if (valid_user_session(session) and
+                'cookies_disabled' not in request.args):
+            g.session_key = session['key']
+        else:
+            invalid_sessions = []
+            session.pop('_permanent', None)
+            for user_session in os.listdir(app.config['SESSION_FILE_DIR']):
+                session_path = os.path.join(
+                        app.config['SESSION_FILE_DIR'],
+                        user_session)
+                with open(session_path, 'rb') as session_file:
+                    _ = pickle.load(session_file)
+                    data = pickle.load(session_file)
+                    if type(data) == 'dict' and 'valid' in data:
+                        continue
+                    invalid_sessions.append(session_path)
+
+            for invalid_session in invalid_sessions:
+                os.remove(invalid_session)
+            g.session_key = app.default_key
+
+        return f(*args, **kwargs)
+
+    return decorated
+
+
 @app.before_request
 def before_request_func():
     g.request_params = (
         request.args if request.method == 'GET' else request.form
     )
-    g.cookies_disabled = False
+
+    # Skip pre-request actions if verifying session
+    if '/session' in request.path and not valid_user_session(session):
+        return
+
+    default_config = json.load(open(app.config['DEFAULT_CONFIG'])) \
+        if os.path.exists(app.config['DEFAULT_CONFIG']) else {}
 
     # Generate session values for user if unavailable
-    if not valid_user_session(session):
-        session['config'] = json.load(open(app.config['DEFAULT_CONFIG'])) \
-            if os.path.exists(app.config['DEFAULT_CONFIG']) else {}
+    if (not valid_user_session(session) and
+            'cookies_disabled' not in request.args):
+        session['config'] = default_config
         session['uuid'] = str(uuid.uuid4())
-        session['key'] = generate_user_key(True)
-
-        # Flag cookies as possibly disabled in order to prevent against
-        # unnecessary session directory expansion
-        g.cookies_disabled = True
+        session['key'] = generate_user_key()
+        return redirect(url_for(
+            'session_check',
+            session_id=session['uuid'],
+            follow=request.url), code=307)
+    elif 'cookies_disabled' not in request.args:
+        # Set session as permanent
+        session.permanent = True
+        app.permanent_session_lifetime = timedelta(days=365)
+        g.user_config = Config(**session['config'])
+    else:
+        # User has cookies disabled, fall back to immutable default config
+        session.pop('_permanent', None)
+        g.user_config = Config(**default_config)
 
     # Handle https upgrade
     if needs_https(request.url):
         return redirect(
             request.url.replace('http://', 'https://', 1),
             code=308)
-
-    g.user_config = Config(**session['config'])
 
     if not g.user_config.url:
         g.user_config.url = request.url_root.replace(
@@ -86,19 +130,6 @@ def before_request_func():
 
 @app.after_request
 def after_request_func(resp):
-    # Check if address consistently has cookies blocked,
-    # in which case start removing session files after creation.
-    #
-    # Note: This is primarily done to prevent overpopulation of session
-    # directories, since browsers that block cookies will still trigger
-    # Flask's session creation routine with every request.
-    if g.cookies_disabled and request.remote_addr not in app.no_cookie_ips:
-        app.no_cookie_ips.append(request.remote_addr)
-    elif g.cookies_disabled and request.remote_addr in app.no_cookie_ips:
-        session_list = list(session.keys())
-        for key in session_list:
-            session.pop(key)
-
     resp.headers['Content-Security-Policy'] = app.config['CSP']
     if os.environ.get('HTTPS_ONLY', False):
         resp.headers['Content-Security-Policy'] += 'upgrade-insecure-requests'
@@ -122,12 +153,22 @@ def home():
     return redirect(url_for('.index'))
 
 
+@app.route('/session/<session_id>', methods=['GET', 'PUT', 'POST'])
+def session_check(session_id):
+    if 'uuid' in session and session['uuid'] == session_id:
+        session['valid'] = True
+        return redirect(request.args.get('follow'))
+    else:
+        follow_url = request.args.get('follow')
+        req = PreparedRequest()
+        req.prepare_url(follow_url, {'cookies_disabled': 1})
+        session.pop('_permanent', None)
+        return redirect(req.url, code=307)
+
+
 @app.route('/', methods=['GET'])
 @auth_required
 def index():
-    # Reset keys
-    session['key'] = generate_user_key(g.cookies_disabled)
-
     # Redirect if an error was raised
     if 'error_message' in session and session['error_message']:
         error_message = session['error_message']
@@ -144,7 +185,10 @@ def index():
                            logo=render_template(
                                'logo.html',
                                dark=g.user_config.dark),
-                           config_disabled=app.config['CONFIG_DISABLE'],
+                           config_disabled=(
+                               app.config['CONFIG_DISABLE'] or
+                               not valid_user_session(session) or
+                               'cookies_disabled' in request.args),
                            config=g.user_config,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
@@ -179,6 +223,7 @@ def search_html():
 
 
 @app.route('/autocomplete', methods=['GET', 'POST'])
+@session_required
 def autocomplete():
     ac_var = 'WHOOGLE_AUTOCOMPLETE'
     if os.getenv(ac_var) and not read_config_bool(ac_var):
@@ -212,13 +257,13 @@ def autocomplete():
 
 
 @app.route('/search', methods=['GET', 'POST'])
+@session_required
 @auth_required
 def search():
     # Update user config if specified in search args
     g.user_config = g.user_config.from_params(g.request_params)
 
-    search_util = Search(request, g.user_config, session,
-                         cookies_disabled=g.cookies_disabled)
+    search_util = Search(request, g.user_config, g.session_key)
     query = search_util.new_search_query()
 
     bang = resolve_bang(query=query, bangs_dict=bang_json)
@@ -286,9 +331,12 @@ def search():
 
 
 @app.route('/config', methods=['GET', 'POST', 'PUT'])
+@session_required
 @auth_required
 def config():
-    config_disabled = app.config['CONFIG_DISABLE']
+    config_disabled = (
+            app.config['CONFIG_DISABLE'] or
+            not valid_user_session(session))
     if request.method == 'GET':
         return json.dumps(g.user_config.__dict__)
     elif request.method == 'PUT' and not config_disabled:
@@ -315,11 +363,6 @@ def config():
                     app.config['CONFIG_PATH'],
                     request.args.get('name')), 'wb'))
 
-        # Overwrite default config if user has cookies disabled
-        if g.cookies_disabled:
-            open(app.config['DEFAULT_CONFIG'], 'w').write(
-                json.dumps(config_data, indent=4))
-
         session['config'] = config_data
         return redirect(config_data['url'])
     else:
@@ -327,6 +370,7 @@ def config():
 
 
 @app.route('/url', methods=['GET'])
+@session_required
 @auth_required
 def url():
     if 'url' in request.args:
@@ -342,15 +386,17 @@ def url():
 
 
 @app.route('/imgres')
+@session_required
 @auth_required
 def imgres():
     return redirect(request.args.get('imgurl'))
 
 
 @app.route('/element')
+@session_required
 @auth_required
 def element():
-    cipher_suite = Fernet(session['key'])
+    cipher_suite = Fernet(g.session_key)
     src_url = cipher_suite.decrypt(request.args.get('url').encode()).decode()
     src_type = request.args.get('type')
 
