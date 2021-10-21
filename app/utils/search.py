@@ -171,5 +171,5 @@ class Search:
 
         """
         return re.search("([^a-z0-9]|^)my *[^a-z0-9] *(ip|internet protocol)" +
-                         "($|( *[^a-z0-9] *(((addres|address|adres|adress)|a)?" +
-                         " *$)))", self.query.lower())
+                         "($|( *[^a-z0-9] *(((addres|address|adres|" +
+                         "adress)|a)? *$)))", self.query.lower())
