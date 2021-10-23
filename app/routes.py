@@ -60,12 +60,15 @@ def session_required(f):
                 session_path = os.path.join(
                         app.config['SESSION_FILE_DIR'],
                         user_session)
-                with open(session_path, 'rb') as session_file:
-                    _ = pickle.load(session_file)
-                    data = pickle.load(session_file)
-                    if type(data) == 'dict' and 'valid' in data:
-                        continue
-                    invalid_sessions.append(session_path)
+                try:
+                    with open(session_path, 'rb') as session_file:
+                        _ = pickle.load(session_file)
+                        data = pickle.load(session_file)
+                        if isinstance(data, dict) and 'valid' in data:
+                            continue
+                        invalid_sessions.append(session_path)
+                except FileNotFoundError:
+                    pass
 
             for invalid_session in invalid_sessions:
                 os.remove(invalid_session)
