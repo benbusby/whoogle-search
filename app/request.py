@@ -252,7 +252,8 @@ class Request:
         # Adding the Accept-Language to the Header if possible
         if self.lang_interface:
             headers.update({'Accept-Language':
-                                self.lang_interface.replace('lang_', '') + ';q=1.0'})
+                            self.lang_interface.replace('lang_', '')
+                            + ';q=1.0'})
 
         # view is suppressed correctly
         now = datetime.now()
