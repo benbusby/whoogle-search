@@ -27,7 +27,10 @@ SITE_ALTS = {
     'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'invidious.snopyta.org'),
     'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'bibliogram.art/u'),
     'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'libredd.it'),
-    'medium.com': os.getenv('WHOOGLE_ALT_MD', 'scribe.rip'),
+    **dict.fromkeys([
+        'medium.com',
+        'levelup.gitconnected.com'
+    ], os.getenv('WHOOGLE_ALT_MD', 'scribe.rip'))
 }
 
 

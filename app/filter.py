@@ -331,8 +331,15 @@ class Filter:
             if len(link_desc) == 0:
                 return
 
-            # Replace link destination
-            link_desc[0].replace_with(get_site_alt(link_desc[0]))
+            # Replace link description
+            link_desc = link_desc[0]
+            for site, alt in SITE_ALTS.items():
+                if site not in link_desc:
+                    continue
+                new_desc = BeautifulSoup(features='html.parser').new_tag('div')
+                new_desc.string = str(link_desc).replace(site, alt)
+                link_desc.replace_with(new_desc)
+                break
 
     def view_image(self, soup) -> BeautifulSoup:
         """Replaces the soup with a new one that handles mobile results and
