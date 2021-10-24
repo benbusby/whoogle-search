@@ -7,6 +7,7 @@ from flask import render_template
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
+import os
 
 
 def extract_q(q_str: str, href: str) -> str:
@@ -186,7 +187,8 @@ class Filter:
         # Loop through results and check for the number of child divs in each
         for result in self.main_divs:
             result_children = pull_child_divs(result)
-            if WHOOGLE_MINIMAL=="1":
+            WHOOGL
+            if str(os.getenv('WHOOGLE_MINIMAL',0))=="1":
                 if len(result_children) in (1,3):
                     continue
             else:
