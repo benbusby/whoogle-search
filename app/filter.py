@@ -186,8 +186,12 @@ class Filter:
         # Loop through results and check for the number of child divs in each
         for result in self.main_divs:
             result_children = pull_child_divs(result)
-            if len(result_children) < self.RESULT_CHILD_LIMIT:
-                continue
+            if WHOOGLE_MINIMAL=="1":
+                if len(result_children) in (1,3):
+                    continue
+            else:
+                if len(result_children) < self.RESULT_CHILD_LIMIT:
+                    continue
 
             # Find and decompose the first element with an inner HTML text val.
             # This typically extracts the title of the section (i.e. "Related
