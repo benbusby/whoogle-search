@@ -3,7 +3,7 @@
     /* LIGHT THEME COLORS */
     --whoogle-logo: #685e79;
     --whoogle-page-bg: #ffffff;
-    --whoogle-element-bg: #685e79;
+    --whoogle-element-bg: #4285f4;
     --whoogle-text: #000000;
     --whoogle-contrast-text: #ffffff;
     --whoogle-secondary-text: #70757a;
@@ -11,18 +11,44 @@
     --whoogle-result-title: #1967d2;
     --whoogle-result-url: #0d652d;
     --whoogle-result-visited: #4b11a8;
-    --whoogle-divider: #dfe1e5;
 
     /* DARK THEME COLORS */
-    --whoogle-dark-logo: #888888;
-    --whoogle-dark-page-bg: #080808;
-    --whoogle-dark-element-bg: #111111;
-    --whoogle-dark-text: #dddddd;
-    --whoogle-dark-contrast-text: #aaaaaa;
-    --whoogle-dark-secondary-text: #8a8b8c;
-    --whoogle-dark-result-bg: #111111;
-    --whoogle-dark-result-title: #dddddd;
-    --whoogle-dark-result-url: #eceff4;
-    --whoogle-dark-result-visited: #959595;
-    --whoogle-dark-divider: #111111;
+    --whoogle-dark-logo: #685e79;
+    --whoogle-dark-page-bg: #101020;
+    --whoogle-dark-element-bg: #4285f4;
+    --whoogle-dark-text: #ffffff;
+    --whoogle-dark-contrast-text: #ffffff;
+    --whoogle-dark-secondary-text: #bbbbbb;
+    --whoogle-dark-result-bg: #212131;
+    --whoogle-dark-result-title: #64a7f6;
+    --whoogle-dark-result-url: #34a853;
+    --whoogle-dark-result-visited: #bbbbff;
+}
+
+#whoogle-w {
+    fill: #4285f4;
+}
+
+#whoogle-h {
+    fill: #ea4335;
+}
+
+#whoogle-o-1 {
+    fill: #fbbc05;
+}
+
+#whoogle-o-2 {
+    fill: #4285f4;
+}
+
+#whoogle-g {
+    fill: #34a853;
+}
+
+#whoogle-l {
+    fill: #ea4335;
+}
+
+#whoogle-e {
+    fill: #fbbc05;
 }
