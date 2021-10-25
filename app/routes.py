@@ -210,7 +210,30 @@ def autocomplete():
         g.user_request.autocomplete(q) if not g.user_config.tor else []
     ])
 
+def bolden_query_terms_in_response(response,query):
+    summary_class='BNeawe s3v9rd AP7Wnd'
+    summary_class_beginning=f'<div class="{summary_class}">'
+    summary_class_end=r'</div>'
+    results=bsoup(response, "html.parser")
+    summary = results.find_all("div", {"class": summary_class})
+    summary = [str(_).replace(summary_class_beginning,'').replace(summary_class_end,'') for _ in summary if not r'<div><div>' in str(_)]
+    quotes=re.findall('"[^"]+"',query)
+    not_quotes=re.sub('"[^"]+"','',query)
+    not_quotes=list(filter(None,not_quotes.split(' ')))
+    search_terms=not_quotes+[_[1:-1] for _ in list(quotes)]
+    summary_bolded=[]
+    for sentence in summary:
+        sentence_temp=sentence
+        for term in search_terms:
+            sentence_temp=re.sub(fr"\b({term})\b",r"<b>\1</b>",sentence_temp,flags=re.I)
+        summary_bolded.append(sentence_temp)
 
+    response_return=response
+
+    for i in range(len(summary)):
+        response_return=response_return.replace(summary[i],summary_bolded[i])
+
+    return response_return
 @app.route('/search', methods=['GET', 'POST'])
 @auth_required
 def search():
@@ -250,7 +273,9 @@ def search():
 
     # Return 503 if temporarily blocked by captcha
     resp_code = 503 if has_captcha(str(response)) else 200
-
+    
+    if str(os.getenv("WHOOGLE_BOLDEN_SEARCH_TERMS","0"))==1:
+        response=bolden_query_terms_in_response(response,query)
     # Feature to display IP address
     if search_util.check_kw_ip():
         html_soup = bsoup(response, "html.parser")
