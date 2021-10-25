@@ -1,4 +1,4 @@
-![Whoogle Search](docs/banner.png)
+![Whoogle Search](https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/banner.png)
 
 [![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -39,9 +39,9 @@ Contents
 
 ## Features
 - No ads or sponsored content
-- No JavaScript
-- No cookies
-- No tracking/linking of your personal IP address\*
+- No JavaScript\*
+- No cookies\*\*
+- No tracking/linking of your personal IP address\*\*\*
 - No AMP links
 - No URL tracking tags (i.e. utm=%s)
 - No referrer header
@@ -49,14 +49,18 @@ Contents
 - Autocomplete/search suggestions
 - POST request search and suggestion queries (when possible)
 - View images at full res without site redirect (currently mobile only)
-- Dark mode
+- Light/Dark/System theme modes (with support for [custom CSS theming](https://github.com/benbusby/whoogle-search/wiki/User-Contributed-CSS-Themes))
 - Randomly generated User Agent
 - Easy to install/deploy
 - DDG-style bang (i.e. `!<tag> <query>`) searches
 - Optional location-based searching (i.e. results near \<city\>)
-- Optional NoJS mode to disable all Javascript in results
+- Optional NoJS mode to view search results in a separate window with JavaScript blocked
 
-<sup>*If deployed to a remote server, or configured to send requests through a VPN, Tor, proxy, etc.</sup>
+<sup>*No third party JavaScript. Whoogle can be used with JavaScript disabled, but if enabled, uses JavaScript for things like presenting search suggestions.</sup>
+
+<sup>**No third party cookies. Whoogle uses server side cookies (sessions) to store non-sensitive configuration settings such as theme, language, etc. Just like with JavaScript, cookies can be disabled and not affect Whoogle's search functionality.</sup>
+
+<sup>***If deployed to a remote server, or configured to send requests through a VPN, Tor, proxy, etc.</sup>
 
 ## Dependencies
 If using Heroku Quick Deploy, **you can skip this section**.
@@ -501,7 +505,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Screenshots
 #### Desktop
-![Whoogle Desktop](docs/screenshot_desktop.jpg)
+![Whoogle Desktop](https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_desktop.jpg)
 
 #### Mobile
-![Whoogle Mobile](docs/screenshot_mobile.jpg)
+![Whoogle Mobile](https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_mobile.jpg)
