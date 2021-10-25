@@ -178,6 +178,10 @@
 					<label for="config-get-only">{{ translation['config-get-only'] }}: </label>
 					<input type="checkbox" name="get_only" id="config-get-only" {{ 'checked' if config.get_only else '' }}>
 				</div>
+					<div class="config-div config-div-get-only">
+					<label for="config-accept-language">Set Accept-Language: </label>
+					<input type="checkbox" name="accept_language" id="config-accept-language" {{ 'checked' if config.accept_language else '' }}>
+				</div>
 				<div class="config-div config-div-root-url">
 					<label for="config-url">{{ translation['config-url'] }}: </label>
 					<input type="text" name="url" id="config-url" value="{{ config.url }}">

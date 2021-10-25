@@ -157,6 +157,12 @@ class Request:
         self.language = (
             config.lang_search if config.lang_search else ''
         )
+
+        # For setting Accept-language Header
+        self.lang_interface = ''
+        if config.accept_language:
+            self.lang_interface = config.lang_interface
+
         self.mobile = bool(normal_ua) and ('Android' in normal_ua
                                            or 'iPhone' in normal_ua)
         self.modified_user_agent = gen_user_agent(self.mobile)
@@ -243,7 +249,12 @@ class Request:
             'User-Agent': modified_user_agent
         }
 
-        # FIXME: Should investigate this further to ensure the consent
+        # Adding the Accept-Language to the Header if possible
+        if self.lang_interface:
+            headers.update({'Accept-Language':
+                            self.lang_interface.replace('lang_', '')
+                            + ';q=1.0'})
+
         # view is suppressed correctly
         now = datetime.now()
         cookies = {
