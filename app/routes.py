@@ -251,7 +251,6 @@ def search():
 
     # Return 503 if temporarily blocked by captcha
     resp_code = 503 if has_captcha(str(response)) else 200
-   
     response = bold_search_terms(response, query)
     # Feature to display IP address
     if search_util.check_kw_ip():
