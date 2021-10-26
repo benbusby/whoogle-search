@@ -188,7 +188,7 @@ class Filter:
         for result in self.main_divs:
             result_children = pull_child_divs(result)
             if read_config_bool('WHOOGLE_MINIMAL'):
-                if len(result_children) in (1,3):
+                if len(result_children) in (1, 3):
                     continue
             else:
                 if len(result_children) < self.RESULT_CHILD_LIMIT:
