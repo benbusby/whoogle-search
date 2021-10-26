@@ -8,6 +8,7 @@ import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import os
+from app.utils.misc import read_config_bool
 
 
 def extract_q(q_str: str, href: str) -> str:
