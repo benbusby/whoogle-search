@@ -4,7 +4,6 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import re
 
-
 SKIP_ARGS = ['ref_src', 'utm']
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
 GOOG_STATIC = 'www.gstatic.com'
@@ -13,7 +12,6 @@ LOGO_URL = GOOG_IMG + '_desk'
 BLANK_B64 = ('data:image/png;base64,'
              'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkw'
              'AIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC')
-
 
 # Ad keywords
 BLACKLIST = [
@@ -56,9 +54,9 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
 
         element.replace_with(
             re.sub(r'\b((?![{}<>-])' + target_word + r'(?![{}<>-]))\b',
-                r'<b>\1</b>',
-                element,
-                flags=re.I)
+                   r'<b>\1</b>',
+                   element,
+                   flags=re.I)
         )
 
     # Split all words out of query, grouping the ones wrapped in quotes
