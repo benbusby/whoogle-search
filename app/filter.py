@@ -7,6 +7,8 @@ from flask import render_template
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
+import os
+from app.utils.misc import read_config_bool
 
 
 def extract_q(q_str: str, href: str) -> str:
@@ -186,8 +188,12 @@ class Filter:
         # Loop through results and check for the number of child divs in each
         for result in self.main_divs:
             result_children = pull_child_divs(result)
-            if len(result_children) < self.RESULT_CHILD_LIMIT:
-                continue
+            if read_config_bool('WHOOGLE_MINIMAL'):
+                if len(result_children) in (1, 3):
+                    continue
+            else:
+                if len(result_children) < self.RESULT_CHILD_LIMIT:
+                    continue
 
             # Find and decompose the first element with an inner HTML text val.
             # This typically extracts the title of the section (i.e. "Related
