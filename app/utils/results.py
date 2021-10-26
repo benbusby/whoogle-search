@@ -53,15 +53,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         # Replace all instances of the word, but maintaining the same case in
         # the replacement
         element.replace_with(
-            element.replace(
-                target_word.lower(), f'<b>{target_word.lower()}</b>'
-            ).replace(
-                target_word.capitalize(), f'<b>{target_word.capitalize()}</b>'
-            ).replace(
-                target_word.title(), f'<b>{target_word.title()}</b>'
-            ).replace(
-                target_word.upper(), f'<b>{target_word.upper()}</b>'
-            )
+            re.sub(fr"\b({target_word})\b",r"<b>\1</b>",element,flags=re.I)
         )
 
     # Split all words out of query, grouping the ones wrapped in quotes
