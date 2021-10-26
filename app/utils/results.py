@@ -72,7 +72,8 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
             replace_any_case(nav_str, word)
 
     return response
-  
+
+
 def has_ad_content(element: str) -> bool:
     """Inspects an HTML element for ad related content
 
