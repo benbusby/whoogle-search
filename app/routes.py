@@ -14,6 +14,7 @@ from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool
 from app.utils.results import add_ip_card
+from app.utils.results import bold_search_terms
 from app.utils.search import *
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
@@ -250,7 +251,7 @@ def search():
 
     # Return 503 if temporarily blocked by captcha
     resp_code = 503 if has_captcha(str(response)) else 200
-
+    response = bold_search_terms(response, query)
     # Feature to display IP address
     if search_util.check_kw_ip():
         html_soup = bsoup(response, "html.parser")
