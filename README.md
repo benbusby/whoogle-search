@@ -1,4 +1,4 @@
-![Whoogle Search](https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/banner.png)
+![Whoogle Search](docs/banner.png)
 
 [![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -321,6 +321,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
 | WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
+| WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
@@ -505,7 +506,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Screenshots
 #### Desktop
-![Whoogle Desktop](https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_desktop.jpg)
+![Whoogle Desktop](docs/screenshot_desktop.jpg)
 
 #### Mobile
-![Whoogle Mobile](https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_mobile.jpg)
+![Whoogle Mobile](docs/screenshot_mobile.jpg)
