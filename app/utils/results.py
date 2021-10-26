@@ -1,9 +1,8 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import re
-from bs4 import NavigableString
 
 
 SKIP_ARGS = ['ref_src', 'utm']
@@ -52,16 +51,14 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
     def replace_any_case(element: NavigableString, target_word: str) -> None:
         # Replace all instances of the word, but maintaining the same case in
         # the replacement
+        if len(element) == len(target_word):
+            return
+
         element.replace_with(
-            element.replace(
-                target_word.lower(), f'<b>{target_word.lower()}</b>'
-            ).replace(
-                target_word.capitalize(), f'<b>{target_word.capitalize()}</b>'
-            ).replace(
-                target_word.title(), f'<b>{target_word.title()}</b>'
-            ).replace(
-                target_word.upper(), f'<b>{target_word.upper()}</b>'
-            )
+            re.sub(r'\b((?![{}<>-])' + target_word + r'(?![{}<>-]))\b',
+                r'<b>\1</b>',
+                element,
+                flags=re.I)
         )
 
     # Split all words out of query, grouping the ones wrapped in quotes
