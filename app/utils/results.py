@@ -53,7 +53,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
             return
 
         element.replace_with(
-            re.sub(r'\b((?![{}<>-])' + target_word + r'(?![{}<>-]))\b',
+            re.sub(fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b',
                    r'<b>\1</b>',
                    element,
                    flags=re.I)
