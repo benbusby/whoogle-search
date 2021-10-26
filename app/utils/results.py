@@ -3,6 +3,7 @@ import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import re
+from bs4 import NavigableString
 
 
 SKIP_ARGS = ['ref_src', 'utm']
