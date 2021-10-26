@@ -187,7 +187,7 @@ class Filter:
         # Loop through results and check for the number of child divs in each
         for result in self.main_divs:
             result_children = pull_child_divs(result)
-            if str(os.getenv('WHOOGLE_MINIMAL',0))=="1":
+            if read_config_bool('WHOOGLE_MINIMAL'):
                 if len(result_children) in (1,3):
                     continue
             else:
