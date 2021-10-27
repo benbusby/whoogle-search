@@ -9,7 +9,8 @@ import os
 from stem import Signal, SocketError
 from stem.control import Controller
 
-SEARCH_URL = 'https://www.google.com/search?gbv=1&q='
+SEARCH_URL = 'https://www.google.com/search?gbv=1&num=' + str(
+    os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&q='
 MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
                     'complete/search?client=toolbar&')

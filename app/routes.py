@@ -1,5 +1,6 @@
 import argparse
 import base64
+import html
 import io
 import json
 import pickle
@@ -15,6 +16,7 @@ from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool
 from app.utils.results import add_ip_card
+from app.utils.results import bold_search_terms
 from app.utils.search import *
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
@@ -298,7 +300,7 @@ def search():
 
     # Return 503 if temporarily blocked by captcha
     resp_code = 503 if has_captcha(str(response)) else 200
-
+    response = bold_search_terms(response, query)
     # Feature to display IP address
     if search_util.check_kw_ip():
         html_soup = bsoup(response, "html.parser")
@@ -320,7 +322,7 @@ def search():
         is_translation=any(
             _ in query.lower() for _ in [translation['translate'], 'translate']
         ) and not search_util.search_type,  # Standard search queries only
-        response=response,
+        response=html.unescape(str(response)),
         version_number=app.config['VERSION_NUMBER'],
         search_header=(render_template(
             'header.html',

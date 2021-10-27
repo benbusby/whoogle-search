@@ -1,4 +1,5 @@
 from app.request import VALID_PARAMS, MAPS_URL
+from app.utils.misc import read_config_bool
 from app.utils.results import *
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
@@ -7,6 +8,7 @@ from flask import render_template
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
+import os
 
 
 def extract_q(q_str: str, href: str) -> str:
@@ -171,6 +173,8 @@ class Filter:
         Returns:
             None (The soup object is modified directly)
         """
+        minimal_mode = read_config_bool('WHOOGLE_MINIMAL')
+
         def pull_child_divs(result_div: BeautifulSoup):
             try:
                 return result_div.findChildren(
@@ -186,8 +190,12 @@ class Filter:
         # Loop through results and check for the number of child divs in each
         for result in self.main_divs:
             result_children = pull_child_divs(result)
-            if len(result_children) < self.RESULT_CHILD_LIMIT:
-                continue
+            if minimal_mode:
+                if len(result_children) in (1, 3):
+                    continue
+            else:
+                if len(result_children) < self.RESULT_CHILD_LIMIT:
+                    continue
 
             # Find and decompose the first element with an inner HTML text val.
             # This typically extracts the title of the section (i.e. "Related
@@ -206,13 +214,18 @@ class Filter:
             while not parent and idx < len(result_children):
                 parent = result_children[idx].parent
                 idx += 1
+
             details = BeautifulSoup(features='html.parser').new_tag('details')
             summary = BeautifulSoup(features='html.parser').new_tag('summary')
             summary.string = label
             details.append(summary)
 
-            if parent:
+            if parent and not minimal_mode:
                 parent.wrap(details)
+            elif parent and minimal_mode:
+                # Remove parent element from document if "minimal mode" is
+                # enabled
+                parent.decompose()
 
     def update_element_src(self, element: Tag, mime: str) -> None:
         """Encrypts the original src of an element and rewrites the element src

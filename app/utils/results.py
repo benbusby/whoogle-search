@@ -1,8 +1,8 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
-
+import re
 
 SKIP_ARGS = ['ref_src', 'utm']
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
@@ -12,7 +12,6 @@ LOGO_URL = GOOG_IMG + '_desk'
 BLANK_B64 = ('data:image/png;base64,'
              'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkw'
              'AIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC')
-
 
 # Ad keywords
 BLACKLIST = [
@@ -32,6 +31,43 @@ SITE_ALTS = {
         'levelup.gitconnected.com'
     ], os.getenv('WHOOGLE_ALT_MD', 'scribe.rip'))
 }
+
+
+def bold_search_terms(response: str, query: str) -> BeautifulSoup:
+    """Wraps all search terms in bold tags (<b>). If any terms are wrapped
+    in quotes, only that exact phrase will be made bold.
+
+    Args:
+        response: The initial response body for the query
+        query: The original search query
+
+    Returns:
+        BeautifulSoup: modified soup object with bold items
+    """
+    response = BeautifulSoup(response, 'html.parser')
+
+    def replace_any_case(element: NavigableString, target_word: str) -> None:
+        # Replace all instances of the word, but maintaining the same case in
+        # the replacement
+        if len(element) == len(target_word):
+            return
+
+        element.replace_with(
+            re.sub(fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b',
+                   r'<b>\1</b>',
+                   element,
+                   flags=re.I)
+        )
+
+    # Split all words out of query, grouping the ones wrapped in quotes
+    for word in re.split(r'\s+(?=[^"]*(?:"[^"]*"[^"]*)*$)', query):
+        word = re.sub(r'[^A-Za-z0-9 ]+', '', word)
+        target = response.find_all(
+            text=re.compile(r'' + re.escape(word), re.I))
+        for nav_str in target:
+            replace_any_case(nav_str, word)
+
+    return response
 
 
 def has_ad_content(element: str) -> bool:

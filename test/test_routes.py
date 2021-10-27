@@ -53,12 +53,6 @@ def test_config(client):
     for key in demo_config.keys():
         assert config[key] == demo_config[key]
 
-    # Test setting config via search
-    custom_config = '&dark=1&lang_interface=lang_en'
-    rv = client.get('/search?q=test' + custom_config)
-    assert rv._status_code == 200
-    assert custom_config.replace('&', '&amp;') in str(rv.data)
-
     # Test disabling changing config from client
     app.config['CONFIG_DISABLE'] = 1
     dark_mod = not demo_config['dark']

@@ -75,6 +75,11 @@
       "value": "scribe.rip",
       "required": false
     },
+    "WHOOGLE_MINIMAL": {
+        "description": "Remove everything except basic result cards from all search queries (set to 1 or leave blank)",
+        "value": "",
+        "required": false
+    },
     "WHOOGLE_CONFIG_COUNTRY": {
         "description": "[CONFIG] The country to use for restricting search results (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/countries.json)",
         "value": "",
