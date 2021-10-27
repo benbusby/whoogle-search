@@ -1,221 +1,241 @@
 <html style="background: #000;">
-	<head>
-		<link rel="apple-touch-icon" sizes="57x57" href="static/img/favicon/apple-icon-57x57.png">
-		<link rel="apple-touch-icon" sizes="60x60" href="static/img/favicon/apple-icon-60x60.png">
-		<link rel="apple-touch-icon" sizes="72x72" href="static/img/favicon/apple-icon-72x72.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="static/img/favicon/apple-icon-76x76.png">
-		<link rel="apple-touch-icon" sizes="114x114" href="static/img/favicon/apple-icon-114x114.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="static/img/favicon/apple-icon-120x120.png">
-		<link rel="apple-touch-icon" sizes="144x144" href="static/img/favicon/apple-icon-144x144.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="static/img/favicon/apple-icon-152x152.png">
-		<link rel="apple-touch-icon" sizes="180x180" href="static/img/favicon/apple-icon-180x180.png">
-		<link rel="icon" type="image/png" sizes="192x192"  href="static/img/favicon/android-icon-192x192.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="static/img/favicon/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="96x96" href="static/img/favicon/favicon-96x96.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="static/img/favicon/favicon-16x16.png">
-		<link rel="manifest" href="static/img/favicon/manifest.json">
-		<meta name="referrer" content="no-referrer">
-		<meta name="msapplication-TileColor" content="#ffffff">
-		<meta name="msapplication-TileImage" content="static/img/favicon/ms-icon-144x144.png">
-        <script type="text/javascript" src="{{ cb_url('autocomplete.js') }}"></script>
-        <script type="text/javascript" src="{{ cb_url('controller.js') }}"></script>
-		<link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% if config.theme  %}
-            {% if config.theme == 'system' %}
+<head>
+    <link rel="apple-touch-icon" sizes="57x57" href="static/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="static/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="static/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="static/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="static/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="static/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="static/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="static/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="static/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="static/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="static/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="static/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="static/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="static/img/favicon/manifest.json">
+    <meta name="referrer" content="no-referrer">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="static/img/favicon/ms-icon-144x144.png">
+    <script type="text/javascript" src="{{ cb_url('autocomplete.js') }}"></script>
+    <script type="text/javascript" src="{{ cb_url('controller.js') }}"></script>
+    <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if config.theme %}
+        {% if config.theme == 'system' %}
             <style>
                 @import "{{ cb_url('light-theme.css') }}" screen;
                 @import "{{ cb_url('dark-theme.css') }}" screen and (prefers-color-scheme: dark);
             </style>
-            {% else %}
-            <link rel="stylesheet" href="{{ cb_url(config.theme + '-theme.css') }}"/>
-            {% endif %}
         {% else %}
-		<link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
+            <link rel="stylesheet" href="{{ cb_url(config.theme + '-theme.css') }}"/>
         {% endif %}
-        <link rel="stylesheet" href="{{ cb_url('main.css') }}">
-		<noscript>
-			<style>
-				#main { display: inherit !important; }
-				.content { max-height: 720px; padding: 18px; border-radius: 10px; }
-				.collapsible { display: none; }
-			</style>
-		</noscript>
-		<style>{{ config.style }}</style>
-		<title>Whoogle Search</title>
-	</head>
-	<body id="main">
-		<div class="search-container">
-			<div class="logo-container">
-				{{ logo|safe }}
-			</div>
-			<form id="search-form" action="search" method="{{ 'get' if config.get_only else 'post' }}">
-				<div class="search-fields">
-					<div class="autocomplete">
-						<input
-							type="text"
-							name="q"
-							id="search-bar"
-							class="home-search"
-							autofocus="autofocus"
-							autocapitalize="none"
-							spellcheck="false"
-							autocorrect="off"
-							autocomplete="off"
-						        dir="auto">
-					</div>
-					<input type="submit" id="search-submit" value="{{ translation['search'] }}">
-				</div>
-			</form>
-		{% if not config_disabled %}
-			<br/>
-			<button id="config-collapsible" class="collapsible">{{ translation['config'] }}</button>
-			<div class="content">
-			<div class="config-fields">
-				<form id="config-form" action="config" method="post">
-				<div class="config-div config-div-ctry">
-					<label for="config-ctry">{{ translation['config-country'] }}: </label>
-					<select name="ctry" id="config-ctry">
-					{% for ctry in countries %}
-						<option value="{{ ctry.value }}"
-							{% if ctry.value in config.ctry %}
-							selected
-							{% endif %}>
-						{{ ctry.name }}
-						</option>
-					{% endfor %}
-					</select>
-					<div><span class="info-text"> — {{ translation['config-country-help'] }}</span></div>
-				</div>
-				<div class="config-div config-div-lang">
-					<label for="config-lang-interface">{{ translation['config-lang'] }}: </label>
-					<select name="lang_interface" id="config-lang-interface">
-					{% for lang in languages %}
-					<option value="{{ lang.value }}"
-						{% if lang.value in config.lang_interface %}
-						selected
-						{% endif %}>
-						{{ lang.name }}
-					</option>
-					{% endfor %}
-					</select>
-				</div>
-				<div class="config-div config-div-search-lang">
-					<label for="config-lang-search">{{ translation['config-lang-search'] }}: </label>
-					<select name="lang_search" id="config-lang-search">
-					{% for lang in languages %}
-					<option value="{{ lang.value }}"
-						{% if lang.value in config.lang_search %}
-						selected
-						{% endif %}>
-						{{ lang.name }}
-					</option>
-					{% endfor %}
-					</select>
-				</div>
-				<div class="config-div config-div-near">
-					<label for="config-near">{{ translation['config-near'] }}: </label>
-					<input type="text" name="near" id="config-near" placeholder="{{ translation['config-near-help'] }}" value="{{ config.near }}">
-				</div>
-				<div class="config-div config-div-block">
-					<label for="config-block">{{ translation['config-block'] }}: </label>
-					<input type="text" name="block" id="config-block" placeholder="{{ translation['config-block-help'] }}" value="{{ config.block }}">
-				</div>
-                <div class="config-div config-div-block">
-					<label for="config-block-title">{{ translation['config-block-title'] }}: </label>
-					<input type="text" name="block_title" id="config-block" placeholder="{{ translation['config-block-title-help'] }}" value="{{ config.block_title }}">
-				</div>
-				<div class="config-div config-div-block">
-					<label for="config-block-url">{{ translation['config-block-url'] }}: </label>
-					<input type="text" name="block_url" id="config-block" placeholder="{{ translation['config-block-url-help'] }}" value="{{ config.block_url }}">
-				</div>
-				<div class="config-div config-div-nojs">
-					<label for="config-nojs">{{ translation['config-nojs'] }}: </label>
-					<input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
-				</div>
-                <div class="config-div config-div-theme">
-                    <label for="config-theme">{{ translation['config-theme'] }}: </label>
-                    <select name="theme" id="config-theme">
-                        {% for theme in themes %}
-                        <option value="{{ theme }}"
-                            {% if theme in config.theme %}
-                            selected
-                            {% endif %}>
-                            {{ translation[theme].capitalize() }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <!-- DEPRECATED -->
-				<!--<div class="config-div config-div-dark">-->
-					<!--<label for="config-dark">{{ translation['config-dark'] }}: </label>-->
-					<!--<input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>-->
-				<!--</div>-->
-				<div class="config-div config-div-safe">
-					<label for="config-safe">{{ translation['config-safe'] }}: </label>
-					<input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
-				</div>
-				<div class="config-div config-div-alts">
-					<label class="tooltip" for="config-alts">{{ translation['config-alts'] }}: </label>
-					<input type="checkbox" name="alts" id="config-alts" {{ 'checked' if config.alts else '' }}>
-					<div><span class="info-text"> — {{ translation['config-alts-help'] }}</span></div>
-				</div>
-				<div class="config-div config-div-new-tab">
-					<label for="config-new-tab">{{ translation['config-new-tab'] }}: </label>
-					<input type="checkbox" name="new_tab" id="config-new-tab" {{ 'checked' if config.new_tab else '' }}>
-				</div>
-				<div class="config-div config-div-view-image">
-					<label for="config-view-image">{{ translation['config-images'] }}: </label>
-					<input type="checkbox" name="view_image" id="config-view-image" {{ 'checked' if config.view_image else '' }}>
-					<div><span class="info-text"> — {{ translation['config-images-help'] }}</span></div>
-				</div>
-				<div class="config-div config-div-tor">
-					<label for="config-tor">{{ translation['config-tor'] }}: {{ '' if tor_available else 'Unavailable' }}</label>
-					<input type="checkbox" name="tor" id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
-				</div>
-				<div class="config-div config-div-get-only">
-					<label for="config-get-only">{{ translation['config-get-only'] }}: </label>
-					<input type="checkbox" name="get_only" id="config-get-only" {{ 'checked' if config.get_only else '' }}>
-				</div>
-					<div class="config-div config-div-get-only">
-					<label for="config-accept-language">Set Accept-Language: </label>
-					<input type="checkbox" name="accept_language" id="config-accept-language" {{ 'checked' if config.accept_language else '' }}>
-				</div>
-				<div class="config-div config-div-root-url">
-					<label for="config-url">{{ translation['config-url'] }}: </label>
-					<input type="text" name="url" id="config-url" value="{{ config.url }}">
-				</div>
-				<div class="config-div config-div-custom-css">
-					<a id="css-link"
-						href="https://github.com/benbusby/whoogle-search/wiki/User-Contributed-CSS-Themes">
-						{{ translation['config-css'] }}:
-					</a>
-					<textarea
-					name="style"
-					id="config-style"
-					autocapitalize="off"
-					autocomplete="off"
-					spellcheck="false"
-					autocorrect="off"
-					value="">
-					{{ config.style.replace('\t', '') }}
-					</textarea>
-				</div>
-				<div class="config-div">
-					<input type="submit" id="config-load" value="{{ translation['load'] }}">&nbsp;
-					<input type="submit" id="config-submit" value="{{ translation['apply'] }}">&nbsp;
-					<input type="submit" id="config-save" value="{{ translation['save-as'] }}">
-				</div>
-				</form>
-			</div>
-			</div>
-		{% endif %}
-		</div>
-		<footer>
-			<p class="footer">
-				Whoogle Search v{{ version_number }} ||
-				<a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
-			</p>
-		</footer>
-	</body>
+    {% else %}
+        <link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
+    {% endif %}
+    <link rel="stylesheet" href="{{ cb_url('main.css') }}">
+    <noscript>
+        <style>
+            #main {
+                display: inherit !important;
+            }
+
+            .content {
+                max-height: 720px;
+                padding: 18px;
+                border-radius: 10px;
+            }
+
+            .collapsible {
+                display: none;
+            }
+        </style>
+    </noscript>
+    <style>{{ config.style }}</style>
+    <title>Whoogle Search</title>
+</head>
+<body id="main">
+<div class="search-container">
+    <div class="logo-container">
+        {{ logo|safe }}
+    </div>
+    <form id="search-form" action="search" method="{{ 'get' if config.get_only else 'post' }}">
+        <div class="search-fields">
+            <div class="autocomplete">
+                <input
+                        type="text"
+                        name="q"
+                        id="search-bar"
+                        class="home-search"
+                        autofocus="autofocus"
+                        autocapitalize="none"
+                        spellcheck="false"
+                        autocorrect="off"
+                        autocomplete="off"
+                        dir="auto">
+            </div>
+            <input type="submit" id="search-submit" value="{{ translation['search'] }}">
+        </div>
+    </form>
+    {% if not config_disabled %}
+        <br/>
+        <button id="config-collapsible" class="collapsible">{{ translation['config'] }}</button>
+        <div class="content">
+            <div class="config-fields">
+                <form id="config-form" action="config" method="post">
+                    <div class="config-div config-div-ctry">
+                        <label for="config-ctry">{{ translation['config-country'] }}: </label>
+                        <select name="ctry" id="config-ctry">
+                            {% for ctry in countries %}
+                                <option value="{{ ctry.value }}"
+                                        {% if ctry.value in config.ctry %}
+                                        selected
+                                        {% endif %}>
+                                    {{ ctry.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div><span class="info-text"> — {{ translation['config-country-help'] }}</span></div>
+                    </div>
+                    <div class="config-div config-div-lang">
+                        <label for="config-lang-interface">{{ translation['config-lang'] }}: </label>
+                        <select name="lang_interface" id="config-lang-interface">
+                            {% for lang in languages %}
+                                <option value="{{ lang.value }}"
+                                        {% if lang.value in config.lang_interface %}
+                                        selected
+                                        {% endif %}>
+                                    {{ lang.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="config-div config-div-search-lang">
+                        <label for="config-lang-search">{{ translation['config-lang-search'] }}: </label>
+                        <select name="lang_search" id="config-lang-search">
+                            {% for lang in languages %}
+                                <option value="{{ lang.value }}"
+                                        {% if lang.value in config.lang_search %}
+                                        selected
+                                        {% endif %}>
+                                    {{ lang.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="config-div config-div-near">
+                        <label for="config-near">{{ translation['config-near'] }}: </label>
+                        <input type="text" name="near" id="config-near"
+                               placeholder="{{ translation['config-near-help'] }}" value="{{ config.near }}">
+                    </div>
+                    <div class="config-div config-div-block">
+                        <label for="config-block">{{ translation['config-block'] }}: </label>
+                        <input type="text" name="block" id="config-block"
+                               placeholder="{{ translation['config-block-help'] }}" value="{{ config.block }}">
+                    </div>
+                    <div class="config-div config-div-block">
+                        <label for="config-block-title">{{ translation['config-block-title'] }}: </label>
+                        <input type="text" name="block_title" id="config-block"
+                               placeholder="{{ translation['config-block-title-help'] }}"
+                               value="{{ config.block_title }}">
+                    </div>
+                    <div class="config-div config-div-block">
+                        <label for="config-block-url">{{ translation['config-block-url'] }}: </label>
+                        <input type="text" name="block_url" id="config-block"
+                               placeholder="{{ translation['config-block-url-help'] }}" value="{{ config.block_url }}">
+                    </div>
+                    <div class="config-div config-div-nojs">
+                        <label for="config-nojs">{{ translation['config-nojs'] }}: </label>
+                        <input type="checkbox" name="nojs" id="config-nojs" {{ 'checked' if config.nojs else '' }}>
+                    </div>
+                    <div class="config-div config-div-theme">
+                        <label for="config-theme">{{ translation['config-theme'] }}: </label>
+                        <select name="theme" id="config-theme">
+                            {% for theme in themes %}
+                                <option value="{{ theme }}"
+                                        {% if theme in config.theme %}
+                                        selected
+                                        {% endif %}>
+                                    {{ translation[theme].capitalize() }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- DEPRECATED -->
+                    <!--<div class="config-div config-div-dark">-->
+                    <!--<label for="config-dark">{{ translation['config-dark'] }}: </label>-->
+                    <!--<input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>-->
+                    <!--</div>-->
+                    <div class="config-div config-div-safe">
+                        <label for="config-safe">{{ translation['config-safe'] }}: </label>
+                        <input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
+                    </div>
+                    <div class="config-div config-div-alts">
+                        <label class="tooltip" for="config-alts">{{ translation['config-alts'] }}: </label>
+                        <input type="checkbox" name="alts" id="config-alts" {{ 'checked' if config.alts else '' }}>
+                        <div><span class="info-text"> — {{ translation['config-alts-help'] }}</span></div>
+                    </div>
+                    <div class="config-div config-div-new-tab">
+                        <label for="config-new-tab">{{ translation['config-new-tab'] }}: </label>
+                        <input type="checkbox" name="new_tab"
+                               id="config-new-tab" {{ 'checked' if config.new_tab else '' }}>
+                    </div>
+                    <div class="config-div config-div-view-image">
+                        <label for="config-view-image">{{ translation['config-images'] }}: </label>
+                        <input type="checkbox" name="view_image"
+                               id="config-view-image" {{ 'checked' if config.view_image else '' }}>
+                        <div><span class="info-text"> — {{ translation['config-images-help'] }}</span></div>
+                    </div>
+                    <div class="config-div config-div-tor">
+                        <label for="config-tor">{{ translation['config-tor'] }}: {{ '' if tor_available else 'Unavailable' }}</label>
+                        <input type="checkbox" name="tor"
+                               id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
+                    </div>
+                    <div class="config-div config-div-get-only">
+                        <label for="config-get-only">{{ translation['config-get-only'] }}: </label>
+                        <input type="checkbox" name="get_only"
+                               id="config-get-only" {{ 'checked' if config.get_only else '' }}>
+                    </div>
+                    <div class="config-div config-div-get-only">
+                        <label for="config-accept-language">Set Accept-Language: </label>
+                        <input type="checkbox" name="accept_language"
+                               id="config-accept-language" {{ 'checked' if config.accept_language else '' }}>
+                    </div>
+                    <div class="config-div config-div-root-url">
+                        <label for="config-url">{{ translation['config-url'] }}: </label>
+                        <input type="text" name="url" id="config-url" value="{{ config.url }}">
+                    </div>
+                    <div class="config-div config-div-custom-css">
+                        <a id="css-link"
+                           href="https://github.com/benbusby/whoogle-search/wiki/User-Contributed-CSS-Themes">
+                            {{ translation['config-css'] }}:
+                        </a>
+                        <textarea
+                                name="style"
+                                id="config-style"
+                                autocapitalize="off"
+                                autocomplete="off"
+                                spellcheck="false"
+                                autocorrect="off"
+                                value="">
+                            {{ config.style.replace('\t', '') }}
+                        </textarea>
+                    </div>
+                    <div class="config-div">
+                        <input type="submit" id="config-load" value="{{ translation['load'] }}">&nbsp;
+                        <input type="submit" id="config-submit" value="{{ translation['apply'] }}">&nbsp;
+                        <input type="submit" id="config-save" value="{{ translation['save-as'] }}">
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+<footer>
+    <p class="footer">
+        Whoogle Search v{{ version_number }} ||
+        <a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
+    </p>
+</footer>
+</body>
 </html>
