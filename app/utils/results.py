@@ -52,7 +52,8 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         if len(element) == len(target_word):
             return
 
-        if not target_word.isalnum():
+        if not re.match('.*[a-zA-Z0-9].*', target_word) or (
+                element.parent and element.parent.name == 'style'):
             return
 
         element.replace_with(
