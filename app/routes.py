@@ -385,7 +385,13 @@ def window():
     for script in results('script'):
         script.decompose()
 
-    return render_template('display.html', response=results)
+    return render_template(
+        'display.html',
+        response=results,
+        translation=app.config['TRANSLATIONS'][
+            g.user_config.get_localization_lang()
+        ]
+    )
 
 
 def run_app() -> None:
