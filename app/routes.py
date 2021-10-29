@@ -13,7 +13,7 @@ from app import app
 from app.models.config import Config
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.misc import read_config_bool
+from app.utils.misc import read_config_bool, get_client_ip
 from app.utils.results import add_ip_card
 from app.utils.results import bold_search_terms
 from app.utils.search import *
@@ -257,7 +257,7 @@ def search():
     # Feature to display IP address
     if search_util.check_kw_ip():
         html_soup = bsoup(str(response), 'html.parser')
-        response = add_ip_card(html_soup, request.remote_addr)
+        response = add_ip_card(html_soup, get_client_ip(request))
 
     return render_template(
         'display.html',
