@@ -178,8 +178,7 @@ def append_nojs(result: BeautifulSoup) -> None:
     nojs_link = BeautifulSoup(features='html.parser').new_tag('a')
     nojs_link['href'] = '/window?location=' + result['href']
     nojs_link['style'] = 'display:block;width:100%;'
-    nojs_link.string = 'NoJS Link: ' + nojs_link['href']
-    result.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
+    nojs_link.string = 'NoJS Link'
     result.append(nojs_link)
 
 
