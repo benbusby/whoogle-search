@@ -21,10 +21,15 @@ from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for
-from requests import exceptions
+from requests import exceptions, get
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE']))
+
+# Get the newest version of WHOOGLE
+link_releases = "https://github.com/benbusby/whoogle-search/releases"
+update = bsoup(get(link_releases).text, "html.parser")
+newest_version = update.select_one('[class="Link--primary"]').string[1:]
 
 
 def auth_required(f):
@@ -137,6 +142,7 @@ def index():
         return render_template('error.html', error_message=error_message)
 
     return render_template('index.html',
+                           newest_version=newest_version,
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
                            themes=app.config['THEMES'],
@@ -261,6 +267,7 @@ def search():
 
     return render_template(
         'display.html',
+        newest_version=newest_version,
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
         config=g.user_config,
