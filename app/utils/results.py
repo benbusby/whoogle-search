@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup, NavigableString
+import html
 import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
@@ -56,11 +57,11 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
                 element.parent and element.parent.name == 'style'):
             return
 
-        element.replace_with(
+        element.replace_with(BeautifulSoup(
             re.sub(fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b',
                    r'<b>\1</b>',
-                   element,
-                   flags=re.I)
+                   html.escape(element),
+                   flags=re.I), 'html.parser')
         )
 
     # Split all words out of query, grouping the ones wrapped in quotes
