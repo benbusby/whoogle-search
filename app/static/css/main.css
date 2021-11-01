@@ -102,6 +102,7 @@ button::-moz-focus-inner {
 }
 
 .open {
+    overflow-y: scroll;
     padding-bottom: 20px;
 }
 

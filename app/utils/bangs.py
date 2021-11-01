@@ -55,9 +55,11 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
     query = query.lower()
     split_query = query.split(' ')
     for operator in bangs_dict.keys():
-        if operator not in split_query:
+        if operator not in split_query \
+                and operator[1:] + operator[0] not in split_query:
             continue
-
-        return bangs_dict[operator]['url'].format(
-            query.replace(operator, '').strip())
+        return bangs_dict[operator]['url'].replace(
+            '{}',
+            query.replace(operator if operator in split_query
+                          else operator[1:] + operator[0], '').strip(), 1)
     return ''

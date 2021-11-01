@@ -14,7 +14,7 @@ from app import app
 from app.models.config import Config
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.misc import read_config_bool
+from app.utils.misc import read_config_bool, get_client_ip
 from app.utils.results import add_ip_card
 from app.utils.results import bold_search_terms
 from app.utils.search import *
@@ -301,10 +301,11 @@ def search():
     # Return 503 if temporarily blocked by captcha
     resp_code = 503 if has_captcha(str(response)) else 200
     response = bold_search_terms(response, query)
+
     # Feature to display IP address
     if search_util.check_kw_ip():
-        html_soup = bsoup(response, "html.parser")
-        response = add_ip_card(html_soup, request.remote_addr)
+        html_soup = bsoup(str(response), 'html.parser')
+        response = add_ip_card(html_soup, get_client_ip(request))
 
     return render_template(
         'display.html',
@@ -322,7 +323,7 @@ def search():
         is_translation=any(
             _ in query.lower() for _ in [translation['translate'], 'translate']
         ) and not search_util.search_type,  # Standard search queries only
-        response=html.unescape(str(response)),
+        response=response,
         version_number=app.config['VERSION_NUMBER'],
         search_header=(render_template(
             'header.html',
@@ -434,7 +435,13 @@ def window():
     for script in results('script'):
         script.decompose()
 
-    return render_template('display.html', response=results)
+    return render_template(
+        'display.html',
+        response=results,
+        translation=app.config['TRANSLATIONS'][
+            g.user_config.get_localization_lang()
+        ]
+    )
 
 
 def run_app() -> None:

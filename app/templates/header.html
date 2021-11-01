@@ -2,8 +2,8 @@
     <header>
         <div class="bz1lBb header-div">
             <form class="search-form Pg70bf"
-                id="search-form"
-                method="{{ 'GET' if config.get_only else 'POST' }}">
+                  id="search-form"
+                  method="{{ 'GET' if config.get_only else 'POST' }}">
                 <a class="logo-link mobile-logo" href="home">
                     <div id="mobile-header-logo">
                         {{ logo|safe }}
@@ -11,18 +11,18 @@
                 </a>
                 <div class="H0PQec mobile-input-div">
                     <div class="sbc esbc autocomplete">
-                        <input 
-                            id="search-bar" 
-                            class="mobile-search-bar"
-                            autocapitalize="none" 
-                            autocomplete="off" 
-                            autocorrect="off"
-                            spellcheck="false" 
-                            class="noHIxc" 
-                            name="q"
-                            type="text" 
-                            value="{{ clean_query(query) }}"
-                            dir="auto">
+                        <input
+                                id="search-bar"
+                                class="mobile-search-bar"
+                                autocapitalize="none"
+                                autocomplete="off"
+                                autocorrect="off"
+                                spellcheck="false"
+                                class="noHIxc"
+                                name="q"
+                                type="text"
+                                value="{{ clean_query(query) }}"
+                                dir="auto">
                         <input id="search-reset" type="reset" value="x">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
@@ -43,22 +43,22 @@
         </div>
         <div class="search-div">
             <form id="search-form"
-                class="search-form"
-                id="sf"
-                method="{{ 'GET' if config.get_only else 'POST' }}">
+                  class="search-form"
+                  id="sf"
+                  method="{{ 'GET' if config.get_only else 'POST' }}">
                 <div class="autocomplete header-autocomplete">
                     <div style="width: 100%; display: flex">
-                        <input 
-                            id="search-bar" 
-                            autocapitalize="none" 
-                            autocomplete="off" 
-                            autocorrect="off"
-                            class="search-bar-desktop noHIxc" 
-                            name="q"
-                            spellcheck="false"
-                            type="text"
-                            value="{{ clean_query(query) }}"
-                            dir="auto">
+                        <input
+                                id="search-bar"
+                                autocapitalize="none"
+                                autocomplete="off"
+                                autocorrect="off"
+                                class="search-bar-desktop noHIxc"
+                                name="q"
+                                spellcheck="false"
+                                type="text"
+                                value="{{ clean_query(query) }}"
+                                dir="auto">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>

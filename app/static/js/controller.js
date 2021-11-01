@@ -26,7 +26,7 @@ const setupConfigLayout = () => {
         if (content.style.maxHeight) {
             content.style.maxHeight = null;
         } else {
-            content.style.maxHeight = content.scrollHeight + "px";
+            content.style.maxHeight = "400px";
         }
 
         content.classList.toggle("open");

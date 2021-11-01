@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup, NavigableString
+import html
 import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
@@ -52,11 +53,15 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         if len(element) == len(target_word):
             return
 
-        element.replace_with(
+        if not re.match('.*[a-zA-Z0-9].*', target_word) or (
+                element.parent and element.parent.name == 'style'):
+            return
+
+        element.replace_with(BeautifulSoup(
             re.sub(fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b',
                    r'<b>\1</b>',
-                   element,
-                   flags=re.I)
+                   html.escape(element),
+                   flags=re.I), 'html.parser')
         )
 
     # Split all words out of query, grouping the ones wrapped in quotes
@@ -173,9 +178,7 @@ def append_nojs(result: BeautifulSoup) -> None:
     """
     nojs_link = BeautifulSoup(features='html.parser').new_tag('a')
     nojs_link['href'] = '/window?location=' + result['href']
-    nojs_link['style'] = 'display:block;width:100%;'
-    nojs_link.string = 'NoJS Link: ' + nojs_link['href']
-    result.append(BeautifulSoup('<br><hr><br>', 'html.parser'))
+    nojs_link.string = ' NoJS Link'
     result.append(nojs_link)
 
 
