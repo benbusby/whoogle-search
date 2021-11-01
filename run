@@ -12,6 +12,10 @@ SUBDIR="${1:-app}"
 export APP_ROOT="$SCRIPT_DIR/$SUBDIR"
 export STATIC_FOLDER="$APP_ROOT/static"
 
+# Clear out build directory
+rm -f "$SCRIPT_DIR"/app/static/build/*.js
+rm -f "$SCRIPT_DIR"/app/static/build/*.css
+
 # Check for regular vs test run
 if [[ "$SUBDIR" == "test" ]]; then
     # Set up static files for testing
