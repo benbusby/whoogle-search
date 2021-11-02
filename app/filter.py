@@ -334,7 +334,7 @@ class Filter:
         for item in results_all:
             urls = item.find('a')['href'].split('&imgrefurl=')
 
-            # Skip cases in which `urls` is not a two-element list of `[img_url, web_page]`
+            # Skip urls that are not two-element lists
             if len(urls) != 2:
                 continue
 
