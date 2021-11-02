@@ -26,10 +26,14 @@ from requests import exceptions, get
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE']))
 
-# Get the newest version of WHOOGLE
-link_releases = "https://github.com/benbusby/whoogle-search/releases"
-update = bsoup(get(link_releases).text, "html.parser")
+
+# Check the newest version of WHOOGLE
+update = bsoup(get(app.config['RELEASES_URL']).text, 'html.parser')
 newest_version = update.select_one('[class="Link--primary"]').string[1:]
+current_version = int(''.join(filter(str.isdigit, app.config['VERSION_NUMBER'])))
+newest_version = int(''.join(filter(str.isdigit, newest_version)))
+newest_version = newest_version if (current_version
+                                    < newest_version) else ''
 
 
 def auth_required(f):
