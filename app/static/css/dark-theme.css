@@ -187,6 +187,6 @@ path {
     color: var(--whoogle-dark-text) !important;
 }
 
-.ip-text-div{
+.ip-text-div, .update_available {
   color: var(--whoogle-dark-secondary-text) !important;
 }
