@@ -334,6 +334,10 @@ class Filter:
         for item in results_all:
             urls = item.find('a')['href'].split('&imgrefurl=')
 
+            # Skip cases in which `urls` is not a two-element list of `[img_url, web_page]`
+            if len(urls) != 2:
+                continue
+
             img_url = urlparse.unquote(urls[0].replace('/imgres?imgurl=', ''))
 
             try:
