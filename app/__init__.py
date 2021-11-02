@@ -59,6 +59,8 @@ app.config['BANG_PATH'] = os.getenv(
 app.config['BANG_FILE'] = os.path.join(
     app.config['BANG_PATH'],
     'bangs.json')
+app.config['RELEASES_URL'] = 'https://github.com/' \
+                             'benbusby/whoogle-search/releases'
 
 # The alternative to Google Translate is treated a bit differently than other
 # social media site alternatives, in that it is used for any translation

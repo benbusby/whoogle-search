@@ -33,12 +33,7 @@
 {% endif %}
 {{ response|safe }}
 </body>
-<footer>
-    <p class="footer">
-        Whoogle Search v{{ version_number }} ||
-        <a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
-    </p>
-</footer>
+{% include 'footer.html' %}
 <script src="{{ cb_url('autocomplete.js') }}"></script>
 <script src="{{ cb_url('utils.js') }}"></script>
 <script src="{{ cb_url('keyboard.js') }}"></script>

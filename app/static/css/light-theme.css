@@ -175,6 +175,6 @@ path {
     border-bottom: 0px;
 }
 
-.ip-text-div{
+.ip-text-div, .update_available {
   color: var(--whoogle-secondary-text) !important;
 }
