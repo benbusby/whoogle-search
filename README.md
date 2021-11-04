@@ -22,6 +22,7 @@ Contents
     6. [Manual](#f-manual)
     7. [Docker](#g-manual-docker)
     8. [Arch/AUR](#arch-linux--arch-based-distributions)
+    9. [Helm/Kubernetes](#helm-chart-for-kubernetes)
 4. [Environment Variables and Configuration](#environment-variables)
 5. [Usage](#usage)
 6. [Extra Steps](#extra-steps)
@@ -286,6 +287,13 @@ You may also edit environment variables from your app’s Settings tab in the He
 
 #### Arch Linux & Arch-based Distributions
 There is an [AUR package available](https://aur.archlinux.org/packages/whoogle-git/), as well as a pre-built and daily updated package available at [Chaotic-AUR](https://chaotic.cx).
+
+#### Helm chart for Kubernetes
+To use the Kubernetes Helm Chart:
+1. Ensure you have [Helm](https://helm.sh/docs/intro/install/) `>=3.0.0` installed
+2. Clone this repository
+3. Update [charts/whoogle/values.yaml](./charts/whoogle/values.yaml) as desired
+4. Run `helm install whoogle ./charts/whoogle`
 
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
