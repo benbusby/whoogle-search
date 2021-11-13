@@ -274,14 +274,19 @@ class Request:
 
         # Make sure that the tor connection is valid, if enabled
         if self.tor:
-            tor_check = requests.get('https://check.torproject.org/',
-                                     proxies=self.proxies, headers=headers)
-            self.tor_valid = 'Congratulations' in tor_check.text
+            try:
+                tor_check = requests.get('https://check.torproject.org/',
+                                         proxies=self.proxies, headers=headers)
+                self.tor_valid = 'Congratulations' in tor_check.text
 
-            if not self.tor_valid:
+                if not self.tor_valid:
+                    raise TorError(
+                        "Tor connection succeeded, but the connection could "
+                        "not be validated by torproject.org",
+                        disable=True)
+            except ConnectionError:
                 raise TorError(
-                    "Tor connection succeeded, but the connection could not "
-                    "be validated by torproject.org",
+                    "Error raised during Tor connection validation",
                     disable=True)
 
         response = requests.get(

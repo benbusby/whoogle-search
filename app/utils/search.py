@@ -140,10 +140,8 @@ class Search:
             html_soup = content_filter.view_image(html_soup)
 
         # Indicate whether or not a Tor connection is active
-        tor_banner = bsoup('', 'html.parser')
         if g.user_request.tor_valid:
-            tor_banner = bsoup(TOR_BANNER, 'html.parser')
-        html_soup.insert(0, tor_banner)
+            html_soup.insert(0, bsoup(TOR_BANNER, 'html.parser'))
 
         if self.feeling_lucky:
             return get_first_link(html_soup)
