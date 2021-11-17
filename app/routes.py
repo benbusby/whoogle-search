@@ -14,8 +14,7 @@ from app.models.config import Config
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool, get_client_ip
-from app.utils.results import add_ip_card
-from app.utils.results import bold_search_terms
+from app.utils.results import add_ip_card, bold_search_terms, get_tabs_content
 from app.utils.search import *
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
@@ -259,6 +258,12 @@ def search():
         html_soup = bsoup(str(response), 'html.parser')
         response = add_ip_card(html_soup, get_client_ip(request))
 
+    # Update tabs content
+    tabs = get_tabs_content(app.config['HEADER_TABS'],
+                            search_util.full_query,
+                            search_util.search_type,
+                            translation)
+
     return render_template(
         'display.html',
         query=urlparse.unquote(query),
@@ -277,15 +282,14 @@ def search():
         ) and not search_util.search_type,  # Standard search queries only
         response=response,
         version_number=app.config['VERSION_NUMBER'],
-        search_header=(render_template(
+        search_header=render_template(
             'header.html',
             config=g.user_config,
             logo=render_template('logo.html', dark=g.user_config.dark),
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
-            mobile=g.user_request.mobile)
-                       if 'isch' not in
-                          search_util.search_type else '')), resp_code
+            mobile=g.user_request.mobile,
+            tabs=tabs)), resp_code
 
 
 @app.route('/config', methods=['GET', 'POST', 'PUT'])
