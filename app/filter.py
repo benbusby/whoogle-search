@@ -304,7 +304,7 @@ class Filter:
             '}')
             css = f"{css_html_tag}{css}"
             css = re.sub('body{(.*?)}',
-                         'body{padding:0 8px;margin: 0 auto;max-width: 736px;}',
+                         'body{padding:0 8px;margin:0 auto;max-width:736px;}',
                          css)
             style.string = css
 
