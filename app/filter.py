@@ -293,7 +293,8 @@ class Filter:
         div = soup.find('div', attrs={'class': "n692Zd"})
         if style and div and not self.mobile:
             css = style.string
-            css_html_tag = ('html{'
+            css_html_tag = (
+                'html{'
                 'font-family: Roboto, Helvetica Neue, Arial, sans-serif;'
                 'font-size: 14px;'
                 'line-height: 20px;'
@@ -301,7 +302,8 @@ class Filter:
                 'color: #3c4043;'
                 'word-wrap: break-word;'
                 'background-color: #fff;'
-            '}')
+                '}'
+            )
             css = f"{css_html_tag}{css}"
             css = re.sub('body{(.*?)}',
                          'body{padding:0 8px;margin:0 auto;max-width:736px;}',
