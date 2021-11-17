@@ -288,6 +288,26 @@ class Filter:
         except AttributeError:
             pass
 
+        # Fix body max with on images tab
+        style = soup.find('style')
+        div = soup.find('div', attrs={'class': "n692Zd"})
+        if style and div and not self.mobile:
+            css = style.string
+            css_html_tag = ('html{'
+                'font-family: Roboto, Helvetica Neue, Arial, sans-serif;'
+                'font-size: 14px;'
+                'line-height: 20px;'
+                'text-size-adjust: 100%;'
+                'color: #3c4043;'
+                'word-wrap: break-word;'
+                'background-color: #fff;'
+            '}')
+            css = f"{css_html_tag}{css}"
+            css = re.sub('body{(.*?)}',
+                         'body{padding:0 8px;margin: 0 auto;max-width: 736px;}',
+                         css)
+            style.string = css
+
     def update_link(self, link: Tag) -> None:
         """Update internal link paths with encrypted path, otherwise remove
         unnecessary redirects and/or marketing params from the url
