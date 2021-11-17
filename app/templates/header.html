@@ -67,6 +67,25 @@
             </form>
         </div>
     </header>
+    <div>
+      <div class="desktop-tap-div">
+          <div class="bRsWnc">
+              <div class="N6RWV">
+                  <div class="Pg70bf Uv67qb">
+                      {% for tab_id, tab_content in tabs.items() %}
+                          {% if tab_content['selected'] %}
+                              <span class="OXXup">{{ tab_content['name'] }}</span>
+                          {% else %}
+                              <a class="eZt8xd" href="{{ tab_content['href'] }}">{{ tab_content['name'] }}</a>
+                          {% endif %}
+                      {% endfor %}
+                      <div class="FElbsf"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="" id="s">
+  </div>
 {% endif %}
 
 <script type="text/javascript" src="{{ cb_url('header.js') }}"></script>
