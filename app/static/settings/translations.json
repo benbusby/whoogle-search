@@ -34,7 +34,13 @@
         "translate": "translate",
         "light": "light",
         "dark": "dark",
-        "system": "system"
+        "system": "system",
+        "all": "All",
+        "images": "Images",
+        "maps": "Maps",
+        "videos": "Videos",
+        "news": "News",
+        "books": "Books"
     },
     "lang_nl": {
         "search": "Zoeken",
