@@ -1,6 +1,5 @@
 import argparse
 import base64
-import html
 import io
 import json
 import pickle
@@ -12,6 +11,7 @@ from functools import wraps
 import waitress
 from app import app
 from app.models.config import Config
+from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool, get_client_ip
@@ -20,6 +20,7 @@ from app.utils.results import bold_search_terms
 from app.utils.search import *
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
+from enum import Enum
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for
 from requests import exceptions, get
@@ -110,10 +111,17 @@ def before_request_func():
         session['config'] = default_config
         session['uuid'] = str(uuid.uuid4())
         session['key'] = generate_user_key()
-        return redirect(url_for(
-            'session_check',
-            session_id=session['uuid'],
-            follow=request.url), code=307)
+
+        # Skip checking for session on /autocomplete searches,
+        # since they can be done from the browser search bar (aka
+        # no ability to initialize a session)
+        if not Endpoint.autocomplete.in_path(request.path):
+            return redirect(url_for(
+                'session_check',
+                session_id=session['uuid'],
+                follow=request.url), code=307)
+        else:
+            g.user_config = Config(**session['config'])
     elif 'cookies_disabled' not in request.args:
         # Set session as permanent
         session.permanent = True
@@ -158,17 +166,17 @@ def unknown_page(e):
     return redirect(g.app_location)
 
 
-@app.route('/healthz', methods=['GET'])
+@app.route(f'/{Endpoint.healthz}', methods=['GET'])
 def healthz():
     return ''
 
 
-@app.route('/home', methods=['GET'])
+@app.route(f'/{Endpoint.home}', methods=['GET'])
 def home():
     return redirect(url_for('.index'))
 
 
-@app.route('/session/<session_id>', methods=['GET', 'PUT', 'POST'])
+@app.route(f'{Endpoint.session}/<session_id>', methods=['GET', 'PUT', 'POST'])
 def session_check(session_id):
     if 'uuid' in session and session['uuid'] == session_id:
         session['valid'] = True
@@ -210,7 +218,7 @@ def index():
                            version_number=app.config['VERSION_NUMBER'])
 
 
-@app.route('/opensearch.xml', methods=['GET'])
+@app.route(f'/{Endpoint.opensearch}', methods=['GET'])
 def opensearch():
     opensearch_url = g.app_location
     if opensearch_url.endswith('/'):
@@ -230,7 +238,7 @@ def opensearch():
     ), 200, {'Content-Disposition': 'attachment; filename="opensearch.xml"'}
 
 
-@app.route('/search.html', methods=['GET'])
+@app.route(f'/{Endpoint.search_html}', methods=['GET'])
 def search_html():
     search_url = g.app_location
     if search_url.endswith('/'):
@@ -238,8 +246,7 @@ def search_html():
     return render_template('search.html', url=search_url)
 
 
-@app.route('/autocomplete', methods=['GET', 'POST'])
-@session_required
+@app.route(f'/{Endpoint.autocomplete}', methods=['GET', 'POST'])
 def autocomplete():
     ac_var = 'WHOOGLE_AUTOCOMPLETE'
     if os.getenv(ac_var) and not read_config_bool(ac_var):
@@ -272,7 +279,7 @@ def autocomplete():
     ])
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route(f'/{Endpoint.search}', methods=['GET', 'POST'])
 @session_required
 @auth_required
 def search():
@@ -288,7 +295,7 @@ def search():
 
     # Redirect to home if invalid/blank search
     if not query:
-        return redirect('/')
+        return redirect(url_for('.index'))
 
     # Generate response and number of external elements from the page
     try:
@@ -348,7 +355,7 @@ def search():
                           search_util.search_type else '')), resp_code
 
 
-@app.route('/config', methods=['GET', 'POST', 'PUT'])
+@app.route(f'/{Endpoint.config}', methods=['GET', 'POST', 'PUT'])
 @session_required
 @auth_required
 def config():
@@ -387,7 +394,7 @@ def config():
         return redirect(url_for('.index'), code=403)
 
 
-@app.route('/url', methods=['GET'])
+@app.route(f'/{Endpoint.url}', methods=['GET'])
 @session_required
 @auth_required
 def url():
@@ -403,14 +410,14 @@ def url():
             error_message='Unable to resolve query: ' + q)
 
 
-@app.route('/imgres')
+@app.route(f'/{Endpoint.imgres}')
 @session_required
 @auth_required
 def imgres():
     return redirect(request.args.get('imgurl'))
 
 
-@app.route('/element')
+@app.route(f'/{Endpoint.element}')
 @session_required
 @auth_required
 def element():
@@ -433,7 +440,7 @@ def element():
     return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
 
 
-@app.route('/window')
+@app.route(f'/{Endpoint.window}')
 @auth_required
 def window():
     get_body = g.user_request.send(base_url=request.args.get('location')).text
