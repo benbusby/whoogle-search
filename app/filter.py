@@ -96,6 +96,7 @@ class Filter:
         self.remove_block_url()
         self.collapse_sections()
         self.update_styling(soup)
+        self.remove_block_tabs(soup)
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
@@ -162,6 +163,16 @@ class Filter:
             block_divs = [_ for _ in div.find_all('a', recursive=True)
                           if block_url.search(_.attrs['href']) is not None]
             _ = div.decompose() if len(block_divs) else None
+
+    def remove_block_tabs(self, soup) -> None:
+        if self.main_divs:
+            for div in self.main_divs.find_all('div',
+                                               attrs={'class': "KP7LCb"}):
+                _ = div.decompose()
+        else:
+            # when in images tab
+            for div in soup.find_all('div', attrs={'class': "n692Zd"}):
+                _ = div.decompose()
 
     def collapse_sections(self) -> None:
         """Collapses long result sections ("people also asked", "related
