@@ -107,6 +107,73 @@ header {
     flex: 1
 }
 
+.desktop-tap-div {
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 3px rgba(32, 33, 36, 0.18);
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.bRsWnc {
+    background-color: #fff;
+    border-top: 1px solid #dadce0;
+    height: 39px;
+    overflow: hidden;
+}
+
+.N6RWV {
+    height: 51px;
+    overflow-scrolling: touch;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.Pg70bf {
+    height: 39px;
+    display: box;
+    display: flex;
+    display: flex;
+    width: 100%;
+}
+
+.Uv67qb {
+    box-pack: justify;
+    font-size: 12px;
+    line-height: 37px;
+    justify-content: space-between;
+    justify-content: space-between;
+}
+
+span.OXXup {
+    border-bottom: 2px solid #4285f4;
+    color: #4285f4;
+    font-weight: bold;
+}
+
+.Uv67qb a, .Uv67qb span {
+    color: #70757a;
+    display: block;
+    flex: none;
+    padding: 0 16px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.Uv67qb a, .Uv67qb span {
+    color: #70757a;
+    display: block;
+    flex: none;
+    padding: 0 16px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+a {
+    color: #1967D2;
+    text-decoration: none;
+    tap-highlight-color: rgba(0, 0, 0, .10);
+}
+
 .Pg70bf input {
     margin: 2px 4px 2px 8px;
 }
