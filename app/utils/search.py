@@ -122,6 +122,7 @@ class Search:
                                self.request_params,
                                self.config,
                                content_filter.near)
+        self.full_query = full_query
 
         # force mobile search when view image is true and
         # the request is not already made by a mobile
