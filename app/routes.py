@@ -20,7 +20,6 @@ from app.utils.results import bold_search_terms
 from app.utils.search import *
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
-from enum import Enum
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for
 from requests import exceptions, get
@@ -171,11 +170,6 @@ def healthz():
     return ''
 
 
-@app.route(f'/{Endpoint.home}', methods=['GET'])
-def home():
-    return redirect(url_for('.index'))
-
-
 @app.route(f'/{Endpoint.session}/<session_id>', methods=['GET', 'PUT', 'POST'])
 def session_check(session_id):
     if 'uuid' in session and session['uuid'] == session_id:
@@ -190,6 +184,7 @@ def session_check(session_id):
 
 
 @app.route('/', methods=['GET'])
+@app.route(f'/{Endpoint.home}', methods=['GET'])
 @auth_required
 def index():
     # Redirect if an error was raised
