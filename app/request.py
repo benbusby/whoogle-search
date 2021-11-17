@@ -115,6 +115,11 @@ def gen_query(query, args, config, near_city=None) -> str:
     if 'nfpr' in args:
         param_dict['nfpr'] = '&nfpr=' + args.get('nfpr')
 
+    # 'chips' is used in image tabs to pass the optional 'filter' to add to the
+    # given search term
+    if 'chips' in args:
+        param_dict['chips'] = '&chips=' + args.get('chips')
+
     param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
     param_dict['hl'] = '&hl=' + (
         config.lang_interface.replace('lang_', '')
