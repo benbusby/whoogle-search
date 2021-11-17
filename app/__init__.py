@@ -43,6 +43,8 @@ app.config['TRANSLATIONS'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json')))
 app.config['THEMES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/themes.json')))
+app.config['HEADER_TABS'] = json.load(open(
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/header_tabs.json')))
 app.config['CONFIG_PATH'] = os.getenv(
     'CONFIG_VOLUME',
     os.path.join(app.config['STATIC_FOLDER'], 'config'))
