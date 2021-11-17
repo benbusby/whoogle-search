@@ -176,11 +176,11 @@ def home():
     return redirect(url_for('.index'))
 
 
-@app.route(f'{Endpoint.session}/<session_id>', methods=['GET', 'PUT', 'POST'])
+@app.route(f'/{Endpoint.session}/<session_id>', methods=['GET', 'PUT', 'POST'])
 def session_check(session_id):
     if 'uuid' in session and session['uuid'] == session_id:
         session['valid'] = True
-        return redirect(request.args.get('follow'))
+        return redirect(request.args.get('follow'), code=307)
     else:
         follow_url = request.args.get('follow')
         req = PreparedRequest()

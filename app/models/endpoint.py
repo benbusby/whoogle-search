@@ -15,8 +15,9 @@ class Endpoint(Enum):
     element = 'element'
     window = 'window'
 
-    def __repr__(self):
+    def __str__(self):
         return self.value
 
     def in_path(self, path: str) -> bool:
-        return path.startswith(self.value)
+        return path.startswith(self.value) or \
+               path.startswith(f'/{self.value}')
