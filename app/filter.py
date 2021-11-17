@@ -397,11 +397,8 @@ class Filter:
         """
 
         # get some tags that are unchanged between mobile and pc versions
-        search_input = soup.find_all('td', attrs={'class': "O4cRJf"})[0]
-        search_options = soup.find_all('div', attrs={'class': "M7pB2"})[0]
         cor_suggested = soup.find_all('table', attrs={'class': "By0U9"})
         next_pages = soup.find_all('table', attrs={'class': "uZgmoc"})[0]
-        information = soup.find_all('div', attrs={'class': "TuS8Ad"})[0]
 
         results = []
         # find results div
@@ -434,12 +431,7 @@ class Filter:
                                              results=results,
                                              view_label="View Image"),
                              features='html.parser')
-        # replace search input object
-        soup.find_all('td',
-                      attrs={'class': "O4cRJf"})[0].replaceWith(search_input)
-        # replace search options object (All, Images, Videos, etc.)
-        soup.find_all('div',
-                      attrs={'class': "M7pB2"})[0].replaceWith(search_options)
+
         # replace correction suggested by google object if exists
         if len(cor_suggested):
             soup.find_all(
@@ -449,7 +441,4 @@ class Filter:
         # replace next page object at the bottom of the page
         soup.find_all('table',
                       attrs={'class': "uZgmoc"})[0].replaceWith(next_pages)
-        # replace information about user connection at the bottom of the page
-        soup.find_all('div',
-                      attrs={'class': "TuS8Ad"})[0].replaceWith(information)
         return soup
