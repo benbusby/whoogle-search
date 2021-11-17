@@ -118,7 +118,6 @@ def gen_query(query, args, config, near_city=None) -> str:
     # 'chips' is used in image tabs to pass the optional 'filter' to add to the
     # given search term
     if 'chips' in args:
-        print(args.get('chips'))
         param_dict['chips'] = '&chips=' + args.get('chips')
 
     param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
