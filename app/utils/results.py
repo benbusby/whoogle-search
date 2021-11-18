@@ -265,7 +265,8 @@ def add_currency_b(soup: BeautifulSoup,
 
     """
 
-    # Element before which the code will be changed(This is the 'disclaimer' link)
+    # Element before which the code will be changed
+    # (This is the 'disclaimer' link)
     element1 = soup.select_one('[class="nXE3Ob"]')
 
     # Creating the conversion factor
