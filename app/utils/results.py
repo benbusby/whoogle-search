@@ -253,7 +253,7 @@ def check_currency(response: str):
 def add_currency_b(soup: BeautifulSoup,
                    conversion_details: list) -> BeautifulSoup:
     """Adds the conversion input boxes to the search result
-    
+        
     Args:
         soup: The parsed search result
         containing currency conversion
