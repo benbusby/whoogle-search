@@ -252,19 +252,17 @@ def check_currency(response: str):
 
 def add_currency_b(soup: BeautifulSoup,
                    conversion_details: list) -> BeautifulSoup:
-    """Adds the conversion input boxes to the search result
-        
+    """Adds the currency conversion boxes
+    to response of the search query
+
     Args:
-        soup: The parsed search result
-        containing currency conversion
-        conversion_details: Floating point number
-        to be used for conversion
+        soup: Parsed search result
+        conversion_details: list of currency
+        related information
 
     Returns:
         BeautifulSoup
-
     """
-
     # Element before which the code will be changed
     # (This is the 'disclaimer' link)
     element1 = soup.select_one('[class="nXE3Ob"]')
