@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from app.filter import Filter
+from app.models.endpoint import Endpoint
 from app.utils.session import generate_user_key
 from datetime import datetime
 from dateutil.parser import *
@@ -30,7 +31,7 @@ def get_search_results(data):
 
 
 def test_get_results(client):
-    rv = client.get('/search?q=test')
+    rv = client.get(f'/{Endpoint.search}?q=test')
     assert rv._status_code == 200
 
     # Depending on the search, there can be more
@@ -41,7 +42,7 @@ def test_get_results(client):
 
 
 def test_post_results(client):
-    rv = client.post('/search', data=dict(q='test'))
+    rv = client.post(f'/{Endpoint.search}', data=dict(q='test'))
     assert rv._status_code == 200
 
     # Depending on the search, there can be more
@@ -52,7 +53,7 @@ def test_post_results(client):
 
 
 def test_translate_search(client):
-    rv = client.post('/search', data=dict(q='translate hola'))
+    rv = client.post(f'/{Endpoint.search}', data=dict(q='translate hola'))
     assert rv._status_code == 200
 
     # Pretty weak test, but better than nothing
@@ -62,7 +63,7 @@ def test_translate_search(client):
 
 
 def test_block_results(client):
-    rv = client.post('/search', data=dict(q='pinterest'))
+    rv = client.post(f'/{Endpoint.search}', data=dict(q='pinterest'))
     assert rv._status_code == 200
 
     has_pinterest = False
@@ -74,10 +75,10 @@ def test_block_results(client):
     assert has_pinterest
 
     demo_config['block'] = 'pinterest.com'
-    rv = client.post('/config', data=demo_config)
+    rv = client.post(f'/{Endpoint.config}', data=demo_config)
     assert rv._status_code == 302
 
-    rv = client.post('/search', data=dict(q='pinterest'))
+    rv = client.post(f'/{Endpoint.search}', data=dict(q='pinterest'))
     assert rv._status_code == 200
 
     for link in BeautifulSoup(rv.data, 'html.parser').find_all('a', href=True):
@@ -106,7 +107,7 @@ def test_recent_results(client):
     }
 
     for time, num_days in times.items():
-        rv = client.post('/search', data=dict(q='test :' + time))
+        rv = client.post(f'/{Endpoint.search}', data=dict(q='test :' + time))
         result_divs = get_search_results(rv.data)
 
         current_date = datetime.now()

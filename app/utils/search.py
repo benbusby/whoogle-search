@@ -52,16 +52,15 @@ class Search:
     Attributes:
         request: the incoming flask request
         config: the current user config settings
-        session: the flask user session
+        session_key: the flask user fernet key
     """
-
-    def __init__(self, request, config, session, cookies_disabled=False):
+    def __init__(self, request, config, session_key, cookies_disabled=False):
         method = request.method
         self.request_params = request.args if method == 'GET' else request.form
         self.user_agent = request.headers.get('User-Agent')
         self.feeling_lucky = False
         self.config = config
-        self.session = session
+        self.session_key = session_key
         self.query = ''
         self.cookies_disabled = cookies_disabled
         self.search_type = self.request_params.get(
@@ -96,7 +95,7 @@ class Search:
         else:
             # Attempt to decrypt if this is an internal link
             try:
-                q = Fernet(self.session['key']).decrypt(q.encode()).decode()
+                q = Fernet(self.session_key).decrypt(q.encode()).decode()
             except InvalidToken:
                 pass
 
@@ -115,7 +114,7 @@ class Search:
         """
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
 
-        content_filter = Filter(self.session['key'],
+        content_filter = Filter(self.session_key,
                                 mobile=mobile,
                                 config=self.config)
         full_query = gen_query(self.query,

@@ -1,6 +1,7 @@
 from cryptography.fernet import Fernet
 
 from app import app
+from app.models.endpoint import Endpoint
 from app.utils.session import generate_user_key, valid_user_session
 
 
@@ -37,13 +38,13 @@ def test_query_decryption(client):
     rv = client.get('/')
     cookie = rv.headers['Set-Cookie']
 
-    rv = client.get('/search?q=test+1', headers={'Cookie': cookie})
+    rv = client.get(f'/{Endpoint.search}?q=test+1', headers={'Cookie': cookie})
     assert rv._status_code == 200
 
     with client.session_transaction() as session:
         assert valid_user_session(session)
 
-    rv = client.get('/search?q=test+2', headers={'Cookie': cookie})
+    rv = client.get(f'/{Endpoint.search}?q=test+2', headers={'Cookie': cookie})
     assert rv._status_code == 200
 
     with client.session_transaction() as session:

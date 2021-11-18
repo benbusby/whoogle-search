@@ -1,3 +1,4 @@
+from app.models.endpoint import Endpoint
 from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import read_config_bool
 from app.utils.results import *
@@ -250,7 +251,7 @@ class Filter:
             element['src'] = BLANK_B64
             return
 
-        element['src'] = 'element?url=' + self.encrypt_path(
+        element['src'] = f'{Endpoint.element}?url=' + self.encrypt_path(
             src,
             is_element=True) + '&type=' + urlparse.quote(mime)
 
@@ -385,7 +386,8 @@ class Filter:
             if len(urls) != 2:
                 continue
 
-            img_url = urlparse.unquote(urls[0].replace('/imgres?imgurl=', ''))
+            img_url = urlparse.unquote(urls[0].replace(
+                f'/{Endpoint.imgres}?imgurl=', ''))
 
             try:
                 # Try to strip out only the necessary part of the web page link

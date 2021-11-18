@@ -1,3 +1,4 @@
+from app.models.endpoint import Endpoint
 from bs4 import BeautifulSoup, NavigableString
 import html
 import os
@@ -177,7 +178,7 @@ def append_nojs(result: BeautifulSoup) -> None:
 
     """
     nojs_link = BeautifulSoup(features='html.parser').new_tag('a')
-    nojs_link['href'] = '/window?location=' + result['href']
+    nojs_link['href'] = f'/{Endpoint.window}?location=' + result['href']
     nojs_link.string = ' NoJS Link'
     result.append(nojs_link)
 
