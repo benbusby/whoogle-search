@@ -224,10 +224,10 @@ def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
         ref_element.insert_before(ip_tag)
     return html_soup
 
-    
+
 def check_currency(response: str):
     """Check whether the results have currency conversion
-    
+
     Args:
         response: Search query Result
 
@@ -240,20 +240,25 @@ def check_currency(response: str):
     tag = a.find('a')
     if tag and tag['href'] == 'https://g.co/gfd':
         currency1 = soup.find(class_="xUrNXd UMOHqf")
-        currency2 = soup.select_one('.kCrYT' 
-                                    ' .BNeawe.iBp4i.AP7Wnd .BNeawe.iBp4i.AP7Wnd')
+        currency2 = soup.select_one('.kCrYT'
+                                    ' .BNeawe.iBp4i.AP7Wnd '
+                                    '.BNeawe.iBp4i.AP7Wnd')
         currency1 = currency1.text.rstrip('=').split(' ', 1)
-        currency2 = currency2.text.split(' ', 1)   
-        return [float(currency1[0]), currency1[1], float(currency2[0]), currency2[1]]
+        currency2 = currency2.text.split(' ', 1)
+        return [float(currency1[0]), currency1[1],
+                float(currency2[0]), currency2[1]]
     return None
 
 
-def add_currency_b(soup: BeautifulSoup, conversion_details: list) -> BeautifulSoup:
+def add_currency_b(soup: BeautifulSoup,
+                   conversion_details: list) -> BeautifulSoup:
     """Adds the conversion input boxes to the search result
     
     Args:
-        soup: The parsed search result containing currency conversion
-        conversion_details: floating point number to be used for conversion
+        soup: The parsed search result
+        containing currency conversion
+        conversion_details: Floating point number
+        to be used for conversion
 
     Returns:
         BeautifulSoup
