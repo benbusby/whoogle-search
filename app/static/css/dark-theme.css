@@ -187,6 +187,10 @@ path {
     color: var(--whoogle-dark-text) !important;
 }
 
-.ip-text-div, .update_available {
+.ip-text-div, .update_available, .cb_label, .cb {
   color: var(--whoogle-dark-secondary-text) !important;
+}
+
+.cb:focus {
+  color: var(--whoogle-dark-contrast-text) !important;
 }
