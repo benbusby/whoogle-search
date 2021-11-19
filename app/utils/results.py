@@ -248,8 +248,7 @@ def get_tabs_content(tabs: dict,
 
         # update href with query
         query = full_query
-        if '&tbm=' in full_query:
-            query = full_query.replace(f"&tbm={search_type}", '')
+        query = full_query.replace(f'&tbm={search_type}', '')
 
         if tab_content['tbm'] is not None:
             query = f"{query}&tbm={tab_content['tbm']}"
