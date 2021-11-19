@@ -107,7 +107,7 @@ header {
     flex: 1
 }
 
-.desktop-tap-div {
+.desktop-tab-div {
     border-radius: 0 0 8px 8px;
     box-shadow: 0 2px 3px rgba(32, 33, 36, 0.18);
     margin-bottom: 10px;
