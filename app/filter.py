@@ -288,7 +288,7 @@ class Filter:
         except AttributeError:
             pass
 
-        # Fix body max with on images tab
+        # Fix body max width on images tab
         style = soup.find('style')
         div = soup.find('div', attrs={'class': "n692Zd"})
         if style and div and not self.mobile:
@@ -299,9 +299,7 @@ class Filter:
                 'font-size: 14px;'
                 'line-height: 20px;'
                 'text-size-adjust: 100%;'
-                'color: #3c4043;'
                 'word-wrap: break-word;'
-                'background-color: #fff;'
                 '}'
             )
             css = f"{css_html_tag}{css}"
