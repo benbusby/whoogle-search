@@ -7,6 +7,19 @@ set -euo pipefail
 
 SCRIPT_DIR="$(builtin cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
+if [[ ! -x "$(command -v python3)" ]]; then
+    echo "Python3 required -- please install first"
+    exit 1
+fi
+
+if [[ ! -d "$SCRIPT_DIR/venv" ]]; then
+    python3 -m venv venv
+    "$SCRIPT_DIR"/venv/bin/pip install --upgrade pip
+    "$SCRIPT_DIR"/venv/bin/pip install -r requirements.txt
+fi
+
+cd "$SCRIPT_DIR"
+
 # Set directory to serve static content from
 SUBDIR="${1:-app}"
 export APP_ROOT="$SCRIPT_DIR/$SUBDIR"
@@ -24,7 +37,7 @@ if [[ "$SUBDIR" == "test" ]]; then
     pytest -sv
 else
     mkdir -p "$STATIC_FOLDER"
-    python3 -um app \
+    "$SCRIPT_DIR"/venv/bin/python -um app \
       --host "${ADDRESS:-0.0.0.0}" \
       --port "${PORT:-"${EXPOSE_PORT:-5000}"}"
 fi
