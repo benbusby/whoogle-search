@@ -133,12 +133,6 @@ def before_request_func():
         session.pop('_permanent', None)
         g.user_config = Config(**default_config)
 
-    # Handle https upgrade
-    if needs_https(request.url):
-        return redirect(
-            request.url.replace('http://', 'https://', 1),
-            code=308)
-
     if not g.user_config.url:
         g.user_config.url = request.url_root.replace(
             'http://',
