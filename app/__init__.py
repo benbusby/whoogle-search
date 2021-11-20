@@ -15,7 +15,7 @@ app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + '/static')
 
 # Load .env file if enabled
-if os.getenv("WHOOGLE_DOTENV", ''):
+if os.getenv('WHOOGLE_DOTENV', ''):
     dotenv_path = '../whoogle.env'
     load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              dotenv_path))
@@ -24,6 +24,11 @@ app.default_key = generate_user_key()
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_COOKIE_SAMESITE'] = 'strict'
+
+if os.getenv('HTTPS_ONLY'):
+    app.config['SESSION_COOKIE_NAME'] = '__Secure-session'
+    app.config['SESSION_COOKIE_SECURE'] = True
+
 app.config['VERSION_NUMBER'] = '0.6.0'
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',

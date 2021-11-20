@@ -518,7 +518,8 @@ def run_app() -> None:
         os.environ['WHOOGLE_PROXY_TYPE'] = args.proxytype
         os.environ['WHOOGLE_PROXY_LOC'] = args.proxyloc
 
-    os.environ['HTTPS_ONLY'] = '1' if args.https_only else ''
+    if args.https_only:
+        os.environ['HTTPS_ONLY'] = '1'
 
     if args.debug:
         app.run(host=args.host, port=args.port, debug=args.debug)
