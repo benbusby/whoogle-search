@@ -1,0 +1,19 @@
+name: docker_tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: build and test
+      run: |
+        docker build --tag whoogle-search:test .
+        TEST_CONTAINER=$(docker run --entrypoint=/bin/bash --detach whoogle-search:test)
+        docker cp test "$TEST_CONTAINER":/whoogle/test
+        docker exec "$TEST_CONTAINER" ./run test
+        docker exec --detach "$TEST_CONTAINER" ./run
+        sleep 10
+        docker exec "$TEST_CONTAINER" curl -f http://localhost:5000/healthz || exit 1

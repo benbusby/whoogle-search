@@ -28,7 +28,6 @@ from requests.models import PreparedRequest
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE']))
 
-
 # Check the newest version of WHOOGLE
 update = bsoup(get(app.config['RELEASES_URL']).text, 'html.parser')
 newest_version = update.select_one('[class="Link--primary"]').string[1:]
@@ -36,7 +35,7 @@ current_version = int(''.join(filter(str.isdigit,
                                      app.config['VERSION_NUMBER'])))
 newest_version = int(''.join(filter(str.isdigit, newest_version)))
 newest_version = '' if current_version >= newest_version \
-                    else newest_version
+    else newest_version
 
 
 def auth_required(f):
@@ -113,10 +112,10 @@ def before_request_func():
         session['uuid'] = str(uuid.uuid4())
         session['key'] = generate_user_key()
 
-        # Skip checking for session on /autocomplete searches,
-        # since they can be done from the browser search bar (aka
-        # no ability to initialize a session)
-        if not Endpoint.autocomplete.in_path(request.path):
+        # Skip checking for session on any searches that don't
+        # require a valid session
+        if (not Endpoint.autocomplete.in_path(request.path) and
+                not Endpoint.healthz.in_path(request.path)):
             return redirect(url_for(
                 'session_check',
                 session_id=session['uuid'],
@@ -199,9 +198,9 @@ def index():
                                'logo.html',
                                dark=g.user_config.dark),
                            config_disabled=(
-                               app.config['CONFIG_DISABLE'] or
-                               not valid_user_session(session) or
-                               'cookies_disabled' in request.args),
+                                   app.config['CONFIG_DISABLE'] or
+                                   not valid_user_session(session) or
+                                   'cookies_disabled' in request.args),
                            config=g.user_config,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
