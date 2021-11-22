@@ -11,9 +11,6 @@ jobs:
     - name: build and test
       run: |
         docker build --tag whoogle-search:test .
-        TEST_CONTAINER=$(docker run --entrypoint=/bin/bash --detach whoogle-search:test)
-        docker cp test "$TEST_CONTAINER":/whoogle/test
-        docker exec "$TEST_CONTAINER" ./run test
-        docker exec --detach "$TEST_CONTAINER" ./run
-        sleep 10
-        docker exec "$TEST_CONTAINER" curl -f http://localhost:5000/healthz || exit 1
+        docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:test
+        sleep 15
+        docker exec whoogle-search curl -f http://localhost:5000/healthz || exit 1
