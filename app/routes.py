@@ -14,7 +14,7 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.misc import read_config_bool, get_client_ip
+from app.utils.misc import read_config_bool, get_client_ip, get_request_url
 from app.utils.results import add_ip_card
 from app.utils.results import bold_search_terms
 from app.utils.search import *
@@ -120,7 +120,7 @@ def before_request_func():
             return redirect(url_for(
                 'session_check',
                 session_id=session['uuid'],
-                follow=request.url), code=307)
+                follow=get_request_url(request.url)), code=307)
         else:
             g.user_config = Config(**session['config'])
     elif 'cookies_disabled' not in request.args:
@@ -134,13 +134,11 @@ def before_request_func():
         g.user_config = Config(**default_config)
 
     if not g.user_config.url:
-        g.user_config.url = request.url_root.replace(
-            'http://',
-            'https://') if os.getenv('HTTPS_ONLY', False) else request.url_root
+        g.user_config.url = get_request_url(request.url_root)
 
     g.user_request = Request(
         request.headers.get('User-Agent'),
-        request.url_root,
+        get_request_url(request.url_root),
         config=g.user_config)
 
     g.app_location = g.user_config.url
