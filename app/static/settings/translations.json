@@ -2,8 +2,7 @@
     "lang_en": {
         "search": "Search",
         "config": "Configuration",
-        "config-country": "Filter Results by Country",
-        "config-country-help": "Note: If enabled, a website will only appear in the search results if it is *hosted* in the selected country.",
+        "config-country": "Set Country",
         "config-lang": "Interface Language",
         "config-lang-search": "Search Language",
         "config-near": "Near",
@@ -39,8 +38,7 @@
     "lang_nl": {
         "search": "Zoeken",
         "config": "Instellingen",
-        "config-country": "Filter zoek resultaten bij land",
-        "config-country-help": "Let op: Als je dit aanzet zal alleen website die gehost worden in het land weergegeven worden.",
+        "config-country": "Land instellen",
         "config-lang": "Taal instellingen",
         "config-lang-search": "Zoek taal",
         "config-near": "Dichtbij",
@@ -76,8 +74,7 @@
     "lang_de": {
         "search": "Suchen",
         "config": "Einstellungen",
-        "config-country": "Ergebnisse nach Land filtern",
-        "config-country-help": "Hinweis: Wenn aktiv, wird eine Webseite nur angezeigt, wenn sie auch in dem jeweiligen Land *gehosted* wird.",
+        "config-country": "Land einstellen",
         "config-lang": "Oberflächen-Sprache",
         "config-lang-search": "Such-Sprache",
         "config-near": "In der Nähe von",
@@ -113,8 +110,7 @@
     "lang_es": {
         "search": "Buscar",
         "config": "Configuración",
-        "config-country": "Filtrar Resultados por País",
-        "config-country-help": "Nota: Si está habilitado, un sitio web solo aparecerá en los resultados de búsqueda si está alojado en ese país.",
+        "config-country": "Establecer País",
         "config-lang": "Idioma de Interfaz",
         "config-lang-search": "Idioma de Búsqueda",
         "config-near": "Cerca",
@@ -150,8 +146,7 @@
     "lang_it": {
         "search": "Cerca",
         "config": "Impostazioni",
-        "config-country": "Filtra risultati per paese",
-        "config-country-help": "Nota: se abilitato, il sito sarà presente tra i risultati se e soltanto se il server risiede nel paese selezionato",
+        "config-country": "Imposta Paese",
         "config-lang": "Lingua dell'interfaccia",
         "config-lang-search": "Lingua della ricerca",
         "config-near": "Vicino",
@@ -187,8 +182,7 @@
     "lang_pt": {
         "search": "Pesquisar",
         "config": "Configuração",
-        "config-country": "Filtrar Resultados por País",
-        "config-country-help": "Observação: Se ativado, um site só aparecerá nos resultados da pesquisa se estiver *hospedado* no país selecionado.",
+        "config-country": "Definir País",
         "config-lang": "Idioma da Interface",
         "config-lang-search": "Idioma da Pesquisa",
         "config-near": "Perto",
@@ -224,8 +218,7 @@
     "lang_ru": {
         "search": "Поиск",
         "config": "Настройка",
-        "config-country": "Фильтр результатов по стране",
-        "config-country-help": "Примечание: Если включено, то веб-сайт будет отображаться в результатах поиска только в том случае, если он *размещен* в выбранной стране.",
+        "config-country": "Установить страну",
         "config-lang": "Язык интерфейса",
         "config-lang-search": "Язык поиска",
         "config-near": "Около",
@@ -261,8 +254,7 @@
     "lang_zh-CN": {
         "search": "搜索",
         "config": "配置",
-        "config-country": "按国家过滤搜索结果",
-        "config-country-help": "注意：启用后，只有在所选国家*部署*的网站会出现在搜索结果中。",
+        "config-country": "设置国家",
         "config-lang": "界面语言",
         "config-lang-search": "搜索语言",
         "config-near": "接近",
@@ -298,8 +290,7 @@
     "lang_si": {
         "search": "සොයන්න",
         "config": "වින්‍යාසය",
-        "config-country": "රට අනුව ප්‍රතිඵල පෙරන්න",
-        "config-country-help": "සටහන: සබල කර ඇත්නම්, වියමන අඩවියක් සෙවුම් ප්‍රතිඵලවල දිස්වන්නේ එය තෝරාගත් රටෙහි සිට *සත්කාරකත්වය* දරන්නේ නම් පමණි.",
+        "config-country": "රට සකසන්න",
         "config-lang": "අතුරු මුහුණතෙහි භාෂාව",
         "config-lang-search": "සෙවුම් භාෂාව",
         "config-near": "ආසන්න",
@@ -335,8 +326,7 @@
     "lang_fr": {
         "search": "Chercher",
         "config": "Configuration",
-        "config-country": "Filter les Résultats par Pays",
-        "config-country-help": "Note : Si activé, un site web va uniquement apparaitre dans les résultat de la recherche si il est *hébérgé* dans le pays sélectionné.",
+        "config-country": "Définir le pays",
         "config-lang": "Langage de l'Interface",
         "config-lang-search": "Langage de Recherche",
         "config-near": "Proche",
@@ -372,8 +362,7 @@
     "lang_fa": {
         "search": "جستجو",
         "config": "پیکربندی",
-        "config-country": "فیلتر نتایج بر اساس کشور",
-        "config-country-help": "توجه: در صورت فعال بودن، وبسایت تنها در صورتی نمایش داده می‌شود که *در کشور انتخابی میزبانی شده باشد*.",
+        "config-country": "کشور را تنظیم کنید",
         "config-lang": "زبان رابط کاربری",
         "config-lang-search": "زبان جستجو",
         "config-near": "نزدیک",
@@ -409,8 +398,7 @@
     "lang_cs": {
         "search": "Hledat",
         "config": "Konfigurace",
-        "config-country": "Filtrovat výsledky podle země",
-        "config-country-help": "Poznámka: Pokud je povoleno, webová stránka se objeví ve výsledcích vyhledávání, pouze pokud je *hostována* ve vybrané zemi.",
+        "config-country": "Nastavte zemi",
         "config-lang": "Jazyk rozhraní",
         "config-lang-search": "Jazyk vyhledávání",
         "config-near": "Poblíž",
@@ -446,8 +434,7 @@
     "lang_zh-TW": {
         "search": "搜尋",
         "config": "設定",
-        "config-country": "依國家過濾結果",
-        "config-country-help": "注意：一經套用，只有在部署在指定國家內的網站會出現在搜尋結果中。",
+        "config-country": "設置國家",
         "config-lang": "界面語言",
         "config-lang-search": "搜尋語言",
         "config-near": "接近",
@@ -483,8 +470,7 @@
     "lang_bg": {
         "search": "Търсене",
         "config": "Конфигурация",
-        "config-country": "Филтрирай резултатите по държави",
-        "config-country-help": "Забележка: Ако това е разрешено, уебсайтoвете ще се показват в резултатите от търсенето, само ако са * хоствани * в избраната държава.",
+        "config-country": "Задайте държава",
         "config-lang": "Език на интерфейса",
         "config-lang-search": "Език за търсене",
         "config-near": "Близо до",
@@ -520,8 +506,7 @@
     "lang_hi": {
         "search": "खोज",
         "config": "कॉन्फ़िगरेशन",
-        "config-country": "देश के अनुसार परिणाम फ़िल्टर करें",
-        "config-country-help": "नोट: यदि सक्षम है, तो कोई वेबसाइट खोज परिणामों में केवल तभी दिखाई देगी जब वह चयनित देश में *होस्ट* हो।",
+        "config-country": "देश सेट करें",
         "config-lang": "इंटरफ़ेस भाषा",
         "config-lang-search": "खोज की भाषा",
         "config-near": "पास",
@@ -557,8 +542,7 @@
         "lang_ja": {
         "search": "検索",
         "config": "設定",
-        "config-country": "検索結果を国でフィルタ",
-        "config-country-help": "注: 有効にした場合、選択した国で*ホストされている*ウェブサイトのみが検索結果に表示されます。",
+        "config-country": "国を設定する",
         "config-lang": "インタフェースの言語",
         "config-lang-search": "検索する言語",
         "config-near": "場所",
