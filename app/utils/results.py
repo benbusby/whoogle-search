@@ -278,8 +278,8 @@ def add_currency_card(soup: BeautifulSoup,
         element1 = element1.parent
 
     # Creating the conversion factor
-    conversion_factor = conversion_details['currencyValue1'] / \
-                        conversion_details['currencyValue2']
+    conversion_factor = (conversion_details['currencyValue1'] /
+                         conversion_details['currencyValue2'])
 
     # Creating a new div for the input boxes
     conversion_box = soup.new_tag('div')
