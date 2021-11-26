@@ -496,10 +496,11 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Public Instances
 
-*Note: Use public instances at your own discretion. Maintainers of Whoogle do not personally validate the integrity of these instances, and popular public instances are more likely to be rate-limited or blocked.*
-	
+*Note: Use public instances at your own discretion. The maintainers of Whoogle are only responsible for https://whoogle.fossho.st, and do not personally validate the integrity of any other instances. Popular public instances are more likely to be rate-limited or blocked.*
+
 | Website | Country | Language | Cloudflare |
 |-|-|-|-|
+| [https://whoogle.fossho.st](https://whoogle.fossho.st) | 🇺🇸 US | Multi-choice | |
 | [https://search.albony.xyz](https://search.albony.xyz/) | 🇮🇳 IN | Multi-choice |  |
 | [https://whoogle.sdf.org](https://whoogle.sdf.org) | 🇺🇸 US | Multi-choice |
 | [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) | 🇮🇳 IN | Unknown | ✅ |
@@ -510,9 +511,15 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | English | ✅ |
 | [https://search.flux.industries](https://search.flux.industries) | 🇩🇪 DE  | German | ✅ |
 | [https://www.whooglesearch.ml](https://www.whooglesearch.ml) | 🇺🇸 US | English | |
-| [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN | Unknown |  |
 
-* A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
+* A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare.com). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
+
+#### Onion Instances
+
+| Website | Country | Language |
+|-|-|-|
+| [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN | Unknown
+
 
 ## Screenshots
 #### Desktop
