@@ -145,9 +145,12 @@ def before_request_func():
 
 @app.after_request
 def after_request_func(resp):
+    resp.headers['X-Content-Type-Options'] = 'nosniff'
+    resp.headers['X-Frame-Options'] = 'DENY'
     resp.headers['Content-Security-Policy'] = app.config['CSP']
     if os.environ.get('HTTPS_ONLY', False):
         resp.headers['Content-Security-Policy'] += 'upgrade-insecure-requests'
+        resp.headers['Strict-Transport-Security'] = 'max-age=63072000'
 
     return resp
 
