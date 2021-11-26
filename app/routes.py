@@ -15,9 +15,8 @@ from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool, get_client_ip
-from app.utils.results import add_ip_card, check_currency
-from app.utils.results import add_currency_b
-from app.utils.results import bold_search_terms
+from app.utils.results import add_ip_card, check_currency, \
+    add_currency_card, bold_search_terms
 from app.utils.search import *
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
@@ -327,7 +326,7 @@ def search():
     conversion = check_currency(str(response))
     if conversion:
         html_soup = bsoup(str(response), 'html.parser')
-        response = add_currency_b(html_soup, conversion)
+        response = add_currency_card(html_soup, conversion)
 
     return render_template(
         'display.html',

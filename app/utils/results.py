@@ -225,39 +225,46 @@ def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
     return html_soup
 
 
-def check_currency(response: str):
+def check_currency(response: str) -> dict:
     """Check whether the results have currency conversion
 
     Args:
         response: Search query Result
 
     Returns:
-        list
+        dict: Consists of currency names and values
 
     """
     soup = BeautifulSoup(response, 'html.parser')
-    a = soup.find(class_='ZINbbc xpd O9g5cc uUPGi')
-    tag = a.find('a')
-    if tag and tag['href'] == 'https://g.co/gfd':
-        currency1 = soup.find(class_="xUrNXd UMOHqf")
-        currency2 = soup.select_one('.kCrYT'
-                                    ' .BNeawe.iBp4i.AP7Wnd '
-                                    '.BNeawe.iBp4i.AP7Wnd')
+    currency_link = soup.find('a', {'href': 'https://g.co/gfd'})
+    if currency_link and currency_link.text.lower() == 'disclaimer':
+        for i in range(4):
+            currency_link = currency_link.parent
+        currency1 = currency_link
+        for i in range(5):
+            currency1 = currency1.parent
+        for i in range(2):
+            currency1 = currency1.previous_sibling
+        currency1 = currency1.string
+        currency2 = currency_link.previous_sibling.string
         currency1 = currency1.text.rstrip('=').split(' ', 1)
         currency2 = currency2.text.split(' ', 1)
-        return [float(currency1[0]), currency1[1],
-                float(currency2[0]), currency2[1]]
-    return None
+        return {'currencyValue1': float(currency1[0]),
+                'currencyLabel1': currency1[1],
+                'currencyValue2': float(currency2[0]),
+                'currencyLabel2': currency2[1]
+                }
+    return {}
 
 
-def add_currency_b(soup: BeautifulSoup,
-                   conversion_details: list) -> BeautifulSoup:
+def add_currency_card(soup: BeautifulSoup,
+                      conversion_details: dict) -> BeautifulSoup:
     """Adds the currency conversion boxes
     to response of the search query
 
     Args:
         soup: Parsed search result
-        conversion_details: list of currency
+        conversion_details: Dictionary of currency
         related information
 
     Returns:
@@ -265,10 +272,14 @@ def add_currency_b(soup: BeautifulSoup,
     """
     # Element before which the code will be changed
     # (This is the 'disclaimer' link)
-    element1 = soup.select_one('[class="nXE3Ob"]')
+    element1 = soup.find('a', {'href': 'https://g.co/gfd'})
+
+    for i in range(4):
+        element1 = element1.parent
 
     # Creating the conversion factor
-    conversion_factor = conversion_details[0]/conversion_details[2]
+    conversion_factor = conversion_details['currencyValue1'] / \
+                        conversion_details['currencyValue2']
 
     # Creating a new div for the input boxes
     conversion_box = soup.new_tag('div')
@@ -278,14 +289,14 @@ def add_currency_b(soup: BeautifulSoup,
     input_box1 = soup.new_tag('input')
     input_box1['id'] = 'cb1'
     input_box1['type'] = 'number'
-    input_box1['class'] = 'cb Hg3mWc'
-    input_box1['value'] = conversion_details[0]
-    input_box1['oninput'] = f'Convert(1, 2, {1/conversion_factor})'
+    input_box1['class'] = 'cb'
+    input_box1['value'] = conversion_details['currencyValue1']
+    input_box1['oninput'] = f'Convert(1, 2, {1 / conversion_factor})'
 
     label_box1 = soup.new_tag('label')
     label_box1['for'] = 'cb1'
     label_box1['class'] = 'cb_label'
-    label_box1.append(conversion_details[1])
+    label_box1.append(conversion_details['currencyLabel1'])
 
     br = soup.new_tag('br')
 
@@ -293,14 +304,14 @@ def add_currency_b(soup: BeautifulSoup,
     input_box2 = soup.new_tag('input')
     input_box2['id'] = 'cb2'
     input_box2['type'] = 'number'
-    input_box2['class'] = 'cb Hg3mWc'
-    input_box2['value'] = conversion_details[2]
+    input_box2['class'] = 'cb'
+    input_box2['value'] = conversion_details['currencyValue2']
     input_box2['oninput'] = f'Convert(2, 1, {conversion_factor})'
 
     label_box2 = soup.new_tag('label')
     label_box2['for'] = 'cb2'
     label_box2['class'] = 'cb_label'
-    label_box2.append(conversion_details[3])
+    label_box2.append(conversion_details['currencyLabel2'])
 
     conversion_box.append(input_box1)
     conversion_box.append(label_box1)
