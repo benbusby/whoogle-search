@@ -14,9 +14,9 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.misc import read_config_bool, get_client_ip
-from app.utils.results import add_ip_card, check_currency, \
-    add_currency_card, bold_search_terms
+from app.utils.misc import read_config_bool, get_client_ip, get_request_url
+from app.utils.results import add_ip_card
+from app.utils.results import bold_search_terms
 from app.utils.search import *
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
@@ -28,7 +28,6 @@ from requests.models import PreparedRequest
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE']))
 
-
 # Check the newest version of WHOOGLE
 update = bsoup(get(app.config['RELEASES_URL']).text, 'html.parser')
 newest_version = update.select_one('[class="Link--primary"]').string[1:]
@@ -36,7 +35,7 @@ current_version = int(''.join(filter(str.isdigit,
                                      app.config['VERSION_NUMBER'])))
 newest_version = int(''.join(filter(str.isdigit, newest_version)))
 newest_version = '' if current_version >= newest_version \
-                    else newest_version
+    else newest_version
 
 
 def auth_required(f):
@@ -113,14 +112,14 @@ def before_request_func():
         session['uuid'] = str(uuid.uuid4())
         session['key'] = generate_user_key()
 
-        # Skip checking for session on /autocomplete searches,
-        # since they can be done from the browser search bar (aka
-        # no ability to initialize a session)
-        if not Endpoint.autocomplete.in_path(request.path):
+        # Skip checking for session on any searches that don't
+        # require a valid session
+        if (not Endpoint.autocomplete.in_path(request.path) and
+                not Endpoint.healthz.in_path(request.path)):
             return redirect(url_for(
                 'session_check',
                 session_id=session['uuid'],
-                follow=request.url), code=307)
+                follow=get_request_url(request.url)), code=307)
         else:
             g.user_config = Config(**session['config'])
     elif 'cookies_disabled' not in request.args:
@@ -133,20 +132,12 @@ def before_request_func():
         session.pop('_permanent', None)
         g.user_config = Config(**default_config)
 
-    # Handle https upgrade
-    if needs_https(request.url):
-        return redirect(
-            request.url.replace('http://', 'https://', 1),
-            code=308)
-
     if not g.user_config.url:
-        g.user_config.url = request.url_root.replace(
-            'http://',
-            'https://') if os.getenv('HTTPS_ONLY', False) else request.url_root
+        g.user_config.url = get_request_url(request.url_root)
 
     g.user_request = Request(
         request.headers.get('User-Agent'),
-        request.url_root,
+        get_request_url(request.url_root),
         config=g.user_config)
 
     g.app_location = g.user_config.url
@@ -207,9 +198,9 @@ def index():
                                'logo.html',
                                dark=g.user_config.dark),
                            config_disabled=(
-                               app.config['CONFIG_DISABLE'] or
-                               not valid_user_session(session) or
-                               'cookies_disabled' in request.args),
+                                   app.config['CONFIG_DISABLE'] or
+                                   not valid_user_session(session) or
+                                   'cookies_disabled' in request.args),
                            config=g.user_config,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
@@ -524,7 +515,8 @@ def run_app() -> None:
         os.environ['WHOOGLE_PROXY_TYPE'] = args.proxytype
         os.environ['WHOOGLE_PROXY_LOC'] = args.proxyloc
 
-    os.environ['HTTPS_ONLY'] = '1' if args.https_only else ''
+    if args.https_only:
+        os.environ['HTTPS_ONLY'] = '1'
 
     if args.debug:
         app.run(host=args.host, port=args.port, debug=args.debug)

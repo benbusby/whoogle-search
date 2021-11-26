@@ -61,6 +61,15 @@ body {
     -webkit-appearance: none;
 }
 
+.config-options {
+    max-height: 370px;
+    overflow-y: scroll;
+}
+
+.config-buttons {
+    max-height: 30px;
+}
+
 .config-div {
     padding: 5px;
 }
@@ -102,7 +111,6 @@ button::-moz-focus-inner {
 }
 
 .open {
-    overflow-y: scroll;
     padding-bottom: 20px;
 }
 

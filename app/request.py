@@ -120,7 +120,7 @@ def gen_query(query, args, config, near_city=None) -> str:
     if 'chips' in args:
         param_dict['chips'] = '&chips=' + args.get('chips')
 
-    param_dict['cr'] = ('&cr=' + config.ctry) if config.ctry else ''
+    param_dict['gl'] = ('&gl=' + config.ctry) if config.ctry else ''
     param_dict['hl'] = '&hl=' + (
         config.lang_interface.replace('lang_', '')
         if config.lang_interface else ''
