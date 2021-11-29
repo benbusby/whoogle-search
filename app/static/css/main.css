@@ -144,6 +144,7 @@ footer {
 
 .whoogle-svg {
     width: 80%;
+    height: initial;
     display: block;
     margin: auto;
     padding-bottom: 10px;
