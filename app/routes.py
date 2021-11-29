@@ -151,7 +151,8 @@ def after_request_func(resp):
     if os.getenv('WHOOGLE_CSP', False):
         resp.headers['Content-Security-Policy'] = app.config['CSP']
         if os.environ.get('HTTPS_ONLY', False):
-            resp.headers['Content-Security-Policy'] += 'upgrade-insecure-requests'
+            resp.headers['Content-Security-Policy'] += \
+                'upgrade-insecure-requests'
 
     return resp
 
