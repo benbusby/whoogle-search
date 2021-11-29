@@ -164,7 +164,7 @@ See the [available environment variables](#environment-variables) for additional
 
 ### F) Manual
 
-*Note: `Content-Security-Policy` headers are already sent by Whoogle -- you don't/shouldn't need to apply a CSP header yourself*
+*Note: `Content-Security-Policy` headers can be sent by Whoogle if you set `WHOOGLE_CSP`.*
 
 Clone the repo and run the following commands to start the app in a local-only environment:
 
@@ -330,6 +330,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
 | WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
+| WHOOGLE_CSP          | Sets a default set of 'Content-Security-Policy' headers                                   |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
