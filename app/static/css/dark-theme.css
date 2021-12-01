@@ -138,8 +138,12 @@ select {
     color: var(--whoogle-dark-contrast-text) !important;
 }
 
-#gh-link {
+.link {
     color: var(--whoogle-dark-contrast-text);
+}
+
+.link-color {
+    color: var(--whoogle-dark-result-url) !important;
 }
 
 .autocomplete-items {

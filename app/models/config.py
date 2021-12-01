@@ -37,6 +37,8 @@ class Config:
             'theme',
             'alts',
             'new_tab',
+            'view_image',
+            'block',
             'safe'
         ]
 
@@ -107,7 +109,14 @@ class Config:
         for param_key in params.keys():
             if not self.is_safe_key(param_key):
                 continue
-            self[param_key] = params.get(param_key)
+            param_val = params.get(param_key)
+
+            if param_val == 'off':
+                param_val = False
+            elif param_val.isdigit():
+                param_val = int(param_val)
+
+            self[param_key] = param_val
         return self
 
     def to_params(self) -> str:
