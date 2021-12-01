@@ -74,7 +74,7 @@ def test_block_results(client):
 
     assert has_pinterest
 
-    demo_config['block'] = 'pinterest.com'
+    demo_config['block'] = 'pinterest.com,help.pinterest.com'
     rv = client.post(f'/{Endpoint.config}', data=demo_config)
     assert rv._status_code == 302
 
