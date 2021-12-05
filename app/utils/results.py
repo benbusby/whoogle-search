@@ -237,18 +237,23 @@ def check_currency(response: str) -> dict:
     """
     soup = BeautifulSoup(response, 'html.parser')
     currency_link = soup.find('a', {'href': 'https://g.co/gfd'})
-    if currency_link and currency_link.text.lower() == 'disclaimer':
-        for i in range(4):
+    if currency_link:
+        while 'class' not in currency_link.attrs or \
+                'ZINbbc' not in currency_link.attrs['class']:
             currency_link = currency_link.parent
-        currency1 = currency_link
-        for i in range(5):
-            currency1 = currency1.parent
-        for i in range(2):
-            currency1 = currency1.previous_sibling
-        currency1 = currency1.string
-        currency2 = currency_link.previous_sibling.string
-        currency1 = currency1.text.rstrip('=').split(' ', 1)
-        currency2 = currency2.text.split(' ', 1)
+        currency_link = currency_link.find_all(class_='BNeawe')
+        currency1 = currency_link[0].text
+        currency2 = currency_link[1].text
+        currency1 = currency1.rstrip('=').split(' ', 1)
+        currency2 = currency2.split(' ', 1)
+        if currency2[0][-3] == ',':
+            currency1[0] = currency1[0].replace('.', '')
+            currency1[0] = currency1[0].replace(',', '.')
+            currency2[0] = currency2[0].replace('.', '')
+            currency2[0] = currency2[0].replace(',', '.')
+        else:
+            currency1[0] = currency1[0].replace(',', '')
+            currency2[0] = currency2[0].replace(',', '')
         return {'currencyValue1': float(currency1[0]),
                 'currencyLabel1': currency1[1],
                 'currencyValue2': float(currency2[0]),
@@ -274,7 +279,8 @@ def add_currency_card(soup: BeautifulSoup,
     # (This is the 'disclaimer' link)
     element1 = soup.find('a', {'href': 'https://g.co/gfd'})
 
-    for i in range(4):
+    while 'class' not in element1.attrs or \
+            'nXE3Ob' not in element1.attrs['class']:
         element1 = element1.parent
 
     # Creating the conversion factor
