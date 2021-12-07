@@ -47,32 +47,32 @@
     },
     "WHOOGLE_ALT_TW": {
       "description": "The site to use as a replacement for twitter.com when site alternatives are enabled in the config.",
-      "value": "nitter.net",
+      "value": "farside.link/nitter",
       "required": false
     },
     "WHOOGLE_ALT_YT": {
       "description": "The site to use as a replacement for youtube.com when site alternatives are enabled in the config.",
-      "value": "invidious.snopyta.org",
+      "value": "farside.link/invidious",
       "required": false
     },
     "WHOOGLE_ALT_IG": {
       "description": "The site to use as a replacement for instagram.com when site alternatives are enabled in the config.",
-      "value": "bibliogram.art/u",
+      "value": "farside.link/bibliogram/u",
       "required": false
     },
     "WHOOGLE_ALT_RD": {
       "description": "The site to use as a replacement for reddit.com when site alternatives are enabled in the config.",
-      "value": "libredd.it",
+      "value": "farside.link/libreddit",
+      "required": false
+    },
+    "WHOOGLE_ALT_MD": {
+      "description": "The site to use as a replacement for medium.com when site alternatives are enabled in the config.",
+      "value": "farside.link/scribe",
       "required": false
     },
     "WHOOGLE_ALT_TL": {
       "description": "The Google Translate alternative to use for all searches following the 'translate ___' structure.",
       "value": "lingva.ml",
-      "required": false
-    },
-    "WHOOGLE_ALT_MD": {
-      "description": "The site to use as a replacement for medium.com when site alternatives are enabled in the config.",
-      "value": "scribe.rip",
       "required": false
     },
     "WHOOGLE_MINIMAL": {

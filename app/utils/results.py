@@ -24,14 +24,14 @@ BLACKLIST = [
 ]
 
 SITE_ALTS = {
-    'twitter.com': os.getenv('WHOOGLE_ALT_TW', 'nitter.net'),
-    'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'invidious.snopyta.org'),
-    'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'bibliogram.art/u'),
-    'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'libredd.it'),
+    'twitter.com': os.getenv('WHOOGLE_ALT_TW', 'farside.link/nitter'),
+    'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'farside.link/invidious'),
+    'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'farside.link/bibliogram/u'),
+    'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'farside.link/libreddit'),
     **dict.fromkeys([
         'medium.com',
         'levelup.gitconnected.com'
-    ], os.getenv('WHOOGLE_ALT_MD', 'scribe.rip'))
+    ], os.getenv('WHOOGLE_ALT_MD', 'farside.link/scribe'))
 }
 
 

@@ -47,18 +47,18 @@ ENV HTTPS_ONLY=$use_https
 ARG whoogle_port=5000
 ENV EXPOSE_PORT=$whoogle_port
 
-ARG twitter_alt='nitter.net'
+ARG twitter_alt='farside.link/nitter'
 ENV WHOOGLE_ALT_TW=$twitter_alt
-ARG youtube_alt='invidious.snopyta.org'
+ARG youtube_alt='farside.link/invidious'
 ENV WHOOGLE_ALT_YT=$youtube_alt
-ARG instagram_alt='bibliogram.art/u'
+ARG instagram_alt='farside.link/bibliogram'
 ENV WHOOGLE_ALT_IG=$instagram_alt
-ARG reddit_alt='libredd.it'
+ARG reddit_alt='farside.link/libreddit'
 ENV WHOOGLE_ALT_RD=$reddit_alt
+ARG medium_alt='farside.link/scribe'
+ENV WHOOGLE_ALT_MD=$medium_alt
 ARG translate_alt='lingva.ml'
 ENV WHOOGLE_ALT_TL=$translate_alt
-ARG medium_alt='scribe.rip'
-ENV WHOOGLE_ALT_MD=$medium_alt
 
 WORKDIR /whoogle
 

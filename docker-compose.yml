@@ -31,13 +31,13 @@ services:
       #- WHOOGLE_PROXY_LOC=<proxy host/ip>
       # Site alternative configurations, uncomment to enable
       # Note: If not set, the feature will still be available
-      # with default values. 
-      #- WHOOGLE_ALT_TW=nitter.net
-      #- WHOOGLE_ALT_YT=invidious.snopyta.org
-      #- WHOOGLE_ALT_IG=bibliogram.art/u
-      #- WHOOGLE_ALT_RD=libredd.it
+      # with default values.
+      #- WHOOGLE_ALT_TW=farside.link/nitter
+      #- WHOOGLE_ALT_YT=farside.link/invidious
+      #- WHOOGLE_ALT_IG=farside.link/bibliogram/u
+      #- WHOOGLE_ALT_RD=farside.link/libreddit
+      #- WHOOGLE_ALT_MD=farside.link/scribe
       #- WHOOGLE_ALT_TL=lingva.ml
-      #- WHOOGLE_ALT_MD=scribe.rip
     #env_file: # Alternatively, load variables from whoogle.env
       #- whoogle.env
     ports:
