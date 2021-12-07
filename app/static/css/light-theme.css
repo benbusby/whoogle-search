@@ -175,6 +175,10 @@ path {
     border-bottom: 0px;
 }
 
-.ip-text-div, .update_available {
+.ip-text-div, .update_available, .cb_label, .cb {
   color: var(--whoogle-secondary-text) !important;
+}
+
+.cb:focus {
+  color: var(--whoogle-text) !important;
 }

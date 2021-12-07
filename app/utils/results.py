@@ -223,3 +223,107 @@ def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
         # Inserting the element
         ref_element.insert_before(ip_tag)
     return html_soup
+
+
+def check_currency(response: str) -> dict:
+    """Check whether the results have currency conversion
+
+    Args:
+        response: Search query Result
+
+    Returns:
+        dict: Consists of currency names and values
+
+    """
+    soup = BeautifulSoup(response, 'html.parser')
+    currency_link = soup.find('a', {'href': 'https://g.co/gfd'})
+    if currency_link:
+        while 'class' not in currency_link.attrs or \
+                'ZINbbc' not in currency_link.attrs['class']:
+            currency_link = currency_link.parent
+        currency_link = currency_link.find_all(class_='BNeawe')
+        currency1 = currency_link[0].text
+        currency2 = currency_link[1].text
+        currency1 = currency1.rstrip('=').split(' ', 1)
+        currency2 = currency2.split(' ', 1)
+        if currency2[0][-3] == ',':
+            currency1[0] = currency1[0].replace('.', '')
+            currency1[0] = currency1[0].replace(',', '.')
+            currency2[0] = currency2[0].replace('.', '')
+            currency2[0] = currency2[0].replace(',', '.')
+        else:
+            currency1[0] = currency1[0].replace(',', '')
+            currency2[0] = currency2[0].replace(',', '')
+        return {'currencyValue1': float(currency1[0]),
+                'currencyLabel1': currency1[1],
+                'currencyValue2': float(currency2[0]),
+                'currencyLabel2': currency2[1]
+                }
+    return {}
+
+
+def add_currency_card(soup: BeautifulSoup,
+                      conversion_details: dict) -> BeautifulSoup:
+    """Adds the currency conversion boxes
+    to response of the search query
+
+    Args:
+        soup: Parsed search result
+        conversion_details: Dictionary of currency
+        related information
+
+    Returns:
+        BeautifulSoup
+    """
+    # Element before which the code will be changed
+    # (This is the 'disclaimer' link)
+    element1 = soup.find('a', {'href': 'https://g.co/gfd'})
+
+    while 'class' not in element1.attrs or \
+            'nXE3Ob' not in element1.attrs['class']:
+        element1 = element1.parent
+
+    # Creating the conversion factor
+    conversion_factor = (conversion_details['currencyValue1'] /
+                         conversion_details['currencyValue2'])
+
+    # Creating a new div for the input boxes
+    conversion_box = soup.new_tag('div')
+    conversion_box['class'] = 'conversion_box'
+
+    # Currency to be converted from
+    input_box1 = soup.new_tag('input')
+    input_box1['id'] = 'cb1'
+    input_box1['type'] = 'number'
+    input_box1['class'] = 'cb'
+    input_box1['value'] = conversion_details['currencyValue1']
+    input_box1['oninput'] = f'convert(1, 2, {1 / conversion_factor})'
+
+    label_box1 = soup.new_tag('label')
+    label_box1['for'] = 'cb1'
+    label_box1['class'] = 'cb_label'
+    label_box1.append(conversion_details['currencyLabel1'])
+
+    br = soup.new_tag('br')
+
+    # Currency to be converted to
+    input_box2 = soup.new_tag('input')
+    input_box2['id'] = 'cb2'
+    input_box2['type'] = 'number'
+    input_box2['class'] = 'cb'
+    input_box2['value'] = conversion_details['currencyValue2']
+    input_box2['oninput'] = f'convert(2, 1, {conversion_factor})'
+
+    label_box2 = soup.new_tag('label')
+    label_box2['for'] = 'cb2'
+    label_box2['class'] = 'cb_label'
+    label_box2.append(conversion_details['currencyLabel2'])
+
+    conversion_box.append(input_box1)
+    conversion_box.append(label_box1)
+    conversion_box.append(br)
+    conversion_box.append(input_box2)
+    conversion_box.append(label_box2)
+
+    element1.insert_before(conversion_box)
+    return soup
