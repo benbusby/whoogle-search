@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from app.filter import Filter
+from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.utils.session import generate_user_key
 from datetime import datetime
@@ -11,7 +12,7 @@ from test.conftest import demo_config
 
 def get_search_results(data):
     secret_key = generate_user_key()
-    soup = Filter(user_key=secret_key).clean(
+    soup = Filter(user_key=secret_key, config=Config(**demo_config)).clean(
         BeautifulSoup(data, 'html.parser'))
 
     main_divs = soup.find('div', {'id': 'main'})
@@ -74,7 +75,7 @@ def test_block_results(client):
 
     assert has_pinterest
 
-    demo_config['block'] = 'pinterest.com'
+    demo_config['block'] = 'pinterest.com,help.pinterest.com'
     rv = client.post(f'/{Endpoint.config}', data=demo_config)
     assert rv._status_code == 302
 
