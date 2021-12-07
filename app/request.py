@@ -59,7 +59,7 @@ def gen_user_agent(is_mobile) -> str:
     return DESKTOP_UA.format("Mozilla", linux, firefox)
 
 
-def gen_query(query, args, config, near_city=None) -> str:
+def gen_query(query, args, config) -> str:
     param_dict = {key: '' for key in VALID_PARAMS}
 
     # Use :past(hour/day/week/month/year) if available
@@ -96,8 +96,8 @@ def gen_query(query, args, config, near_city=None) -> str:
         param_dict['start'] = '&start=' + args.get('start')
 
     # Search for results near a particular city, if available
-    if near_city:
-        param_dict['near'] = '&near=' + urlparse.quote(near_city)
+    if config.near:
+        param_dict['near'] = '&near=' + urlparse.quote(config.near)
 
     # Set language for results (lr) if source isn't set, otherwise use the
     # result language param provided in the results

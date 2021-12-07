@@ -119,8 +119,7 @@ class Search:
                                 config=self.config)
         full_query = gen_query(self.query,
                                self.request_params,
-                               self.config,
-                               content_filter.near)
+                               self.config)
 
         # force mobile search when view image is true and
         # the request is not already made by a mobile
@@ -132,7 +131,7 @@ class Search:
                                        force_mobile=view_image)
 
         # Produce cleanable html soup from response
-        html_soup = bsoup(content_filter.reskin(get_body.text), 'html.parser')
+        html_soup = bsoup(get_body.text, 'html.parser')
 
         # Replace current soup if view_image is active
         if view_image:

@@ -509,6 +509,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL | Multi-choice |  |
 | [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | Multi-choice | ✅ |
 | [https://www.whooglesearch.ml](https://www.whooglesearch.ml) | 🇺🇸 US | English | |
+| [https://search.sethforprivacy.com](https://search.sethforprivacy.com) | 🇩🇪 DE | English | |
 
 * A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare.com). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
 
@@ -517,6 +518,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | Website | Country | Language |
 |-|-|-|
 | [http://whoglqjdkgt2an4tdepberwqz3hk7tjo4kqgdnuj77rt7nshw2xqhqad.onion](http://whoglqjdkgt2an4tdepberwqz3hk7tjo4kqgdnuj77rt7nshw2xqhqad.onion) | 🇺🇸 US |  Multi-choice
+| [http://nuifgsnbb2mcyza74o7illtqmuaqbwu4flam3cdmsrnudwcmkqur37qd.onion](http://nuifgsnbb2mcyza74o7illtqmuaqbwu4flam3cdmsrnudwcmkqur37qd.onion) | 🇩🇪 DE |  English
 
 ## Screenshots
 #### Desktop
