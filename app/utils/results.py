@@ -297,7 +297,7 @@ def add_currency_card(soup: BeautifulSoup,
     input_box1['type'] = 'number'
     input_box1['class'] = 'cb'
     input_box1['value'] = conversion_details['currencyValue1']
-    input_box1['oninput'] = f'Convert(1, 2, {1 / conversion_factor})'
+    input_box1['oninput'] = f'convert(1, 2, {1 / conversion_factor})'
 
     label_box1 = soup.new_tag('label')
     label_box1['for'] = 'cb1'
@@ -312,7 +312,7 @@ def add_currency_card(soup: BeautifulSoup,
     input_box2['type'] = 'number'
     input_box2['class'] = 'cb'
     input_box2['value'] = conversion_details['currencyValue2']
-    input_box2['oninput'] = f'Convert(2, 1, {conversion_factor})'
+    input_box2['oninput'] = f'convert(2, 1, {conversion_factor})'
 
     label_box2 = soup.new_tag('label')
     label_box2['for'] = 'cb2'
