@@ -86,15 +86,15 @@
             <div class="config-fields">
                 <form id="config-form" action="config" method="post">
                     <div class="config-options">
-                        <div class="config-div config-div-ctry">
-                            <label for="config-ctry">{{ translation['config-country'] }}: </label>
-                            <select name="ctry" id="config-ctry">
-                                {% for ctry in countries %}
-                                    <option value="{{ ctry.value }}"
-                                            {% if ctry.value in config.ctry %}
+                        <div class="config-div config-div-country">
+                            <label for="config-country">{{ translation['config-country'] }}: </label>
+                            <select name="country" id="config-country">
+                                {% for country in countries %}
+                                    <option value="{{ country.value }}"
+                                            {% if country.value in config.country %}
                                             selected
                                             {% endif %}>
-                                        {{ ctry.name }}
+                                        {{ country.name }}
                                     </option>
                                 {% endfor %}
                             </select>

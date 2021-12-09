@@ -310,7 +310,16 @@ def search():
     translate_to = localization_lang.replace('lang_', '')
 
     # Return 503 if temporarily blocked by captcha
-    resp_code = 503 if has_captcha(str(response)) else 200
+    if has_captcha(str(response)):
+        return render_template(
+            'error.html',
+            blocked=True,
+            error_message=translation['ratelimit'],
+            translation=translation,
+            farside='https://farside.link',
+            config=g.user_config,
+            query=urlparse.unquote(query),
+            params=g.user_config.to_params()), 503
     response = bold_search_terms(response, query)
 
     # Feature to display IP address
@@ -351,7 +360,7 @@ def search():
             search_type=search_util.search_type,
             mobile=g.user_request.mobile)
                        if 'isch' not in
-                          search_util.search_type else '')), resp_code
+                          search_util.search_type else '')), 200
 
 
 @app.route(f'/{Endpoint.config}', methods=['GET', 'POST', 'PUT'])

@@ -177,3 +177,10 @@ details summary {
     padding: 10px;
     font-weight: bold;
 }
+
+/* Mobile styles */
+@media (max-width: 1000px) {
+    select {
+        width: 100%;
+    }
+}

@@ -9,7 +9,7 @@ demo_config = {
     'nojs': str(random.getrandbits(1)),
     'lang_interface': random.choice(app.config['LANGUAGES'])['value'],
     'lang_search': random.choice(app.config['LANGUAGES'])['value'],
-    'ctry': random.choice(app.config['COUNTRIES'])['value']
+    'country': random.choice(app.config['COUNTRIES'])['value']
 }
 
 

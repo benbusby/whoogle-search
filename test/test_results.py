@@ -86,20 +86,6 @@ def test_block_results(client):
         assert 'pinterest.com' not in urlparse(link['href']).netloc
 
 
-# TODO: Unit test the site alt method instead -- the results returned
-# are too unreliable for this test in particular.
-# def test_site_alts(client):
-    # rv = client.post('/search', data=dict(q='twitter official account'))
-    # assert b'twitter.com/Twitter' in rv.data
-
-    # client.post('/config', data=dict(alts=True))
-    # assert json.loads(client.get('/config').data)['alts']
-
-    # rv = client.post('/search', data=dict(q='twitter official account'))
-    # assert b'twitter.com/Twitter' not in rv.data
-    # assert b'nitter.net/Twitter' in rv.data
-
-
 def test_recent_results(client):
     times = {
         'past year': 365,

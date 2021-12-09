@@ -197,12 +197,12 @@ Description=Whoogle
 # Site alternative configurations, uncomment to enable
 # Note: If not set, the feature will still be available
 # with default values.
-#Environment=WHOOGLE_ALT_TW=nitter.net
-#Environment=WHOOGLE_ALT_YT=invidious.snopyta.org
-#Environment=WHOOGLE_ALT_IG=bibliogram.art/u
-#Environment=WHOOGLE_ALT_RD=libredd.it
+#Environment=WHOOGLE_ALT_TW=farside.link/nitter
+#Environment=WHOOGLE_ALT_YT=farside.link/invidious
+#Environment=WHOOGLE_ALT_IG=farside.link/bibliogram/u
+#Environment=WHOOGLE_ALT_RD=farside.link/libreddit
+#Environment=WHOOGLE_ALT_MD=farside.link/scribe
 #Environment=WHOOGLE_ALT_TL=lingva.ml
-#Environment=WHOOGLE_ALT_MD=scribe.rip
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
