@@ -125,12 +125,8 @@ input {
     color: var(--whoogle-contrast-text);
 }
 
-.link {
+#gh-link {
     color: var(--whoogle-element-bg);
-}
-
-.link-color {
-    color: var(--whoogle-result-url) !important;
 }
 
 .autocomplete-items {

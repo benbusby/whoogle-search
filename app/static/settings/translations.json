@@ -33,9 +33,7 @@
         "translate": "translate",
         "light": "light",
         "dark": "dark",
-        "system": "system",
-        "ratelimit": "Instance has been ratelimited",
-        "continue-search": "Continue your search with "
+        "system": "system"
     },
     "lang_nl": {
         "search": "Zoeken",
@@ -71,9 +69,7 @@
         "translate": "vertalen",
         "light": "helder",
         "dark": "donker",
-        "system": "systeeminstellingen",
-        "ratelimit": "Instantie is beperkt in snelheid",
-        "continue-search": "Ga verder met zoeken met "
+        "system": "systeeminstellingen"
     },
     "lang_de": {
         "search": "Suchen",
@@ -109,9 +105,7 @@
         "translate": "Übersetzen",
         "light": "hell",
         "dark": "dunkel",
-        "system": "Systemeinstellung",
-        "ratelimit": "Instanz wurde ratenbegrenzt",
-        "continue-search": "Setzen Sie Ihre Suche fort mit "
+        "system": "Systemeinstellung"
     },
     "lang_es": {
         "search": "Buscar",
@@ -147,9 +141,7 @@
         "translate": "traducir",
         "light": "brillante",
         "dark": "oscuro",
-        "system": "configuración del sistema",
-        "ratelimit": "La instancia ha sido ratelimited",
-        "continue-search": "Continúe su búsqueda con "
+        "system": "configuración del sistema"
     },
     "lang_it": {
         "search": "Cerca",
@@ -185,9 +177,7 @@
         "translate": "tradurre",
         "light": "luminoso",
         "dark": "notte",
-        "system": "impostazioni di sistema",
-        "ratelimit": "L'istanza è stata limitata alla velocità",
-        "continue-search": "Continua la tua ricerca con "
+        "system": "impostazioni di sistema"
     },
     "lang_pt": {
         "search": "Pesquisar",
@@ -223,9 +213,7 @@
         "translate": "traduzir",
         "light": "brilhante",
         "dark": "escuro",
-        "system": "configuração de sistema",
-        "ratelimit": "A instância foi limitada pela taxa",
-        "continue-search": "Continue sua pesquisa com "
+        "system": "configuração de sistema"
     },
     "lang_ru": {
         "search": "Поиск",
@@ -261,9 +249,7 @@
         "translate": "перевести",
         "light": "светлое",
         "dark": "темное",
-        "system": "системное",
-        "ratelimit": "Число экземпляров ограничено",
-        "continue-search": "Продолжайте поиск с "
+        "system": "системное"
     },
     "lang_zh-CN": {
         "search": "搜索",
@@ -299,9 +285,7 @@
         "translate": "翻译",
         "light": "明亮的",
         "dark": "黑暗的",
-        "system": "系统设置",
-        "ratelimit": "实例已被限速",
-        "continue-search": "继续搜索 "
+        "system": "系统设置"
     },
     "lang_si": {
         "search": "සොයන්න",
@@ -337,9 +321,7 @@
         "translate": "පරිවර්තනය කරන්න",
         "light": "දීප්තිමත්",
         "dark": "අඳුරු",
-        "system": "පද්ධතිය",
-        "ratelimit": "උදාහරණය අනුපාත කර ඇත",
-        "continue-search": "සමඟ ඔබේ සෙවීම දිගටම කරගෙන යන්න"
+        "system": "පද්ධතිය"
     },
     "lang_fr": {
         "search": "Chercher",
@@ -375,9 +357,7 @@
         "translate": "Traduire",
         "light": "clair",
         "dark": "sombre",
-        "system": "système",
-        "ratelimit": "Le débit de l'instance a été limité",
-        "continue-search": "Continuez votre recherche avec "
+        "system": "système"
     },
     "lang_fa": {
         "search": "جستجو",
@@ -413,9 +393,7 @@
         "translate": "ترجمه",
         "light": "روشن",
         "dark": "تیره",
-        "system": "سیستم",
-        "ratelimit": "نمونه با نرخ محدود شده است",
-        "continue-search": "جستجوی خود را با "
+        "system": "سیستم"
     },
     "lang_cs": {
         "search": "Hledat",
@@ -451,9 +429,7 @@
         "translate": "Přeložit",
         "light": "Světlý",
         "dark": "Tmavý",
-        "system": "Systémový",
-        "ratelimit": "Instance byla omezena sazbou",
-        "continue-search": "Pokračujte ve vyhledávání pomocí "
+        "system": "Systémový"
     },
     "lang_zh-TW": {
         "search": "搜尋",
@@ -489,9 +465,7 @@
         "translate": "翻譯",
         "light": "明亮的",
         "dark": "黑暗的",
-        "system": "依系統",
-        "ratelimit": "實例已被限速",
-        "continue-search": "繼續搜索 "
+        "system": "依系統"
     },
     "lang_bg": {
         "search": "Търсене",
@@ -527,9 +501,7 @@
         "translate": "превод",
         "light": "светла",
         "dark": "тъмна",
-        "system": "системна",
-        "ratelimit": "Екземплярът е с ограничена скорост",
-        "continue-search": "Продължете търсенето си с "
+        "system": "системна"
     },
     "lang_hi": {
         "search": "खोज",
@@ -565,11 +537,9 @@
         "translate": "अनुवाद करना",
         "light": "रोशनी",
         "dark": "अंधेरा",
-        "system": "प्रणाली",
-        "ratelimit": "इंस्टेंस को सीमित कर दिया गया है",
-        "continue-search": "के साथ अपनी खोज जारी रखें "
+        "system": "प्रणाली"
     },
-    "lang_ja": {
+        "lang_ja": {
         "search": "検索",
         "config": "設定",
         "config-country": "国を設定する",
@@ -603,8 +573,6 @@
         "translate": "翻訳",
         "light": "ライト",
         "dark": "ダーク",
-        "system": "自動",
-        "ratelimit": "インスタンスはレート制限されています",
-        "continue-search": "で検索を続ける "
-    }
+        "system": "自動"
+    } 
 }
