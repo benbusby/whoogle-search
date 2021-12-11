@@ -1,64 +1,57 @@
-FROM python:3.8-slim as builder
+FROM python:3.8-alpine as builder
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
+RUN apk --update add \
+    build-base \
     libxml2-dev \
     libxslt-dev \
-    libssl-dev \
+    openssl-dev \
     libffi-dev
-
+ 
 COPY requirements.txt .
 
 RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r requirements.txt
 
-FROM python:3.8-slim
+FROM python:3.8-alpine
 
-RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
-    tor \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --update --no-cache tor curl bash openrc
+# libcurl4-openssl-dev 
 
 ARG config_dir=/config
 RUN mkdir -p $config_dir
 VOLUME $config_dir
-ENV CONFIG_VOLUME=$config_dir
 
 ARG username=''
-ENV WHOOGLE_USER=$username
 ARG password=''
-ENV WHOOGLE_PASS=$password
-
 ARG proxyuser=''
-ENV WHOOGLE_PROXY_USER=$proxyuser
 ARG proxypass=''
-ENV WHOOGLE_PROXY_PASS=$proxypass
 ARG proxytype=''
-ENV WHOOGLE_PROXY_TYPE=$proxytype
 ARG proxyloc=''
-ENV WHOOGLE_PROXY_LOC=$proxyloc
-
 ARG whoogle_dotenv=''
-ENV WHOOGLE_DOTENV=$whoogle_dotenv
-
 ARG use_https=''
-ENV HTTPS_ONLY=$use_https
-
 ARG whoogle_port=5000
-ENV EXPOSE_PORT=$whoogle_port
-
 ARG twitter_alt='farside.link/nitter'
-ENV WHOOGLE_ALT_TW=$twitter_alt
 ARG youtube_alt='farside.link/invidious'
-ENV WHOOGLE_ALT_YT=$youtube_alt
 ARG instagram_alt='farside.link/bibliogram'
-ENV WHOOGLE_ALT_IG=$instagram_alt
 ARG reddit_alt='farside.link/libreddit'
-ENV WHOOGLE_ALT_RD=$reddit_alt
 ARG medium_alt='farside.link/scribe'
-ENV WHOOGLE_ALT_MD=$medium_alt
 ARG translate_alt='lingva.ml'
-ENV WHOOGLE_ALT_TL=$translate_alt
+
+ENV CONFIG_VOLUME=$config_dir \
+    WHOOGLE_USER=$username \
+    WHOOGLE_PASS=$password \
+    WHOOGLE_PROXY_USER=$proxyuser \
+    WHOOGLE_PROXY_PASS=$proxypass \
+    WHOOGLE_PROXY_TYPE=$proxytype \
+    WHOOGLE_PROXY_LOC=$proxyloc \
+    WHOOGLE_DOTENV=$whoogle_dotenv \
+    HTTPS_ONLY=$use_https \
+    EXPOSE_PORT=$whoogle_port \
+    WHOOGLE_ALT_TW=$twitter_alt \
+    WHOOGLE_ALT_YT=$youtube_alt \
+    WHOOGLE_ALT_IG=$instagram_alt \
+    WHOOGLE_ALT_RD=$reddit_alt \
+    WHOOGLE_ALT_MD=$medium_alt \
+    WHOOGLE_ALT_TL=$translate_alt
 
 WORKDIR /whoogle
 
