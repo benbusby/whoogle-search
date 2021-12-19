@@ -207,12 +207,14 @@ Description=Whoogle
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
 User=<username>
-WorkingDirectory=<whoogle_directory>
-# <whoogle_directory> is the directory from which the
-# systemd service will be launched. It doesn't really matter
+# If installed as a package, add:
 ExecStart=<python_install_dir>/python3 <whoogle_install_dir>/whoogle-search --host 127.0.0.1 --port 5000
 # For example:
-# /usr/bin/python3 /home/my_username/.local/bin/whoogle-search --host 127.0.0.1 --port 5000
+# ExecStart=/usr/bin/python3 /home/my_username/.local/bin/whoogle-search --host 127.0.0.1 --port 5000
+# Otherwise if running the app from source, add:
+ExecStart=<whoogle_repo_dir>/run
+# For example:
+# ExecStart=/var/www/whoogle-search/run
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=3
