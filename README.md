@@ -179,7 +179,7 @@ pip install -r requirements.txt
 See the [available environment variables](#environment-variables) for additional configuration.
 
 #### systemd Configuration
-After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
+After building the virtual environment, you can add something like the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
 
 ```ini
 [Unit]
@@ -207,8 +207,14 @@ Description=Whoogle
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
 User=<username>
-WorkingDirectory=<whoogle_directory>
-ExecStart=<whoogle_directory>/venv/bin/python3 -um app --host 0.0.0.0 --port 5000
+# If installed as a package, add:
+ExecStart=<python_install_dir>/python3 <whoogle_install_dir>/whoogle-search --host 127.0.0.1 --port 5000
+# For example:
+# ExecStart=/usr/bin/python3 /home/my_username/.local/bin/whoogle-search --host 127.0.0.1 --port 5000
+# Otherwise if running the app from source, add:
+ExecStart=<whoogle_repo_dir>/run
+# For example:
+# ExecStart=/var/www/whoogle-search/run
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=3
@@ -331,6 +337,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
 | WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
 | WHOOGLE_CSP          | Sets a default set of 'Content-Security-Policy' headers                                   |
+| WHOOGLE_RESULTS_PER_PAGE          | Set the number of results per page                                   |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.

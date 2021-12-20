@@ -75,7 +75,7 @@ def test_block_results(client):
 
     assert has_pinterest
 
-    demo_config['block'] = 'pinterest.com,help.pinterest.com'
+    demo_config['block'] = 'pinterest.com'
     rv = client.post(f'/{Endpoint.config}', data=demo_config)
     assert rv._status_code == 302
 
@@ -83,7 +83,10 @@ def test_block_results(client):
     assert rv._status_code == 200
 
     for link in BeautifulSoup(rv.data, 'html.parser').find_all('a', href=True):
-        assert 'pinterest.com' not in urlparse(link['href']).netloc
+        result_site = urlparse(link['href']).netloc
+        if not result_site:
+            continue
+        assert result_site not in 'pinterest.com'
 
 
 def test_recent_results(client):
