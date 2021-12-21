@@ -85,7 +85,11 @@ def session_required(f):
                 pass
 
         for invalid_session in invalid_sessions:
-            os.remove(invalid_session)
+            try:
+                os.remove(invalid_session)
+            except FileNotFoundError:
+                # Don't throw error if the invalid session has been removed
+                pass
 
         return f(*args, **kwargs)
 
