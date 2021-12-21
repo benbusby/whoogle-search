@@ -6,15 +6,16 @@ RUN apk --update add \
     libxslt-dev \
     openssl-dev \
     libffi-dev
- 
+
 COPY requirements.txt .
 
+RUN pip install --upgrade pip
 RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r requirements.txt
 
 FROM python:3.8-alpine
 
 RUN apk add --update --no-cache tor curl bash openrc
-# libcurl4-openssl-dev 
+# libcurl4-openssl-dev
 
 ARG config_dir=/config
 RUN mkdir -p $config_dir
