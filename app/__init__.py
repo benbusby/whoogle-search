@@ -43,11 +43,14 @@ app.config['LANGUAGES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json'),
     encoding='utf-8'))
 app.config['COUNTRIES'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json')))
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json'),
+    encoding='utf-8'))
 app.config['TRANSLATIONS'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json')))
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json'),
+    encoding='utf-8'))
 app.config['THEMES'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/themes.json')))
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/themes.json'),
+    encoding='utf-8'))
 app.config['CONFIG_PATH'] = os.getenv(
     'CONFIG_VOLUME',
     os.path.join(app.config['STATIC_FOLDER'], 'config'))
