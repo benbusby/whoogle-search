@@ -529,7 +529,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Screenshots
 #### Desktop
-![Whoogle Desktop](docs/screenshot_desktop.jpg)
+![Whoogle Desktop](docs/screenshot_desktop.png)
 
 #### Mobile
-![Whoogle Mobile](docs/screenshot_mobile.jpg)
+![Whoogle Mobile](docs/screenshot_mobile.png)
