@@ -107,9 +107,9 @@ def gen_query(query, args, config) -> str:
             [_ for _ in lang if not _.isdigit()]
         )) if lang else ''
     else:
-        param_dict['lr'] = '&lr=' + (
-            config.lang_search if config.lang_search else ''
-        )
+        param_dict['lr'] = (
+            '&lr=' + config.lang_search
+        ) if config.lang_search else ''
 
     # 'nfpr' defines the exclusion of results from an auto-corrected query
     if 'nfpr' in args:
@@ -120,11 +120,12 @@ def gen_query(query, args, config) -> str:
     if 'chips' in args:
         param_dict['chips'] = '&chips=' + args.get('chips')
 
-    param_dict['gl'] = ('&gl=' + config.country) if config.country else ''
-    param_dict['hl'] = '&hl=' + (
-        config.lang_interface.replace('lang_', '')
-        if config.lang_interface else ''
-    )
+    param_dict['gl'] = (
+        '&gl=' + config.country
+    ) if config.country else ''
+    param_dict['hl'] = (
+        '&hl=' + config.lang_interface.replace('lang_', '')
+    ) if config.lang_interface else ''
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 
     # Block all sites specified in the user config
@@ -218,7 +219,10 @@ class Request:
             list: The list of matches for possible search suggestions
 
         """
-        ac_query = dict(hl=self.language, q=query)
+        ac_query = dict(q=query)
+        if self.language:
+            ac_query['hl'] = self.language
+
         response = self.send(base_url=AUTOCOMPLETE_URL,
                              query=urlparse.urlencode(ac_query)).text
 
