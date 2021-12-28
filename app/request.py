@@ -229,9 +229,13 @@ class Request:
         if not response:
             return []
 
-        root = ET.fromstring(response)
-        return [_.attrib['data'] for _ in
-                root.findall('.//suggestion/[@data]')]
+        try:
+            root = ET.fromstring(response)
+            return [_.attrib['data'] for _ in
+                    root.findall('.//suggestion/[@data]')]
+        except ET.ParseError:
+            # Malformed XML response
+            return []
 
     def send(self, base_url='', query='', attempt=0,
              force_mobile=False) -> Response:
