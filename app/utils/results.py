@@ -24,6 +24,7 @@ BLACKLIST = [
 ]
 
 SITE_ALTS = {
+    'imgur.com': os.getenv('WHOOGLE_ALT_IM', 'imgin.voidnet.tech'),
     'twitter.com': os.getenv('WHOOGLE_ALT_TW', 'farside.link/nitter'),
     'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'farside.link/invidious'),
     'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'farside.link/bibliogram/u'),
