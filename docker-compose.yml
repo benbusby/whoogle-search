@@ -38,6 +38,8 @@ services:
       #- WHOOGLE_ALT_RD=farside.link/libreddit
       #- WHOOGLE_ALT_MD=farside.link/scribe
       #- WHOOGLE_ALT_TL=lingva.ml
+      #- WHOOGLE_ALT_IMG=imgin.voidnet.tech
+      #- WHOOGLE_ALT_WIKI=wikiless.org
     #env_file: # Alternatively, load variables from whoogle.env
       #- whoogle.env
     ports:
