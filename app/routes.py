@@ -119,7 +119,8 @@ def before_request_func():
         # Skip checking for session on any searches that don't
         # require a valid session
         if (not Endpoint.autocomplete.in_path(request.path) and
-                not Endpoint.healthz.in_path(request.path)):
+                not Endpoint.healthz.in_path(request.path) and
+                not Endpoint.opensearch.in_path(request.path)):
             return redirect(url_for(
                 'session_check',
                 session_id=session['uuid'],
