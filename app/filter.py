@@ -178,10 +178,17 @@ class Filter:
             # Find and decompose the first element with an inner HTML text val.
             # This typically extracts the title of the section (i.e. "Related
             # Searches", "People also ask", etc)
+            # If there are more than one child tags with text
+            # parenthesize the rest except the first
             label = 'Collapsed Results'
+            subtitle = None
             for elem in result_children:
                 if elem.text:
-                    label = elem.text
+                    content = list(elem.strings)
+                    label = content[0]
+                    if len(content) > 1:
+                        subtitle = '<span> (' + \
+                            ''.join(content[1:]) + ')</span>'
                     elem.decompose()
                     break
 
@@ -196,6 +203,11 @@ class Filter:
             details = BeautifulSoup(features='html.parser').new_tag('details')
             summary = BeautifulSoup(features='html.parser').new_tag('summary')
             summary.string = label
+
+            if subtitle:
+                soup = BeautifulSoup(subtitle, 'html.parser')
+                summary.append(soup)
+
             details.append(summary)
 
             if parent and not minimal_mode:
