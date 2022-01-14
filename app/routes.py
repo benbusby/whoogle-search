@@ -37,8 +37,8 @@ newest_version = int(''.join(filter(str.isdigit, newest_version)))
 newest_version = '' if current_version >= newest_version \
     else newest_version
 
-ac_var='WHOOGLE_AUTOCOMPLETE'
-autocomplete_enabled=os.getenv(ac_var,'1')
+ac_var = 'WHOOGLE_AUTOCOMPLETE'
+autocomplete_enabled = os.getenv(ac_var, '1')
 
 def auth_required(f):
     @wraps(f)
