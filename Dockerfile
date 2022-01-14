@@ -54,8 +54,8 @@ ENV CONFIG_VOLUME=$config_dir \
     WHOOGLE_ALT_IG=$instagram_alt \
     WHOOGLE_ALT_RD=$reddit_alt \
     WHOOGLE_ALT_MD=$medium_alt \
-    WHOOGLE_ALT_TL=$translate_alt
-    WHOOGLE_ALT_IMG=$imgur_alt
+    WHOOGLE_ALT_TL=$translate_alt \
+    WHOOGLE_ALT_IMG=$imgur_alt \
     WHOOGLE_ALT_WIKI=$wikipedia_alt
 
 WORKDIR /whoogle
