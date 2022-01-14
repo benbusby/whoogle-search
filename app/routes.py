@@ -40,6 +40,7 @@ newest_version = '' if current_version >= newest_version \
 ac_var = 'WHOOGLE_AUTOCOMPLETE'
 autocomplete_enabled = os.getenv(ac_var, '1')
 
+
 def auth_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
