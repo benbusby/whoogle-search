@@ -75,6 +75,16 @@
       "value": "lingva.ml",
       "required": false
     },
+    "WHOOGLE_ALT_IMG": {
+	      "description": "The site to use as a replacement for imgur.com when site alternatives are enabled in the config.",
+	      "value": "imgin.voidnet.tech",
+	      "required": false
+	    },
+    "WHOOGLE_ALT_WIKI": {
+	      "description": "The site to use as a replacement for wikipedia.com when site alternatives are enabled in the config.",
+	      "value": "wikiless.org",
+	      "required": false
+	    },
     "WHOOGLE_MINIMAL": {
         "description": "Remove everything except basic result cards from all search queries (set to 1 or leave blank)",
         "value": "",

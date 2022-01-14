@@ -203,6 +203,8 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_RD=farside.link/libreddit
 #Environment=WHOOGLE_ALT_MD=farside.link/scribe
 #Environment=WHOOGLE_ALT_TL=lingva.ml
+#Environment=WHOOGLE_ALT_IMG=imgin.voidnet.tech
+#Environment=WHOOGLE_ALT_WIKI=wikiless.org
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
@@ -334,6 +336,8 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_RD       | The reddit.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
 | WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config.       |
+| WHOOGLE_ALT_IMG       | The imgur.com alternative to use when site alternatives are enabled in the config.       |
+| WHOOGLE_ALT_WIKI       | The wikipedia.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
 | WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
 | WHOOGLE_CSP          | Sets a default set of 'Content-Security-Policy' headers                                   |
