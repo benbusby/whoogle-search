@@ -35,7 +35,9 @@
 {{ response|safe }}
 </body>
 {% include 'footer.html' %}
-<script src="{{ cb_url('autocomplete.js') }}"></script>
+{% if autocomplete_enabled == '1' %}
+    <script src="{{ cb_url('autocomplete.js') }}"></script>
+{% endif %}
 <script src="{{ cb_url('utils.js') }}"></script>
 <script src="{{ cb_url('keyboard.js') }}"></script>
 <script src="{{ cb_url('currency.js') }}"></script>

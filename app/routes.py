@@ -37,6 +37,9 @@ newest_version = int(''.join(filter(str.isdigit, newest_version)))
 newest_version = '' if current_version >= newest_version \
     else newest_version
 
+ac_var = 'WHOOGLE_AUTOCOMPLETE'
+autocomplete_enabled = os.getenv(ac_var, '1')
+
 
 def auth_required(f):
     @wraps(f)
@@ -201,6 +204,7 @@ def index():
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
                            themes=app.config['THEMES'],
+                           autocomplete_enabled=autocomplete_enabled,
                            translation=app.config['TRANSLATIONS'][
                                g.user_config.get_localization_lang()
                            ],
@@ -246,7 +250,6 @@ def search_html():
 
 @app.route(f'/{Endpoint.autocomplete}', methods=['GET', 'POST'])
 def autocomplete():
-    ac_var = 'WHOOGLE_AUTOCOMPLETE'
     if os.getenv(ac_var) and not read_config_bool(ac_var):
         return jsonify({})
 
@@ -344,6 +347,7 @@ def search():
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
         config=g.user_config,
+        autocomplete_enabled=autocomplete_enabled,
         lingva_url=app.config['TRANSLATE_URL'],
         translation=translation,
         translate_to=translate_to,

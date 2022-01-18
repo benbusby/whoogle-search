@@ -17,7 +17,9 @@
     <meta name="referrer" content="no-referrer">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="static/img/favicon/ms-icon-144x144.png">
-    <script type="text/javascript" src="{{ cb_url('autocomplete.js') }}"></script>
+    {% if autocomplete_enabled == '1' %}
+        <script src="{{ cb_url('autocomplete.js') }}"></script>
+    {% endif %}
     <script type="text/javascript" src="{{ cb_url('controller.js') }}"></script>
     <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
