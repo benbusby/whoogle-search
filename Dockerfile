@@ -18,7 +18,7 @@ RUN apk add --update --no-cache tor curl bash openrc
 # libcurl4-openssl-dev
 
 ARG config_dir=/config
-RUN mkdir -p $config_dir
+RUN mkdir -p -m 777 $config_dir
 VOLUME $config_dir
 
 ARG username=''
