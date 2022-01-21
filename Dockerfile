@@ -17,6 +17,8 @@ FROM python:3.8-alpine
 RUN apk add --update --no-cache tor curl bash openrc
 # libcurl4-openssl-dev
 
+ARG DOCKER_USER=whoogle
+ARG DOCKER_USERID=927
 ARG config_dir=/config
 RUN mkdir -p -m 777 $config_dir
 VOLUME $config_dir
@@ -69,6 +71,13 @@ COPY run .
 
 # Allow writing symlinks to build dir
 RUN chown 102:102 app/static/build
+
+# Create user/group to run as
+RUN adduser -D -g $DOCKER_USERID -u $DOCKER_USERID $DOCKER_USER 
+# Fix ownership / permissions
+RUN	chown -R ${DOCKER_USER}:${DOCKER_USER} /whoogle /var/lib/tor
+
+USER $DOCKER_USER:$DOCKER_USER
 
 EXPOSE $EXPOSE_PORT
 
