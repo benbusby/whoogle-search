@@ -2,7 +2,7 @@
     <head>
         <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="static/img/favicon.ico" type="image/x-icon">
-        <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
+        <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Gidion Search">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="referrer" content="no-referrer">
         <link rel="stylesheet" href="{{ cb_url('input.css') }}">
@@ -22,7 +22,7 @@
 		<link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
         {% endif %}
         <style>{{ config.style }}</style>
-        <title>{{ clean_query(query) }} - Whoogle Search</title>
+        <title>{{ clean_query(query) }} - Gidion Search</title>
     </head>
     <body>
     {{ search_header|safe }}
@@ -36,7 +36,7 @@
     </body>
     <footer>
         <p class="footer">
-            Whoogle Search v{{ version_number }} ||
+            Gidion Search v{{ version_number }} ||
             <a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
         </p>
     </footer>
