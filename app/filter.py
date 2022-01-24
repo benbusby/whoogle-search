@@ -1,3 +1,5 @@
+from app.models.config import Config
+from app.models.endpoint import Endpoint
 from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import read_config_bool
 from app.utils.results import *
@@ -44,18 +46,8 @@ class Filter:
     # type result (such as "people also asked", "related searches", etc)
     RESULT_CHILD_LIMIT = 7
 
-    def __init__(self, user_key: str, mobile=False, config=None) -> None:
-        if config is None:
-            config = {}
-        self.near = config['near'] if 'near' in config else ''
-        self.dark = config['dark'] if 'dark' in config else False
-        self.nojs = config['nojs'] if 'nojs' in config else False
-        self.new_tab = config['new_tab'] if 'new_tab' in config else False
-        self.alt_redirect = config['alts'] if 'alts' in config else False
-        self.block_title = (
-            config['block_title'] if 'block_title' in config else '')
-        self.block_url = (
-            config['block_url'] if 'block_url' in config else '')
+    def __init__(self, user_key: str, config: Config, mobile=False) -> None:
+        self.config = config
         self.mobile = mobile
         self.user_key = user_key
         self.main_divs = ResultSet('')
@@ -67,16 +59,6 @@ class Filter:
     @property
     def elements(self):
         return self._elements
-
-    def reskin(self, page: str) -> str:
-        # Aesthetic only re-skinning
-        if self.dark:
-            page = page.replace(
-                'fff', '000').replace(
-                '202124', 'ddd').replace(
-                '1967D2', '3b85ea')
-
-        return page
 
     def encrypt_path(self, path, is_element=False) -> str:
         # Encrypts path to avoid plaintext results in logs
@@ -109,7 +91,7 @@ class Filter:
 
         input_form = soup.find('form')
         if input_form is not None:
-            input_form['method'] = 'POST'
+            input_form['method'] = 'GET' if self.config.get_only else 'POST'
 
         # Ensure no extra scripts passed through
         for script in soup('script'):
@@ -143,9 +125,7 @@ class Filter:
             _ = div.decompose() if len(div_ads) else None
 
     def remove_block_titles(self) -> None:
-        if not self.main_divs:
-            return
-        if self.block_title == '':
+        if not self.main_divs or not self.config.block_title:
             return
         block_title = re.compile(self.block_title)
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
@@ -154,9 +134,7 @@ class Filter:
             _ = div.decompose() if len(block_divs) else None
 
     def remove_block_url(self) -> None:
-        if not self.main_divs:
-            return
-        if self.block_url == '':
+        if not self.main_divs or not self.config.block_url:
             return
         block_url = re.compile(self.block_url)
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
@@ -211,10 +189,17 @@ class Filter:
             # Find and decompose the first element with an inner HTML text val.
             # This typically extracts the title of the section (i.e. "Related
             # Searches", "People also ask", etc)
+            # If there are more than one child tags with text
+            # parenthesize the rest except the first
             label = 'Collapsed Results'
+            subtitle = None
             for elem in result_children:
                 if elem.text:
-                    label = elem.text
+                    content = list(elem.strings)
+                    label = content[0]
+                    if len(content) > 1:
+                        subtitle = '<span> (' + \
+                            ''.join(content[1:]) + ')</span>'
                     elem.decompose()
                     break
 
@@ -229,6 +214,11 @@ class Filter:
             details = BeautifulSoup(features='html.parser').new_tag('details')
             summary = BeautifulSoup(features='html.parser').new_tag('summary')
             summary.string = label
+
+            if subtitle:
+                soup = BeautifulSoup(subtitle, 'html.parser')
+                summary.append(soup)
+
             details.append(summary)
 
             if parent and not minimal_mode:
@@ -254,14 +244,14 @@ class Filter:
         if src.startswith(LOGO_URL):
             # Re-brand with Whoogle logo
             element.replace_with(BeautifulSoup(
-                render_template('logo.html', dark=self.dark),
+                render_template('logo.html'),
                 features='html.parser'))
             return
         elif src.startswith(GOOG_IMG) or GOOG_STATIC in src:
             element['src'] = BLANK_B64
             return
 
-        element['src'] = 'element?url=' + self.encrypt_path(
+        element['src'] = f'{Endpoint.element}?url=' + self.encrypt_path(
             src,
             is_element=True) + '&type=' + urlparse.quote(mime)
 
@@ -353,10 +343,10 @@ class Filter:
             link['href'] = filter_link_args(q)
 
             # Add no-js option
-            if self.nojs:
+            if self.config.nojs:
                 append_nojs(link)
 
-            if self.new_tab:
+            if self.config.new_tab:
                 link['target'] = '_blank'
         else:
             if href.startswith(MAPS_URL):
@@ -366,7 +356,7 @@ class Filter:
                 link['href'] = href
 
         # Replace link location if "alts" config is enabled
-        if self.alt_redirect:
+        if self.config.alts:
             # Search and replace all link descriptions
             # with alternative location
             link['href'] = get_site_alt(link['href'])
@@ -409,7 +399,12 @@ class Filter:
         for item in results_all:
             urls = item.find('a')['href'].split('&imgrefurl=')
 
-            img_url = urlparse.unquote(urls[0].replace('/imgres?imgurl=', ''))
+            # Skip urls that are not two-element lists
+            if len(urls) != 2:
+                continue
+
+            img_url = urlparse.unquote(urls[0].replace(
+                f'/{Endpoint.imgres}?imgurl=', ''))
 
             try:
                 # Try to strip out only the necessary part of the web page link

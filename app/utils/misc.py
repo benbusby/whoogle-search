@@ -23,3 +23,10 @@ def get_client_ip(r: Request) -> str:
         return r.environ['REMOTE_ADDR']
     else:
         return r.environ['HTTP_X_FORWARDED_FOR']
+
+
+def get_request_url(url: str) -> str:
+    if os.getenv('HTTPS_ONLY', False):
+        return url.replace('http://', 'https://', 1)
+
+    return url

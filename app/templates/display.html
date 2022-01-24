@@ -5,6 +5,7 @@
     <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" href="{{ cb_url('logo.css') }}">
     <link rel="stylesheet" href="{{ cb_url('input.css') }}">
     <link rel="stylesheet" href="{{ cb_url('search.css') }}">
     <link rel="stylesheet" href="{{ cb_url('header.css') }}">
@@ -33,13 +34,11 @@
 {% endif %}
 {{ response|safe }}
 </body>
-<footer>
-    <p class="footer">
-        Whoogle Search v{{ version_number }} ||
-        <a id="gh-link" href="https://github.com/benbusby/whoogle-search">{{ translation['github-link'] }}</a>
-    </p>
-</footer>
-<script src="{{ cb_url('autocomplete.js') }}"></script>
+{% include 'footer.html' %}
+{% if autocomplete_enabled == '1' %}
+    <script src="{{ cb_url('autocomplete.js') }}"></script>
+{% endif %}
 <script src="{{ cb_url('utils.js') }}"></script>
 <script src="{{ cb_url('keyboard.js') }}"></script>
+<script src="{{ cb_url('currency.js') }}"></script>
 </html>

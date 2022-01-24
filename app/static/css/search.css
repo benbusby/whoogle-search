@@ -26,6 +26,10 @@ details summary {
     font-weight: bold;
 }
 
+details summary span {
+    font-weight: normal;
+}
+
 #lingva-iframe {
     width: 100%;
     height: 650px;

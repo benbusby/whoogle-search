@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 from app.filter import Filter
+from app.models.config import Config
+from app.models.endpoint import Endpoint
 from app.utils.session import generate_user_key
 from datetime import datetime
 from dateutil.parser import *
@@ -10,7 +12,7 @@ from test.conftest import demo_config
 
 def get_search_results(data):
     secret_key = generate_user_key()
-    soup = Filter(user_key=secret_key).clean(
+    soup = Filter(user_key=secret_key, config=Config(**demo_config)).clean(
         BeautifulSoup(data, 'html.parser'))
 
     main_divs = soup.find('div', {'id': 'main'})
@@ -30,7 +32,7 @@ def get_search_results(data):
 
 
 def test_get_results(client):
-    rv = client.get('/search?q=test')
+    rv = client.get(f'/{Endpoint.search}?q=test')
     assert rv._status_code == 200
 
     # Depending on the search, there can be more
@@ -41,7 +43,7 @@ def test_get_results(client):
 
 
 def test_post_results(client):
-    rv = client.post('/search', data=dict(q='test'))
+    rv = client.post(f'/{Endpoint.search}', data=dict(q='test'))
     assert rv._status_code == 200
 
     # Depending on the search, there can be more
@@ -52,7 +54,7 @@ def test_post_results(client):
 
 
 def test_translate_search(client):
-    rv = client.post('/search', data=dict(q='translate hola'))
+    rv = client.post(f'/{Endpoint.search}', data=dict(q='translate hola'))
     assert rv._status_code == 200
 
     # Pretty weak test, but better than nothing
@@ -62,7 +64,7 @@ def test_translate_search(client):
 
 
 def test_block_results(client):
-    rv = client.post('/search', data=dict(q='pinterest'))
+    rv = client.post(f'/{Endpoint.search}', data=dict(q='pinterest'))
     assert rv._status_code == 200
 
     has_pinterest = False
@@ -74,28 +76,17 @@ def test_block_results(client):
     assert has_pinterest
 
     demo_config['block'] = 'pinterest.com'
-    rv = client.post('/config', data=demo_config)
+    rv = client.post(f'/{Endpoint.config}', data=demo_config)
     assert rv._status_code == 302
 
-    rv = client.post('/search', data=dict(q='pinterest'))
+    rv = client.post(f'/{Endpoint.search}', data=dict(q='pinterest'))
     assert rv._status_code == 200
 
     for link in BeautifulSoup(rv.data, 'html.parser').find_all('a', href=True):
-        assert 'pinterest.com' not in urlparse(link['href']).netloc
-
-
-# TODO: Unit test the site alt method instead -- the results returned
-# are too unreliable for this test in particular.
-# def test_site_alts(client):
-    # rv = client.post('/search', data=dict(q='twitter official account'))
-    # assert b'twitter.com/Twitter' in rv.data
-
-    # client.post('/config', data=dict(alts=True))
-    # assert json.loads(client.get('/config').data)['alts']
-
-    # rv = client.post('/search', data=dict(q='twitter official account'))
-    # assert b'twitter.com/Twitter' not in rv.data
-    # assert b'nitter.net/Twitter' in rv.data
+        result_site = urlparse(link['href']).netloc
+        if not result_site:
+            continue
+        assert result_site not in 'pinterest.com'
 
 
 def test_recent_results(client):
@@ -106,7 +97,7 @@ def test_recent_results(client):
     }
 
     for time, num_days in times.items():
-        rv = client.post('/search', data=dict(q='test :' + time))
+        rv = client.post(f'/{Endpoint.search}', data=dict(q='test :' + time))
         result_divs = get_search_results(rv.data)
 
         current_date = datetime.now()

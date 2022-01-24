@@ -2,7 +2,7 @@ name: buildx
 
 on:
   workflow_run:
-    workflows: ["tests"]
+    workflows: ["docker_tests"]
     branches: [main]
     types:
       - completed

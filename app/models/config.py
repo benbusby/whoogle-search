@@ -17,8 +17,8 @@ class Config:
         self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
         self.block_title = os.getenv('WHOOGLE_CONFIG_BLOCK_TITLE', '')
         self.block_url = os.getenv('WHOOGLE_CONFIG_BLOCK_URL', '')
-        self.ctry = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
-        self.theme = os.getenv('WHOOGLE_CONFIG_THEME', '')
+        self.country = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
+        self.theme = os.getenv('WHOOGLE_CONFIG_THEME', 'system')
         self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
         self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')  # deprecated
         self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
@@ -33,9 +33,13 @@ class Config:
         self.safe_keys = [
             'lang_search',
             'lang_interface',
-            'ctry',
-            'dark',
-            'theme'
+            'country',
+            'theme',
+            'alts',
+            'new_tab',
+            'view_image',
+            'block',
+            'safe'
         ]
 
         # Skip setting custom config if there isn't one
@@ -105,5 +109,26 @@ class Config:
         for param_key in params.keys():
             if not self.is_safe_key(param_key):
                 continue
-            self[param_key] = params.get(param_key)
+            param_val = params.get(param_key)
+
+            if param_val == 'off':
+                param_val = False
+            elif param_val.isdigit():
+                param_val = int(param_val)
+
+            self[param_key] = param_val
         return self
+
+    def to_params(self) -> str:
+        """Generates a set of safe params for using in Whoogle URLs
+
+        Returns:
+            str -- a set of URL parameters
+        """
+        param_str = ''
+        for safe_key in self.safe_keys:
+            if not self[safe_key]:
+                continue
+            param_str = param_str + f'&{safe_key}={self[safe_key]}'
+
+        return param_str

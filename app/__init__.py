@@ -15,16 +15,21 @@ app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + '/static')
 
 # Load .env file if enabled
-if os.getenv("WHOOGLE_DOTENV", ''):
+if os.getenv('WHOOGLE_DOTENV', ''):
     dotenv_path = '../whoogle.env'
     load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              dotenv_path))
 
 app.default_key = generate_user_key()
-app.no_cookie_ips = []
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['VERSION_NUMBER'] = '0.6.0'
+app.config['SESSION_COOKIE_SAMESITE'] = 'strict'
+
+if os.getenv('HTTPS_ONLY'):
+    app.config['SESSION_COOKIE_NAME'] = '__Secure-session'
+    app.config['SESSION_COOKIE_SECURE'] = True
+
+app.config['VERSION_NUMBER'] = '0.7.0'
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',
     os.path.dirname(os.path.abspath(__file__)))
@@ -38,9 +43,11 @@ app.config['LANGUAGES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json'),
     encoding='utf-8'))
 app.config['COUNTRIES'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json')))
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json'),
+    encoding='utf-8'))
 app.config['TRANSLATIONS'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json')))
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json'),
+    encoding='utf-8'))
 app.config['THEMES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/themes.json')))
 app.config['HEADER_TABS'] = json.load(open(
@@ -61,6 +68,8 @@ app.config['BANG_PATH'] = os.getenv(
 app.config['BANG_FILE'] = os.path.join(
     app.config['BANG_PATH'],
     'bangs.json')
+app.config['RELEASES_URL'] = 'https://github.com/' \
+                             'benbusby/whoogle-search/releases'
 
 # The alternative to Google Translate is treated a bit differently than other
 # social media site alternatives, in that it is used for any translation

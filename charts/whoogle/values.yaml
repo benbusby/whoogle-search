@@ -1,0 +1,110 @@
+# Default values for whoogle.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+image:
+  repository: benbusby/whoogle-search
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+  pullSecrets: []
+    # - my-image-pull-secret
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+conf: {}
+  # WHOOGLE_DOTENV: ""       # Load environment variables in whoogle.env
+  # WHOOGLE_USER: ""         # The username for basic auth. WHOOGLE_PASS must also be set if used.
+  # WHOOGLE_PASS: ""         # The password for basic auth. WHOOGLE_USER must also be set if used.
+  # WHOOGLE_PROXY_USER: ""   # The username of the proxy server.
+  # WHOOGLE_PROXY_PASS: ""   # The password of the proxy server.
+  # WHOOGLE_PROXY_TYPE: ""   # The type of the proxy server. Can be "socks5", "socks4", or "http".
+  # WHOOGLE_PROXY_LOC: ""    # The location of the proxy server (host or ip).
+  # EXPOSE_PORT: ""          # The port where Whoogle will be exposed. (default 5000)
+  # HTTPS_ONLY: ""           # Enforce HTTPS. (See https://github.com/benbusby/whoogle-search#https-enforcement)
+  # WHOOGLE_ALT_TW: ""       # The twitter.com alternative to use when site alternatives are enabled in the config.
+  # WHOOGLE_ALT_YT: ""       # The youtube.com alternative to use when site alternatives are enabled in the config.
+  # WHOOGLE_ALT_IG: ""       # The instagram.com alternative to use when site alternatives are enabled in the config.
+  # WHOOGLE_ALT_RD: ""       # The reddit.com alternative to use when site alternatives are enabled in the config.
+  # WHOOGLE_ALT_TL: ""       # The Google Translate alternative to use. This is used for all "translate ____" searches.
+  # WHOOGLE_ALT_MD: ""       # The medium.com alternative to use when site alternatives are enabled in the config.
+  # WHOOGLE_ALT_IMG: ""       # The imgur.com alternative to use when site alternatives are enabled in the config.
+  # WHOOGLE_ALT_WIKI: ""       # The wikipedia.com alternative to use when site alternatives are enabled in the config.
+  # WHOOGLE_AUTOCOMPLETE: "" # Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable
+  # WHOOGLE_MINIMAL: ""      # Remove everything except basic result cards from all search queries.
+
+  # WHOOGLE_CONFIG_DISABLE: ""         # Hide config from UI and disallow changes to config by client
+  # WHOOGLE_CONFIG_COUNTRY: ""         # Filter results by hosting country
+  # WHOOGLE_CONFIG_LANGUAGE: ""        # Set interface language
+  # WHOOGLE_CONFIG_SEARCH_LANGUAGE: "" # Set search result language
+  # WHOOGLE_CONFIG_BLOCK: ""           # Block websites from search results (use comma-separated list)
+  # WHOOGLE_CONFIG_THEME: ""           # Set theme mode (light, dark, or system)
+  # WHOOGLE_CONFIG_SAFE: ""            # Enable safe searches
+  # WHOOGLE_CONFIG_ALTS: ""            # Use social media site alternatives (nitter, invidious, etc)
+  # WHOOGLE_CONFIG_NEAR: ""            # Restrict results to only those near a particular city
+  # WHOOGLE_CONFIG_TOR: ""             # Use Tor routing (if available)
+  # WHOOGLE_CONFIG_NEW_TAB: ""         # Always open results in new tab
+  # WHOOGLE_CONFIG_VIEW_IMAGE: ""      # Enable View Image option
+  # WHOOGLE_CONFIG_GET_ONLY: ""        # Search using GET requests only
+  # WHOOGLE_CONFIG_URL: ""             # The root url of the instance (https://<your url>/)
+  # WHOOGLE_CONFIG_STYLE: ""           # The custom CSS to use for styling (should be single line)
+
+podAnnotations: {}
+podSecurityContext: {}
+  # fsGroup: 2000
+securityContext:
+  runAsUser: 0
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+
+service:
+  type: ClusterIP
+  port: 5000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: whoogle.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - whoogle.example.com
+
+resources: {}
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

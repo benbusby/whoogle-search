@@ -22,6 +22,7 @@ Contents
     6. [Manual](#f-manual)
     7. [Docker](#g-manual-docker)
     8. [Arch/AUR](#arch-linux--arch-based-distributions)
+    9. [Helm/Kubernetes](#helm-chart-for-kubernetes)
 4. [Environment Variables and Configuration](#environment-variables)
 5. [Usage](#usage)
 6. [Extra Steps](#extra-steps)
@@ -84,7 +85,7 @@ Provides:
 - Free HTTPS url (https://\<your app name\>.herokuapp.com)
 - Downtime after periods of inactivity \([solution](https://github.com/benbusby/whoogle-search#prevent-downtime-heroku-only)\)
 
-Notes: 
+Notes:
 - Requires a (free) Heroku account
 - Sometimes has issues with auto-redirecting to `https`. Make sure to navigate to the `https` version of your app before adding as a default search engine.
 
@@ -163,7 +164,7 @@ See the [available environment variables](#environment-variables) for additional
 
 ### F) Manual
 
-*Note: `Content-Security-Policy` headers are already sent by Whoogle -- you don't/shouldn't need to apply a CSP header yourself*
+*Note: `Content-Security-Policy` headers can be sent by Whoogle if you set `WHOOGLE_CSP`.*
 
 Clone the repo and run the following commands to start the app in a local-only environment:
 
@@ -178,7 +179,7 @@ pip install -r requirements.txt
 See the [available environment variables](#environment-variables) for additional configuration.
 
 #### systemd Configuration
-After building the virtual environment, you can add the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
+After building the virtual environment, you can add something like the following to `/lib/systemd/system/whoogle.service` to set up a Whoogle Search systemd service:
 
 ```ini
 [Unit]
@@ -195,19 +196,27 @@ Description=Whoogle
 #Environment=WHOOGLE_PROXY_LOC=<proxy host/ip>
 # Site alternative configurations, uncomment to enable
 # Note: If not set, the feature will still be available
-# with default values. 
-#Environment=WHOOGLE_ALT_TW=nitter.net
-#Environment=WHOOGLE_ALT_YT=invidious.snopyta.org
-#Environment=WHOOGLE_ALT_IG=bibliogram.art/u
-#Environment=WHOOGLE_ALT_RD=libredd.it
+# with default values.
+#Environment=WHOOGLE_ALT_TW=farside.link/nitter
+#Environment=WHOOGLE_ALT_YT=farside.link/invidious
+#Environment=WHOOGLE_ALT_IG=farside.link/bibliogram/u
+#Environment=WHOOGLE_ALT_RD=farside.link/libreddit
+#Environment=WHOOGLE_ALT_MD=farside.link/scribe
 #Environment=WHOOGLE_ALT_TL=lingva.ml
-#Environment=WHOOGLE_ALT_MD=scribe.rip
+#Environment=WHOOGLE_ALT_IMG=imgin.voidnet.tech
+#Environment=WHOOGLE_ALT_WIKI=wikiless.org
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
 User=<username>
-WorkingDirectory=<whoogle_directory>
-ExecStart=<whoogle_directory>/venv/bin/python3 -um app --host 0.0.0.0 --port 5000
+# If installed as a package, add:
+ExecStart=<python_install_dir>/python3 <whoogle_install_dir>/whoogle-search --host 127.0.0.1 --port 5000
+# For example:
+# ExecStart=/usr/bin/python3 /home/my_username/.local/bin/whoogle-search --host 127.0.0.1 --port 5000
+# Otherwise if running the app from source, add:
+ExecStart=<whoogle_repo_dir>/run
+# For example:
+# ExecStart=/var/www/whoogle-search/run
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=3
@@ -287,6 +296,13 @@ You may also edit environment variables from your app’s Settings tab in the He
 #### Arch Linux & Arch-based Distributions
 There is an [AUR package available](https://aur.archlinux.org/packages/whoogle-git/), as well as a pre-built and daily updated package available at [Chaotic-AUR](https://chaotic.cx).
 
+#### Helm chart for Kubernetes
+To use the Kubernetes Helm Chart:
+1. Ensure you have [Helm](https://helm.sh/docs/intro/install/) `>=3.0.0` installed
+2. Clone this repository
+3. Update [charts/whoogle/values.yaml](./charts/whoogle/values.yaml) as desired
+4. Run `helm install whoogle ./charts/whoogle`
+
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
 
@@ -320,8 +336,12 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_RD       | The reddit.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
 | WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config.       |
+| WHOOGLE_ALT_IMG       | The imgur.com alternative to use when site alternatives are enabled in the config.       |
+| WHOOGLE_ALT_WIKI       | The wikipedia.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
 | WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
+| WHOOGLE_CSP          | Sets a default set of 'Content-Security-Policy' headers                                   |
+| WHOOGLE_RESULTS_PER_PAGE          | Set the number of results per page                                   |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
@@ -413,7 +433,7 @@ Note: You should have your own domain name and [an https certificate](https://le
 - Docker image: Set the environment variable HTTPS_ONLY=1
 - Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
-	
+
 ### Using with Firefox Containers
 Unfortunately, Firefox Containers do not currently pass through `POST` requests (the default) to the engine, and Firefox caches the opensearch template on initial page load. To get around this, you can take the following steps to get it working as expected:
 
@@ -448,7 +468,7 @@ Under the hood, Whoogle is a basic Flask app with the following structure:
     - CSS/Javascript files, should be self-explanatory
   - `static/settings`
     - Key-value JSON files for establishing valid configuration values
-    
+
 
 If you're new to the project, the easiest way to get started would be to try fixing [an open bug report](https://github.com/benbusby/whoogle-search/issues?q=is%3Aissue+is%3Aopen+label%3Abug). If there aren't any open, or if the open ones are too stale, try taking on a [feature request](https://github.com/benbusby/whoogle-search/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement). Generally speaking, if you can write something that has any potential of breaking down in the future, you should write a test for it.
 
@@ -467,7 +487,7 @@ def contains(x: list, y: int) -> bool:
     """
 
     return y in x
-``` 
+```
 
 #### Translating
 
@@ -488,25 +508,33 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Public Instances
 
-*Note: Use public instances at your own discretion. Maintainers of Whoogle do not personally validate the integrity of these instances, and popular public instances are more likely to be rate-limited or blocked.*
-	
+*Note: Use public instances at your own discretion. The maintainers of Whoogle are only responsible for https://whoogle.fossho.st, and do not personally validate the integrity of any other instances. Popular public instances are more likely to be rate-limited or blocked.*
+
 | Website | Country | Language | Cloudflare |
 |-|-|-|-|
+| [https://whoogle.fossho.st](https://whoogle.fossho.st) | 🇺🇸 US | Multi-choice | |
+| [https://search.albony.xyz](https://search.albony.xyz/) | 🇮🇳 IN | Multi-choice |  |
 | [https://whoogle.sdf.org](https://whoogle.sdf.org) | 🇺🇸 US | Multi-choice |
-| [https://whoogle.kavin.rocks](https://whoogle.kavin.rocks) | 🇮🇳 IN | Unknown | ✅ |
 | [https://search.garudalinux.org](https://search.garudalinux.org) | 🇩🇪 DE | Multi-choice |  |
 | [https://whooglesearch.net](https://whooglesearch.net) | 🇩🇪 DE | Spanish |  |
-| [https://search.flawcra.cc](https://search.flawcra.cc) |🇩🇪 DE | Unknown | ✅ |
 | [https://search.exonip.de](https://search.exonip.de) | 🇳🇱 NL | Multi-choice |  |
-| [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | English | ✅ |
-| [https://search.flux.industries](https://search.flux.industries) | 🇩🇪 DE  | German | ✅ |
-| [http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion](http://whoogledq5f5wly5p4i2ohnvjwlihnlg4oajjum2oeddfwqdwupbuhqd.onion) | 🇮🇳 IN | Unknown |  |
+| [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | Multi-choice | ✅ |
+| [https://www.whooglesearch.ml](https://www.whooglesearch.ml) | 🇺🇸 US | English | |
+| [https://search.sethforprivacy.com](https://search.sethforprivacy.com) | 🇩🇪 DE | English | |
+| [https://whoogle.dcs0.hu](https://whoogle.dcs0.hu) | 🇭🇺 HU | Multi-choice | ✅ |
 
-* A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
+* A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare.com). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
+
+#### Onion Instances
+
+| Website | Country | Language |
+|-|-|-|
+| [http://whoglqjdkgt2an4tdepberwqz3hk7tjo4kqgdnuj77rt7nshw2xqhqad.onion](http://whoglqjdkgt2an4tdepberwqz3hk7tjo4kqgdnuj77rt7nshw2xqhqad.onion) | 🇺🇸 US |  Multi-choice
+| [http://nuifgsnbb2mcyza74o7illtqmuaqbwu4flam3cdmsrnudwcmkqur37qd.onion](http://nuifgsnbb2mcyza74o7illtqmuaqbwu4flam3cdmsrnudwcmkqur37qd.onion) | 🇩🇪 DE |  English
 
 ## Screenshots
 #### Desktop
-![Whoogle Desktop](docs/screenshot_desktop.jpg)
+![Whoogle Desktop](docs/screenshot_desktop.png)
 
 #### Mobile
-![Whoogle Mobile](docs/screenshot_mobile.jpg)
+![Whoogle Mobile](docs/screenshot_mobile.png)
