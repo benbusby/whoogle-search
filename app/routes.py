@@ -1,6 +1,7 @@
 import argparse
 import base64
 import io
+import os
 import json
 import pickle
 import urllib.parse as urlparse
@@ -17,13 +18,14 @@ from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url
 from app.utils.results import add_ip_card, bold_search_terms,\
     add_currency_card, check_currency, get_tabs_content
-from app.utils.search import *
+from app.utils.search import Search, needs_https, has_captcha
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
-    send_file, session, url_for
+    send_file, session, url_for, g
 from requests import exceptions, get
 from requests.models import PreparedRequest
+from cryptography.fernet import Fernet
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE']))
@@ -374,7 +376,7 @@ def search():
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile,
-            tabs=tabs)), resp_code
+            tabs=tabs))
 
 
 @app.route(f'/{Endpoint.config}', methods=['GET', 'POST', 'PUT'])
