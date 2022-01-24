@@ -119,8 +119,7 @@ class Search:
                                 config=self.config)
         full_query = gen_query(self.query,
                                self.request_params,
-                               self.config,
-                               content_filter.near)
+                               self.config)
         self.full_query = full_query
 
         # force mobile search when view image is true and
