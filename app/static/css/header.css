@@ -202,7 +202,7 @@ a.header-tab-a:visited {
     border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
   
-.mobile-input {
+.search-bar-input {
     display: block;
     font-size: 16px;
     padding: 0 0 0 8px;
