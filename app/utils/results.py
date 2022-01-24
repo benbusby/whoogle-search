@@ -354,7 +354,6 @@ def get_tabs_content(tabs: dict,
             tab_content['name'] = translation[tab_id]
 
         # update href with query
-        query = full_query
         query = full_query.replace(f'&tbm={search_type}', '')
 
         if tab_content['tbm'] is not None:
