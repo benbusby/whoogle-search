@@ -1,7 +1,7 @@
 {% if mobile %}
     <header>
-        <div class="bz1lBb header-div">
-            <form class="search-form Pg70bf"
+        <div class="header-div">
+            <form class="search-form header"
                   id="search-form"
                   method="{{ 'GET' if config.get_only else 'POST' }}">
                 <a class="logo-link mobile-logo" href="home">
@@ -18,7 +18,7 @@
                                 autocomplete="off"
                                 autocorrect="off"
                                 spellcheck="false"
-                                class="noHIxc"
+                                class="mobile-input"
                                 name="q"
                                 type="text"
                                 value="{{ clean_query(query) }}"
@@ -69,17 +69,17 @@
     </header>
     <div>
       <div class="desktop-tab-div">
-          <div class="bRsWnc">
-              <div class="N6RWV">
-                  <div class="Pg70bf Uv67qb">
+          <div class="desktop-tab-div-2">
+              <div class="desktop-tab-div-3">
+                  <div class="header desktop-header-tab">
                       {% for tab_id, tab_content in tabs.items() %}
                           {% if tab_content['selected'] %}
-                              <span class="OXXup">{{ tab_content['name'] }}</span>
+                              <span class="desktop-tab-span">{{ tab_content['name'] }}</span>
                           {% else %}
-                              <a class="eZt8xd" href="{{ tab_content['href'] }}">{{ tab_content['name'] }}</a>
+                              <a class="desktop-tab-a" href="{{ tab_content['href'] }}">{{ tab_content['name'] }}</a>
                           {% endif %}
                       {% endfor %}
-                      <div class="FElbsf"></div>
+                      <div class="desktop-tab-div-end"></div>
                   </div>
               </div>
           </div>

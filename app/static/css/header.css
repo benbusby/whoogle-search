@@ -114,20 +114,20 @@ header {
     overflow: hidden;
 }
 
-.bRsWnc {
+.desktop-tab-div-2 {
     border-top: 1px solid #dadce0;
     height: 39px;
     overflow: hidden;
 }
 
-.N6RWV {
+.desktop-tab-div-3 {
     height: 51px;
     overflow-scrolling: touch;
     overflow-x: auto;
     overflow-y: hidden;
 }
 
-.Pg70bf {
+.header {
     height: 39px;
     display: box;
     display: flex;
@@ -135,7 +135,7 @@ header {
     width: 100%;
 }
 
-.Uv67qb {
+.desktop-header-tab {
     box-pack: justify;
     font-size: 12px;
     line-height: 37px;
@@ -143,13 +143,13 @@ header {
     justify-content: space-between;
 }
 
-span.OXXup {
+span.desktop-tab-span {
     border-bottom: 2px solid #4285f4;
     color: #4285f4;
     font-weight: bold;
 }
 
-.Uv67qb a, .Uv67qb span {
+.desktop-header-tab a, .desktop-header-tab span {
     color: #70757a;
     display: block;
     flex: none;
@@ -158,7 +158,7 @@ span.OXXup {
     text-transform: uppercase;
 }
 
-.Uv67qb a, .Uv67qb span {
+.desktop-header-tab a, .desktop-header-tab span {
     color: #70757a;
     display: block;
     flex: none;
@@ -173,19 +173,19 @@ a {
     tap-highlight-color: rgba(0, 0, 0, .10);
 }
 
-.Pg70bf input {
+.header input {
     margin: 2px 4px 2px 8px;
 }
 
-a.eZt8xd:visited {
+a.desktop-tab-a:visited {
     color: #70757a;
 }
 
-.FElbsf {
+.desktop-tab-div-end {
     border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
   
-.noHIxc {
+.mobile-input {
     display: block;
     font-size: 16px;
     padding: 0 0 0 8px;
