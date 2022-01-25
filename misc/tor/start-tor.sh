@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ "$(whoami)" != "root" ]; then
     tor -f /etc/tor/torrc

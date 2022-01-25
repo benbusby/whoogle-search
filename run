@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 # Usage:
 # ./run # Runs the full web app
 # ./run test # Runs the testing suite
 
-set -euo pipefail
+set -eu
 
-SCRIPT_DIR="$(builtin cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+SCRIPT_DIR="$(CDPATH= command cd -- "$(dirname -- "$0")" && pwd -P)"
 
 # Set directory to serve static content from
 SUBDIR="${1:-app}"
@@ -17,7 +17,7 @@ rm -f "$SCRIPT_DIR"/app/static/build/*.js
 rm -f "$SCRIPT_DIR"/app/static/build/*.css
 
 # Check for regular vs test run
-if [[ "$SUBDIR" == "test" ]]; then
+if [ "$SUBDIR" = "test" ]; then
     # Set up static files for testing
     rm -rf "$STATIC_FOLDER"
     ln -s "$SCRIPT_DIR/app/static" "$STATIC_FOLDER"

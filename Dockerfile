@@ -14,8 +14,10 @@ RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r re
 
 FROM python:3.8-alpine
 
-RUN apk add --update --no-cache tor curl bash openrc
+RUN apk add --update --no-cache tor curl openrc
 # libcurl4-openssl-dev
+
+RUN apk -U upgrade
 
 ARG DOCKER_USER=whoogle
 ARG DOCKER_USERID=927
@@ -69,19 +71,20 @@ COPY app/ app/
 COPY run .
 #COPY whoogle.env .
 
-# Allow writing symlinks to build dir
-RUN chown 102:102 app/static/build
-
 # Create user/group to run as
-RUN adduser -D -g $DOCKER_USERID -u $DOCKER_USERID $DOCKER_USER 
+RUN adduser -D -g $DOCKER_USERID -u $DOCKER_USERID $DOCKER_USER
+
 # Fix ownership / permissions
 RUN	chown -R ${DOCKER_USER}:${DOCKER_USER} /whoogle /var/lib/tor
+
+# Allow writing symlinks to build dir
+RUN chown $DOCKER_USERID:$DOCKER_USERID app/static/build
 
 USER $DOCKER_USER:$DOCKER_USER
 
 EXPOSE $EXPOSE_PORT
 
-HEALTHCHECK  --interval=30s --timeout=5s \
+HEALTHCHECK --interval=30s --timeout=5s \
   CMD curl -f http://localhost:${EXPOSE_PORT}/healthz || exit 1
 
 CMD misc/tor/start-tor.sh & ./run
