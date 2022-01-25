@@ -21,6 +21,6 @@ jobs:
     - name: build and test (docker-compose)
       run: |
         docker rm -f whoogle-search-nocompose
-        docker-compose up --detach
+        WHOOGLE_IMAGE="whoogle-search:test" docker-compose up --detach
         sleep 15
         docker exec whoogle-search curl -f http://localhost:5000/healthz || exit 1

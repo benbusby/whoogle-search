@@ -4,7 +4,7 @@ version: "2.4"
 
 services:
   whoogle-search:
-    image: benbusby/whoogle-search
+    image: ${WHOOGLE_IMAGE:-benbusby/whoogle-search}
     container_name: whoogle-search
     restart: unless-stopped
     pids_limit: 50
