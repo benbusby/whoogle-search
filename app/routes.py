@@ -2,6 +2,7 @@ import argparse
 import base64
 import io
 import json
+import os
 import pickle
 import urllib.parse as urlparse
 import uuid
@@ -26,7 +27,7 @@ from requests import exceptions, get
 from requests.models import PreparedRequest
 
 # Load DDG bang json files only on init
-bang_json = json.load(open(app.config['BANG_FILE']))
+bang_json = json.load(open(app.config['BANG_FILE'])) or {}
 
 # Check the newest version of WHOOGLE
 update = bsoup(get(app.config['RELEASES_URL']).text, 'html.parser')
@@ -101,6 +102,8 @@ def session_required(f):
 
 @app.before_request
 def before_request_func():
+    global bang_json
+
     g.request_params = (
         request.args if request.method == 'GET' else request.form
     )
@@ -149,6 +152,15 @@ def before_request_func():
         config=g.user_config)
 
     g.app_location = g.user_config.url
+
+    # Attempt to reload bangs json if not generated yet
+    if not bang_json and os.path.getsize(app.config['BANG_FILE']) > 4:
+        try:
+            bang_json = json.load(open(app.config['BANG_FILE']))
+        except json.decoder.JSONDecodeError:
+            # Ignore decoding error, can occur if file is still 
+            # being written
+            pass
 
 
 @app.after_request

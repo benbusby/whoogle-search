@@ -17,11 +17,12 @@ jobs:
     - name: build and test (docker)
       run: |
         docker build --tag whoogle-search:test .
-        docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:test
+        docker run --publish 5000:5000 --detach --name whoogle-search-nocompose whoogle-search:test
         sleep 15
-        docker exec whoogle-search curl -f http://localhost:5000/healthz || exit 1
+        docker exec whoogle-search-nocompose curl -f http://localhost:5000/healthz || exit 1
     - name: build and test (docker-compose)
       run: |
+        docker rm -f whoogle-search-nocompose
         docker-compose up --detach
         sleep 15
         docker exec whoogle-search curl -f http://localhost:5000/healthz || exit 1

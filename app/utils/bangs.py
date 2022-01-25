@@ -35,6 +35,7 @@ def gen_bangs_json(bangs_file: str) -> None:
         }
 
     json.dump(bangs_data, open(bangs_file, 'w'))
+    print('* Finished creating ddg bangs json')
 
 
 def resolve_bang(query: str, bangs_dict: dict) -> str:
