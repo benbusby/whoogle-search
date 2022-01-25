@@ -158,7 +158,7 @@ def before_request_func():
         try:
             bang_json = json.load(open(app.config['BANG_FILE']))
         except json.decoder.JSONDecodeError:
-            # Ignore decoding error, can occur if file is still 
+            # Ignore decoding error, can occur if file is still
             # being written
             pass
 
