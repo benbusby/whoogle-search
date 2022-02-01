@@ -2,7 +2,7 @@ from app.filter import clean_query
 from app.request import send_tor_signal
 from app.utils.session import generate_user_key
 from app.utils.bangs import gen_bangs_json
-from app.utils.misc import gen_file_hash
+from app.utils.misc import gen_file_hash, read_config_bool
 from flask import Flask
 from flask_session import Session
 import json
@@ -58,7 +58,7 @@ app.config['CONFIG_PATH'] = os.getenv(
 app.config['DEFAULT_CONFIG'] = os.path.join(
     app.config['CONFIG_PATH'],
     'config.json')
-app.config['CONFIG_DISABLE'] = os.getenv('WHOOGLE_CONFIG_DISABLE', '')
+app.config['CONFIG_DISABLE'] = read_config_bool('WHOOGLE_CONFIG_DISABLE')
 app.config['SESSION_FILE_DIR'] = os.path.join(
     app.config['CONFIG_PATH'],
     'session')
