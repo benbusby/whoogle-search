@@ -1,7 +1,10 @@
 body {
     display: block !important;
     margin: auto !important;
-    min-width: 736px !important;
+}
+
+.vvjwJb {
+    font-size: 16px !important;
 }
 
 .autocomplete {
@@ -48,4 +51,10 @@ details summary span {
 
 .ip-text-div {
     padding-top: 0 !important;
+}
+
+@media (min-width: 801px) {
+    body {
+        min-width: 736px !important;
+    }
 }
