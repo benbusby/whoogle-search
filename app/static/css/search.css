@@ -1,7 +1,7 @@
 body {
     display: block !important;
     margin: auto !important;
-    max-width: 736px !important;
+    min-width: 736px !important;
 }
 
 .autocomplete {
