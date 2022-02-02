@@ -169,12 +169,12 @@ class Filter:
         # Loop through results and check for the number of child divs in each
         for result in self.main_divs:
             result_children = pull_child_divs(result)
-                if minimal_mode:
-                        if any(f">{x}</span" in str(s) for s in result_children for x in minimal_mode_sections):
-                                result.decompose()
-                                continue
-                        if len(result_children) < self.RESULT_CHILD_LIMIT:
-                                continue
+            if minimal_mode:
+                if any(f">{x}</span" in str(s) for s in result_children for x in minimal_mode_sections):
+                        result.decompose()
+                        continue
+                if len(result_children) < self.RESULT_CHILD_LIMIT:
+                        continue
             else:
                 if len(result_children) < self.RESULT_CHILD_LIMIT:
                     continue
