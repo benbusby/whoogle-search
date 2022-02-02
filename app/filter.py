@@ -12,7 +12,7 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import os
 
-minimal_mode_sections = ['Top stories','Images','People also ask']
+minimal_mode_sections = ['Top stories', 'Images', 'People also ask']
 
 def extract_q(q_str: str, href: str) -> str:
     """Extracts the 'q' element from a result link. This is typically
