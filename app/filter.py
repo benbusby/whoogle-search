@@ -14,6 +14,7 @@ import os
 
 minimal_mode_sections = ['Top stories', 'Images', 'People also ask']
 
+
 def extract_q(q_str: str, href: str) -> str:
     """Extracts the 'q' element from a result link. This is typically
     either the link to a result's website, or a string.
@@ -171,7 +172,7 @@ class Filter:
             result_children = pull_child_divs(result)
             if minimal_mode:
                 if any(f">{x}</span" in str(s) for s in result_children 
-                for x in minimal_mode_sections):
+                   for x in minimal_mode_sections):
                     result.decompose()
                     continue
                 if len(result_children) < self.RESULT_CHILD_LIMIT:
