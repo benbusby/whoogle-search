@@ -176,7 +176,7 @@ class Filter:
                     result.decompose()
                     continue
                 if len(result_children) < self.RESULT_CHILD_LIMIT:
-                        continue
+                    continue
             else:
                 if len(result_children) < self.RESULT_CHILD_LIMIT:
                     continue
