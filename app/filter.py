@@ -365,7 +365,7 @@ class Filter:
         search_input = soup.find_all('td', attrs={'class': "O4cRJf"})[0]
 
         search_input = BeautifulSoup(re.sub(r'(\s)-site:[a-zA-Z0-9_\.]+', '',
-                                     str(search_input)), 'lxml')
+                                     str(search_input)), 'html.parser')
         search_options = soup.find_all('div', attrs={'class': "M7pB2"})[0]
         cor_suggested = soup.find_all('table', attrs={'class': "By0U9"})
         next_pages = soup.find_all('table', attrs={'class': "uZgmoc"})[0]
