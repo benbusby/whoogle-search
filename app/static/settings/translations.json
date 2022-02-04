@@ -35,7 +35,7 @@
         "dark": "dark",
         "system": "system",
         "ratelimit": "Instance has been ratelimited",
-        "continue-search": "Continue your search with "
+        "continue-search": "Continue your search with Farside"
     },
     "lang_nl": {
         "search": "Zoeken",
@@ -73,7 +73,7 @@
         "dark": "donker",
         "system": "systeeminstellingen",
         "ratelimit": "Instantie is beperkt in snelheid",
-        "continue-search": "Ga verder met zoeken met "
+        "continue-search": "Ga verder met zoeken met Farside"
     },
     "lang_de": {
         "search": "Suchen",
@@ -111,7 +111,7 @@
         "dark": "dunkel",
         "system": "Systemeinstellung",
         "ratelimit": "Instanz wurde ratenbegrenzt",
-        "continue-search": "Setzen Sie Ihre Suche fort mit "
+        "continue-search": "Setzen Sie Ihre Suche fort mit Farside"
     },
     "lang_es": {
         "search": "Buscar",
@@ -149,7 +149,7 @@
         "dark": "oscuro",
         "system": "configuración del sistema",
         "ratelimit": "La instancia ha sido ratelimited",
-        "continue-search": "Continúe su búsqueda con "
+        "continue-search": "Continúe su búsqueda con Farside"
     },
     "lang_it": {
         "search": "Cerca",
@@ -187,7 +187,7 @@
         "dark": "notte",
         "system": "impostazioni di sistema",
         "ratelimit": "L'istanza è stata limitata alla velocità",
-        "continue-search": "Continua la tua ricerca con "
+        "continue-search": "Continua la tua ricerca con Farside"
     },
     "lang_pt": {
         "search": "Pesquisar",
@@ -225,7 +225,7 @@
         "dark": "escuro",
         "system": "configuração de sistema",
         "ratelimit": "A instância foi limitada pela taxa",
-        "continue-search": "Continue sua pesquisa com "
+        "continue-search": "Continue sua pesquisa com Farside"
     },
     "lang_ru": {
         "search": "Поиск",
@@ -263,7 +263,7 @@
         "dark": "темное",
         "system": "системное",
         "ratelimit": "Число экземпляров ограничено",
-        "continue-search": "Продолжайте поиск с "
+        "continue-search": "Продолжайте поиск с Farside"
     },
     "lang_zh-CN": {
         "search": "搜索",
@@ -301,7 +301,7 @@
         "dark": "黑暗的",
         "system": "系统设置",
         "ratelimit": "实例已被限速",
-        "continue-search": "继续搜索 "
+        "continue-search": "继续搜索 Farside"
     },
     "lang_si": {
         "search": "සොයන්න",
@@ -314,13 +314,13 @@
         "config-block": "අවහිර",
         "config-block-help": "අල්ප විරාම වලින් වෙන් වූ අඩවි ලැයිස්තුව",
         "config-block-title": "මාතෘකාව අනුව අවහිර කරන්න",
-        "config-block-title-help": "රෙජෙක්ස් භාවිතා කරන්න",
-        "config-block-url": "යූආර්එල් මඟින් අවහිර කරන්න",
+        "config-block-title-help": "වාක්‍යවිධි භාවිතා කරන්න",
+        "config-block-url": "ඒ.ස.නි. මඟින් අවහිර කරන්න",
         "config-block-url-help": "රෙජෙක්ස් භාවිතා කරන්න",
         "config-theme": "තේමාව",
         "config-nojs": "නෝජේඑස් සබැඳි පෙන්වන්න",
         "config-dark": "අඳුරු ආකාරය",
-        "config-safe": "ආරක්ෂිත සෙවුම",
+        "config-safe": "ආරක්‍ෂිත සෙවුම",
         "config-alts": "සමාජ මාධ්‍ය සබැඳි ප්‍රතිස්ථාපනය කරන්න",
         "config-alts-help": "ට්විටර්/යූ ටියුබ්/ඉන්ස්ටග්‍රෑම් ආදී සබැඳි පෞද්ගලිකත්වයට ගරු කරන විකල්ප සමඟ ප්‍රතිස්ථාපනය කරයි.",
         "config-new-tab": "නව තීරුවකින් සබැඳි විවෘත කරන්න",
@@ -338,8 +338,8 @@
         "light": "දීප්තිමත්",
         "dark": "අඳුරු",
         "system": "පද්ධතිය",
-        "ratelimit": "උදාහරණය අනුපාත කර ඇත",
-        "continue-search": "සමඟ ඔබේ සෙවීම දිගටම කරගෙන යන්න"
+        "ratelimit": "සේවාදායකය අනුපාතනය කර ඇත",
+        "continue-search": "Farside සමඟ ඔබගේ සෙවුම කරගෙන යන්න"
     },
     "lang_fr": {
         "search": "Chercher",
@@ -377,7 +377,7 @@
         "dark": "sombre",
         "system": "système",
         "ratelimit": "Le débit de l'instance a été limité",
-        "continue-search": "Continuez votre recherche avec "
+        "continue-search": "Continuez votre recherche avec Farside"
     },
     "lang_fa": {
         "search": "جستجو",
@@ -415,7 +415,7 @@
         "dark": "تیره",
         "system": "سیستم",
         "ratelimit": "نمونه با نرخ محدود شده است",
-        "continue-search": "جستجوی خود را با "
+        "continue-search": "Farside جستجوی خود را با "
     },
     "lang_cs": {
         "search": "Hledat",
@@ -453,7 +453,7 @@
         "dark": "Tmavý",
         "system": "Systémový",
         "ratelimit": "Instance byla omezena sazbou",
-        "continue-search": "Pokračujte ve vyhledávání pomocí "
+        "continue-search": "Pokračujte ve vyhledávání pomocí Farside"
     },
     "lang_zh-TW": {
         "search": "搜尋",
@@ -491,7 +491,7 @@
         "dark": "黑暗的",
         "system": "依系統",
         "ratelimit": "實例已被限速",
-        "continue-search": "繼續搜索 "
+        "continue-search": "繼續搜索 Farside"
     },
     "lang_bg": {
         "search": "Търсене",
@@ -529,7 +529,7 @@
         "dark": "тъмна",
         "system": "системна",
         "ratelimit": "Екземплярът е с ограничена скорост",
-        "continue-search": "Продължете търсенето си с "
+        "continue-search": "Продължете търсенето си с Farside"
     },
     "lang_hi": {
         "search": "खोज",
@@ -567,7 +567,7 @@
         "dark": "अंधेरा",
         "system": "प्रणाली",
         "ratelimit": "इंस्टेंस को सीमित कर दिया गया है",
-        "continue-search": "के साथ अपनी खोज जारी रखें "
+        "continue-search": "के साथ अपनी खोज जारी रखें Farside"
     },
     "lang_ja": {
         "search": "検索",
@@ -605,6 +605,6 @@
         "dark": "ダーク",
         "system": "自動",
         "ratelimit": "インスタンスはレート制限されています",
-        "continue-search": "で検索を続ける "
+        "continue-search": "で検索を続ける Farside"
     }
 }
