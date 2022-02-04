@@ -1,13 +1,15 @@
-name: docker_tests
+name: docker_main
 
 on:
-  push:
-    branches: main
-  pull_request:
-    branches: main
+  workflow_run:
+    workflows: ["tests"]
+    branches: [main]
+    types:
+      - completed
 
+# TODO: Needs refactoring to use reusable workflows and share w/ docker_tests
 jobs:
-  docker:
+  on-success:
     runs-on: ubuntu-latest
     steps:
     - name: checkout code

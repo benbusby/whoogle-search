@@ -34,15 +34,19 @@ select {
 
 .ZINbbc {
     overflow: hidden;
-    background-color: var(--whoogle-result-bg) !important;   
+    background-color: var(--whoogle-result-bg) !important;
 }
 
 .BVG0Nb {
-    background-color: var(--whoogle-result-bg) !important; 
+    background-color: var(--whoogle-result-bg) !important;
+}
+
+.ZINbbc.luh4tb {
+    background: var(--whoogle-result-bg) !important;
 }
 
 .bRsWnc {
-    background-color: var(--whoogle-result-bg) !important;   
+    background-color: var(--whoogle-result-bg) !important;
 }
 
 .x54gtf {
