@@ -204,3 +204,7 @@ path {
 .cb:focus {
   color: var(--whoogle-dark-contrast-text) !important;
 }
+
+.desktop-header, .mobile-header {
+    background-color: var(--whoogle-dark-result-bg) !important;
+}

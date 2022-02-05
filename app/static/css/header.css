@@ -146,7 +146,7 @@ a {
 
 .header-tab {
     box-pack: justify;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 37px;
     justify-content: space-between;
 }
@@ -170,9 +170,9 @@ span.header-tab-span {
     height: 39px;
     display: box;
     display: flex;
-    overflow: hidden;
+    overflow-x: scroll;
     width: 100%;
-    margin-left: 12px;
+    padding-left: 12px;
 }
 
 .mobile-header a, .mobile-header span {
@@ -201,7 +201,7 @@ a.header-tab-a:visited {
 .header-tab-div-end {
     border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
-  
+
 .search-bar-input {
     display: block;
     font-size: 16px;
