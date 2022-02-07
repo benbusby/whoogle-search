@@ -125,8 +125,8 @@ class Filter:
     def remove_site_blocks(self, soup) -> None:
         if not self.config.block:
             return
-        search_string = 
-                     ' '.join(['-site:' + _ for _ in self.config.block.split(',')])
+        search_string = ' '.join(['-site:' + 
+                                 _ for _ in self.config.block.split(',')])
         selected = soup.body.findAll(text=re.compile(search_string))
 
         for result in selected:
