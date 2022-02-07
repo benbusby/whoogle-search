@@ -98,6 +98,11 @@ header {
     border: 0px !important;
 }
 
+.autocomplete-mobile{
+    display: -webkit-box;
+    width: 100%;
+}
+
 .desktop-header-logo {
     height: 1.65em;
 }
@@ -106,3 +111,113 @@ header {
     width: 100%;
     flex: 1
 }
+
+a {
+    color: #1967D2;
+    text-decoration: none;
+    tap-highlight-color: rgba(0, 0, 0, .10);
+}
+
+.header-tab-div {
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 3px rgba(32, 33, 36, 0.18);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.header-tab-div-2 {
+    border-top: 1px solid #dadce0;
+    height: 39px;
+    overflow: hidden;
+}
+
+.header-tab-div-3 {
+    height: 51px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.desktop-header {
+    height: 39px;
+    display: box;
+    display: flex;
+    width: 100%;
+}
+
+.header-tab {
+    box-pack: justify;
+    font-size: 14px;
+    line-height: 37px;
+    justify-content: space-between;
+}
+
+.desktop-header a, .desktop-header span {
+    color: #70757a;
+    display: block;
+    flex: none;
+    padding: 0 16px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+span.header-tab-span {
+    border-bottom: 2px solid #4285f4;
+    color: #4285f4;
+    font-weight: bold;
+}
+
+.mobile-header {
+    height: 39px;
+    display: box;
+    display: flex;
+    overflow-x: scroll;
+    width: 100%;
+    padding-left: 12px;
+}
+
+.mobile-header a, .mobile-header span {
+    color: #70757a;
+    text-decoration: none;
+    display: inline-block;
+    /* padding: 8px 12px 8px 12px; */
+}
+
+span.mobile-tab-span {
+    border-bottom: 2px solid #202124;
+    color: #202124;
+    height: 26px;
+    /* margin: 0 12px; */
+    /* padding: 0; */
+}
+
+.desktop-header input {
+    margin: 2px 4px 2px 8px;
+}
+
+a.header-tab-a:visited {
+    color: #70757a;
+}
+
+.header-tab-div-end {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.search-bar-input {
+    display: block;
+    font-size: 16px;
+    padding: 0 0 0 8px;
+    flex: 1;
+    height: 35px;
+    outline: none;
+    border: none;
+    width: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    overflow: hidden;
+}
+
+@media (max-width: 801px) {
+    .header-tab-div {
+        margin-bottom: 10px !important
+    }
+}
+

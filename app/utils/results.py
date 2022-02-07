@@ -1,5 +1,6 @@
 from app.models.endpoint import Endpoint
 from bs4 import BeautifulSoup, NavigableString
+import copy
 import html
 import os
 import urllib.parse as urlparse
@@ -329,3 +330,39 @@ def add_currency_card(soup: BeautifulSoup,
 
     element1.insert_before(conversion_box)
     return soup
+
+
+def get_tabs_content(tabs: dict,
+                     full_query: str,
+                     search_type: str,
+                     translation: dict) -> dict:
+    """Takes the default tabs content and updates it according to the query.
+
+    Args:
+        tabs: The default content for the tabs
+        full_query: The original search query
+        search_type: The current search_type
+        translation: The translation to get the names of the tabs
+
+    Returns:
+        dict: contains the name, the href and if the tab is selected or not
+    """
+    tabs = copy.deepcopy(tabs)
+    for tab_id, tab_content in tabs.items():
+        # update name to desired language
+        if tab_id in translation:
+            tab_content['name'] = translation[tab_id]
+
+        # update href with query
+        query = full_query.replace(f'&tbm={search_type}', '')
+
+        if tab_content['tbm'] is not None:
+            query = f"{query}&tbm={tab_content['tbm']}"
+
+        tab_content['href'] = tab_content['href'].format(query=query)
+
+        # update if selected tab (default all tab is selected)
+        if tab_content['tbm'] == search_type:
+            tabs['all']['selected'] = False
+            tab_content['selected'] = True
+    return tabs

@@ -1,5 +1,6 @@
 from app.models.config import Config
 from app.models.endpoint import Endpoint
+from app.models.g_classes import GClasses
 from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import read_config_bool
 from app.utils.results import *
@@ -13,6 +14,15 @@ from urllib.parse import parse_qs
 import os
 
 minimal_mode_sections = ['Top stories', 'Images', 'People also ask']
+unsupported_g_pages = [
+    'support.google.com',
+    'accounts.google.com',
+    'policies.google.com',
+    'google.com/preferences',
+    'google.com/intl',
+    'advanced_search',
+    'tbm=shop'
+]
 
 
 def extract_q(q_str: str, href: str) -> str:
@@ -80,6 +90,7 @@ class Filter:
         self.remove_block_url()
         self.collapse_sections()
         self.update_styling(soup)
+        self.remove_block_tabs(soup)
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
@@ -142,6 +153,21 @@ class Filter:
             block_divs = [_ for _ in div.find_all('a', recursive=True)
                           if block_url.search(_.attrs['href']) is not None]
             _ = div.decompose() if len(block_divs) else None
+
+    def remove_block_tabs(self, soup) -> None:
+        if self.main_divs:
+            for div in self.main_divs.find_all(
+                'div',
+                attrs={'class': f'{GClasses.main_tbm_tab}'}
+            ):
+                _ = div.decompose()
+        else:
+            # when in images tab
+            for div in soup.find_all(
+                'div',
+                attrs={'class': f'{GClasses.images_tbm_tab}'}
+            ):
+                _ = div.decompose()
 
     def collapse_sections(self) -> None:
         """Collapses long result sections ("people also asked", "related
@@ -273,6 +299,26 @@ class Filter:
         except AttributeError:
             pass
 
+        # Fix body max width on images tab
+        style = soup.find('style')
+        div = soup.find('div', attrs={'class': f'{GClasses.images_tbm_tab}'})
+        if style and div and not self.mobile:
+            css = style.string
+            css_html_tag = (
+                'html{'
+                'font-family: Roboto, Helvetica Neue, Arial, sans-serif;'
+                'font-size: 14px;'
+                'line-height: 20px;'
+                'text-size-adjust: 100%;'
+                'word-wrap: break-word;'
+                '}'
+            )
+            css = f"{css_html_tag}{css}"
+            css = re.sub('body{(.*?)}',
+                         'body{padding:0 8px;margin:0 auto;max-width:736px;}',
+                         css)
+            style.string = css
+
     def update_link(self, link: Tag) -> None:
         """Update internal link paths with encrypted path, otherwise remove
         unnecessary redirects and/or marketing params from the url
@@ -284,14 +330,15 @@ class Filter:
             None (the tag is updated directly)
 
         """
-        # Replace href with only the intended destination (no "utm" type tags)
-        href = link['href'].replace('https://www.google.com', '')
-        if 'advanced_search' in href or 'tbm=shop' in href:
+        # Remove any elements that direct to unsupported Google pages
+        if any(url in link['href'] for url in unsupported_g_pages):
             # FIXME: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
             link.decompose()
             return
 
+        # Replace href with only the intended destination (no "utm" type tags)
+        href = link['href'].replace('https://www.google.com', '')
         result_link = urlparse.urlparse(href)
         q = extract_q(result_link.query, href)
 
@@ -362,11 +409,8 @@ class Filter:
         """
 
         # get some tags that are unchanged between mobile and pc versions
-        search_input = soup.find_all('td', attrs={'class': "O4cRJf"})[0]
-        search_options = soup.find_all('div', attrs={'class': "M7pB2"})[0]
         cor_suggested = soup.find_all('table', attrs={'class': "By0U9"})
         next_pages = soup.find_all('table', attrs={'class': "uZgmoc"})[0]
-        information = soup.find_all('div', attrs={'class': "TuS8Ad"})[0]
 
         results = []
         # find results div
@@ -404,12 +448,7 @@ class Filter:
                                              results=results,
                                              view_label="View Image"),
                              features='html.parser')
-        # replace search input object
-        soup.find_all('td',
-                      attrs={'class': "O4cRJf"})[0].replaceWith(search_input)
-        # replace search options object (All, Images, Videos, etc.)
-        soup.find_all('div',
-                      attrs={'class': "M7pB2"})[0].replaceWith(search_options)
+
         # replace correction suggested by google object if exists
         if len(cor_suggested):
             soup.find_all(
@@ -419,7 +458,4 @@ class Filter:
         # replace next page object at the bottom of the page
         soup.find_all('table',
                       attrs={'class': "uZgmoc"})[0].replaceWith(next_pages)
-        # replace information about user connection at the bottom of the page
-        soup.find_all('div',
-                      attrs={'class': "TuS8Ad"})[0].replaceWith(information)
         return soup

@@ -1,6 +1,7 @@
 import argparse
 import base64
 import io
+import os
 import json
 import os
 import pickle
@@ -17,14 +18,15 @@ from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url
 from app.utils.results import add_ip_card, bold_search_terms,\
-    add_currency_card, check_currency
-from app.utils.search import *
+    add_currency_card, check_currency, get_tabs_content
+from app.utils.search import Search, needs_https, has_captcha
 from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
-    send_file, session, url_for
+    send_file, session, url_for, g
 from requests import exceptions, get
 from requests.models import PreparedRequest
+from cryptography.fernet import Fernet
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE'])) or {}
@@ -347,6 +349,12 @@ def search():
         html_soup = bsoup(str(response), 'html.parser')
         response = add_ip_card(html_soup, get_client_ip(request))
 
+    # Update tabs content
+    tabs = get_tabs_content(app.config['HEADER_TABS'],
+                            search_util.full_query,
+                            search_util.search_type,
+                            translation)
+
     # Feature to display currency_card
     conversion = check_currency(str(response))
     if conversion:
@@ -373,15 +381,14 @@ def search():
         ) and not search_util.search_type,  # Standard search queries only
         response=response,
         version_number=app.config['VERSION_NUMBER'],
-        search_header=(render_template(
+        search_header=render_template(
             'header.html',
             config=g.user_config,
             logo=render_template('logo.html', dark=g.user_config.dark),
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
-            mobile=g.user_request.mobile)
-                       if 'isch' not in
-                          search_util.search_type else '')), 200
+            mobile=g.user_request.mobile,
+            tabs=tabs))
 
 
 @app.route(f'/{Endpoint.config}', methods=['GET', 'POST', 'PUT'])

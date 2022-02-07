@@ -35,7 +35,13 @@
         "dark": "dark",
         "system": "system",
         "ratelimit": "Instance has been ratelimited",
-        "continue-search": "Continue your search with Farside"
+        "continue-search": "Continue your search with Farside",
+        "all": "All",
+        "images": "Images",
+        "maps": "Maps",
+        "videos": "Videos",
+        "news": "News",
+        "books": "Books"
     },
     "lang_nl": {
         "search": "Zoeken",
@@ -73,7 +79,13 @@
         "dark": "donker",
         "system": "systeeminstellingen",
         "ratelimit": "Instantie is beperkt in snelheid",
-        "continue-search": "Ga verder met zoeken met Farside"
+        "continue-search": "Ga verder met zoeken met Farside",
+        "all": "Alle",
+        "images": "Afbeeldingen",
+        "maps": "Maps",
+        "videos": "Videos",
+        "news": "Nieuws",
+        "books": "Boeken"
     },
     "lang_de": {
         "search": "Suchen",
@@ -111,7 +123,13 @@
         "dark": "dunkel",
         "system": "Systemeinstellung",
         "ratelimit": "Instanz wurde ratenbegrenzt",
-        "continue-search": "Setzen Sie Ihre Suche fort mit Farside"
+        "continue-search": "Setzen Sie Ihre Suche fort mit Farside",
+        "all": "Alle",
+        "images": "Bilder",
+        "maps": "Maps",
+        "videos": "Videos",
+        "news": "Nieuws",
+        "books": "Bücher"
     },
     "lang_es": {
         "search": "Buscar",
@@ -149,7 +167,13 @@
         "dark": "oscuro",
         "system": "configuración del sistema",
         "ratelimit": "La instancia ha sido ratelimited",
-        "continue-search": "Continúe su búsqueda con Farside"
+        "continue-search": "Continúe su búsqueda con Farside",
+        "all": "Todo",
+        "images": "Imágenes",
+        "maps": "Maps",
+        "videos": "Vídeos",
+        "news": "Noticias",
+        "books": "Libros"
     },
     "lang_it": {
         "search": "Cerca",
@@ -187,7 +211,13 @@
         "dark": "notte",
         "system": "impostazioni di sistema",
         "ratelimit": "L'istanza è stata limitata alla velocità",
-        "continue-search": "Continua la tua ricerca con Farside"
+        "continue-search": "Continua la tua ricerca con Farside",
+        "all": "Tutti",
+        "images": "Immagini",
+        "maps": "Maps",
+        "videos": "Video",
+        "news": "Notizie",
+        "books": "Libri"
     },
     "lang_pt": {
         "search": "Pesquisar",
@@ -225,7 +255,13 @@
         "dark": "escuro",
         "system": "configuração de sistema",
         "ratelimit": "A instância foi limitada pela taxa",
-        "continue-search": "Continue sua pesquisa com Farside"
+        "continue-search": "Continue sua pesquisa com Farside",
+        "all": "Todas",
+        "images": "Imagens",
+        "maps": "Maps",
+        "videos": "Vídeos",
+        "news": "Notícias",
+        "books": "Livros"
     },
     "lang_ru": {
         "search": "Поиск",
@@ -263,7 +299,13 @@
         "dark": "темное",
         "system": "системное",
         "ratelimit": "Число экземпляров ограничено",
-        "continue-search": "Продолжайте поиск с Farside"
+        "continue-search": "Продолжайте поиск с Farside",
+        "all": "Все",
+        "images": "Картинки",
+        "maps": "Карты",
+        "videos": "Видео",
+        "news": "Новости",
+        "books": "Книги"
     },
     "lang_zh-CN": {
         "search": "搜索",
@@ -301,7 +343,13 @@
         "dark": "黑暗的",
         "system": "系统设置",
         "ratelimit": "实例已被限速",
-        "continue-search": "继续搜索 Farside"
+        "continue-search": "继续搜索 Farside",
+        "all": "全部",
+        "images": "圖片",
+        "maps": "影片",
+        "videos": "地圖",
+        "news": "新聞",
+        "books": "書籍"
     },
     "lang_si": {
         "search": "සොයන්න",
@@ -339,7 +387,13 @@
         "dark": "අඳුරු",
         "system": "පද්ධතිය",
         "ratelimit": "සේවාදායකය අනුපාතනය කර ඇත",
-        "continue-search": "Farside සමඟ ඔබගේ සෙවුම කරගෙන යන්න"
+        "continue-search": "Farside සමඟ ඔබගේ සෙවුම කරගෙන යන්න",
+        "all": "සියල්ල",
+        "images": "රූප",
+        "maps": "සිතියම්",
+        "videos": "වීඩියෝ",
+        "news": "අනුරූප",
+        "books": "පොත්"
     },
     "lang_fr": {
         "search": "Chercher",
@@ -377,7 +431,13 @@
         "dark": "sombre",
         "system": "système",
         "ratelimit": "Le débit de l'instance a été limité",
-        "continue-search": "Continuez votre recherche avec Farside"
+        "continue-search": "Continuez votre recherche avec Farside",
+        "all": "Tous",
+        "images": "Images",
+        "maps": "Maps",
+        "videos": "Vidéos",
+        "news": "Actualités",
+        "books": "Livres"
     },
     "lang_fa": {
         "search": "جستجو",
@@ -415,7 +475,13 @@
         "dark": "تیره",
         "system": "سیستم",
         "ratelimit": "نمونه با نرخ محدود شده است",
-        "continue-search": "Farside جستجوی خود را با "
+        "continue-search": "Farside جستجوی خود را با ",
+        "all": "همه",
+        "images": "تصاویر",
+        "maps": "نقشه‌ها",
+        "videos": "ویدئوها",
+        "news": "اخبار",
+        "books": "کتاب‌ها"
     },
     "lang_cs": {
         "search": "Hledat",
@@ -453,7 +519,13 @@
         "dark": "Tmavý",
         "system": "Systémový",
         "ratelimit": "Instance byla omezena sazbou",
-        "continue-search": "Pokračujte ve vyhledávání pomocí Farside"
+        "continue-search": "Pokračujte ve vyhledávání pomocí Farside",
+        "all": "Vše",
+        "images": "Obrázky",
+        "maps": "Mapy",
+        "videos": "Videa",
+        "news": "Zprávy",
+        "books": "Knihy"
     },
     "lang_zh-TW": {
         "search": "搜尋",
@@ -491,7 +563,13 @@
         "dark": "黑暗的",
         "system": "依系統",
         "ratelimit": "實例已被限速",
-        "continue-search": "繼續搜索 Farside"
+        "continue-search": "繼續搜索 Farside",
+        "all": "全部",
+        "images": "圖片",
+        "maps": "影片",
+        "videos": "地圖",
+        "news": "新聞",
+        "books": "書籍"
     },
     "lang_bg": {
         "search": "Търсене",
@@ -529,7 +607,13 @@
         "dark": "тъмна",
         "system": "системна",
         "ratelimit": "Екземплярът е с ограничена скорост",
-        "continue-search": "Продължете търсенето си с Farside"
+        "continue-search": "Продължете търсенето си с Farside",
+        "all": "Всичкo",
+        "images": "Изображения",
+        "maps": "Видеоклипове",
+        "videos": "Новини",
+        "news": "Карти",
+        "books": "Книги"
     },
     "lang_hi": {
         "search": "खोज",
@@ -567,7 +651,13 @@
         "dark": "अंधेरा",
         "system": "प्रणाली",
         "ratelimit": "इंस्टेंस को सीमित कर दिया गया है",
-        "continue-search": "के साथ अपनी खोज जारी रखें Farside"
+        "continue-search": "के साथ अपनी खोज जारी रखें Farside",
+        "all": "सभी",
+        "images": "इमेज",
+        "maps": "वीडियो",
+        "videos": "मैप",
+        "news": "समाचार",
+        "books": "किताबें"
     },
     "lang_ja": {
         "search": "検索",
@@ -605,6 +695,12 @@
         "dark": "ダーク",
         "system": "自動",
         "ratelimit": "インスタンスはレート制限されています",
-        "continue-search": "で検索を続ける Farside"
+        "continue-search": "で検索を続ける Farside",
+        "all": "すべて",
+        "images": "画像",
+        "maps": "地図",
+        "videos": "動画",
+        "news": "ニュース",
+        "books": "書籍"
     }
 }

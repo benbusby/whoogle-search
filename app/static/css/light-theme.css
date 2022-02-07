@@ -43,6 +43,8 @@ select {
 
 .ZINbbc.luh4tb {
     background: var(--whoogle-result-bg) !important;
+    box-shadow: 0 1px 6px rgba(32,33,36,0.28) !important;
+    margin-bottom: 24px !important;
 }
 
 .bRsWnc {
@@ -189,4 +191,8 @@ path {
 
 .cb:focus {
   color: var(--whoogle-text) !important;
+}
+
+.desktop-header, .mobile-header {
+    background-color: var(--whoogle-result-bg) !important;
 }

@@ -1,0 +1,38 @@
+{
+  "all": {
+      "tbm": null,
+      "href": "search?q={query}",
+      "name": "All",
+      "selected": true
+  },
+  "images": {
+      "tbm": "isch",
+      "href": "search?q={query}",
+      "name": "Images",
+      "selected": false
+  },
+  "maps": {
+      "tbm": null,
+      "href": "https://maps.google.com/maps?q={query}",
+      "name": "Maps",
+      "selected": false
+  },
+  "videos": {
+      "tbm": "vid",
+      "href": "search?q={query}",
+      "name": "Videos",
+      "selected": false
+  },
+  "news": {
+      "tbm": "nws",
+      "href": "search?q={query}",
+      "name": "News",
+      "selected": false
+  },
+  "books": {
+      "tbm": "bks",
+      "href": "search?q={query}",
+      "name": "Books",
+      "selected": false
+  }
+}
