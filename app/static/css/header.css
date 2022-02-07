@@ -121,7 +121,7 @@ a {
 .header-tab-div {
     border-radius: 0 0 8px 8px;
     box-shadow: 0 2px 3px rgba(32, 33, 36, 0.18);
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     overflow: hidden;
 }
 
@@ -214,3 +214,10 @@ a.header-tab-a:visited {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     overflow: hidden;
 }
+
+@media (max-width: 801px) {
+    .header-tab-div {
+        margin-bottom: 10px !important
+    }
+}
+

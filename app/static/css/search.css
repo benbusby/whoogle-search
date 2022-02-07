@@ -31,8 +31,9 @@ body {
 }
 
 details summary {
-    padding: 10px;
+    margin-bottom: 20px;
     font-weight: bold;
+    padding-left: 10px;
 }
 
 details summary span {
@@ -60,5 +61,11 @@ details summary span {
 @media (min-width: 801px) {
     body {
         min-width: 736px !important;
+    }
+}
+
+@media (max-width: 801px) {
+    details summary {
+        margin-bottom: 10px !important
     }
 }

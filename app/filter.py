@@ -1,5 +1,6 @@
 from app.models.config import Config
 from app.models.endpoint import Endpoint
+from app.models.g_classes import GClasses
 from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import read_config_bool
 from app.utils.results import *
@@ -16,6 +17,7 @@ minimal_mode_sections = ['Top stories', 'Images', 'People also ask']
 unsupported_g_pages = [
     'support.google.com',
     'accounts.google.com',
+    'policies.google.com',
     'google.com/preferences',
     'google.com/intl',
     'advanced_search',
@@ -154,12 +156,17 @@ class Filter:
 
     def remove_block_tabs(self, soup) -> None:
         if self.main_divs:
-            for div in self.main_divs.find_all('div',
-                                               attrs={'class': "KP7LCb"}):
+            for div in self.main_divs.find_all(
+                'div',
+                attrs={'class': f'{GClasses.main_tbm_tab}'}
+            ):
                 _ = div.decompose()
         else:
             # when in images tab
-            for div in soup.find_all('div', attrs={'class': "n692Zd"}):
+            for div in soup.find_all(
+                'div',
+                attrs={'class': f'{GClasses.images_tbm_tab}'}
+            ):
                 _ = div.decompose()
 
     def collapse_sections(self) -> None:
@@ -294,7 +301,7 @@ class Filter:
 
         # Fix body max width on images tab
         style = soup.find('style')
-        div = soup.find('div', attrs={'class': "n692Zd"})
+        div = soup.find('div', attrs={'class': f'{GClasses.images_tbm_tab}'})
         if style and div and not self.mobile:
             css = style.string
             css_html_tag = (
