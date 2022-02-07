@@ -13,6 +13,14 @@ from urllib.parse import parse_qs
 import os
 
 minimal_mode_sections = ['Top stories', 'Images', 'People also ask']
+unsupported_g_pages = [
+    'support.google.com',
+    'accounts.google.com',
+    'google.com/preferences',
+    'google.com/intl',
+    'advanced_search',
+    'tbm=shop'
+]
 
 
 def extract_q(q_str: str, href: str) -> str:
@@ -315,14 +323,15 @@ class Filter:
             None (the tag is updated directly)
 
         """
-        # Replace href with only the intended destination (no "utm" type tags)
-        href = link['href'].replace('https://www.google.com', '')
-        if 'advanced_search' in href or 'tbm=shop' in href:
+        # Remove any elements that direct to unsupported Google pages
+        if any(url in link['href'] for url in unsupported_g_pages):
             # FIXME: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
             link.decompose()
             return
 
+        # Replace href with only the intended destination (no "utm" type tags)
+        href = link['href'].replace('https://www.google.com', '')
         result_link = urlparse.urlparse(href)
         q = extract_q(result_link.query, href)
 
