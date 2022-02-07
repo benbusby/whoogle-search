@@ -130,9 +130,8 @@ class Filter:
         selected = soup.body.findAll(text=re.compile(search_string))
 
         for result in selected:
-            result.string.replace_with(
-                                       result.string.replace(
-                                                             search_string, ''))
+            result.string.replace_with(result.string.replace(
+                                       search_string, ''))
 
     def remove_ads(self) -> None:
         """Removes ads found in the list of search result divs
