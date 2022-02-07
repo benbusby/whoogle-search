@@ -125,12 +125,11 @@ class Filter:
     def remove_site_blocks(self, soup) -> None:
         if not self.config.block:
             return
-        selected = soup.body.findAll(
-                                     text=re.compile(' '.join(['-site:' + _ for _ in self.config.block.split(',')])))
+        search_string=' '.join(['-site:' + _ for _ in self.config.block.split(',')])
+        selected = soup.body.findAll(text=re.compile(search_string))
 
         for result in selected:
-            result.string.replace_with(
-                                       result.string.replace(' '.join(['-site:' + _ for _ in self.config.block.split(',')]), ''))
+            result.string.replace_with(result.string.replace(search_string, ''))
 
     def remove_ads(self) -> None:
         """Removes ads found in the list of search result divs
