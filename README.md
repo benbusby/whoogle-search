@@ -512,6 +512,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 | Website | Country | Language | Cloudflare |
 |-|-|-|-|
+| [https://gowogle.voring.me](https://gowogle.voring.me) | 🇺🇸 US | Multi-choice | |
 | [https://whoogle.fossho.st](https://whoogle.fossho.st) (down until further notice) | 🇺🇸 US | Multi-choice | |
 | [https://search.albony.xyz](https://search.albony.xyz/) | 🇮🇳 IN | Multi-choice |  |
 | [https://whoogle.sdf.org](https://whoogle.sdf.org) | 🇺🇸 US | Multi-choice |
