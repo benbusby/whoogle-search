@@ -125,7 +125,7 @@ class Filter:
     def remove_site_blocks(self, soup) -> None:
         if not self.config.block:
             return
-        
+
         if not soup.body:
             return
         search_string = ' '.join(['-site:' +
