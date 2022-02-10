@@ -508,13 +508,11 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Public Instances
 
-*Note: Use public instances at your own discretion. The maintainers of Whoogle are only responsible for https://whoogle.fossho.st, and do not personally validate the integrity of any other instances. Popular public instances are more likely to be rate-limited or blocked.*
+*Note: Use public instances at your own discretion. The maintainers of Whoogle do not personally validate the integrity of any other instances. Popular public instances are more likely to be rate-limited or blocked.*
 
 | Website | Country | Language | Cloudflare |
 |-|-|-|-|
-<!-- | [https://whoogle.fossho.st](https://whoogle.fossho.st) (down until further notice) | 🇺🇸 US | Multi-choice | |
 | [https://search.albony.xyz](https://search.albony.xyz/) | 🇮🇳 IN | Multi-choice |  |
-| [https://whoogle.sdf.org](https://whoogle.sdf.org) | 🇺🇸 US | Multi-choice | -->
 | [https://search.garudalinux.org](https://search.garudalinux.org) | 🇩🇪 DE | Multi-choice |  |
 | [https://whooglesearch.net](https://whooglesearch.net) | 🇩🇪 DE | Spanish |  |
 | [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | Multi-choice | ✅ |
