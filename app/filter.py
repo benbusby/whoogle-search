@@ -123,10 +123,7 @@ class Filter:
         return soup
 
     def remove_site_blocks(self, soup) -> None:
-        if not self.config.block:
-            return
-
-        if not soup.body:
+        if not self.config.block or not soup.body:
             return
         search_string = ' '.join(['-site:' +
                                  _ for _ in self.config.block.split(',')])
