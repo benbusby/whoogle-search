@@ -198,33 +198,26 @@ def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
         BeautifulSoup
 
     """
-    if (not html_soup.select_one(".EY24We")
-            and html_soup.select_one(".OXXup").get_text().lower() == "all"):
-        # HTML IP card tag
-        ip_tag = html_soup.new_tag("div")
-        ip_tag["class"] = "ZINbbc xpd O9g5cc uUPGi"
+    # HTML IP card tag
+    ip_tag = html_soup.new_tag('div')
+    ip_tag['class'] = 'ZINbbc xpd O9g5cc uUPGi'
 
-        # For IP Address html tag
-        ip_address = html_soup.new_tag("div")
-        ip_address["class"] = "kCrYT ip-address-div"
-        ip_address.string = ip
+    # For IP Address html tag
+    ip_address = html_soup.new_tag('div')
+    ip_address['class'] = 'kCrYT ip-address-div'
+    ip_address.string = ip
 
-        # Text below the IP address
-        ip_text = html_soup.new_tag("div")
-        ip_text.string = "Your public IP address"
-        ip_text["class"] = "kCrYT ip-text-div"
+    # Text below the IP address
+    ip_text = html_soup.new_tag('div')
+    ip_text.string = 'Your public IP address'
+    ip_text['class'] = 'kCrYT ip-text-div'
 
-        # Adding all the above html tags to the IP card
-        ip_tag.append(ip_address)
-        ip_tag.append(ip_text)
+    # Adding all the above html tags to the IP card
+    ip_tag.append(ip_address)
+    ip_tag.append(ip_text)
 
-        # Finding the element before which the IP card would be placed
-        f_link = html_soup.select_one(".BNeawe.vvjwJb.AP7Wnd")
-        ref_element = f_link.find_parent(class_="ZINbbc xpd O9g5cc" +
-                                                " uUPGi")
-
-        # Inserting the element
-        ref_element.insert_before(ip_tag)
+    # Insert the element at the top of the result list
+    html_soup.select_one('#main').insert_before(ip_tag)
     return html_soup
 
 
