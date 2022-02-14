@@ -7,7 +7,7 @@ import os
 import pickle
 import urllib.parse as urlparse
 import uuid
-from datetime import timedelta
+from datetime import datetime, timedelta
 from functools import wraps
 
 import waitress
@@ -16,7 +16,8 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.misc import read_config_bool, get_client_ip, get_request_url
+from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
+    check_for_update
 from app.utils.results import add_ip_card, bold_search_terms,\
     add_currency_card, check_currency, get_tabs_content
 from app.utils.search import Search, needs_https, has_captcha
@@ -30,15 +31,6 @@ from cryptography.fernet import Fernet
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE'])) or {}
-
-# Check the newest version of WHOOGLE
-update = bsoup(get(app.config['RELEASES_URL']).text, 'html.parser')
-newest_version = update.select_one('[class="Link--primary"]').string[1:]
-current_version = int(''.join(filter(str.isdigit,
-                                     app.config['VERSION_NUMBER'])))
-newest_version = int(''.join(filter(str.isdigit, newest_version)))
-newest_version = '' if current_version >= newest_version \
-    else newest_version
 
 ac_var = 'WHOOGLE_AUTOCOMPLETE'
 autocomplete_enabled = os.getenv(ac_var, '1')
@@ -105,6 +97,14 @@ def session_required(f):
 @app.before_request
 def before_request_func():
     global bang_json
+
+    # Check for latest version if needed
+    now = datetime.now()
+    if now - timedelta(hours=24) > app.config['LAST_UPDATE_CHECK']:
+        app.config['LAST_UPDATE_CHECK'] = now
+        app.config['HAS_UPDATE'] = check_for_update(
+            app.config['RELEASES_URL'],
+            app.config['VERSION_NUMBER'])
 
     g.request_params = (
         request.args if request.method == 'GET' else request.form
@@ -214,7 +214,7 @@ def index():
         return render_template('error.html', error_message=error_message)
 
     return render_template('index.html',
-                           newest_version=newest_version,
+                           has_update=app.config['HAS_UPDATE'],
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
                            themes=app.config['THEMES'],
@@ -363,7 +363,7 @@ def search():
 
     return render_template(
         'display.html',
-        newest_version=newest_version,
+        has_update=app.config['HAS_UPDATE'],
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
         config=g.user_config,
