@@ -242,6 +242,9 @@ def check_currency(response: str) -> dict:
         currency2 = currency_link[1].text
         currency1 = currency1.rstrip('=').split(' ', 1)
         currency2 = currency2.split(' ', 1)
+
+        # Handle differences in currency formatting
+        # i.e. "5.000" vs "5,000"
         if currency2[0][-3] == ',':
             currency1[0] = currency1[0].replace('.', '')
             currency1[0] = currency1[0].replace(',', '.')
@@ -250,10 +253,17 @@ def check_currency(response: str) -> dict:
         else:
             currency1[0] = currency1[0].replace(',', '')
             currency2[0] = currency2[0].replace(',', '')
-        return {'currencyValue1': float(currency1[0]),
-                'currencyLabel1': currency1[1],
-                'currencyValue2': float(currency2[0]),
-                'currencyLabel2': currency2[1]
+
+        currency1_value = float(re.sub(r'[^\d\.]', '', currency1[0]))
+        currency1_label = currency1[1]
+
+        currency2_value = float(re.sub(r'[^\d\.]', '', currency2[0]))
+        currency2_label = currency2[1]
+
+        return {'currencyValue1': currency1_value,
+                'currencyLabel1': currency1_label,
+                'currencyValue2': currency2_value,
+                'currencyLabel2': currency2_label
                 }
     return {}
 
