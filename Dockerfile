@@ -22,7 +22,8 @@ RUN apk -U upgrade
 ARG DOCKER_USER=whoogle
 ARG DOCKER_USERID=927
 ARG config_dir=/config
-RUN mkdir -p -m 777 $config_dir
+RUN mkdir -p $config_dir
+RUN chmod a+w $config_dir
 VOLUME $config_dir
 
 ARG username=''
@@ -75,7 +76,7 @@ COPY run .
 RUN adduser -D -g $DOCKER_USERID -u $DOCKER_USERID $DOCKER_USER
 
 # Fix ownership / permissions
-RUN	chown -R ${DOCKER_USER}:${DOCKER_USER} /whoogle /var/lib/tor
+RUN chown -R ${DOCKER_USER}:${DOCKER_USER} /whoogle /var/lib/tor
 
 # Allow writing symlinks to build dir
 RUN chown $DOCKER_USERID:$DOCKER_USERID app/static/build
