@@ -18,10 +18,11 @@ BLANK_B64 = ('data:image/png;base64,'
 
 # Ad keywords
 BLACKLIST = [
-    'ad', 'anuncio', 'annuncio', 'annonce', 'Anzeige', '广告', '廣告', 'Reklama',
-    'Реклама', 'Anunț', '광고', 'annons', 'Annonse', 'Iklan', '広告', 'Augl.',
-    'Mainos', 'Advertentie', 'إعلان', 'Գովազդ', 'विज्ञापन', 'Reklam', 'آگهی',
-    'Reklāma', 'Reklaam', 'Διαφήμιση', 'מודעה', 'Hirdetés', 'Anúncio'
+    'ad', 'ads', 'anuncio', 'annuncio', 'annonce', 'Anzeige', '广告', '廣告',
+    'Reklama', 'Реклама', 'Anunț', '광고', 'annons', 'Annonse', 'Iklan',
+    '広告', 'Augl.', 'Mainos', 'Advertentie', 'إعلان', 'Գովազդ', 'विज्ञापन',
+    'Reklam', 'آگهی', 'Reklāma', 'Reklaam', 'Διαφήμιση', 'מודעה', 'Hirdetés',
+    'Anúncio'
 ]
 
 SITE_ALTS = {
@@ -89,7 +90,8 @@ def has_ad_content(element: str) -> bool:
         bool: True/False for the element containing an ad
 
     """
-    return (element.upper() in (value.upper() for value in BLACKLIST)
+    element_str = ''.join(filter(str.isalpha, element))
+    return (element_str.upper() in (value.upper() for value in BLACKLIST)
             or 'ⓘ' in element)
 
 
