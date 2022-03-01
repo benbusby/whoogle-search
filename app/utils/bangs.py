@@ -61,7 +61,8 @@ def resolve_bang(query: str, bangs_dict: dict, fallback: str) -> str:
             continue
 
         bang_query = query.replace(
-            operator if operator in split_query else operator[1:] + operator[0], ''
+            operator if operator in split_query else operator[1:] +
+            operator[0], ''
         ).strip()
 
         if bang_query:
