@@ -38,7 +38,7 @@ def gen_bangs_json(bangs_file: str) -> None:
     print('* Finished creating ddg bangs json')
 
 
-def resolve_bang(query: str, bangs_dict: dict) -> str:
+def resolve_bang(query: str, bangs_dict: dict, fallback: str) -> str:
     """Transform's a user's query to a bang search, if an operator is found
 
     Args:
@@ -59,8 +59,13 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
         if operator not in split_query \
                 and operator[1:] + operator[0] not in split_query:
             continue
-        return bangs_dict[operator]['url'].replace(
-            '{}',
-            query.replace(operator if operator in split_query
-                          else operator[1:] + operator[0], '').strip(), 1)
+
+        bang_query = query.replace(
+            operator if operator in split_query else operator[1:] + operator[0], ''
+        ).strip()
+
+        if bang_query:
+            return bangs_dict[operator]['url'].replace('{}', bang_query, 1)
+        else:
+            return fallback
     return ''
