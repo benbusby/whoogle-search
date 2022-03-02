@@ -1,6 +1,6 @@
 from app.models.config import Config
 from datetime import datetime
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 import random
 import requests
 from requests import Response, ConnectionError

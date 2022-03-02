@@ -11,6 +11,7 @@ class GClasses(Enum):
     """
     main_tbm_tab = 'KP7LCb'
     images_tbm_tab = 'n692Zd'
+    footer = 'TuS8Ad'
 
     def __str__(self):
         return self.value

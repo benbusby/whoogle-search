@@ -349,7 +349,12 @@ class Filter:
         if any(url in link['href'] for url in unsupported_g_pages):
             # FIXME: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
-            link.decompose()
+            parent = link.parent
+            while parent:
+                p_cls = parent.attrs.get('class') or []
+                if parent.name == 'footer' or f'{GClasses.footer}' in p_cls:
+                    link.decompose()
+                parent = parent.parent
             return
 
         # Replace href with only the intended destination (no "utm" type tags)
