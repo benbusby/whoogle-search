@@ -264,7 +264,7 @@ class Filter:
                 # enabled
                 parent.decompose()
 
-    def update_element_src(self, element: Tag, mime: str) -> None:
+    def update_element_src(self, element: Tag, mime: str, attr='src') -> None:
         """Encrypts the original src of an element and rewrites the element src
         to use the "/element?src=" pass-through.
 
@@ -272,10 +272,12 @@ class Filter:
             None (The soup element is modified directly)
 
         """
-        src = element['src']
+        src = element[attr].split(' ')[0]
 
         if src.startswith('//'):
             src = 'https:' + src
+        elif src.startswith('data:'):
+            return
 
         if src.startswith(LOGO_URL):
             # Re-brand with Whoogle logo
@@ -287,7 +289,7 @@ class Filter:
             element['src'] = BLANK_B64
             return
 
-        element['src'] = f'{Endpoint.element}?url=' + self.encrypt_path(
+        element[attr] = f'{Endpoint.element}?url=' + self.encrypt_path(
             src,
             is_element=True) + '&type=' + urlparse.quote(mime)
 
