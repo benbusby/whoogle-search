@@ -28,7 +28,6 @@ header {
     padding: 10px 0 5px 0;
     height: 37px;
     font-smoothing: antialiased;
-    margin: auto;
 }
 
 .search-bar-desktop {
@@ -78,6 +77,7 @@ header {
 
 #mobile-header-logo {
     height: 1.75em;
+    max-width: 50px; 
 }
 
 .mobile-input-div {
