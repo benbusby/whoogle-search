@@ -40,9 +40,9 @@ ARG youtube_alt='farside.link/invidious'
 ARG instagram_alt='farside.link/bibliogram'
 ARG reddit_alt='farside.link/libreddit'
 ARG medium_alt='farside.link/scribe'
-ARG translate_alt='lingva.ml'
-ARG imgur_alt='imgin.voidnet.tech'
-ARG wikipedia_alt='wikiless.org'
+ARG translate_alt='farside.link/lingva'
+ARG imgur_alt='farside.link/rimgo'
+ARG wikipedia_alt='farside.link/wikiless'
 
 ENV CONFIG_VOLUME=$config_dir \
     WHOOGLE_USER=$username \

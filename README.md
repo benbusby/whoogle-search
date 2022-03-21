@@ -202,9 +202,9 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_IG=farside.link/bibliogram/u
 #Environment=WHOOGLE_ALT_RD=farside.link/libreddit
 #Environment=WHOOGLE_ALT_MD=farside.link/scribe
-#Environment=WHOOGLE_ALT_TL=lingva.ml
-#Environment=WHOOGLE_ALT_IMG=imgin.voidnet.tech
-#Environment=WHOOGLE_ALT_WIKI=wikiless.org
+#Environment=WHOOGLE_ALT_TL=farside.link/lingva
+#Environment=WHOOGLE_ALT_IMG=farside.link/rimgo
+#Environment=WHOOGLE_ALT_WIKI=farside.link/wikiless
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple

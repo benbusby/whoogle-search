@@ -60,7 +60,7 @@ def test_translate_search(client):
     # Pretty weak test, but better than nothing
     str_data = str(rv.data)
     assert 'iframe' in str_data
-    assert 'lingva.ml/auto/en/ hola' in str_data
+    assert '/auto/en/ hola' in str_data
 
 
 def test_block_results(client):
