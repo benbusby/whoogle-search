@@ -14,11 +14,11 @@ header {
 }
 
 .mobile-logo {
-    inline-block	
+    display: inline-block;
     justify-content: left;
     align-items: left;
-    position: absolute;
-    right: 150px;
+    position: relative;
+    right: 50px;
 }
 
 .logo-div {
