@@ -19,6 +19,8 @@ header {
     display: flex;
     justify-content: start;
     align-items: start;
+    position: relative;
+    right: 100px;
 }
 
 .logo-div {
