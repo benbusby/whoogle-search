@@ -4,7 +4,9 @@ body {
 
 .logo {
     width: 80%;
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: auto;
     padding-bottom: 10px;
 }
@@ -139,13 +141,17 @@ footer {
 }
 
 .whoogle-logo {
-    display: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .whoogle-svg {
     width: 80%;
     height: initial;
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: auto;
     padding-bottom: 10px;
 }
