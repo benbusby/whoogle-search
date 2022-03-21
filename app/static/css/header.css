@@ -79,7 +79,7 @@ header {
 }
 
 .mobile-input-div {
-    width: 100%;
+    width: 150%;
 }
 
 .mobile-search-bar {
@@ -170,7 +170,7 @@ span.header-tab-span {
     display: box;
     display: flex;
     overflow-x: scroll;
-    width: 50%;
+    width: 100%;
     padding-left: 12px;
 }
 
