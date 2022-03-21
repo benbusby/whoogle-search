@@ -21,11 +21,11 @@ header {
 
 .logo-div {
     letter-spacing: -1px;
-    text-align: left;
-    padding: 10px 0 20px 0;
+    text-align: center;
+    font: 22pt Futura, Arial, sans-serif;
+    padding: 10px 0 5px 0;
     height: 37px;
     font-smoothing: antialiased;
-    display: block;
 }
 
 .search-bar-desktop {
