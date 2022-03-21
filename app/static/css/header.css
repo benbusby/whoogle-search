@@ -18,7 +18,7 @@ header {
     justify-content: left;
     align-items: left;
     position: relative;
-    right: 50px;
+    right: 75px;
 }
 
 .logo-div {
@@ -90,6 +90,8 @@ header {
     padding-right: 0px;
     -webkit-box-flex: 1;
     height: 35px;
+    position: relative;
+    right: 50px;
     outline: none;
     border: none;
     width: 50%;
