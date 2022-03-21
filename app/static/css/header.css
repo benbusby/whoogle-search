@@ -17,8 +17,8 @@ header {
     font: 22px/36px Futura, Arial, sans-serif;
     padding-left: 5px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: start;
+    align-items: stretch;
 }
 
 .logo-div {
