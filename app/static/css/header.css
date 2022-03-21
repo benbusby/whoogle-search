@@ -17,6 +17,8 @@ header {
     display: block;
     justify-content: left;
     align-items: left;
+    position: absolute;
+    left: 50px;
 }
 
 .logo-div {
@@ -76,7 +78,6 @@ header {
 #mobile-header-logo {
     height: 1.75em;
     width: 1.75em;
-    margin-left: 2em;
 }
 
 .mobile-input-div {
