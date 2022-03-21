@@ -76,7 +76,7 @@ header {
 
 #mobile-header-logo {
     height: 1.75em;
-    width: 1.00em;
+    width: 1.75em;
 }
 
 .mobile-input-div {
@@ -84,7 +84,7 @@ header {
 }
 
 .mobile-search-bar {
-    display: block;
+    display: flex;
     font-size: 16px;
     padding: 0 0 0 8px;
     padding-right: 0px;
