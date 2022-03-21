@@ -95,7 +95,7 @@ header {
     right: 140px;
     outline: none;
     border: none;
-    width: 50%;
+    width: 100%;
     -webkit-tap-highlight-color: rgba(0,0,0,.00);
     overflow: hidden;
     border: 0px !important;
