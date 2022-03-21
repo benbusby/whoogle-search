@@ -170,7 +170,7 @@ span.header-tab-span {
     display: box;
     display: flex;
     overflow-x: scroll;
-    width: 100%;
+    width: 50%;
     padding-left: 12px;
 }
 
