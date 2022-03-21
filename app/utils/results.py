@@ -35,7 +35,7 @@ SITE_ALTS = {
         'levelup.gitconnected.com'
     ], os.getenv('WHOOGLE_ALT_MD', 'farside.link/scribe')),
     'imgur.com': os.getenv('WHOOGLE_ALT_IMG', 'imgin.voidnet.tech'),
-    'wikipedia.com': os.getenv('WHOOGLE_ALT_WIKI', 'wikiless.org')
+    'wikipedia.org': os.getenv('WHOOGLE_ALT_WIKI', 'wikiless.org')
 }
 
 
