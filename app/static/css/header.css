@@ -14,7 +14,7 @@ header {
 }
 
 .mobile-logo {
-    display: block;
+    display: flex;
     justify-content: left;
     align-items: left;
 }
