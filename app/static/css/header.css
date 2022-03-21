@@ -14,12 +14,11 @@ header {
 }
 
 .mobile-logo {
-    display: inline-block;
-    justify-content: left;
-    align-items: left;
-    position: relative;
-    right: 100px;
-    top: 5px;
+    font: 22px/36px Futura, Arial, sans-serif;
+    padding-left: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .logo-div {
@@ -85,14 +84,12 @@ header {
 }
 
 .mobile-search-bar {
-    display: flex;
+    display: block;
     font-size: 16px;
     padding: 0 0 0 8px;
     padding-right: 0px;
     -webkit-box-flex: 1;
     height: 35px;
-    position: relative;
-    right: 140px;
     outline: none;
     border: none;
     width: 100%;
