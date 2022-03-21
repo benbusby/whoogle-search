@@ -28,6 +28,7 @@ header {
     padding: 10px 0 5px 0;
     height: 37px;
     font-smoothing: antialiased;
+    margin: auto;
 }
 
 .search-bar-desktop {
