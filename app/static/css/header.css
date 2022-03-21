@@ -76,6 +76,7 @@ header {
 #mobile-header-logo {
     height: 1.75em;
     width: 1.75em;
+    padding-left: 30dp;
 }
 
 .mobile-input-div {
