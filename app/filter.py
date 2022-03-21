@@ -386,9 +386,12 @@ class Filter:
             # Strip unneeded arguments
             link['href'] = filter_link_args(q)
 
-            # Add no-js option
+            # Add alternate viewing options for results
             if self.config.nojs:
                 append_nojs(link)
+
+            if self.config.anon_view:
+                append_anon_view(link)
 
             if self.config.new_tab:
                 link['target'] = '_blank'

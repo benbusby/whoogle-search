@@ -15,6 +15,7 @@
         "config-block-url-help": "Use regex",
         "config-theme": "Theme",
         "config-nojs": "Show NoJS Links",
+        "config-anon-view": "Show \"Anonymous View\" Links",
         "config-dark": "Dark Mode",
         "config-safe": "Safe Search",
         "config-alts": "Replace Social Media Links",

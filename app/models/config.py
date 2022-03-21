@@ -28,6 +28,7 @@ class Config:
         self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
         self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
         self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
+        self.anon_view = read_config_bool('WHOOGLE_CONFIG_ANON_VIEW')
         self.accept_language = False
 
         self.safe_keys = [
@@ -39,7 +40,9 @@ class Config:
             'new_tab',
             'view_image',
             'block',
-            'safe'
+            'safe',
+            'nojs',
+            'anon_view'
         ]
 
         # Skip setting custom config if there isn't one

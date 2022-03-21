@@ -183,9 +183,26 @@ def append_nojs(result: BeautifulSoup) -> None:
 
     """
     nojs_link = BeautifulSoup(features='html.parser').new_tag('a')
-    nojs_link['href'] = f'/{Endpoint.window}?location=' + result['href']
+    nojs_link['href'] = f'/{Endpoint.window}?nojs=1&location=' + result['href']
     nojs_link.string = ' NoJS Link'
     result.append(nojs_link)
+
+
+def append_anon_view(result: BeautifulSoup) -> None:
+    """Appends an 'anonymous view' for a search result, where all site
+    contents are viewed through Whoogle as a proxy.
+
+    Args:
+        result: The search result to append an anon view link to
+
+    Returns:
+        None
+
+    """
+    av_link = BeautifulSoup(features='html.parser').new_tag('a')
+    av_link['href'] = f'/{Endpoint.window}?location=' + result['href']
+    av_link.string = ' Anonymous View'
+    result.append(av_link)
 
 
 def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
