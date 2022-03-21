@@ -4,15 +4,19 @@ body {
 
 .logo {
     width: 80%;
-    display: flex;
-    justify-content: center;
+    display: block;
+    align-content: center;
+    text-align: center;
     align-items: center;
-    margin: auto;
-    padding-bottom: 10px;
+     margin-bottom: 20px;
 }
 
 .logo-container {
     max-height: 500px;
+    align-content: center;
+    text-align: center;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .home-search {
@@ -61,15 +65,6 @@ body {
     border-radius: 0 0 10px 10px;
     max-width: 600px;
     -webkit-appearance: none;
-}
-
-.config-options {
-    max-height: 370px;
-    overflow-y: scroll;
-}
-
-.config-buttons {
-    max-height: 30px;
 }
 
 .config-div {
@@ -141,17 +136,12 @@ footer {
 }
 
 .whoogle-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: none;
 }
 
 .whoogle-svg {
     width: 80%;
-    height: initial;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
     margin: auto;
     padding-bottom: 10px;
 }
@@ -182,11 +172,4 @@ footer {
 details summary {
     padding: 10px;
     font-weight: bold;
-}
-
-/* Mobile styles */
-@media (max-width: 1000px) {
-    select {
-        width: 100%;
-    }
 }
