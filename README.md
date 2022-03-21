@@ -10,6 +10,7 @@
 
 Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
+
 Contents
 1. [Features](#features)
 2. [Dependencies](#dependencies)
