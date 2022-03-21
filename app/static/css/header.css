@@ -14,12 +14,9 @@ header {
 }
 
 .mobile-logo {
-    font: 22px/36px Futura, Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: 30px;
-    width: 50%;
+    display: block;
+    justify-content: left;
+    align-items: left;
 }
 
 .logo-div {
