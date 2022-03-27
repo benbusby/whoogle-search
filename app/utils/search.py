@@ -153,6 +153,7 @@ class Search:
                                 self.request_params.to_dict(flat=True).items()
                                 if self.config.is_safe_key(k))
             for link in formatted_results.find_all('a', href=True):
+                link['rel'] = "nofollow noopener noreferrer"
                 if 'search?' not in link['href'] or link['href'].index(
                         'search?') > 1:
                     continue
