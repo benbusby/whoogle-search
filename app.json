@@ -72,17 +72,17 @@
     },
     "WHOOGLE_ALT_TL": {
       "description": "The Google Translate alternative to use for all searches following the 'translate ___' structure.",
-      "value": "lingva.ml",
+      "value": "farside.link/lingva",
       "required": false
     },
     "WHOOGLE_ALT_IMG": {
 	      "description": "The site to use as a replacement for imgur.com when site alternatives are enabled in the config.",
-	      "value": "imgin.voidnet.tech",
+	      "value": "farside.link/rimgo",
 	      "required": false
 	    },
     "WHOOGLE_ALT_WIKI": {
 	      "description": "The site to use as a replacement for wikipedia.com when site alternatives are enabled in the config.",
-	      "value": "wikiless.org",
+	      "value": "farside.link/wikiless",
 	      "required": false
 	    },
     "WHOOGLE_MINIMAL": {

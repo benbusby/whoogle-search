@@ -98,7 +98,7 @@ select {
 }
 
 .sa1toc {
-	background: var(--whoogle-dark-element-bg) !important;
+	background: var(--whoogle-dark-page-bg) !important;
 }
 
 #search-bar {

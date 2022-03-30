@@ -82,7 +82,7 @@ app.config['HAS_UPDATE'] = ''
 # The alternative to Google Translate is treated a bit differently than other
 # social media site alternatives, in that it is used for any translation
 # related searches.
-translate_url = os.getenv('WHOOGLE_ALT_TL', 'https://lingva.ml')
+translate_url = os.getenv('WHOOGLE_ALT_TL', 'https://farside.link/lingva')
 if not translate_url.startswith('http'):
     translate_url = 'https://' + translate_url
 app.config['TRANSLATE_URL'] = translate_url

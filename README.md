@@ -202,9 +202,9 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_IG=farside.link/bibliogram/u
 #Environment=WHOOGLE_ALT_RD=farside.link/libreddit
 #Environment=WHOOGLE_ALT_MD=farside.link/scribe
-#Environment=WHOOGLE_ALT_TL=lingva.ml
-#Environment=WHOOGLE_ALT_IMG=imgin.voidnet.tech
-#Environment=WHOOGLE_ALT_WIKI=wikiless.org
+#Environment=WHOOGLE_ALT_TL=farside.link/lingva
+#Environment=WHOOGLE_ALT_IMG=farside.link/rimgo
+#Environment=WHOOGLE_ALT_WIKI=farside.link/wikiless
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
@@ -518,9 +518,10 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | Multi-choice | ✅ |
 | [https://www.whooglesearch.ml](https://www.whooglesearch.ml) | 🇺🇸 US | English | |
 | [https://search.sethforprivacy.com](https://search.sethforprivacy.com) | 🇩🇪 DE | English | |
-| [https://whoogle.dcs0.hu](https://whoogle.dcs0.hu) | 🇭🇺 HU | Multi-choice | ✅ |
+| [https://whoogle.dcs0.hu](https://whoogle.dcs0.hu) | 🇭🇺 HU | Multi-choice | |
 | [https://whoogle.esmailelbob.xyz](https://whoogle.esmailelbob.xyz) | 🇨🇦 CA | Multi-choice | |
 | [https://gowogle.voring.me](https://gowogle.voring.me) | 🇺🇸 US | Multi-choice | |
+| [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
 
 
 

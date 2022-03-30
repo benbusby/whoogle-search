@@ -18,7 +18,7 @@ services:
       - ALL
     tmpfs:
       - /config/:size=10M,uid=927,gid=927,mode=1700
-      - /var/lib/tor/:size=10M,uid=927,gid=927,mode=1700
+      - /var/lib/tor/:size=15M,uid=927,gid=927,mode=1700
       - /run/tor/:size=1M,uid=927,gid=927,mode=1700
     #environment: # Uncomment to configure environment variables
       # Basic auth configuration, uncomment to enable
@@ -37,9 +37,9 @@ services:
       #- WHOOGLE_ALT_IG=farside.link/bibliogram/u
       #- WHOOGLE_ALT_RD=farside.link/libreddit
       #- WHOOGLE_ALT_MD=farside.link/scribe
-      #- WHOOGLE_ALT_TL=lingva.ml
-      #- WHOOGLE_ALT_IMG=imgin.voidnet.tech
-      #- WHOOGLE_ALT_WIKI=wikiless.org
+      #- WHOOGLE_ALT_TL=farside.link/lingva
+      #- WHOOGLE_ALT_IMG=farside.link/rimgo
+      #- WHOOGLE_ALT_WIKI=farside.link/wikiless
     #env_file: # Alternatively, load variables from whoogle.env
       #- whoogle.env
     ports:
