@@ -2,11 +2,12 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.models.g_classes import GClasses
 from app.request import VALID_PARAMS, MAPS_URL
-from app.utils.misc import read_config_bool
+from app.utils.misc import get_abs_url, read_config_bool
 from app.utils.results import *
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 from cryptography.fernet import Fernet
+import cssutils
 from flask import render_template
 import re
 import urllib.parse as urlparse
@@ -53,15 +54,45 @@ def clean_query(query: str) -> str:
     return query[:query.find('-site:')] if '-site:' in query else query
 
 
+def clean_css(css: str, page_url: str) -> str:
+    """Removes all remote URLs from a CSS string.
+
+    Args:
+        css: The CSS string
+
+    Returns:
+        str: The filtered CSS, with URLs proxied through Whoogle
+    """
+    sheet = cssutils.parseString(css)
+    urls = cssutils.getUrls(sheet)
+
+    for url in urls:
+        abs_url = get_abs_url(url, page_url)
+        css = css.replace(
+            url,
+            f'/element?type=image/png&url={abs_url}'
+        )
+
+    return css
+
+
 class Filter:
     # Limit used for determining if a result is a "regular" result or a list
     # type result (such as "people also asked", "related searches", etc)
     RESULT_CHILD_LIMIT = 7
 
-    def __init__(self, user_key: str, config: Config, mobile=False) -> None:
+    def __init__(
+            self,
+            user_key: str,
+            config: Config,
+            root_url: str,
+            page_url='',
+            mobile=False) -> None:
         self.config = config
         self.mobile = mobile
         self.user_key = user_key
+        self.root_url = root_url
+        self.page_url = page_url
         self.main_divs = ResultSet('')
         self._elements = 0
 
@@ -89,6 +120,7 @@ class Filter:
         self.remove_block_titles()
         self.remove_block_url()
         self.collapse_sections()
+        self.update_css(soup)
         self.update_styling(soup)
         self.remove_block_tabs(soup)
 
@@ -289,9 +321,28 @@ class Filter:
             element['src'] = BLANK_B64
             return
 
-        element[attr] = f'{Endpoint.element}?url=' + self.encrypt_path(
-            src,
-            is_element=True) + '&type=' + urlparse.quote(mime)
+        element[attr] = f'{self.root_url}/{Endpoint.element}?url=' + (
+            self.encrypt_path(
+                src,
+                is_element=True
+            ) + '&type=' + urlparse.quote(mime)
+        )
+
+    def update_css(self, soup) -> None:
+        """Updates URLs used in inline styles to be proxied by Whoogle
+        using the /element endpoint.
+
+        Returns:
+            None (The soup element is modified directly)
+
+        """
+        # Filter all <style> tags
+        for style in soup.find_all('style'):
+            style.string = clean_css(style.string, self.page_url)
+
+        # Convert remote stylesheets to style tags
+        for link in soup.find_all('link', attrs={'rel': 'stylesheet'}):
+            print(link)
 
     def update_styling(self, soup) -> None:
         # Remove unnecessary button(s)

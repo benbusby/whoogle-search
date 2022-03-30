@@ -489,7 +489,10 @@ def window():
         cipher_suite = Fernet(g.session_key)
         target_url = cipher_suite.decrypt(target_url.encode()).decode()
 
-    content_filter = Filter(g.session_key, config=g.user_config)
+    content_filter = Filter(
+        g.session_key,
+        root_url=request.url_root,
+        config=g.user_config)
     target = urlparse.urlparse(target_url)
     host_url = f'{target.scheme}://{target.netloc}'
 
@@ -514,10 +517,11 @@ def window():
             content_filter.update_element_src(script, 'application/javascript')
 
     # Replace all possible image attributes
+    img_sources = ['src', 'data-src', 'data-srcset', 'srcset']
     for img in results.find_all('img'):
         _ = [
             content_filter.update_element_src(img, 'image/png', attr=_)
-            for _ in ['src', 'data-src', 'data-srcset', 'srcset'] if img.has_attr(_)
+            for _ in img_sources if img.has_attr(_)
         ]
 
     # Replace all stylesheet sources
