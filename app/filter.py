@@ -410,7 +410,7 @@ class Filter:
             # Replace link description
             link_desc = link_desc[0]
             for site, alt in SITE_ALTS.items():
-                if site not in link_desc:
+                if site not in link_desc or not alt:
                     continue
                 new_desc = BeautifulSoup(features='html.parser').new_tag('div')
                 new_desc.string = str(link_desc).replace(site, alt)

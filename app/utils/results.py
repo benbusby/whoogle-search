@@ -128,7 +128,7 @@ def get_site_alt(link: str) -> str:
     hostname = urlparse.urlparse(link).hostname
 
     for site_key in SITE_ALTS.keys():
-        if not hostname or site_key not in hostname:
+        if not hostname or site_key not in hostname or not SITE_ALTS[site_key]:
             continue
 
         link = link.replace(hostname, SITE_ALTS[site_key])
