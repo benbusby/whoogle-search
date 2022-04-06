@@ -1,6 +1,10 @@
 const checkForTracking = () => {
     const mainDiv = document.getElementById("main");
-    const query = document.getElementById("search-bar").value.replace(/\s+/g, '');
+    const searchBar = document.getElementById("search-bar");
+    // some pages (e.g. images) do not have these
+    if (!mainDiv || !searchBar)
+        return;
+    const query = searchBar.value.replace(/\s+/g, '');
 
     // Note: regex functions for checking for tracking queries were derived
     // from here -- https://stackoverflow.com/questions/619977
@@ -59,11 +63,14 @@ document.addEventListener("DOMContentLoaded", function() {
     checkForTracking();
 
     // Clear input if reset button tapped
-    const search = document.getElementById("search-bar");
+    const searchBar = document.getElementById("search-bar");
     const resetBtn = document.getElementById("search-reset");
+    // some pages (e.g. images) do not have these
+    if (!searchBar || !resetBtn)
+        return;
     resetBtn.addEventListener("click", event => {
         event.preventDefault();
-        search.value = "";
-        search.focus();
+        searchBar.value = "";
+        searchBar.focus();
     });
 });
