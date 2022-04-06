@@ -513,6 +513,11 @@ def run_app() -> None:
         metavar='<ip address>',
         help='Specifies the host address to use (default 127.0.0.1)')
     parser.add_argument(
+        '--unix-socket',
+        default='',
+        metavar='</path/to/unix.sock>',
+        help='Listen for app on unix socket instead of host:port')
+    parser.add_argument(
         '--debug',
         default=False,
         action='store_true',
@@ -562,5 +567,7 @@ def run_app() -> None:
 
     if args.debug:
         app.run(host=args.host, port=args.port, debug=args.debug)
+    elif args.unix_socket:
+        waitress.serve(app, unix_socket=args.unix_socket)
     else:
         waitress.serve(app, listen="{}:{}".format(args.host, args.port))
