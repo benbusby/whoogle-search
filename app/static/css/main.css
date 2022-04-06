@@ -183,4 +183,8 @@ details summary {
     select {
         width: 100%;
     }
+
+    #search-bar {
+        font-size: 20px;
+    }
 }
