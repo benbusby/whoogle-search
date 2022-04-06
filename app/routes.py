@@ -27,7 +27,8 @@ from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for, g
 from requests import exceptions, get
 from requests.models import PreparedRequest
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
+from cryptography.exceptions import InvalidSignature
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE'])) or {}
@@ -458,7 +459,15 @@ def imgres():
 @auth_required
 def element():
     cipher_suite = Fernet(g.session_key)
-    src_url = cipher_suite.decrypt(request.args.get('url').encode()).decode()
+    url = request.args.get('url')
+    src_url = ""
+    try:
+        src_url = cipher_suite.decrypt(url.encode()).decode()
+    except (InvalidSignature, InvalidToken) as e:
+        return render_template(
+            'error.html',
+            error_message=str(e)), 401
+
     src_type = request.args.get('type')
 
     try:
