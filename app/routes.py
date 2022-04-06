@@ -251,7 +251,7 @@ def opensearch():
         'opensearch.xml',
         main_url=opensearch_url,
         request_type='' if get_only else 'method="post"'
-    ), 200, {'Content-Disposition': 'attachment; filename="opensearch.xml"'}
+    ), 200, {'Content-Type': 'application/xml'}
 
 
 @app.route(f'/{Endpoint.search_html}', methods=['GET'])
