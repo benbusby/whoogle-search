@@ -14,7 +14,7 @@
         "config-block-url": "Block by URL",
         "config-block-url-help": "Use regex",
         "config-theme": "Theme",
-        "config-nojs": "Show NoJS Links",
+        "config-nojs": "Remove Javascript in \"Anonymous View\"",
         "config-anon-view": "Show \"Anonymous View\" Links",
         "config-dark": "Dark Mode",
         "config-safe": "Safe Search",

@@ -22,6 +22,11 @@ li {
     color: var(--whoogle-text) !important;
 }
 
+.anon-view {
+    color: var(--whoogle-text) !important;
+    text-decoration: underline;
+}
+
 textarea {
     background: var(--whoogle-page-bg) !important;
     color: var(--whoogle-text) !important;

@@ -188,20 +188,22 @@ def append_nojs(result: BeautifulSoup) -> None:
     result.append(nojs_link)
 
 
-def append_anon_view(result: BeautifulSoup) -> None:
+def append_anon_view(result: BeautifulSoup, nojs: bool) -> None:
     """Appends an 'anonymous view' for a search result, where all site
     contents are viewed through Whoogle as a proxy.
 
     Args:
         result: The search result to append an anon view link to
+        nojs: Remove Javascript from Anonymous View
 
     Returns:
         None
 
     """
     av_link = BeautifulSoup(features='html.parser').new_tag('a')
-    av_link['href'] = f'/{Endpoint.window}?location=' + result['href']
+    av_link['href'] = f'/{Endpoint.window}?nojs={1 if nojs else 0}&location={result["href"]}'
     av_link.string = ' Anonymous View'
+    av_link['class'] = 'anon-view'
     result.append(av_link)
 
 

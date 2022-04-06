@@ -85,7 +85,7 @@ class Filter:
             self,
             user_key: str,
             config: Config,
-            root_url: str,
+            root_url='',
             page_url='',
             mobile=False) -> None:
         self.config = config
@@ -340,9 +340,10 @@ class Filter:
         for style in soup.find_all('style'):
             style.string = clean_css(style.string, self.page_url)
 
-        # Convert remote stylesheets to style tags
-        for link in soup.find_all('link', attrs={'rel': 'stylesheet'}):
-            print(link)
+        # TODO: Convert remote stylesheets to style tags and proxy all
+        # remote requests
+        # for link in soup.find_all('link', attrs={'rel': 'stylesheet'}):
+            # print(link)
 
     def update_styling(self, soup) -> None:
         # Remove unnecessary button(s)
@@ -438,11 +439,8 @@ class Filter:
             link['href'] = filter_link_args(q)
 
             # Add alternate viewing options for results
-            if self.config.nojs:
-                append_nojs(link)
-
             if self.config.anon_view:
-                append_anon_view(link)
+                append_anon_view(link, self.config.nojs)
 
             if self.config.new_tab:
                 link['target'] = '_blank'
