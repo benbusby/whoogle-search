@@ -410,7 +410,7 @@ Browser settings:
 	  2. Go to `Default Results` and click the `Setup fallback results` button. Click `+` and add Whoogle, then  drag it to the top.
   - Chrome/Chromium-based Browsers
     - Automatic
-      - Visit the home page of your Whoogle Search instance -- this may automatically add the search engine to your list of search engines. If not, you can add it manually.
+      - Visit the home page of your Whoogle Search instance -- this will automatically add the search engine if the [requirements](https://www.chromium.org/tab-to-search/) are met (GET request, no OnSubmit script, no path). If not, you can add it manually.
     - Manual
       - Under search engines > manage search engines > add, manually enter your Whoogle instance details with a `<whoogle url>/search?q=%s` formatted search URL.
 
