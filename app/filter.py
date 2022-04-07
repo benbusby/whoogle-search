@@ -285,6 +285,11 @@ class Filter:
                 render_template('logo.html'),
                 features='html.parser'))
             return
+        elif src.startswith(G_M_LOGO_URL):
+            # Re-brand with single-letter Whoogle logo
+            element['src'] = 'static/img/favicon/apple-icon.png'
+            element.parent['href'] = 'home'
+            return
         elif src.startswith(GOOG_IMG) or GOOG_STATIC in src:
             element['src'] = BLANK_B64
             return
@@ -368,6 +373,10 @@ class Filter:
             # Internal google links (i.e. mail, maps, etc) should still
             # be forwarded to Google
             link['href'] = 'https://google.com' + q
+        elif q.startswith('https://accounts.google.com'):
+            # Remove Sign-in link
+            link.decompose()
+            return
         elif '/search?q=' in href:
             # "li:1" implies the query should be interpreted verbatim,
             # which is accomplished by wrapping the query in double quotes
