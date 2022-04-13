@@ -1,6 +1,8 @@
+from app.models.config import Config
 from app.models.endpoint import Endpoint
 from bs4 import BeautifulSoup, NavigableString
 import copy
+from flask import current_app
 import html
 import os
 import urllib.parse as urlparse
@@ -188,7 +190,7 @@ def append_nojs(result: BeautifulSoup) -> None:
     result.append(nojs_link)
 
 
-def append_anon_view(result: BeautifulSoup, nojs: bool) -> None:
+def append_anon_view(result: BeautifulSoup, config: Config) -> None:
     """Appends an 'anonymous view' for a search result, where all site
     contents are viewed through Whoogle as a proxy.
 
@@ -201,8 +203,13 @@ def append_anon_view(result: BeautifulSoup, nojs: bool) -> None:
 
     """
     av_link = BeautifulSoup(features='html.parser').new_tag('a')
-    av_link['href'] = f'/{Endpoint.window}?nojs={1 if nojs else 0}&location={result["href"]}'
-    av_link.string = ' Anonymous View'
+    nojs = 'nojs=1' if config.nojs else 'nojs=0'
+    location = f'location={result["href"]}'
+    av_link['href'] = f'/{Endpoint.window}?{nojs}&{location}'
+    translation = current_app.config['TRANSLATIONS'][
+       config.get_localization_lang()
+    ]
+    av_link.string = f'{translation["anon-view"]}'
     av_link['class'] = 'anon-view'
     result.append(av_link)
 

@@ -68,6 +68,8 @@ def clean_css(css: str, page_url: str) -> str:
 
     for url in urls:
         abs_url = get_abs_url(url, page_url)
+        if abs_url.startswith('data:'):
+            continue
         css = css.replace(
             url,
             f'/element?type=image/png&url={abs_url}'
@@ -95,6 +97,7 @@ class Filter:
         self.page_url = page_url
         self.main_divs = ResultSet('')
         self._elements = 0
+        self._av = set()
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -438,9 +441,12 @@ class Filter:
             # Strip unneeded arguments
             link['href'] = filter_link_args(q)
 
-            # Add alternate viewing options for results
-            if self.config.anon_view:
-                append_anon_view(link, self.config.nojs)
+            # Add alternate viewing options for results,
+            # if the result doesn't already have an AV link
+            netloc = urlparse.urlparse(link['href']).netloc
+            if self.config.anon_view and netloc not in self._av:
+                self._av.add(netloc)
+                append_anon_view(link, self.config)
 
             if self.config.new_tab:
                 link['target'] = '_blank'
