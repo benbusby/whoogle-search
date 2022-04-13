@@ -16,6 +16,7 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
+from app.filter import Filter
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
     check_for_update
 from app.utils.results import add_ip_card, bold_search_terms,\
@@ -457,8 +458,11 @@ def imgres():
 @session_required
 @auth_required
 def element():
-    cipher_suite = Fernet(g.session_key)
-    src_url = cipher_suite.decrypt(request.args.get('url').encode()).decode()
+    element_url = src_url = request.args.get('url')
+    if element_url.startswith('gAAAAA'):
+        cipher_suite = Fernet(g.session_key)
+        src_url = cipher_suite.decrypt(element_url.encode()).decode()
+
     src_type = request.args.get('type')
 
     try:
@@ -477,18 +481,62 @@ def element():
 
 
 @app.route(f'/{Endpoint.window}')
+@session_required
 @auth_required
 def window():
-    get_body = g.user_request.send(base_url=request.args.get('location')).text
-    get_body = get_body.replace('src="/',
-                                'src="' + request.args.get('location') + '"')
-    get_body = get_body.replace('href="/',
-                                'href="' + request.args.get('location') + '"')
+    target_url = request.args.get('location')
+    if target_url.startswith('gAAAAA'):
+        cipher_suite = Fernet(g.session_key)
+        target_url = cipher_suite.decrypt(target_url.encode()).decode()
+
+    content_filter = Filter(
+        g.session_key,
+        root_url=request.url_root,
+        config=g.user_config)
+    target = urlparse.urlparse(target_url)
+    host_url = f'{target.scheme}://{target.netloc}'
+
+    get_body = g.user_request.send(base_url=target_url).text
 
     results = bsoup(get_body, 'html.parser')
+    src_attrs = ['src', 'href', 'srcset', 'data-srcset', 'data-src']
 
-    for script in results('script'):
-        script.decompose()
+    # Parse HTML response and replace relative links w/ absolute
+    for element in results.find_all():
+        for attr in src_attrs:
+            if not element.has_attr(attr) or not element[attr].startswith('/'):
+                continue
+
+            element[attr] = host_url + element[attr]
+
+    # Replace or remove javascript sources
+    for script in results.find_all('script', {'src': True}):
+        if 'nojs' in request.args:
+            script.decompose()
+        else:
+            content_filter.update_element_src(script, 'application/javascript')
+
+    # Replace all possible image attributes
+    img_sources = ['src', 'data-src', 'data-srcset', 'srcset']
+    for img in results.find_all('img'):
+        _ = [
+            content_filter.update_element_src(img, 'image/png', attr=_)
+            for _ in img_sources if img.has_attr(_)
+        ]
+
+    # Replace all stylesheet sources
+    for link in results.find_all('link', {'href': True}):
+        content_filter.update_element_src(link, 'text/css', attr='href')
+
+    # Use anonymous view for all links on page
+    for a in results.find_all('a', {'href': True}):
+        a['href'] = '/window?location=' + a['href'] + (
+            '&nojs=1' if 'nojs' in request.args else '')
+
+    # Remove all iframes -- these are commonly used inside of <noscript> tags
+    # to enforce loading Google Analytics
+    for iframe in results.find_all('iframe'):
+        iframe.decompose()
 
     return render_template(
         'display.html',

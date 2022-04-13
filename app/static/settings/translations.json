@@ -14,7 +14,8 @@
         "config-block-url": "Block by URL",
         "config-block-url-help": "Use regex",
         "config-theme": "Theme",
-        "config-nojs": "Show NoJS Links",
+        "config-nojs": "Remove Javascript in Anonymous View",
+        "config-anon-view": "Show Anonymous View Links",
         "config-dark": "Dark Mode",
         "config-safe": "Safe Search",
         "config-alts": "Replace Social Media Links",
@@ -41,7 +42,8 @@
         "maps": "Maps",
         "videos": "Videos",
         "news": "News",
-        "books": "Books"
+        "books": "Books",
+        "anon-view": "Anonymous View"
     },
     "lang_nl": {
         "search": "Zoeken",
@@ -58,7 +60,8 @@
         "config-block-url": "Blokkeren op URL",
         "config-block-url-help": "Gebruik regex",
         "config-theme": "Thema",
-        "config-nojs": "Laat NoJS links zien",
+        "config-nojs": "Javascript verwijderen in anonieme weergave",
+        "config-anon-view": "Toon anonieme links bekijken",
         "config-dark": "Donkere Modus",
         "config-safe": "Veilig zoeken",
         "config-alts": "Social Media Links Vervangen",
@@ -85,7 +88,8 @@
         "maps": "Maps",
         "videos": "Videos",
         "news": "Nieuws",
-        "books": "Boeken"
+        "books": "Boeken",
+        "anon-view": "Anonieme Weergave"
     },
     "lang_de": {
         "search": "Suchen",
@@ -102,7 +106,8 @@
         "config-block-url": "Nach URL blockieren",
         "config-block-url-help": "Regex verwenden",
         "config-theme": "Thema",
-        "config-nojs": "NoJS-Links anzeigen",
+        "config-nojs": "Entfernen Sie Javascript in der anonymen Ansicht",
+        "config-anon-view": "Anonyme Ansichtslinks anzeigen",
         "config-dark": "Dark Mode",
         "config-safe": "Sicheres Suchen",
         "config-alts": "Social-Media-Links ersetzen",
@@ -129,7 +134,8 @@
         "maps": "Maps",
         "videos": "Videos",
         "news": "Nieuws",
-        "books": "Bücher"
+        "books": "Bücher",
+        "anon-view": "Anonyme Ansicht"
     },
     "lang_es": {
         "search": "Buscar",
@@ -146,7 +152,8 @@
         "config-block-url": "Bloquear por URL",
         "config-block-url-help": "Usar expresiones regulares",
         "config-theme": "Tema",
-        "config-nojs": "Mostrar Enlaces NoJS",
+        "config-nojs": "Eliminar Javascript en vista anónima",
+        "config-anon-view": "Mostrar enlaces de vista anónima",
         "config-dark": "Modo Oscuro",
         "config-safe": "Búsqueda Segura",
         "config-alts": "Reemplazar Enlaces de Redes Sociales",
@@ -173,7 +180,8 @@
         "maps": "Maps",
         "videos": "Vídeos",
         "news": "Noticias",
-        "books": "Libros"
+        "books": "Libros",
+        "anon-view": "Vista Anónima"
     },
     "lang_it": {
         "search": "Cerca",
@@ -190,7 +198,8 @@
         "config-block-url": "Blocca per url",
         "config-block-url-help": "Usa regex",
         "config-theme": "Tema",
-        "config-nojs": "Mostra link NoJS",
+        "config-nojs": "Rimuovere Javascript in visualizzazione anonima",
+        "config-anon-view": "Mostra collegamenti di visualizzazione anonimi",
         "config-dark": "Modalità Notte",
         "config-safe": "Ricerca Sicura",
         "config-alts": "Sostituisci link dei social",
@@ -217,7 +226,8 @@
         "maps": "Maps",
         "videos": "Video",
         "news": "Notizie",
-        "books": "Libri"
+        "books": "Libri",
+        "anon-view": "Vista Anonima"
     },
     "lang_pt": {
         "search": "Pesquisar",
@@ -234,7 +244,8 @@
         "config-block-url": "Bloquear por url",
         "config-block-url-help": "Use regex",
         "config-theme": "Tema",
-        "config-nojs": "Mostrar Links NoJS",
+        "config-nojs": "Remover Javascript na visualização anônima",
+        "config-anon-view": "Mostrar links de visualização anônimos",
         "config-dark": "Modo Escuro",
         "config-safe": "Pesquisa Segura",
         "config-alts": "Substituir Links de Redes Sociais",
@@ -261,7 +272,8 @@
         "maps": "Maps",
         "videos": "Vídeos",
         "news": "Notícias",
-        "books": "Livros"
+        "books": "Livros",
+        "anon-view": "Visualização Anônima"
     },
     "lang_ru": {
         "search": "Поиск",
@@ -278,7 +290,8 @@
         "config-block-url": "Блокировать по URL-адресу",
         "config-block-url-help": "Используйте regex",
         "config-theme": "Оформление",
-        "config-nojs": "Показывать ссылки NoJS",
+        "config-nojs": "Удалить Javascript в анонимном просмотре",
+        "config-anon-view": "показать ссылки для анонимного просмотра",
         "config-dark": "Темный режим",
         "config-safe": "Безопасный поиск",
         "config-alts": "Заменить ссылки на социальные сети",
@@ -305,7 +318,8 @@
         "maps": "Карты",
         "videos": "Видео",
         "news": "Новости",
-        "books": "Книги"
+        "books": "Книги",
+        "anon-view": "Анонимный просмотр"
     },
     "lang_zh-CN": {
         "search": "搜索",
@@ -322,7 +336,8 @@
         "config-block-url": "按网站链接屏蔽",
         "config-block-url-help": "使用正则表达式",
         "config-theme": "主题",
-        "config-nojs": "显示 NoJS 链接",
+        "config-nojs": "在匿名视图中删除 Javascript",
+        "config-anon-view": "显示匿名查看链接",
         "config-dark": "深色模式",
         "config-safe": "安全搜索",
         "config-alts": "替换社交媒体链接",
@@ -349,7 +364,8 @@
         "maps": "地圖",
         "videos": "影片",
         "news": "新聞",
-        "books": "書籍"
+        "books": "書籍",
+        "anon-view": "匿名视图"
     },
     "lang_si": {
         "search": "සොයන්න",
@@ -366,7 +382,8 @@
         "config-block-url": "ඒ.ස.නි. මඟින් අවහිර කරන්න",
         "config-block-url-help": "රෙජෙක්ස් භාවිතා කරන්න",
         "config-theme": "තේමාව",
-        "config-nojs": "නෝජේඑස් සබැඳි පෙන්වන්න",
+        "config-nojs": "Anonymous View හි Javascript ඉවත් කරන්න",
+        "config-anon-view": "නිර්නාමික බලන්න සබැඳි පෙන්වන්න",
         "config-dark": "අඳුරු ආකාරය",
         "config-safe": "ආරක්‍ෂිත සෙවුම",
         "config-alts": "සමාජ මාධ්‍ය සබැඳි ප්‍රතිස්ථාපනය කරන්න",
@@ -393,7 +410,8 @@
         "maps": "සිතියම්",
         "videos": "වීඩියෝ",
         "news": "අනුරූප",
-        "books": "පොත්"
+        "books": "පොත්",
+        "anon-view": "නිර්නාමික දසුන"
     },
     "lang_fr": {
         "search": "Chercher",
@@ -410,7 +428,8 @@
         "config-block-url": "Bloquer par URL",
         "config-block-url-help": "Utiliser l'expression régulière",
         "config-theme": "Theme",
-        "config-nojs": "Montrer les liens NoJS",
+        "config-nojs": "Supprimer Javascript dans la vue anonyme",
+        "config-anon-view": "Afficher les liens de vue anonymes",
         "config-dark": "Mode Sombre",
         "config-safe": "Recherche sécurisée",
         "config-alts": "Remplacer les liens des réseaux sociaux",
@@ -437,7 +456,8 @@
         "maps": "Maps",
         "videos": "Vidéos",
         "news": "Actualités",
-        "books": "Livres"
+        "books": "Livres",
+        "anon-view": "Vue anonyme"
     },
     "lang_fa": {
         "search": "جستجو",
@@ -454,7 +474,8 @@
         "config-block-url": "بلوک بر اساس URL",
         "config-block-url-help": "از عبارت منظم استفاده کنید",
         "config-theme": "پوسته",
-        "config-nojs": "نمایش پیوند‌های بدون جاوا اسکیریپت",
+        "config-nojs": "جاوا اسکریپت را در نمای ناشناس حذف کنید",
+        "config-anon-view": "نمایش پیوندهای مشاهده ناشناس",
         "config-dark": "حالت تاریک",
         "config-safe": "جستجوی امن",
         "config-alts": "جایگزینی پیوند‌های شبکه‌های اجتماعی",
@@ -481,7 +502,8 @@
         "maps": "نقشه‌ها",
         "videos": "ویدئوها",
         "news": "اخبار",
-        "books": "کتاب‌ها"
+        "books": "کتاب‌ها",
+        "anon-view": "نمای ناشناس"
     },
     "lang_cs": {
         "search": "Hledat",
@@ -498,7 +520,8 @@
         "config-block-url": "Blokovat podle adresy URL",
         "config-block-url-help": "Použijte regulární výraz",
         "config-theme": "Motiv",
-        "config-nojs": "Zobrazit NoJS odkazy",
+        "config-nojs": "Odeberte Javascript v anonymním zobrazení",
+        "config-anon-view": "Zobrazit odkazy anonymního zobrazení",
         "config-dark": "Tmavý motiv",
         "config-safe": "Bezpečné vyhledávání",
         "config-alts": "Nahradit odkazy na sociální média",
@@ -525,7 +548,8 @@
         "maps": "Mapy",
         "videos": "Videa",
         "news": "Zprávy",
-        "books": "Knihy"
+        "books": "Knihy",
+        "anon-view": "Anonymní pohled"
     },
     "lang_zh-TW": {
         "search": "搜尋",
@@ -542,7 +566,8 @@
         "config-block-url": "按網址屏蔽",
         "config-block-url-help": "使用正則表達式",
         "config-theme": "主題",
-        "config-nojs": "顯示 NoJS 連結",
+        "config-nojs": "在匿名視圖中刪除 Javascript",
+        "config-anon-view": "顯示匿名查看鏈接",
         "config-dark": "深色模式",
         "config-safe": "安全搜尋",
         "config-alts": "將社群網站連結換掉",
@@ -569,7 +594,8 @@
         "maps": "地圖",
         "videos": "影片",
         "news": "新聞",
-        "books": "書籍"
+        "books": "書籍",
+        "anon-view": "匿名視圖"
     },
     "lang_bg": {
         "search": "Търсене",
@@ -586,7 +612,8 @@
         "config-block-url": "Блокиране по url",
         "config-block-url-help": "Използвайте регулярно изражение",
         "config-theme": "Стил",
-        "config-nojs": "Показване на връзки без JS",
+        "config-nojs": "Премахнете Javascript в анонимен изглед",
+        "config-anon-view": "Показване на анонимни връзки за преглед",
         "config-dark": "Тъмен режим",
         "config-safe": "Безопасно търсене",
         "config-alts": "Заменете връзките към социалните медии",
@@ -613,7 +640,8 @@
         "maps": "Видеоклипове",
         "videos": "Новини",
         "news": "Карти",
-        "books": "Книги"
+        "books": "Книги",
+        "anon-view": "Анонимен изглед"
     },
     "lang_hi": {
         "search": "खोज",
@@ -630,7 +658,8 @@
         "config-block-url": "url द्वारा अवरोधित करें",
         "config-block-url-help": "रेगेक्स का प्रयोग करें",
         "config-theme": "विषय",
-        "config-nojs": "NoJS लिंक दिखाएं",
+        "config-nojs": "अनाम दृश्य में जावास्क्रिप्ट निकालें",
+        "config-anon-view": "बेनामी देखें लिंक दिखाएं",
         "config-dark": "डार्क मोड",
         "config-safe": "सुरक्षित खोज",
         "config-alts": "सोशल मीडिया लिंक बदलें",
@@ -657,7 +686,8 @@
         "maps": "वीडियो",
         "videos": "मैप",
         "news": "समाचार",
-        "books": "किताबें"
+        "books": "किताबें",
+        "anon-view": "अनाम दृश्य"
     },
     "lang_ja": {
         "search": "検索",
@@ -674,7 +704,8 @@
         "config-block-url": "でブロック",
         "config-block-url-help": "正規表現を使用",
         "config-theme": "テーマ",
-        "config-nojs": "非JSリンクを表示",
+        "config-nojs": "匿名ビューでJavascriptを削除する",
+        "config-anon-view": "匿名のビューリンクを表示する",
         "config-dark": "ダークモード",
         "config-safe": "セーフサーチ",
         "config-alts": "ソーシャルメディアのリンクを置き換え",
@@ -701,7 +732,8 @@
         "maps": "地図",
         "videos": "動画",
         "news": "ニュース",
-        "books": "書籍"
+        "books": "書籍",
+        "anon-view": "匿名ビュー"
     },
     "lang_ko": {
         "search": "검색",
@@ -718,7 +750,8 @@
         "config-block-url": "URL로 차단",
         "config-block-url-help": "정규 표현식 사용",
         "config-theme": "테마",
-        "config-nojs": "Show NoJS Links",
+        "config-nojs": "익명 보기에서 Javascript 제거",
+        "config-anon-view": "익명 보기 링크 표시",
         "config-dark": "다크 모드",
         "config-safe": "세이프서치",
         "config-alts": "소설 미디어 주소 수정",
@@ -745,6 +778,7 @@
         "maps": "지도",
         "videos": "동영상",
         "news": "뉴스",
-        "books": "도서"
+        "books": "도서",
+        "anon-view": "익명 보기"
     }
 }
