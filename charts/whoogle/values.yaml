@@ -24,6 +24,7 @@ serviceAccount:
   name: ""
 
 conf: {}
+  # WHOOGLE_URL_PREFIX: ""   # The URL prefix to use for the whoogle instance (i.e. "/whoogle")
   # WHOOGLE_DOTENV: ""       # Load environment variables in whoogle.env
   # WHOOGLE_USER: ""         # The username for basic auth. WHOOGLE_PASS must also be set if used.
   # WHOOGLE_PASS: ""         # The password for basic auth. WHOOGLE_USER must also be set if used.
