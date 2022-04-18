@@ -139,6 +139,8 @@ class Filter:
         input_form = soup.find('form')
         if input_form is not None:
             input_form['method'] = 'GET' if self.config.get_only else 'POST'
+            # Use a relative URI for submissions
+            input_form['action'] = 'search'
 
         # Ensure no extra scripts passed through
         for script in soup('script'):
@@ -320,6 +322,11 @@ class Filter:
                 render_template('logo.html'),
                 features='html.parser'))
             return
+        elif src.startswith(G_M_LOGO_URL):
+            # Re-brand with single-letter Whoogle logo
+            element['src'] = 'static/img/favicon/apple-icon.png'
+            element.parent['href'] = 'home'
+            return
         elif src.startswith(GOOG_IMG) or GOOG_STATIC in src:
             element['src'] = BLANK_B64
             return
@@ -423,6 +430,10 @@ class Filter:
             # Internal google links (i.e. mail, maps, etc) should still
             # be forwarded to Google
             link['href'] = 'https://google.com' + q
+        elif q.startswith('https://accounts.google.com'):
+            # Remove Sign-in link
+            link.decompose()
+            return
         elif '/search?q=' in href:
             # "li:1" implies the query should be interpreted verbatim,
             # which is accomplished by wrapping the query in double quotes
@@ -454,6 +465,16 @@ class Filter:
             if href.startswith(MAPS_URL):
                 # Maps links don't work if a site filter is applied
                 link['href'] = MAPS_URL + "?q=" + clean_query(q)
+            elif href.startswith('/?') or href.startswith('/search?'):
+                # make sure that tags can be clicked as relative URLs
+                link['href'] = href[1:]
+            elif href.startswith('/intl/'):
+                # do nothing, keep original URL for ToS
+                pass
+            elif href.startswith('/preferences'):
+                # there is no config specific URL, remove this
+                link.decompose()
+                return
             else:
                 link['href'] = href
 

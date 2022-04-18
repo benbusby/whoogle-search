@@ -26,6 +26,7 @@ RUN mkdir -p $config_dir
 RUN chmod a+w $config_dir
 VOLUME $config_dir
 
+ARG url_prefix=''
 ARG username=''
 ARG password=''
 ARG proxyuser=''
@@ -45,6 +46,7 @@ ARG imgur_alt='farside.link/rimgo'
 ARG wikipedia_alt='farside.link/wikiless'
 
 ENV CONFIG_VOLUME=$config_dir \
+    WHOOGLE_URL_PREFIX=$url_prefix \
     WHOOGLE_USER=$username \
     WHOOGLE_PASS=$password \
     WHOOGLE_PROXY_USER=$proxyuser \

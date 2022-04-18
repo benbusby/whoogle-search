@@ -625,4 +625,7 @@ def run_app() -> None:
     elif args.unix_socket:
         waitress.serve(app, unix_socket=args.unix_socket)
     else:
-        waitress.serve(app, listen="{}:{}".format(args.host, args.port))
+        waitress.serve(
+            app,
+            listen="{}:{}".format(args.host, args.port),
+            url_prefix=os.environ.get('WHOOGLE_URL_PREFIX', ''))
