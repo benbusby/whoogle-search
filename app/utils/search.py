@@ -56,6 +56,7 @@ class Search:
     """
     def __init__(self, request, config, session_key, cookies_disabled=False):
         method = request.method
+        self.request = request
         self.request_params = request.args if method == 'GET' else request.form
         self.user_agent = request.headers.get('User-Agent')
         self.feeling_lucky = False
@@ -115,6 +116,7 @@ class Search:
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
 
         content_filter = Filter(self.session_key,
+                                root_url=self.request.url_root,
                                 mobile=mobile,
                                 config=self.config)
         full_query = gen_query(self.query,
