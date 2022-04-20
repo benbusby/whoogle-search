@@ -47,10 +47,10 @@ def test_ddg_bang(client):
     assert rv._status_code == 302
     assert rv.headers.get('Location').startswith('https://github.com')
 
-    # Ensure bang without content doesn't redirect to the result
+    # Ensure bang without a query still redirects to the result
     rv = client.get(f'/{Endpoint.search}?q=!gh')
     assert rv._status_code == 302
-    assert not rv.headers.get('Location').startswith('https://github.com')
+    assert rv.headers.get('Location').startswith('https://github.com')
 
 
 def test_config(client):
