@@ -210,7 +210,7 @@ def append_anon_view(result: BeautifulSoup, config: Config) -> None:
     translation = current_app.config['TRANSLATIONS'][
        config.get_localization_lang()
     ]
-    av_link.string = f'{translation["config-anon-view"]}'
+    av_link.string = f'{translation["anon-view"]}'
     av_link['class'] = 'anon-view'
     result.append(av_link)
 

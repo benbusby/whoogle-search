@@ -464,7 +464,6 @@ def element():
         try:
             cipher_suite = Fernet(g.session_key)
             src_url = cipher_suite.decrypt(element_url.encode()).decode()
-            print(src_url)
         except (InvalidSignature, InvalidToken) as e:
             return render_template(
                 'error.html',
