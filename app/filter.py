@@ -93,11 +93,12 @@ class Filter:
         self.config = config
         self.mobile = mobile
         self.user_key = user_key
-        self.root_url = root_url
         self.page_url = page_url
         self.main_divs = ResultSet('')
         self._elements = 0
         self._av = set()
+
+        self.root_url = root_url[:-1] if root_url.endswith('/') else root_url
 
     def __getitem__(self, name):
         return getattr(self, name)
