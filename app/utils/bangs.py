@@ -1,5 +1,6 @@
 import json
 import requests
+import urllib.parse as urlparse
 
 DDG_BANGS = 'https://duckduckgo.com/bang.v255.js'
 
@@ -38,7 +39,7 @@ def gen_bangs_json(bangs_file: str) -> None:
     print('* Finished creating ddg bangs json')
 
 
-def resolve_bang(query: str, bangs_dict: dict, fallback: str) -> str:
+def resolve_bang(query: str, bangs_dict: dict) -> str:
     """Transform's a user's query to a bang search, if an operator is found
 
     Args:
@@ -65,8 +66,11 @@ def resolve_bang(query: str, bangs_dict: dict, fallback: str) -> str:
             operator[0], ''
         ).strip()
 
+        bang_url = bangs_dict[operator]['url']
+
         if bang_query:
-            return bangs_dict[operator]['url'].replace('{}', bang_query, 1)
+            return bang_url.replace('{}', bang_query, 1)
         else:
-            return fallback
+            parsed_url = urlparse.urlparse(bang_url)
+            return f'{parsed_url.scheme}://{parsed_url.netloc}'
     return ''

@@ -306,7 +306,7 @@ def search():
     search_util = Search(request, g.user_config, g.session_key)
     query = search_util.new_search_query()
 
-    bang = resolve_bang(query, bang_json, url_for('.index'))
+    bang = resolve_bang(query, bang_json)
     if bang:
         return redirect(bang)
 
