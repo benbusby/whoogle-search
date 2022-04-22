@@ -13,8 +13,12 @@ from stem import Signal
 import threading
 from dotenv import load_dotenv
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + '/static')
+
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 # Load .env file if enabled
 if os.getenv('WHOOGLE_DOTENV', ''):
