@@ -186,7 +186,7 @@ def append_nojs(result: BeautifulSoup) -> None:
 
     """
     nojs_link = BeautifulSoup(features='html.parser').new_tag('a')
-    nojs_link['href'] = f'/{Endpoint.window}?nojs=1&location=' + result['href']
+    nojs_link['href'] = f'{Endpoint.window}?nojs=1&location=' + result['href']
     nojs_link.string = ' NoJS Link'
     result.append(nojs_link)
 
@@ -206,7 +206,7 @@ def append_anon_view(result: BeautifulSoup, config: Config) -> None:
     av_link = BeautifulSoup(features='html.parser').new_tag('a')
     nojs = 'nojs=1' if config.nojs else 'nojs=0'
     location = f'location={result["href"]}'
-    av_link['href'] = f'/{Endpoint.window}?{nojs}&{location}'
+    av_link['href'] = f'{Endpoint.window}?{nojs}&{location}'
     translation = current_app.config['TRANSLATIONS'][
        config.get_localization_lang()
     ]

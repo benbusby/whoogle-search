@@ -72,7 +72,7 @@ def clean_css(css: str, page_url: str) -> str:
             continue
         css = css.replace(
             url,
-            f'/element?type=image/png&url={abs_url}'
+            f'{Endpoint.element}?type=image/png&url={abs_url}'
         )
 
     return css
@@ -528,7 +528,7 @@ class Filter:
                 continue
 
             img_url = urlparse.unquote(urls[0].replace(
-                f'/{Endpoint.imgres}?imgurl=', ''))
+                f'{Endpoint.imgres}?imgurl=', ''))
 
             try:
                 # Try to strip out only the necessary part of the web page link
