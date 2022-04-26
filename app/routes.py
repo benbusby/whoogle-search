@@ -432,22 +432,6 @@ def config():
         return redirect(url_for('.index'), code=403)
 
 
-@app.route(f'/{Endpoint.url}', methods=['GET'])
-@session_required
-@auth_required
-def url():
-    if 'url' in request.args:
-        return redirect(request.args.get('url'))
-
-    q = request.args.get('q')
-    if len(q) > 0 and 'http' in q:
-        return redirect(q)
-    else:
-        return render_template(
-            'error.html',
-            error_message='Unable to resolve query: ' + q)
-
-
 @app.route(f'/{Endpoint.imgres}')
 @session_required
 @auth_required
