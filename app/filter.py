@@ -466,7 +466,7 @@ class Filter:
             if href.startswith(MAPS_URL):
                 # Maps links don't work if a site filter is applied
                 link['href'] = MAPS_URL + "?q=" + clean_query(q)
-            elif href.startswith('/?') or href.startswith('/search?'):
+            elif href.startswith('/?') or href.startswith('/search?') or href.startswith('/imgres?'):
                 # make sure that tags can be clicked as relative URLs
                 link['href'] = href[1:]
             elif href.startswith('/intl/'):
