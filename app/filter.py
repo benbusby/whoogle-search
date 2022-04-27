@@ -72,7 +72,7 @@ def clean_css(css: str, page_url: str) -> str:
             continue
         css = css.replace(
             url,
-            f'/element?type=image/png&url={abs_url}'
+            f'{Endpoint.element}?type=image/png&url={abs_url}'
         )
 
     return css
@@ -466,7 +466,8 @@ class Filter:
             if href.startswith(MAPS_URL):
                 # Maps links don't work if a site filter is applied
                 link['href'] = MAPS_URL + "?q=" + clean_query(q)
-            elif href.startswith('/?') or href.startswith('/search?'):
+            elif (href.startswith('/?') or href.startswith('/search?') or
+                  href.startswith('/imgres?')):
                 # make sure that tags can be clicked as relative URLs
                 link['href'] = href[1:]
             elif href.startswith('/intl/'):
@@ -528,7 +529,7 @@ class Filter:
                 continue
 
             img_url = urlparse.unquote(urls[0].replace(
-                f'/{Endpoint.imgres}?imgurl=', ''))
+                f'{Endpoint.imgres}?imgurl=', ''))
 
             try:
                 # Try to strip out only the necessary part of the web page link
