@@ -15,6 +15,11 @@
   ],
   "stack": "container",
   "env": {
+    "WHOOGLE_URL_PREFIX": {
+      "description": "The URL prefix to use for the whoogle instance (i.e. \"/whoogle\")",
+      "value": "",
+      "required": false
+    },
     "WHOOGLE_USER": {
       "description": "The username for basic auth. WHOOGLE_PASS must also be set if used. Leave empty to disable.",
       "value": "",
