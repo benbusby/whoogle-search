@@ -516,7 +516,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://search.albony.xyz](https://search.albony.xyz/) | 🇮🇳 IN | Multi-choice |  |
 | [https://search.garudalinux.org](https://search.garudalinux.org) | 🇩🇪 DE | Multi-choice |  |
 | [https://whooglesearch.net](https://whooglesearch.net) | 🇩🇪 DE | Spanish |  |
-| [https://s.alefvanoon.xyz](https://s.alefvanoon.xyz) | 🇺🇸 US | Multi-choice | ✅ |
+| [https://s.tokhmi.xyz](https://s.tokhmi.xyz) | 🇺🇸 US | Multi-choice | ✅ |
 | [https://www.whooglesearch.ml](https://www.whooglesearch.ml) | 🇺🇸 US | English | |
 | [https://search.sethforprivacy.com](https://search.sethforprivacy.com) | 🇩🇪 DE | English | |
 | [https://whoogle.dcs0.hu](https://whoogle.dcs0.hu) | 🇭🇺 HU | Multi-choice | |
