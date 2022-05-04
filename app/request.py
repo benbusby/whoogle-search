@@ -49,8 +49,12 @@ def send_tor_signal(signal: Signal) -> bool:
                 c.signal(signal)
                 os.environ['TOR_AVAILABLE'] = '1'
             return True
-    except (SocketError, ConnectionRefusedError, ConnectionError,
-    FileNotFoundError):
+    except (
+        SocketError,
+        ConnectionRefusedError,
+        ConnectionError,
+        FileNotFoundError
+            ):
         # If password doesn't work try with cookie.
         try:
             with Controller.from_port(port=9051) as c:
