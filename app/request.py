@@ -44,7 +44,6 @@ def send_tor_signal(signal: Signal, confloc='./misc/tor/control.conf') -> bool:
             for line in conf:
                 pass
             secret = line
-        conf.close()
         with Controller.from_port(port=9051) as c:
             authenticate_password(c, password=secret)
             c.signal(signal)
