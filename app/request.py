@@ -38,13 +38,14 @@ class TorError(Exception):
 
 
 def send_tor_signal(signal: Signal, confloc='./misc/tor/control.conf') -> bool:
-    with open(confloc, "r") as conf:
-        for line in conf:
-            pass
-        secret = line
-    conf.close()
+    
     try:
         # Try to authenticate with password.
+        with open(confloc, "r") as conf:
+            for line in conf:
+                pass
+            secret = line
+        conf.close()
         with Controller.from_port(port=9051) as c:
                 authenticate_password(c, password=secret)
                 c.signal(signal)
