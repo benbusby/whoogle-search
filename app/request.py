@@ -8,6 +8,7 @@ import urllib.parse as urlparse
 import os
 from stem import Signal, SocketError
 from stem.control import Controller
+from stem.connection import authenticate_cookie, authenticate_password
 
 MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
@@ -38,15 +39,26 @@ class TorError(Exception):
 
 def send_tor_signal(signal: Signal) -> bool:
     try:
+        # Try to authenticate with password.
         with Controller.from_port(port=9051) as c:
-            c.authenticate()
-            c.signal(signal)
-            os.environ['TOR_AVAILABLE'] = '1'
+            with open("./misc/tor/control.conf", "r") as conf:
+                for line in conf:
+                    pass
+                secret = line
+                authenticate_password(c, password=secret)
+                c.signal(signal)
+                os.environ['TOR_AVAILABLE'] = '1'
             return True
     except (SocketError, ConnectionRefusedError, ConnectionError):
-        os.environ['TOR_AVAILABLE'] = '0'
-
-    return False
+        # If password doesn't work try with cookie.
+        try:
+            with Controller.from_port(port=9051) as c:
+                authenticate_cookie(c, cookie_path="/var/lib/tor/control_auth_cookie")
+                c.signal(signal)
+                os.environ['TOR_AVAILABLE'] = '1'
+        except (SocketError, ConnectionRefusedError, ConnectionError):
+            os.environ['TOR_AVAILABLE'] = '0'
+            return False
 
 
 def gen_user_agent(is_mobile) -> str:
