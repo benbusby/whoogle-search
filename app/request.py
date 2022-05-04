@@ -63,6 +63,7 @@ def send_tor_signal(signal: Signal, confloc='./misc/tor/control.conf') -> bool:
                 authenticate_cookie(c, cookie_path=cookie_path)
                 c.signal(signal)
                 os.environ['TOR_AVAILABLE'] = '1'
+            return True
         except (SocketError, ConnectionRefusedError, ConnectionError):
             os.environ['TOR_AVAILABLE'] = '0'
             print(
