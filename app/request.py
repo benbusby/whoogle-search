@@ -53,7 +53,7 @@ def send_tor_signal(signal: Signal) -> bool:
         # If password doesn't work try with cookie.
         try:
             with Controller.from_port(port=9051) as c:
-                cookie_path='/var/lib/tor/control_auth_cookie'
+                cookie_path = '/var/lib/tor/control_auth_cookie'
                 authenticate_cookie(c, cookie_path=cookie_path)
                 c.signal(signal)
                 os.environ['TOR_AVAILABLE'] = '1'
