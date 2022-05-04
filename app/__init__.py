@@ -149,7 +149,12 @@ app.jinja_env.globals.update(
 Session(app)
 
 # Attempt to acquire tor identity, to determine if Tor config is available
-send_tor_signal(Signal.HEARTBEAT)
+try:
+    send_tor_signal(
+        Signal.HEARTBEAT,
+        confloc=os.getenv('WHOOGLE_TOR_CONF'))
+except TypeError:
+    send_tor_signal(Signal.HEARTBEAT)
 
 from app import routes  # noqa
 

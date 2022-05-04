@@ -37,18 +37,19 @@ class TorError(Exception):
         super().__init__(message)
 
 
-def send_tor_signal(signal: Signal) -> bool:
+def send_tor_signal(signal: Signal, confloc='./misc/tor/control.conf') -> bool:
+    with open(confloc, "r") as conf:
+        for line in conf:
+            pass
+        secret = line
+    conf.close()
     try:
         # Try to authenticate with password.
         with Controller.from_port(port=9051) as c:
-            with open("./misc/tor/control.conf", "r") as conf:
-                for line in conf:
-                    pass
-                secret = line
                 authenticate_password(c, password=secret)
                 c.signal(signal)
                 os.environ['TOR_AVAILABLE'] = '1'
-            return True
+        return True
     except (
         SocketError,
         ConnectionRefusedError,
@@ -66,8 +67,7 @@ def send_tor_signal(signal: Signal) -> bool:
             os.environ['TOR_AVAILABLE'] = '0'
             print(
                 "Unable to authenticate with tor control port." +
-                "Tor will be unavailable."
-                )
+                " Tor will be unavailable.")
             return False
 
 
