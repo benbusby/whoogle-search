@@ -64,6 +64,10 @@ def send_tor_signal(signal: Signal) -> bool:
                 os.environ['TOR_AVAILABLE'] = '1'
         except (SocketError, ConnectionRefusedError, ConnectionError):
             os.environ['TOR_AVAILABLE'] = '0'
+            print(
+                "Unable to authenticate with tor control port." +
+                "Tor will be unavailable."
+                )
             return False
 
 
