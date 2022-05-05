@@ -64,6 +64,7 @@ def send_tor_signal(signal: Signal, confloc='./misc/tor/control.conf') -> bool:
                 os.environ['TOR_AVAILABLE'] = '1'
             return True
         except (SocketError, ConnectionRefusedError, ConnectionError):
+            # If neither words tor isn't configured correctly, or not set up.
             os.environ['TOR_AVAILABLE'] = '0'
             print(
                 "Unable to authenticate with tor control port." +
