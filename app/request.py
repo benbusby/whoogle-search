@@ -52,6 +52,7 @@ def send_tor_signal(signal: Signal) -> bool:
         with Controller.from_port(port=9051) as c:
             if use_pass:
                 with open(confloc, "r") as conf:
+                    # Scan for the last line of the file.
                     for line in conf:
                         pass
                     secret = line
@@ -64,7 +65,8 @@ def send_tor_signal(signal: Signal) -> bool:
             return True
     except (SocketError, ConnectionRefusedError, ConnectionError):
         os.environ['TOR_AVAILABLE'] = '0'
-        return False
+    
+    return False
 
 
 def gen_user_agent(is_mobile) -> str:
