@@ -42,7 +42,7 @@ def send_tor_signal(signal: Signal) -> bool:
     use_pass = read_config_bool('WHOOGLE_TOR_USE_PASS')
 
     confloc = './misc/tor/control.conf'
-    # Check that the custom location of conf real.
+    # Check that the custom location of conf is real.
     temp = os.getenv('WHOOGLE_TOR_CONF', '')
     if os.path.isfile(temp):
         confloc = temp
