@@ -65,7 +65,7 @@ def send_tor_signal(signal: Signal) -> bool:
             return True
     except (SocketError, ConnectionRefusedError, ConnectionError):
         os.environ['TOR_AVAILABLE'] = '0'
-    
+
     return False
 
 
