@@ -1,4 +1,5 @@
 from app.models.config import Config
+from app.utils.misc import read_config_bool
 from datetime import datetime
 from defusedxml import ElementTree as ET
 import random
@@ -37,39 +38,33 @@ class TorError(Exception):
         super().__init__(message)
 
 
-def send_tor_signal(signal: Signal, confloc='./misc/tor/control.conf') -> bool:
+def send_tor_signal(signal: Signal) -> bool:
+    use_pass = read_config_bool('WHOOGLE_TOR_USE_PASS')
+
+    confloc = './misc/tor/control.conf'
+    # Check that the custom location of conf real.
+    temp = os.getenv('WHOOGLE_TOR_CONF', '')
+    if os.path.isfile(temp):
+        confloc = temp
+
+    # Attempt to authenticate and send signal.
     try:
-        # Try to authenticate with password.
-        with open(confloc, "r") as conf:
-            for line in conf:
-                pass
-            secret = line
         with Controller.from_port(port=9051) as c:
-            authenticate_password(c, password=secret)
-            c.signal(signal)
-            os.environ['TOR_AVAILABLE'] = '1'
-        return True
-    except (
-        SocketError,
-        ConnectionRefusedError,
-        ConnectionError,
-        FileNotFoundError
-            ):
-        # If password doesn't work try with cookie.
-        try:
-            with Controller.from_port(port=9051) as c:
+            if use_pass:
+                with open(confloc, "r") as conf:
+                    for line in conf:
+                        pass
+                    secret = line
+                authenticate_password(c, password=secret)
+            else:
                 cookie_path = '/var/lib/tor/control_auth_cookie'
                 authenticate_cookie(c, cookie_path=cookie_path)
-                c.signal(signal)
-                os.environ['TOR_AVAILABLE'] = '1'
+            c.signal(signal)
+            os.environ['TOR_AVAILABLE'] = '1'
             return True
-        except (SocketError, ConnectionRefusedError, ConnectionError):
-            # If neither words tor isn't configured correctly, or not set up.
-            os.environ['TOR_AVAILABLE'] = '0'
-            print(
-                "Unable to authenticate with tor control port." +
-                " Tor will be unavailable.")
-            return False
+    except (SocketError, ConnectionRefusedError, ConnectionError):
+        os.environ['TOR_AVAILABLE'] = '0'
+        return False
 
 
 def gen_user_agent(is_mobile) -> str:
