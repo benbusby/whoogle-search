@@ -26,10 +26,18 @@ if os.getenv('WHOOGLE_DOTENV', ''):
     load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              dotenv_path))
 
+# Session values
+# NOTE: SESSION_COOKIE_SAMESITE must be set to 'lax' to allow the user's
+# previous session to persist when accessing the instance from an external
+# link. Setting this value to 'strict' causes Whoogle to revalidate a new
+# session, and fail, resulting in cookies being disabled.
+#
+# This could be re-evaluated if Whoogle ever switches to client side
+# configuration instead.
 app.default_key = generate_user_key()
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_COOKIE_SAMESITE'] = 'strict'
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 if os.getenv('HTTPS_ONLY'):
     app.config['SESSION_COOKIE_NAME'] = '__Secure-session'
