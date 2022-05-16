@@ -410,8 +410,10 @@ class Filter:
             None (the tag is updated directly)
 
         """
+        link_netloc = urlparse.urlparse(link['href']).netloc
+
         # Remove any elements that direct to unsupported Google pages
-        if any(url in link['href'] for url in unsupported_g_pages):
+        if any(url in link_netloc for url in unsupported_g_pages):
             # FIXME: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
             parent = link.parent
@@ -431,6 +433,8 @@ class Filter:
             # Internal google links (i.e. mail, maps, etc) should still
             # be forwarded to Google
             link['href'] = 'https://google.com' + q
+        elif link['href'].startswith('/url'):
+            link['href'] = q
         elif q.startswith('https://accounts.google.com'):
             # Remove Sign-in link
             link.decompose()
