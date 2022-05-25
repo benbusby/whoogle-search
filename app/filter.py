@@ -435,6 +435,8 @@ class Filter:
             link['href'] = 'https://google.com' + q
         elif link['href'].startswith('/url'):
             link['href'] = q
+            if self.config.new_tab:
+                link['target'] = '_blank'
         elif q.startswith('https://accounts.google.com'):
             # Remove Sign-in link
             link.decompose()
