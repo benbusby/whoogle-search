@@ -533,7 +533,7 @@ class Filter:
                 continue
 
             img_url = urlparse.unquote(urls[0].replace(
-                f'{Endpoint.imgres}?imgurl=', ''))
+                f'/{Endpoint.imgres}?imgurl=', ''))
 
             try:
                 # Try to strip out only the necessary part of the web page link
