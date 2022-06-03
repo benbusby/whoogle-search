@@ -89,11 +89,13 @@ class Filter:
             config: Config,
             root_url='',
             page_url='',
+            query='',
             mobile=False) -> None:
         self.config = config
         self.mobile = mobile
         self.user_key = user_key
         self.page_url = page_url
+        self.query = query
         self.main_divs = ResultSet('')
         self._elements = 0
         self._av = set()
@@ -429,7 +431,7 @@ class Filter:
         result_link = urlparse.urlparse(href)
         q = extract_q(result_link.query, href)
 
-        if q.startswith('/'):
+        if q.startswith('/') and q not in self.query:
             # Internal google links (i.e. mail, maps, etc) should still
             # be forwarded to Google
             link['href'] = 'https://google.com' + q

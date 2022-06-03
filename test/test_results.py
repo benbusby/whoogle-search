@@ -122,3 +122,23 @@ def test_recent_results(client):
                 assert (current_date - date).days <= (num_days + 5)
             except ParserError:
                 pass
+
+
+def test_leading_slash_search(client):
+    # Ensure searches with a leading slash are interpreted
+    # correctly as queries and not endpoints
+    q = '/test'
+    rv = client.get(f'/{Endpoint.search}?q={q}')
+    assert rv._status_code == 200
+
+    soup = Filter(
+        user_key=generate_user_key(),
+        config=Config(**demo_config),
+        query=q
+    ).clean(BeautifulSoup(rv.data, 'html.parser'))
+
+    for link in soup.find_all('a', href=True):
+        if 'start=' not in link['href']:
+            continue
+
+        assert link['href'].startswith(f'{Endpoint.search}')

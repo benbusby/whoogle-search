@@ -118,7 +118,8 @@ class Search:
         content_filter = Filter(self.session_key,
                                 root_url=self.request.url_root,
                                 mobile=mobile,
-                                config=self.config)
+                                config=self.config,
+                                query=self.query)
         full_query = gen_query(self.query,
                                self.request_params,
                                self.config)
