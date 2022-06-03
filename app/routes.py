@@ -81,7 +81,7 @@ def session_required(f):
                     if isinstance(data, dict) and 'valid' in data:
                         continue
                     invalid_sessions.append(session_path)
-            except (EOFError, FileNotFoundError):
+            except (EOFError, FileNotFoundError, pickle.UnpicklingError):
                 pass
 
         for invalid_session in invalid_sessions:
