@@ -29,7 +29,7 @@ requests==2.25.1
 soupsieve==1.9.5
 stem==1.8.0
 urllib3==1.26.5
-waitress==2.1.1
+waitress==2.1.2
 wcwidth==0.1.9
 Werkzeug==0.16.0
 python-dotenv==0.16.0
