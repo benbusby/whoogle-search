@@ -2,6 +2,8 @@ const setupSearchLayout = () => {
     // Setup search field
     const searchBar = document.getElementById("search-bar");
     const searchBtn = document.getElementById("search-submit");
+    const arrowKeys = [37, 38, 39, 40];
+    let searchValue = searchBar.value;
 
     // Automatically focus on search field
     searchBar.focus();
@@ -11,8 +13,9 @@ const setupSearchLayout = () => {
         if (event.keyCode === 13) {
             event.preventDefault();
             searchBtn.click();
-        } else {
-            handleUserInput(searchBar);
+        } else if (searchBar.value !== searchValue && !arrowKeys.includes(event.keyCode)) {
+            searchValue = searchBar.value;
+            handleUserInput();
         }
     });
 };
