@@ -40,6 +40,8 @@ select {
 .ZINbbc {
     overflow: hidden;
     background-color: var(--whoogle-result-bg) !important;
+    margin-bottom: 10px !important;
+    border-radius: 8px !important;
 }
 
 .BVG0Nb {

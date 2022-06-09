@@ -1,18 +1,13 @@
-from app.models.config import Config
-from app.models.endpoint import Endpoint
+import cssutils
+from bs4 import BeautifulSoup
+from bs4.element import ResultSet, Tag
+from cryptography.fernet import Fernet
+from flask import render_template
+
 from app.models.g_classes import GClasses
 from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import get_abs_url, read_config_bool
 from app.utils.results import *
-from bs4 import BeautifulSoup
-from bs4.element import ResultSet, Tag
-from cryptography.fernet import Fernet
-import cssutils
-from flask import render_template
-import re
-import urllib.parse as urlparse
-from urllib.parse import parse_qs
-import os
 
 minimal_mode_sections = ['Top stories', 'Images', 'People also ask']
 unsupported_g_pages = [
@@ -359,6 +354,9 @@ class Filter:
             # print(link)
 
     def update_styling(self, soup) -> None:
+        # Update CSS classes for result divs
+        soup = GClasses.replace_css_classes(soup)
+
         # Remove unnecessary button(s)
         for button in soup.find_all('button'):
             button.decompose()
