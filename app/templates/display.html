@@ -2,7 +2,11 @@
 <head>
     <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="static/img/favicon.ico" type="image/x-icon">
-    <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
+    {% if not search_type %}
+        <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
+    {% else %}
+        <link rel="search" href="opensearch.xml?tbm={{ search_type }}" type="application/opensearchdescription+xml" title="Whoogle Search ({{ search_name }})">
+    {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="{{ cb_url('logo.css') }}">
