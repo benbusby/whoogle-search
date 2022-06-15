@@ -18,7 +18,6 @@ LOGO_URL = GOOG_IMG + '_desk'
 BLANK_B64 = ('data:image/png;base64,'
              'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAD0lEQVR42mNkw'
              'AIYh7IgAAVVAAuInjI5AAAAAElFTkSuQmCC')
-MAPS_ARGS = ['q', 'daddr']
 
 # Ad keywords
 BLACKLIST = [

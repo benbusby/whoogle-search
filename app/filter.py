@@ -9,6 +9,8 @@ from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import get_abs_url, read_config_bool
 from app.utils.results import *
 
+MAPS_ARGS = ['q', 'daddr']
+
 minimal_mode_sections = ['Top stories', 'Images', 'People also ask']
 unsupported_g_pages = [
     'support.google.com',
