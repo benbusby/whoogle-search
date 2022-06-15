@@ -4,7 +4,7 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.utils.session import generate_user_key
 from datetime import datetime
-from dateutil.parser import *
+from dateutil.parser import ParserError, parse
 from urllib.parse import urlparse
 
 from test.conftest import demo_config
