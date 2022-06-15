@@ -10,9 +10,10 @@ import re
 from app.models.g_classes import GClasses
 from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import get_abs_url, read_config_bool
-from app.utils.results import (BLANK_B64, GOOG_IMG, GOOG_STATIC, G_M_LOGO_URL,
-    LOGO_URL, SITE_ALTS, has_ad_content, filter_link_args, append_anon_view,
-    get_site_alt)
+from app.utils.results import (
+    BLANK_B64, GOOG_IMG, GOOG_STATIC, G_M_LOGO_URL, LOGO_URL, SITE_ALTS,
+    has_ad_content, filter_link_args, append_anon_view, get_site_alt,
+)
 from app.models.endpoint import Endpoint
 from app.models.config import Config
 
