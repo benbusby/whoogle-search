@@ -480,8 +480,11 @@ class Filter:
             else:
                 link['href'] = href
 
-        if self.config.new_tab and (link['href'].startswith('http') or link['href'].startswith('imgres?')):
-            link['target'] = '_blank'
+        if self.config.new_tab and (
+            link["href"].startswith("http")
+            or link["href"].startswith("imgres?")
+        ):
+            link["target"] = "_blank"
 
         # Replace link location if "alts" config is enabled
         if self.config.alts:
