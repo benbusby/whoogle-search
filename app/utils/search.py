@@ -2,8 +2,9 @@ import os
 import re
 from typing import Any
 
-from app.filter import Filter, get_first_link
+from app.filter import Filter
 from app.request import gen_query
+from app.utils.results import get_first_link
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken
 from flask import g
