@@ -267,7 +267,10 @@ def check_currency(response: str) -> dict:
     if currency_link:
         while 'class' not in currency_link.attrs or \
                 'ZINbbc' not in currency_link.attrs['class']:
-            currency_link = currency_link.parent
+            if currency_link.parent:
+                currency_link = currency_link.parent
+            else:
+                return {}
         currency_link = currency_link.find_all(class_='BNeawe')
         currency1 = currency_link[0].text
         currency2 = currency_link[1].text
