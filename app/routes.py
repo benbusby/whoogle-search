@@ -85,7 +85,10 @@ def session_required(f):
                     if isinstance(data, dict) and 'valid' in data:
                         continue
                     invalid_sessions.append(file_path)
-            except (EOFError, FileNotFoundError, pickle.UnpicklingError):
+            except Exception:
+                # Broad exception handling here due to how instances installed
+                # with pip seem to have issues storing unrelated files in the
+                # same directory as sessions
                 pass
 
         for invalid_session in invalid_sessions:
