@@ -337,12 +337,14 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_RD       | The reddit.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
 | WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config.       |
-| WHOOGLE_ALT_IMG       | The imgur.com alternative to use when site alternatives are enabled in the config.       |
-| WHOOGLE_ALT_WIKI       | The wikipedia.com alternative to use when site alternatives are enabled in the config.       |
+| WHOOGLE_ALT_IMG      | The imgur.com alternative to use when site alternatives are enabled in the config.        |
+| WHOOGLE_ALT_WIKI     | The wikipedia.com alternative to use when site alternatives are enabled in the config.    |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
 | WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
 | WHOOGLE_CSP          | Sets a default set of 'Content-Security-Policy' headers                                   |
-| WHOOGLE_RESULTS_PER_PAGE          | Set the number of results per page                                   |
+| WHOOGLE_RESULTS_PER_PAGE          | Set the number of results per page                                           |
+| WHOOGLE_TOR_USE_PASS | Use password authentication for tor control port. |
+| WHOOGLE_TOR_CONF | The absolute path to the config file containing the password for the tor control port. Default: ./misc/tor/control.conf WHOOGLE_TOR_PASS must be 1 for this to work.|
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.

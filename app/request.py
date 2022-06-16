@@ -1,4 +1,5 @@
 from app.models.config import Config
+from app.utils.misc import read_config_bool
 from datetime import datetime
 from defusedxml import ElementTree as ET
 import random
@@ -8,6 +9,7 @@ import urllib.parse as urlparse
 import os
 from stem import Signal, SocketError
 from stem.control import Controller
+from stem.connection import authenticate_cookie, authenticate_password
 
 MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
@@ -37,9 +39,27 @@ class TorError(Exception):
 
 
 def send_tor_signal(signal: Signal) -> bool:
+    use_pass = read_config_bool('WHOOGLE_TOR_USE_PASS')
+
+    confloc = './misc/tor/control.conf'
+    # Check that the custom location of conf is real.
+    temp = os.getenv('WHOOGLE_TOR_CONF', '')
+    if os.path.isfile(temp):
+        confloc = temp
+
+    # Attempt to authenticate and send signal.
     try:
         with Controller.from_port(port=9051) as c:
-            c.authenticate()
+            if use_pass:
+                with open(confloc, "r") as conf:
+                    # Scan for the last line of the file.
+                    for line in conf:
+                        pass
+                    secret = line
+                authenticate_password(c, password=secret)
+            else:
+                cookie_path = '/var/lib/tor/control_auth_cookie'
+                authenticate_cookie(c, cookie_path=cookie_path)
             c.signal(signal)
             os.environ['TOR_AVAILABLE'] = '1'
             return True
