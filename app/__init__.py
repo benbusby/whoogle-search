@@ -78,6 +78,7 @@ app.config['CONFIG_DISABLE'] = read_config_bool('WHOOGLE_CONFIG_DISABLE')
 app.config['SESSION_FILE_DIR'] = os.path.join(
     app.config['CONFIG_PATH'],
     'session')
+app.config['MAX_SESSION_SIZE'] = 4000  # Sessions won't exceed 4KB
 app.config['BANG_PATH'] = os.getenv(
     'CONFIG_VOLUME',
     os.path.join(app.config['STATIC_FOLDER'], 'bangs'))

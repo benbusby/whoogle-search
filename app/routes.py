@@ -73,6 +73,11 @@ def session_required(f):
             session_path = os.path.join(
                 app.config['SESSION_FILE_DIR'],
                 user_session)
+
+            # Ignore any files that are larger than the max session file size
+            if os.path.getsize(session_path) > app.config['MAX_SESSION_SIZE']:
+                continue
+
             try:
                 with open(session_path, 'rb') as session_file:
                     _ = pickle.load(session_file)
