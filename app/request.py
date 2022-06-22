@@ -8,6 +8,7 @@ from requests import Response, ConnectionError
 import urllib.parse as urlparse
 import os
 from stem import Signal, SocketError
+from stem.connection import AuthenticationFailure
 from stem.control import Controller
 from stem.connection import authenticate_cookie, authenticate_password
 
@@ -63,7 +64,9 @@ def send_tor_signal(signal: Signal) -> bool:
             c.signal(signal)
             os.environ['TOR_AVAILABLE'] = '1'
             return True
-    except (SocketError, ConnectionRefusedError, ConnectionError):
+    except (SocketError, AuthenticationFailure,
+            ConnectionRefusedError, ConnectionError):
+        # TODO: Handle Tor authentification (password and cookie)
         os.environ['TOR_AVAILABLE'] = '0'
 
     return False
