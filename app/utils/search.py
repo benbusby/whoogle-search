@@ -120,7 +120,8 @@ class Search:
                                 root_url=url_for('.index',
                                                  _external=True,
                                                  _scheme='https'
-                                                 if os.getenv("HTTPS_ONLY", False)
+                                                 if os.getenv("HTTPS_ONLY",
+                                                              False)
                                                  else None),
                                 mobile=mobile,
                                 config=self.config,
