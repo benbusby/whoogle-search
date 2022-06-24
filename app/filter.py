@@ -462,8 +462,6 @@ class Filter:
                 self._av.add(netloc)
                 append_anon_view(link, self.config)
 
-            if self.config.new_tab:
-                link['target'] = '_blank'
         else:
             if href.startswith(MAPS_URL):
                 # Maps links don't work if a site filter is applied
@@ -481,6 +479,12 @@ class Filter:
                 return
             else:
                 link['href'] = href
+
+        if self.config.new_tab and (
+            link["href"].startswith("http")
+            or link["href"].startswith("imgres?")
+        ):
+            link["target"] = "_blank"
 
         # Replace link location if "alts" config is enabled
         if self.config.alts:
