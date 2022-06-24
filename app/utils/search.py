@@ -7,7 +7,7 @@ from app.request import gen_query
 from app.utils.results import get_first_link
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken
-from flask import g
+from flask import g, url_for
 
 TOR_BANNER = '<hr><h1 style="text-align: center">You are using Tor</h1><hr>'
 CAPTCHA = 'div class="g-recaptcha"'
@@ -117,7 +117,11 @@ class Search:
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
 
         content_filter = Filter(self.session_key,
-                                root_url=self.request.url_root,
+                                root_url=url_for('.index',
+                                            _external=True,
+                                            _scheme='https' 
+                                            if os.getenv("HTTPS_ONLY",False) 
+                                            else None),
                                 mobile=mobile,
                                 config=self.config,
                                 query=self.query)
