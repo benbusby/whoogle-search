@@ -2,9 +2,8 @@ import os
 import re
 from typing import Any
 
-from app.filter import Filter
+from app.filter import Filter, get_first_link
 from app.request import gen_query
-from app.utils.results import get_first_link
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken
 from flask import g, url_for
@@ -55,6 +54,7 @@ class Search:
         config: the current user config settings
         session_key: the flask user fernet key
     """
+
     def __init__(self, request, config, session_key, cookies_disabled=False):
         method = request.method
         self.request = request
@@ -118,10 +118,9 @@ class Search:
 
         content_filter = Filter(self.session_key,
                                 root_url=url_for('.index',
-                                            _external=True,
-                                            _scheme='https' 
-                                            if os.getenv("HTTPS_ONLY",False) 
-                                            else None),
+                                                 _external=True,
+                                                 _scheme='https'
+                                                 if os.getenv("HTTPS_ONLY", False) else None),
                                 mobile=mobile,
                                 config=self.config,
                                 query=self.query)
