@@ -2,6 +2,7 @@ import argparse
 import base64
 import io
 import json
+import os
 import pickle
 import urllib.parse as urlparse
 import uuid
