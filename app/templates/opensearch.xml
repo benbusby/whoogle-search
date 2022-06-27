@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
                        xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-    <ShortName>Whoogle</ShortName>
+    {% if not search_type %}
+        <ShortName>Whoogle</ShortName>
+    {% else %}
+        <ShortName>Whoogle {{ search_name }}</ShortName>
+    {% endif %}
     <Description>Whoogle: A lightweight, deployable Google search proxy for desktop/mobile that removes Javascript, AMP links, and ads
     </Description>
     <InputEncoding>UTF-8</InputEncoding>
@@ -10,6 +14,9 @@
     </Image>
     <Url type="text/html" {{ request_type|safe }} template="{{ main_url }}/search">
         <Param name="q" value="{searchTerms}"/>
+        {% if search_type %}
+            <Param name="tbm" value="{{ search_type }}"/>
+        {% endif %}
     </Url>
     <Url type="application/x-suggestions+json" {{ request_type|safe }} template="{{ main_url }}/autocomplete">
         <Param name="q" value="{searchTerms}"/>

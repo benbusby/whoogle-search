@@ -2,7 +2,6 @@ import argparse
 import base64
 import io
 import json
-import os
 import pickle
 import urllib.parse as urlparse
 import uuid
@@ -25,7 +24,7 @@ from app.utils.session import generate_user_key, valid_user_session
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for, g
-from requests import exceptions, get
+from requests import exceptions
 from requests.models import PreparedRequest
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.exceptions import InvalidSignature
@@ -35,6 +34,12 @@ bang_json = json.load(open(app.config['BANG_FILE'])) or {}
 
 ac_var = 'WHOOGLE_AUTOCOMPLETE'
 autocomplete_enabled = os.getenv(ac_var, '1')
+
+
+def get_search_name(tbm):
+    for tab in app.config['HEADER_TABS'].values():
+        if tab['tbm'] == tbm:
+            return tab['name']
 
 
 def auth_required(f):
@@ -259,7 +264,9 @@ def opensearch():
     return render_template(
         'opensearch.xml',
         main_url=opensearch_url,
-        request_type='' if get_only else 'method="post"'
+        request_type='' if get_only else 'method="post"',
+        search_type=request.args.get('tbm'),
+        search_name=get_search_name(request.args.get('tbm'))
     ), 200, {'Content-Type': 'application/xml'}
 
 
@@ -375,6 +382,7 @@ def search():
         has_update=app.config['HAS_UPDATE'],
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
+        search_name=get_search_name(search_util.search_type),
         config=g.user_config,
         autocomplete_enabled=autocomplete_enabled,
         lingva_url=app.config['TRANSLATE_URL'],
