@@ -18,6 +18,8 @@ from app.models.endpoint import Endpoint
 from app.models.config import Config
 
 
+MAPS_ARGS = ['q', 'daddr']
+
 minimal_mode_sections = ['Top stories', 'Images', 'People also ask']
 unsupported_g_pages = [
     'support.google.com',
@@ -43,6 +45,28 @@ def extract_q(q_str: str, href: str) -> str:
         str: The 'q' element of the link, or an empty string
     """
     return parse_qs(q_str)['q'][0] if ('&q=' in href or '?q=' in href) else ''
+
+
+def build_map_url(href: str) -> str:
+    """Tries to extract known args that explain the location in the url. If a
+    location is found, returns the default url with it. Otherwise, returns the
+    url unchanged.
+
+    Args:
+        href: The full url to check.
+
+    Returns:
+        str: The parsed url, or the url unchanged.
+    """
+    # parse the url
+    parsed_url = parse_qs(href)
+    # iterate through the known parameters and try build the url
+    for param in MAPS_ARGS:
+        if param in parsed_url:
+            return MAPS_URL + "?q=" + parsed_url[param][0]
+
+    # query could not be extracted returning unchanged url
+    return href
 
 
 def clean_query(query: str) -> str:
@@ -474,7 +498,7 @@ class Filter:
         else:
             if href.startswith(MAPS_URL):
                 # Maps links don't work if a site filter is applied
-                link['href'] = MAPS_URL + "?q=" + clean_query(q)
+                link['href'] = build_map_url(link['href'])
             elif (href.startswith('/?') or href.startswith('/search?') or
                   href.startswith('/imgres?')):
                 # make sure that tags can be clicked as relative URLs
