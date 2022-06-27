@@ -30,6 +30,8 @@ Contents
     2. [Prevent Downtime (Heroku Only)](#prevent-downtime-heroku-only)
     3. [Manual HTTPS Enforcement](#https-enforcement)
     4. [Using with Firefox Containers](#using-with-firefox-containers)
+    5. [Reverse Proxying](#reverse-proxying)
+        1. [Nginx](#nginx)
 7. [Contributing](#contributing)
 8. [FAQ](#faq)
 9. [Public Instances](#public-instances)
@@ -445,6 +447,30 @@ Unfortunately, Firefox Containers do not currently pass through `POST` requests 
 3. Clear Firefox cache
 4. Restart Firefox
 5. Navigate to Whoogle instance and [re-add the engine](#set-whoogle-as-your-primary-search-engine)
+
+### Reverse Proxying
+
+#### Nginx
+
+Here is a sample Nginx config for Whoogle:
+
+```
+server {
+	server_name your_domain_name.com;
+	access_log /dev/null;
+	error_log /dev/null;
+	
+	location / {
+	    proxy_set_header X-Real-IP $remote_addr;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	    proxy_set_header Host $host;
+	    proxy_set_header X-NginX-Proxy true;
+	    proxy_pass http://localhost:5000;
+	}
+}
+```
+
+You can then add SSL support using LetsEncrypt by following a guide such as [this one](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/).
 
 ## Contributing
 
