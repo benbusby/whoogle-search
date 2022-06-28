@@ -35,6 +35,15 @@ def get_request_url(url: str) -> str:
     return url
 
 
+def get_proxy_host_url(r: Request, default: str) -> str:
+    scheme = r.headers.get('X-Forwarded-Proto', 'http')
+    http_host = r.headers.get('X-Forwarded-Host')
+    if http_host:
+        return f'{scheme}://{http_host}/'
+
+    return default
+
+
 def check_for_update(version_url: str, current: str) -> int:
     # Check for the latest version of Whoogle
     try:
