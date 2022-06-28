@@ -125,7 +125,7 @@ class Search:
             root_url = self.request.url_root
 
         content_filter = Filter(self.session_key,
-                                root_url=self.request.url_root,
+                                root_url=root_url,
                                 mobile=mobile,
                                 config=self.config,
                                 query=self.query)
