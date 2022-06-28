@@ -116,6 +116,14 @@ class Search:
         """
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
 
+        # reconstruct url_root if X-Forwarded-Host header present
+        scheme = self.request.headers.get('X-Forwarded-Proto', 'http')
+        http_host = self.request.headers.get('X-Forwarded-Host')
+        if http_host:
+            root_url = f'{scheme}://{http_host}/'
+        else:
+            root_url = self.request.url_root
+
         content_filter = Filter(self.session_key,
                                 root_url=self.request.url_root,
                                 mobile=mobile,
