@@ -56,7 +56,7 @@ def send_tor_signal(signal: Signal) -> bool:
                     # Scan for the last line of the file.
                     for line in conf:
                         pass
-                    secret = line
+                    secret = line.strip('\n')
                 authenticate_password(c, password=secret)
             else:
                 cookie_path = '/var/lib/tor/control_auth_cookie'
