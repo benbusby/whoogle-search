@@ -57,7 +57,7 @@ def send_tor_signal(signal: Signal) -> bool:
                     for line in conf:
                         pass
                     secret = line
-                    if ( '\n' in line ):
+                    if '\n' in line:
                         secret = line.strip('\n')
                 authenticate_password(c, password=secret)
             else:
