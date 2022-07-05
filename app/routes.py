@@ -15,6 +15,7 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
+from app.utils.misc import get_proxy_host_url
 from app.filter import Filter
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
     check_for_update
@@ -144,10 +145,13 @@ def before_request_func():
         if (not Endpoint.autocomplete.in_path(request.path) and
                 not Endpoint.healthz.in_path(request.path) and
                 not Endpoint.opensearch.in_path(request.path)):
+            # reconstruct url if X-Forwarded-Host header present
+            request_url = get_proxy_host_url(request,
+                                             get_request_url(request.url))
             return redirect(url_for(
                 'session_check',
                 session_id=session['uuid'],
-                follow=get_request_url(request.url)), code=307)
+                follow=request_url), code=307)
         else:
             g.user_config = Config(**session['config'])
     elif 'cookies_disabled' not in request.args:

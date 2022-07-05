@@ -4,6 +4,7 @@ from typing import Any
 
 from app.filter import Filter
 from app.request import gen_query
+from app.utils.misc import get_proxy_host_url
 from app.utils.results import get_first_link
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken
@@ -115,9 +116,11 @@ class Search:
 
         """
         mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
+        # reconstruct url if X-Forwarded-Host header present
+        root_url = get_proxy_host_url(self.request, self.request.url_root)
 
         content_filter = Filter(self.session_key,
-                                root_url=self.request.url_root,
+                                root_url=root_url,
                                 mobile=mobile,
                                 config=self.config,
                                 query=self.query)
