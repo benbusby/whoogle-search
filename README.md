@@ -234,6 +234,51 @@ sudo systemctl enable whoogle
 sudo systemctl start whoogle
 ```
 
+#### Tor Configuration *optional*
+If routing your request through Tor you will need to make the following adjustments.
+Due to the nature of interacting with Google through Tor we will need to be able to send signals to Tor and therefore authenticate with it.
+
+There are two authentication methods, password and cookie. You will need to make changes to your torrc:
+  * Cookie
+    1. Uncomment or add the following lines in your torrc:
+       - `ControlPort 9051` 
+       - `CookieAuthentication 1`
+       - `DataDirectoryGroupReadable 1`
+       - `CookieAuthFileGroupReadable 1`
+    
+    2. Make the tor auth cookie readable:
+       - This is assuming that you are using a dedicated user to run whoogle. If you are using a different user replace `whoogle` with that user.
+       
+       1. `chmod tor:whoogle /var/lib/tor`
+       2. `chmod tor:whoogle /var/lib/tor/control_auth_cookie`
+    
+    3. Restart the tor service:
+       - `systemctl restart tor`
+     
+    4. Set the Tor environment variable to 1, `WHOOGLE_CONFIG_TOR`. Refer to the [Environment Variables](#environment-variables) section for more details.
+       - This may be added in the systemd unit file or env file `WHOOGLE_CONFIG_TOR=1`
+  
+  * Password
+    1. Run this command:
+       - `tor --hash-password {Your Password Here}`; put your password in place of `{Your Password Here}`.
+       - Keep the output of this command, you will be placing it in your torrc.
+       - Keep the password input of this command, you will be using it later.
+    
+    2. Uncomment or add the following lines in your torrc:
+       - `ControlPort 9051` 
+       - `HashedControlPassword {Place output here}`; put the output of the previous command in place of `{Place output here}`.
+     
+    3. Now take the password from the first step and place it in the control.conf file within the whoogle working directory, ie. [misc/tor/control.conf](misc/tor/control.conf)
+       - If you want to place your password file in a different location set this location with the `WHOOGLE_TOR_CONF` environment variable. Refer to the [Environment Variables](#environment-variables) section for more details.
+    
+    4. Heavily restrict access to control.conf to only be readable by the user running whoogle:
+       - `chmod 400 control.conf`
+    
+    5. Finally set the Tor environment variable and use password variable to 1, `WHOOGLE_CONFIG_TOR` and `WHOOGLE_TOR_USE_PASS`. Refer to the [Environment Variables](#environment-variables) section for more details.
+       - These may be added to the systemd unit file or env file:
+          - `WHOOGLE_CONFIG_TOR=1`
+          - `WHOOGLE_TOR_USE_PASS=1`
+
 ### G) Manual (Docker)
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
