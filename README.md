@@ -598,6 +598,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://gowogle.voring.me](https://gowogle.voring.me) | 🇺🇸 US | Multi-choice | |
 | [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
 | [https://whoogle.privacydev.net](https://whoogle.privacydev.net) | 🇺🇸 US | Multi-choice | |
+| [https://search.wef.lol](https://search.wef.lol) | 🇮🇸 IC | Multi-choice | |
 
 
 
