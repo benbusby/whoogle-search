@@ -66,7 +66,7 @@ def send_tor_signal(signal: Signal) -> bool:
             return True
     except (SocketError, AuthenticationFailure,
             ConnectionRefusedError, ConnectionError):
-        # TODO: Handle Tor authentification (password and cookie)
+        # TODO: Handle Tor authentication (password and cookie)
         os.environ['TOR_AVAILABLE'] = '0'
 
     return False

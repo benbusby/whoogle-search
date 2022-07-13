@@ -538,7 +538,7 @@ Under the hood, Whoogle is a basic Flask app with the following structure:
     - `search.html`: An iframe-able search page
     - `logo.html`: A template consisting mostly of the Whoogle logo as an SVG (separated to help keep `index.html` a bit cleaner)
     - `opensearch.xml`: A template used for supporting [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/OpenSearch).
-    - `imageresults.html`: An "exprimental" template used for supporting the "Full Size" image feature on desktop.
+    - `imageresults.html`: An "experimental" template used for supporting the "Full Size" image feature on desktop.
   - `static/<css|js>`
     - CSS/Javascript files, should be self-explanatory
   - `static/settings`

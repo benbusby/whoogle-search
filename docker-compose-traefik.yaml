@@ -1,4 +1,4 @@
-# cant use mem_limit in a 3.x docker-compose file in non swarm mode
+# can't use mem_limit in a 3.x docker-compose file in non swarm mode
 # see https://github.com/docker/compose/issues/4513
 version: "2.4"
 
