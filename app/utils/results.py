@@ -147,10 +147,10 @@ def get_site_alt(link: str) -> str:
         parsed_alt = urlparse.urlparse(SITE_ALTS[site_key])
         link = link.replace(hostname, SITE_ALTS[site_key]) + params
 
-        # If a scheme is specified in the alternative, this results in a replaced
-        # link that looks like "https://http://altservice.tld". In this case, we
-        # can remove the original scheme from the result and use the one specified
-        # for the alt.
+        # If a scheme is specified in the alternative, this results in a
+        # replaced link that looks like "https://http://altservice.tld".
+        # In this case, we can remove the original scheme from the result
+        # and use the one specified for the alt.
         if parsed_alt.scheme:
             link = '//'.join(link.split('//')[1:])
 
