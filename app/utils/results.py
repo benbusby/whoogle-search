@@ -128,7 +128,8 @@ def get_site_alt(link: str) -> str:
     """
     # Need to replace full hostname with alternative to encapsulate
     # subdomains as well
-    hostname = urlparse.urlparse(link).hostname
+    parsed_link = urlparse.urlparse(link)
+    hostname = parsed_link.hostname
 
     for site_key in SITE_ALTS.keys():
         if not hostname or site_key not in hostname or not SITE_ALTS[site_key]:
@@ -137,13 +138,22 @@ def get_site_alt(link: str) -> str:
         # Wikipedia -> Wikiless replacements require the subdomain (if it's
         # a 2-char language code) to be passed as a URL param to Wikiless
         # in order to preserve the language setting.
-        url_params = ''
+        params = ''
         if 'wikipedia' in hostname:
             subdomain = hostname.split('.')[0]
             if len(subdomain) == 2:
-                url_params = f'?lang={subdomain}'
+                params = f'?lang={subdomain}'
 
-        link = link.replace(hostname, SITE_ALTS[site_key]) + url_params
+        parsed_alt = urlparse.urlparse(SITE_ALTS[site_key])
+        link = link.replace(hostname, SITE_ALTS[site_key]) + params
+
+        # If a scheme is specified in the alternative, this results in a replaced
+        # link that looks like "https://http://altservice.tld". In this case, we
+        # can remove the original scheme from the result and use the one specified
+        # for the alt.
+        if parsed_alt.scheme:
+            link = '//'.join(link.split('//')[1:])
+
         for prefix in SKIP_PREFIX:
             link = link.replace(prefix, '//')
         break
