@@ -104,29 +104,18 @@ Provides:
 
 ### C) [Fly.io](https://fly.io)
 
-You will need a [Fly.io](https://fly.io) account to do this. Fly requires a credit card to deploy anything, but you can have up to 3 shared-CPU VMs running full-time each month for free.
+You will need a **PAID** [Fly.io](https://fly.io) account to deploy Whoogle.
 
-#### Install the CLI:
+#### Install the CLI: https://fly.io/docs/hands-on/installing/
 
-```bash
-curl -L https://fly.io/install.sh | sh
-```
-
-#### Deploy your app
+#### Deploy the app
 
 ```bash
-fly apps create --org personal --port 5000
-# Choose a name and the Image builder
-# Enter `benbusby/whoogle-search:latest` as the image name
-fly deploy
+flyctl auth login
+flyctl launch --image benbusby/whoogle-search:latest
 ```
 
 Your app is now available at `https://<app-name>.fly.dev`.
-
-You can customize the `fly.toml`:
-- Remove the non-https service
-- Add environment variables under the `[env]` key
-  - Use `fly secrets set NAME=value` for more sensitive values like `WHOOGLE_PASS` and `WHOOGLE_PROXY_PASS`.
 
 ### D) [pipx](https://github.com/pipxproject/pipx#install-pipx)
 Persistent install:
