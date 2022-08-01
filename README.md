@@ -230,39 +230,39 @@ Due to the nature of interacting with Google through Tor we will need to be able
 There are two authentication methods, password and cookie. You will need to make changes to your torrc:
   * Cookie
     1. Uncomment or add the following lines in your torrc:
-       - `ControlPort 9051` 
+       - `ControlPort 9051`
        - `CookieAuthentication 1`
        - `DataDirectoryGroupReadable 1`
        - `CookieAuthFileGroupReadable 1`
-    
+
     2. Make the tor auth cookie readable:
        - This is assuming that you are using a dedicated user to run whoogle. If you are using a different user replace `whoogle` with that user.
-       
+
        1. `chmod tor:whoogle /var/lib/tor`
        2. `chmod tor:whoogle /var/lib/tor/control_auth_cookie`
-    
+
     3. Restart the tor service:
        - `systemctl restart tor`
-     
+
     4. Set the Tor environment variable to 1, `WHOOGLE_CONFIG_TOR`. Refer to the [Environment Variables](#environment-variables) section for more details.
        - This may be added in the systemd unit file or env file `WHOOGLE_CONFIG_TOR=1`
-  
+
   * Password
     1. Run this command:
        - `tor --hash-password {Your Password Here}`; put your password in place of `{Your Password Here}`.
        - Keep the output of this command, you will be placing it in your torrc.
        - Keep the password input of this command, you will be using it later.
-    
+
     2. Uncomment or add the following lines in your torrc:
-       - `ControlPort 9051` 
+       - `ControlPort 9051`
        - `HashedControlPassword {Place output here}`; put the output of the previous command in place of `{Place output here}`.
-     
+
     3. Now take the password from the first step and place it in the control.conf file within the whoogle working directory, ie. [misc/tor/control.conf](misc/tor/control.conf)
        - If you want to place your password file in a different location set this location with the `WHOOGLE_TOR_CONF` environment variable. Refer to the [Environment Variables](#environment-variables) section for more details.
-    
+
     4. Heavily restrict access to control.conf to only be readable by the user running whoogle:
        - `chmod 400 control.conf`
-    
+
     5. Finally set the Tor environment variable and use password variable to 1, `WHOOGLE_CONFIG_TOR` and `WHOOGLE_TOR_USE_PASS`. Refer to the [Environment Variables](#environment-variables) section for more details.
        - These may be added to the systemd unit file or env file:
           - `WHOOGLE_CONFIG_TOR=1`
@@ -375,10 +375,11 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config.       |
 | WHOOGLE_ALT_IMG      | The imgur.com alternative to use when site alternatives are enabled in the config.        |
 | WHOOGLE_ALT_WIKI     | The wikipedia.com alternative to use when site alternatives are enabled in the config.    |
-| WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable  |
+| WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable. |
 | WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
 | WHOOGLE_CSP          | Sets a default set of 'Content-Security-Policy' headers                                   |
 | WHOOGLE_RESULTS_PER_PAGE          | Set the number of results per page                                           |
+| WHOOGLE_TOR_SERVICE  | Enable/disable the Tor service on startup. Default on -- use '0' to disable.              |
 | WHOOGLE_TOR_USE_PASS | Use password authentication for tor control port. |
 | WHOOGLE_TOR_CONF | The absolute path to the config file containing the password for the tor control port. Default: ./misc/tor/control.conf WHOOGLE_TOR_PASS must be 1 for this to work.|
 
@@ -493,7 +494,7 @@ server {
 	server_name your_domain_name.com;
 	access_log /dev/null;
 	error_log /dev/null;
-	
+
 	location / {
 	    proxy_set_header X-Real-IP $remote_addr;
 	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
