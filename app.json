@@ -81,15 +81,25 @@
       "required": false
     },
     "WHOOGLE_ALT_IMG": {
-	      "description": "The site to use as a replacement for imgur.com when site alternatives are enabled in the config.",
-	      "value": "farside.link/rimgo",
-	      "required": false
-	    },
+      "description": "The site to use as a replacement for imgur.com when site alternatives are enabled in the config.",
+      "value": "farside.link/rimgo",
+      "required": false
+    },
     "WHOOGLE_ALT_WIKI": {
-	      "description": "The site to use as a replacement for wikipedia.com when site alternatives are enabled in the config.",
-	      "value": "farside.link/wikiless",
-	      "required": false
-	    },
+      "description": "The site to use as a replacement for wikipedia.com when site alternatives are enabled in the config.",
+      "value": "farside.link/wikiless",
+      "required": false
+    },
+    "WHOOGLE_ALT_IMDB": {
+      "description": "The site to use as a replacement for imdb.com when site alternatives are enabled in the config.",
+      "value": "farside.link/libremdb",
+      "required": false
+    },
+    "WHOOGLE_ALT_QUORA": {
+      "description": "The site to use as a replacement for quora.com when site alternatives are enabled in the config.",
+      "value": "farside.link/quetre",
+      "required": false
+    },
     "WHOOGLE_MINIMAL": {
         "description": "Remove everything except basic result cards from all search queries (set to 1 or leave blank)",
         "value": "",

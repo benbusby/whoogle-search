@@ -40,6 +40,8 @@ services:
       #- WHOOGLE_ALT_TL=farside.link/lingva
       #- WHOOGLE_ALT_IMG=farside.link/rimgo
       #- WHOOGLE_ALT_WIKI=farside.link/wikiless
+      #- WHOOGLE_ALT_IMDB=farside.link/libremdb
+      #- WHOOGLE_ALT_QUORA=farside.link/quetre
     #env_file: # Alternatively, load variables from whoogle.env
       #- whoogle.env
     ports:

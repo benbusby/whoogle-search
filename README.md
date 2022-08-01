@@ -196,6 +196,8 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_TL=farside.link/lingva
 #Environment=WHOOGLE_ALT_IMG=farside.link/rimgo
 #Environment=WHOOGLE_ALT_WIKI=farside.link/wikiless
+#Environment=WHOOGLE_ALT_IMDB=farside.link/libremdb
+#Environment=WHOOGLE_ALT_QUORA=farside.link/quetre
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
@@ -367,14 +369,16 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_PROXY_LOC    | The location of the proxy server (host or ip).                                            |
 | EXPOSE_PORT          | The port where Whoogle will be exposed.                                                   |
 | HTTPS_ONLY           | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
-| WHOOGLE_ALT_TW       | The twitter.com alternative to use when site alternatives are enabled in the config.      |
-| WHOOGLE_ALT_YT       | The youtube.com alternative to use when site alternatives are enabled in the config.      |
-| WHOOGLE_ALT_IG       | The instagram.com alternative to use when site alternatives are enabled in the config.    |
-| WHOOGLE_ALT_RD       | The reddit.com alternative to use when site alternatives are enabled in the config.       |
-| WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  |
-| WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config.       |
-| WHOOGLE_ALT_IMG      | The imgur.com alternative to use when site alternatives are enabled in the config.        |
-| WHOOGLE_ALT_WIKI     | The wikipedia.com alternative to use when site alternatives are enabled in the config.    |
+| WHOOGLE_ALT_TW       | The twitter.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_YT       | The youtube.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_IG       | The instagram.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_RD       | The reddit.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  Set to "" to disable. |
+| WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_IMG      | The imgur.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_WIKI     | The wikipedia.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_IMDB     | The imdb.com alternative to use when site alternatives are enabled in the config. Set to "" to disable.  |
+| WHOOGLE_ALT_QUORA    | The quora.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable. |
 | WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
 | WHOOGLE_CSP          | Sets a default set of 'Content-Security-Policy' headers                                   |
