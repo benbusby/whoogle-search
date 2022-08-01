@@ -443,18 +443,39 @@ class Filter:
             None (the tag is updated directly)
 
         """
-        link_netloc = urlparse.urlparse(link['href']).netloc
+        parsed_link = urlparse.urlparse(link['href'])
+        link_netloc = ''
+        if '/url?q=' in link['href']:
+            link_netloc = extract_q(parsed_link.query, link['href'])
+        else:
+            link_netloc = parsed_link.netloc
 
         # Remove any elements that direct to unsupported Google pages
         if any(url in link_netloc for url in unsupported_g_pages):
             # FIXME: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
+
             parent = link.parent
-            while parent:
-                p_cls = parent.attrs.get('class') or []
-                if parent.name == 'footer' or f'{GClasses.footer}' in p_cls:
-                    link.decompose()
-                parent = parent.parent
+            if 'google.com/preferences?hl=' in link_netloc:
+                # Handle case where a search is performed in a different
+                # language than what is configured. This usually returns a
+                # div with the same classes as normal search results, but with
+                # a link to configure language preferences through Google.
+                # Since we want all language config done through Whoogle, we
+                # can safely decompose this element.
+                while parent:
+                    p_cls = parent.attrs.get('class') or []
+                    if f'{GClasses.result_class_a}' in p_cls:
+                        parent.decompose()
+                        break
+                    parent = parent.parent
+            else:
+                # Remove cases where google links appear in the footer
+                while parent:
+                    p_cls = parent.attrs.get('class') or []
+                    if parent.name == 'footer' or f'{GClasses.footer}' in p_cls:
+                        link.decompose()
+                    parent = parent.parent
             return
 
         # Replace href with only the intended destination (no "utm" type tags)
