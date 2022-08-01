@@ -13,6 +13,12 @@ header {
     border-radius: 2px 0 0 0;
 }
 
+.result-config {
+    margin: 10px 0 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+}
+
 .mobile-logo {
     font: 22px/36px Futura, Arial, sans-serif;
     padding-left: 5px;
@@ -121,7 +127,6 @@ a {
 .header-tab-div {
     border-radius: 0 0 8px 8px;
     box-shadow: 0 2px 3px rgba(32, 33, 36, 0.18);
-    margin-bottom: 20px;
     overflow: hidden;
 }
 

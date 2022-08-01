@@ -25,6 +25,7 @@
                                 dir="auto">
                         <input id="search-reset" type="reset" value="x">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
+                        <input name="country" value="{{ config.country }}" style="display: none;">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>
                     </div>
@@ -79,6 +80,7 @@
                                 value="{{ clean_query(query) }}"
                                 dir="auto">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
+                        <input name="country" value="{{ config.country }}" style="display: none;">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>
                     </div>
@@ -102,6 +104,24 @@
                   </div>
               </div>
           </div>
+      </div>
+
+      <div class="result-config">
+          <label for="config-country">{{ translation['config-country'] }}: </label>
+          <select name="country" id="result-country">
+              {% for country in countries %}
+                  <option value="{{ country.value }}"
+                          {% if (
+                              config.country != '' and config.country in country.value
+                          ) or (
+                              config.country == '' and country.value == '')
+                          %}
+                          selected
+                          {% endif %}>
+                      {{ country.name }}
+                  </option>
+              {% endfor %}
+          </select>
       </div>
       <div class="" id="s">
   </div>

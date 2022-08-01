@@ -406,6 +406,9 @@ def search():
         search_header=render_template(
             'header.html',
             config=g.user_config,
+            translation=translation,
+            languages=app.config['LANGUAGES'],
+            countries=app.config['COUNTRIES'],
             logo=render_template('logo.html', dark=g.user_config.dark),
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
