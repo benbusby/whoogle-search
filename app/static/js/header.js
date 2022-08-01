@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     countrySelect.onchange = () => {
         let str = window.location.href;
-        n = str.lastIndexOf("search");
+        n = str.lastIndexOf("/search");
         if (n > 0) {
             str = str.substring(0, n) +
                 `search?q=${searchBar.value}&country=${countrySelect.value}`;
