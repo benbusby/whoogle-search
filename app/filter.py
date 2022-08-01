@@ -462,7 +462,7 @@ class Filter:
         result_link = urlparse.urlparse(href)
         q = extract_q(result_link.query, href)
 
-        if q.startswith('/') and q not in self.query:
+        if q.startswith('/') and q not in self.query and 'spell=1' not in href:
             # Internal google links (i.e. mail, maps, etc) should still
             # be forwarded to Google
             link['href'] = 'https://google.com' + q
