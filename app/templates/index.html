@@ -93,7 +93,11 @@
                             <select name="country" id="config-country">
                                 {% for country in countries %}
                                     <option value="{{ country.value }}"
-                                            {% if config.country in country.value %}
+                                            {% if (
+                                                config.country != '' and config.country in country.value
+                                            ) or (
+                                                config.country == '' and country.value == '')
+                                            %}
                                             selected
                                             {% endif %}>
                                         {{ country.name }}
