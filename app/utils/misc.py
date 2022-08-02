@@ -35,11 +35,11 @@ def get_request_url(url: str) -> str:
     return url
 
 
-def get_proxy_host_url(r: Request, default: str) -> str:
-    scheme = r.headers.get('X-Forwarded-Proto', 'http')
+def get_proxy_host_url(r: Request, default: str, root=False) -> str:
+    scheme = r.headers.get('X-Forwarded-Proto', 'https')
     http_host = r.headers.get('X-Forwarded-Host')
     if http_host:
-        return f'{scheme}://{http_host}/'
+        return f'{scheme}://{http_host}{r.full_path if not root else "/"}'
 
     return default
 
