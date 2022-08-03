@@ -14,7 +14,7 @@ header {
 }
 
 .result-config {
-    margin: 10px 0 10px 0;
+    margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
 }
@@ -128,6 +128,7 @@ a {
     border-radius: 0 0 8px 8px;
     box-shadow: 0 2px 3px rgba(32, 33, 36, 0.18);
     overflow: hidden;
+    margin-bottom: 10px;
 }
 
 .header-tab-div-2 {
@@ -207,6 +208,24 @@ a.header-tab-a:visited {
     border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
 
+.adv-search {
+    font-size: 30px;
+}
+
+.adv-search:hover {
+    cursor: pointer;
+}
+
+#adv-search-toggle {
+    display: none;
+}
+
+.result-collapsible {
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height .25s linear;
+}
+
 .search-bar-input {
     display: block;
     font-size: 16px;
@@ -220,9 +239,12 @@ a.header-tab-a:visited {
     overflow: hidden;
 }
 
+#result-country {
+    max-width: 200px;
+}
+
 @media (max-width: 801px) {
     .header-tab-div {
         margin-bottom: 10px !important
     }
 }
-

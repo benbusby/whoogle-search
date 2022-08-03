@@ -28,11 +28,5 @@
       "href": "search?q={query}",
       "name": "News",
       "selected": false
-  },
-  "books": {
-      "tbm": "bks",
-      "href": "search?q={query}",
-      "name": "Books",
-      "selected": false
   }
 }

@@ -44,6 +44,8 @@
                                 <a class="header-tab-a" href="{{ tab_content['href'] }}">{{ tab_content['name'] }}</a>
                             {% endif %}
                         {% endfor %}
+                      <label for="adv-search-toggle" id="adv-search-label" class="adv-search">⚙</label>
+                      <input id="adv-search-toggle" type="checkbox">
                         <div class="header-tab-div-end"></div>
                     </div>
                 </div>
@@ -100,31 +102,34 @@
                               <a class="header-tab-a" href="{{ tab_content['href'] }}">{{ tab_content['name'] }}</a>
                           {% endif %}
                       {% endfor %}
+                      <label for="adv-search-toggle" id="adv-search-label" class="adv-search">⚙</label>
+                      <input id="adv-search-toggle" type="checkbox">
                       <div class="header-tab-div-end"></div>
                   </div>
               </div>
           </div>
       </div>
-
-      <div class="result-config">
-          <label for="config-country">{{ translation['config-country'] }}: </label>
-          <select name="country" id="result-country">
-              {% for country in countries %}
-                  <option value="{{ country.value }}"
-                          {% if (
-                              config.country != '' and config.country in country.value
-                          ) or (
-                              config.country == '' and country.value == '')
-                          %}
-                          selected
-                          {% endif %}>
-                      {{ country.name }}
-                  </option>
-              {% endfor %}
-          </select>
-      </div>
       <div class="" id="s">
   </div>
 {% endif %}
+<div class="result-collapsible" id="adv-search-div">
+    <div class="result-config">
+        <label for="config-country">{{ translation['config-country'] }}: </label>
+        <select name="country" id="result-country">
+            {% for country in countries %}
+                <option value="{{ country.value }}"
+                    {% if (
+                        config.country != '' and config.country in country.value
+                    ) or (
+                        config.country == '' and country.value == '')
+                    %}
+                    selected
+                    {% endif %}>
+                    {{ country.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
 
 <script type="text/javascript" src="{{ cb_url('header.js') }}"></script>

@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const advSearchToggle = document.getElementById("adv-search-toggle");
+    const advSearchDiv = document.getElementById("adv-search-div");
     const searchBar = document.getElementById("search-bar");
     const countrySelect = document.getElementById("result-country");
     const arrowKeys = [37, 38, 39, 40];
@@ -9,9 +11,23 @@ document.addEventListener("DOMContentLoaded", () => {
         n = str.lastIndexOf("/search");
         if (n > 0) {
             str = str.substring(0, n) +
-                `search?q=${searchBar.value}&country=${countrySelect.value}`;
+                `/search?q=${searchBar.value}&country=${countrySelect.value}`;
             window.location.href = str;
         }
+    }
+
+    const toggleAdvancedSearch = on => {
+        if (on) {
+            advSearchDiv.style.maxHeight = "70px";
+        } else {
+            advSearchDiv.style.maxHeight = "0px";
+        }
+        localStorage.advSearchToggled = on;
+    }
+
+    toggleAdvancedSearch(JSON.parse(localStorage.advSearchToggled));
+    advSearchToggle.onclick = () => {
+        toggleAdvancedSearch(advSearchToggle.checked);
     }
 
     searchBar.addEventListener("keyup", function(event) {
