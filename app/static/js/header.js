@@ -25,7 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.advSearchToggled = on;
     }
 
-    toggleAdvancedSearch(JSON.parse(localStorage.advSearchToggled));
+    try {
+        toggleAdvancedSearch(JSON.parse(localStorage.advSearchToggled));
+    } catch (error) {
+        console.warn("Did not recover advanced search toggle state");
+    }
+
     advSearchToggle.onclick = () => {
         toggleAdvancedSearch(advSearchToggle.checked);
     }
