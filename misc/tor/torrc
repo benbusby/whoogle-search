@@ -6,3 +6,6 @@ CookieAuthFileGroupReadable 1
 ExtORPortCookieAuthFileGroupReadable 1
 CacheDirectoryGroupReadable 1
 CookieAuthFile /var/lib/tor/control_auth_cookie
+Log debug file /dev/null
+Log info file /dev/null
+Log notice file /dev/null
