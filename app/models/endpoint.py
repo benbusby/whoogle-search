@@ -5,7 +5,6 @@ class Endpoint(Enum):
     autocomplete = 'autocomplete'
     home = 'home'
     healthz = 'healthz'
-    session = 'session'
     config = 'config'
     opensearch = 'opensearch.xml'
     search = 'search'

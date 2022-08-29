@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 *.pem
 *.conf
+*.key
 config.json
 test/static
 flask_session/

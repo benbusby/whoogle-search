@@ -67,8 +67,7 @@ def auth_required(f):
 def session_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if (valid_user_session(session) and
-                'cookies_disabled' not in request.args):
+        if (valid_user_session(session)):
             g.session_key = session['key']
         else:
             session.pop('_permanent', None)
@@ -113,6 +112,7 @@ def session_required(f):
 @app.before_request
 def before_request_func():
     global bang_json
+    session.permanent = True
 
     # Check for latest version if needed
     now = datetime.now()
@@ -126,43 +126,17 @@ def before_request_func():
         request.args if request.method == 'GET' else request.form
     )
 
-    # Skip pre-request actions if verifying session
-    if '/session' in request.path and not valid_user_session(session):
-        return
-
     default_config = json.load(open(app.config['DEFAULT_CONFIG'])) \
         if os.path.exists(app.config['DEFAULT_CONFIG']) else {}
 
     # Generate session values for user if unavailable
-    if (not valid_user_session(session) and
-            'cookies_disabled' not in request.args):
+    if (not valid_user_session(session)):
         session['config'] = default_config
         session['uuid'] = str(uuid.uuid4())
         session['key'] = generate_user_key()
 
-        # Skip checking for session on any searches that don't
-        # require a valid session
-        if (not Endpoint.autocomplete.in_path(request.path) and
-                not Endpoint.healthz.in_path(request.path) and
-                not Endpoint.opensearch.in_path(request.path)):
-            # reconstruct url if X-Forwarded-Host header present
-            request_url = get_proxy_host_url(request,
-                                             get_request_url(request.url))
-            return redirect(url_for(
-                'session_check',
-                session_id=session['uuid'],
-                follow=request_url), code=307)
-        else:
-            g.user_config = Config(**session['config'])
-    elif 'cookies_disabled' not in request.args:
-        # Set session as permanent
-        session.permanent = True
-        app.permanent_session_lifetime = timedelta(days=365)
-        g.user_config = Config(**session['config'])
-    else:
-        # User has cookies disabled, fall back to immutable default config
-        session.pop('_permanent', None)
-        g.user_config = Config(**default_config)
+    # Establish config values per user session
+    g.user_config = Config(**session['config'])
 
     if not g.user_config.url:
         g.user_config.url = get_request_url(request.url_root)
@@ -209,19 +183,6 @@ def healthz():
     return ''
 
 
-@app.route(f'/{Endpoint.session}/<session_id>', methods=['GET', 'PUT', 'POST'])
-def session_check(session_id):
-    if 'uuid' in session and session['uuid'] == session_id:
-        session['valid'] = True
-        return redirect(request.args.get('follow'), code=307)
-    else:
-        follow_url = request.args.get('follow')
-        req = PreparedRequest()
-        req.prepare_url(follow_url, {'cookies_disabled': 1})
-        session.pop('_permanent', None)
-        return redirect(req.url, code=307)
-
-
 @app.route('/', methods=['GET'])
 @app.route(f'/{Endpoint.home}', methods=['GET'])
 @auth_required
@@ -246,8 +207,7 @@ def index():
                                dark=g.user_config.dark),
                            config_disabled=(
                                    app.config['CONFIG_DISABLE'] or
-                                   not valid_user_session(session) or
-                                   'cookies_disabled' in request.args),
+                                   not valid_user_session(session)),
                            config=g.user_config,
                            tor_available=int(os.environ.get('TOR_AVAILABLE')),
                            version_number=app.config['VERSION_NUMBER'])
