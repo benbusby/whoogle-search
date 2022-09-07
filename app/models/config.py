@@ -1,7 +1,12 @@
+from inspect import Attribute
 from app.utils.misc import read_config_bool
 from flask import current_app
 import os
 import re
+from base64 import urlsafe_b64encode
+import pickle
+from cryptography.fernet import Fernet
+import hashlib
 
 
 class Config:
@@ -29,6 +34,7 @@ class Config:
         self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
         self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
         self.anon_view = read_config_bool('WHOOGLE_CONFIG_ANON_VIEW')
+        self.preferences_key = os.getenv('WHOOGLE_CONFIG_PREFERENCES_KEY', '')
         self.accept_language = False
 
         self.safe_keys = [
@@ -71,6 +77,15 @@ class Config:
                 if not name.startswith("__")
                 and (type(attr) is bool or type(attr) is str)}
 
+    def get_attrs(self):
+        return {name: attr for name, attr in self.__dict__.items()
+                if not name.startswith("__")
+                and (type(attr) is bool or type(attr) is str)}
+
+    @property
+    def preferences(self) -> str:
+        return self._encode_preferences()
+
     def is_safe_key(self, key) -> bool:
         """Establishes a group of config options that are safe to set
         in the url.
@@ -109,6 +124,13 @@ class Config:
         Returns:
             Config -- a modified config object
         """
+        if 'preferences' in params:
+            params_new = self._decode_preferences(params['preferences'])
+            # if preferences leads to an empty dictionary it means preferences
+            # parameter was not decrypted successfully
+            if len(params_new):
+                params = params_new 
+        
         for param_key in params.keys():
             if not self.is_safe_key(param_key):
                 continue
@@ -116,6 +138,8 @@ class Config:
 
             if param_val == 'off':
                 param_val = False
+            elif isinstance(param_val, bool):
+                pass
             elif param_val.isdigit():
                 param_val = int(param_val)
 
@@ -135,3 +159,25 @@ class Config:
             param_str = param_str + f'&{safe_key}={self[safe_key]}'
 
         return param_str
+
+    def _get_fernet_key(self, password: str) -> bytes:
+        hash_object = hashlib.md5(password.encode())
+        key = urlsafe_b64encode(hash_object.hexdigest().encode())
+        return key
+    
+    def _encode_preferences(self) -> str:
+        if self.preferences_key == '':
+            return ''
+        encoded_preferences = pickle.dumps(self.get_attrs())
+        key = self._get_fernet_key(self.preferences_key)
+        return Fernet(key).encrypt(encoded_preferences).decode()
+
+    def _decode_preferences(self, preferences: str) -> dict:
+        try:
+            key = self._get_fernet_key(self.preferences_key)
+            config = Fernet(key).decrypt(preferences.encode())
+            config = pickle.loads(config)
+        except Exception:
+            config = {}
+        
+        return config

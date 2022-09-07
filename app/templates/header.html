@@ -4,13 +4,16 @@
             <form class="search-form header"
                   id="search-form"
                   method="{{ 'GET' if config.get_only else 'POST' }}">
-                <a class="logo-link mobile-logo" href="home">
+                <a class="logo-link mobile-logo" href="{{ home_url }}">
                     <div id="mobile-header-logo">
                         {{ logo|safe }}
                     </div>
                 </a>
                 <div class="H0PQec mobile-input-div">
                     <div class="autocomplete-mobile esbc autocomplete">
+                        {% if config.preferences %}
+                            <input type="hidden" name="preferences" value="{{ config.preferences }}" />
+                        {% endif %}
                         <input
                                 id="search-bar"
                                 class="mobile-search-bar"
@@ -57,7 +60,7 @@
 {% else %}
     <header>
         <div class="logo-div">
-            <a class="logo-link" href="home">
+            <a class="logo-link" href="{{ home_url }}">
                 <div class="desktop-header-logo">
                     {{ logo|safe }}
                 </div>
@@ -70,6 +73,9 @@
                   method="{{ 'GET' if config.get_only else 'POST' }}">
                 <div class="autocomplete header-autocomplete">
                     <div style="width: 100%; display: flex">
+                        {% if config.preferences %}
+                            <input type="hidden" name="preferences" value="{{ config.preferences }}" />
+                        {% endif %}
                         <input
                                 id="search-bar"
                                 autocapitalize="none"
