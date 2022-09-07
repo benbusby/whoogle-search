@@ -3,10 +3,11 @@ from app.utils.misc import read_config_bool
 from flask import current_app
 import os
 import re
-from base64 import urlsafe_b64encode
+from base64 import urlsafe_b64encode, urlsafe_b64decode
 import pickle
 from cryptography.fernet import Fernet
 import hashlib
+import brotli
 
 
 class Config:
@@ -130,7 +131,7 @@ class Config:
             # parameter was not decrypted successfully
             if len(params_new):
                 params = params_new 
-        
+
         for param_key in params.keys():
             if not self.is_safe_key(param_key):
                 continue
@@ -138,10 +139,9 @@ class Config:
 
             if param_val == 'off':
                 param_val = False
-            elif isinstance(param_val, bool):
-                pass
-            elif param_val.isdigit():
-                param_val = int(param_val)
+            elif isinstance(param_val, str):
+                if param_val.isdigit():
+                    param_val = int(param_val)
 
             self[param_key] = param_val
         return self
@@ -164,20 +164,27 @@ class Config:
         hash_object = hashlib.md5(password.encode())
         key = urlsafe_b64encode(hash_object.hexdigest().encode())
         return key
-    
+
     def _encode_preferences(self) -> str:
         if self.preferences_key == '':
             return ''
-        encoded_preferences = pickle.dumps(self.get_attrs())
+        encoded_preferences = brotli.compress(pickle.dumps(self.get_attrs()))
         key = self._get_fernet_key(self.preferences_key)
-        return Fernet(key).encrypt(encoded_preferences).decode()
+        encrypted_preferences = Fernet(key).encrypt(encoded_preferences)
+        return urlsafe_b64encode(
+            brotli.compress(encrypted_preferences)
+        ).decode()
 
     def _decode_preferences(self, preferences: str) -> dict:
         try:
             key = self._get_fernet_key(self.preferences_key)
-            config = Fernet(key).decrypt(preferences.encode())
-            config = pickle.loads(config)
+
+            config = Fernet(key).decrypt(
+                brotli.decompress(urlsafe_b64decode(preferences.encode()))
+            )
+
+            config = pickle.loads(brotli.decompress(config))
         except Exception:
             config = {}
-        
+
         return config
