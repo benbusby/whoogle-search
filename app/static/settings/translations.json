@@ -26,6 +26,7 @@
         "config-tor": "Use Tor",
         "config-get-only": "GET Requests Only",
         "config-url": "Root URL",
+        "config-url-pref": "Preferences URL",
         "config-css": "Custom CSS",
         "load": "Load",
         "apply": "Apply",

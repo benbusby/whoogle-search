@@ -236,10 +236,13 @@
                                 {{ config.style.replace('\t', '') }}
                             </textarea>
                         </div>
-                        <div class="config-div config-div-pref-url">
-                            <label for="config-pref-url">{{ translation['config-url'] }}: </label>
-                            <input type="text" name="pref-url" id="config-pref-url" value="{{ config.url }}?preferences={{ config.preferences }}">
-                        </div>
+                        {% if config.preferences %}
+                            <div class="config-div config-div-pref-url">
+                                <label for="config-pref-url">{{ translation['config-url-pref'] }}: </label>
+                                <input type="text" name="pref-url" id="config-pref-url" value="{{ config.url }}?preferences={{ config.preferences }}">
+                            </div>
+                        {% endif %}
+
                     </div>
                     <div class="config-div config-buttons">
                         <input type="submit" id="config-load" value="{{ translation['load'] }}">&nbsp;
