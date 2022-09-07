@@ -406,6 +406,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_GET_ONLY        | Search using GET requests only                                  |
 | WHOOGLE_CONFIG_URL             | The root url of the instance (`https://<your url>/`)            |
 | WHOOGLE_CONFIG_STYLE           | The custom CSS to use for styling (should be single line)       |
+| WHOOGLE_CONFIG_PREFERENCES_KEY | Key to encrypt preferences in URL (REQUIRED to show url)        |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
