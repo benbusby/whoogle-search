@@ -454,8 +454,11 @@ class Filter:
         if any(url in link_netloc for url in unsupported_g_pages):
             # FIXME: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
-
+            
+            # Replaces the /url google unsupported link to the direct url
+            link['href'] = link_netloc
             parent = link.parent
+
             if 'google.com/preferences?hl=' in link_netloc:
                 # Handle case where a search is performed in a different
                 # language than what is configured. This usually returns a
