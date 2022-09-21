@@ -16,9 +16,11 @@ def gen_file_hash(path: str, static_file: str) -> str:
 
 def read_config_bool(var: str) -> bool:
     val = os.getenv(var, '0')
-    if val.isdigit():
-        return bool(int(val))
-    return False
+    # user can specify one of the following values as 'true' inputs (all
+    # variants with upper case letters will also work):
+    # ('true', 't', '1', 'yes', 'y')
+    val = val.lower() in ('true', 't', '1', 'yes', 'y')
+    return val
 
 
 def get_client_ip(r: Request) -> str:

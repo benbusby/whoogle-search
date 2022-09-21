@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from app.utils.misc import read_config_bool
+
 app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + '/static')
 
@@ -25,12 +27,12 @@ dot_env_path = (
     '../whoogle.env'))
 
 # Load .env file if enabled
-if os.getenv('WHOOGLE_DOTENV', ''):
+if read_config_bool('WHOOGLE_DOTENV'):
     load_dotenv(dot_env_path)
 
 app.default_key = generate_user_key()
 
-if os.getenv('HTTPS_ONLY'):
+if read_config_bool('HTTPS_ONLY'):
     app.config['SESSION_COOKIE_NAME'] = '__Secure-session'
     app.config['SESSION_COOKIE_SECURE'] = True
 
