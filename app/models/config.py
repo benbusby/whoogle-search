@@ -35,7 +35,9 @@ class Config:
         self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
         self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
         self.anon_view = read_config_bool('WHOOGLE_CONFIG_ANON_VIEW')
+        self.preferences_encrypted = read_config_bool('WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED')
         self.preferences_key = os.getenv('WHOOGLE_CONFIG_PREFERENCES_KEY', '')
+        
         self.accept_language = False
 
         self.safe_keys = [
@@ -85,7 +87,9 @@ class Config:
 
     @property
     def preferences(self) -> str:
-        return self._encode_preferences()
+        encrypted_flag = "e" if self.preferences_encrypted else 'u'
+        preferences_digest = self._encode_preferences()
+        return f"{encrypted_flag}{preferences_digest}"
 
     def is_safe_key(self, key) -> bool:
         """Establishes a group of config options that are safe to set
@@ -166,25 +170,32 @@ class Config:
         return key
 
     def _encode_preferences(self) -> str:
-        if self.preferences_key == '':
-            return ''
         encoded_preferences = brotli.compress(pickle.dumps(self.get_attrs()))
-        key = self._get_fernet_key(self.preferences_key)
-        encrypted_preferences = Fernet(key).encrypt(encoded_preferences)
+        if self.preferences_encrypted:
+            if self.preferences_key != '':
+                key = self._get_fernet_key(self.preferences_key)
+                encoded_preferences = Fernet(key).encrypt(encoded_preferences)
+
         return urlsafe_b64encode(
-            brotli.compress(encrypted_preferences)
+            brotli.compress(encoded_preferences)
         ).decode()
 
     def _decode_preferences(self, preferences: str) -> dict:
-        try:
-            key = self._get_fernet_key(self.preferences_key)
+        if preferences.startswith('e'): # preferences are encrypted
+            try:
+                key = self._get_fernet_key(self.preferences_key)
 
-            config = Fernet(key).decrypt(
+                config = Fernet(key).decrypt(
+                    brotli.decompress(urlsafe_b64decode(preferences.encode()))
+                )
+
+                config = pickle.loads(brotli.decompress(config))
+            except Exception:
+                config = {}
+        elif preferences.startswith('u'): # preferences are not encrypted
+            config = pickle.loads(
                 brotli.decompress(urlsafe_b64decode(preferences.encode()))
             )
-
-            config = pickle.loads(brotli.decompress(config))
-        except Exception:
+        else: # preferences are incorrectly formatted
             config = {}
-
         return config

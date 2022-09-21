@@ -236,13 +236,14 @@
                                 {{ config.style.replace('\t', '') }}
                             </textarea>
                         </div>
-                        {% if config.preferences %}
-                            <div class="config-div config-div-pref-url">
-                                <label for="config-pref-url">{{ translation['config-url-pref'] }}: </label>
-                                <input type="text" name="pref-url" id="config-pref-url" value="{{ config.url }}?preferences={{ config.preferences }}">
-                            </div>
-                        {% endif %}
-
+                        <div class="config-div config-div-pref-url">
+                            <label for="config-pref-encryption">{{ translation['config-pref-encryption'] }}: </label>
+                            <input type="checkbox" name="preferences_encrypted"
+                                   id="config-pref-encryption" {{ 'checked' if config.preferences_encrypted and config.preferences_key else '' }}>
+                            <div><span class="info-text"> — {{ translation['config-pref-help'] }}</span></div>
+                            <label for="config-pref-url">{{ translation['config-pref-url'] }}: </label>
+                            <input type="text" name="pref-url" id="config-pref-url" value="{{ config.url }}?preferences={{ config.preferences }}">
+                        </div>
                     </div>
                     <div class="config-div config-buttons">
                         <input type="submit" id="config-load" value="{{ translation['load'] }}">&nbsp;
