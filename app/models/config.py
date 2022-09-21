@@ -51,7 +51,8 @@ class Config:
             'block',
             'safe',
             'nojs',
-            'anon_view'
+            'anon_view',
+            'preferences_encrypted'
         ]
 
         # Skip setting custom config if there isn't one
@@ -87,6 +88,13 @@ class Config:
 
     @property
     def preferences(self) -> str:
+        # if encryption key is not set will uncheck preferences encryption
+        if self.preferences_encrypted:
+            self.preferences_encrypted = bool(self.preferences_key)
+        
+        # add a tag for visibility if preferences token startswith 'e' it means
+        # the token is encrypted, 'u' means the token is unencrypted and can be
+        # used by other whoogle instances
         encrypted_flag = "e" if self.preferences_encrypted else 'u'
         preferences_digest = self._encode_preferences()
         return f"{encrypted_flag}{preferences_digest}"
@@ -175,13 +183,14 @@ class Config:
             if self.preferences_key != '':
                 key = self._get_fernet_key(self.preferences_key)
                 encoded_preferences = Fernet(key).encrypt(encoded_preferences)
+                encoded_preferences = brotli.compress(encoded_preferences)
 
-        return urlsafe_b64encode(
-            brotli.compress(encoded_preferences)
-        ).decode()
+        return urlsafe_b64encode(encoded_preferences).decode()
 
     def _decode_preferences(self, preferences: str) -> dict:
-        if preferences.startswith('e'): # preferences are encrypted
+        mode = preferences[0]
+        preferences = preferences[1:]
+        if mode == 'e': # preferences are encrypted
             try:
                 key = self._get_fernet_key(self.preferences_key)
 
@@ -192,7 +201,7 @@ class Config:
                 config = pickle.loads(brotli.decompress(config))
             except Exception:
                 config = {}
-        elif preferences.startswith('u'): # preferences are not encrypted
+        elif mode == 'u': # preferences are not encrypted
             config = pickle.loads(
                 brotli.decompress(urlsafe_b64decode(preferences.encode()))
             )
