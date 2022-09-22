@@ -393,6 +393,7 @@ def add_currency_card(soup: BeautifulSoup,
 def get_tabs_content(tabs: dict,
                      full_query: str,
                      search_type: str,
+                     preferences: str,
                      translation: dict) -> dict:
     """Takes the default tabs content and updates it according to the query.
 
@@ -416,6 +417,9 @@ def get_tabs_content(tabs: dict,
 
         if tab_content['tbm'] is not None:
             query = f"{query}&tbm={tab_content['tbm']}"
+        
+        if preferences:
+            query = f"{query}&preferences={preferences}"
 
         tab_content['href'] = tab_content['href'].format(query=query)
 

@@ -1,5 +1,6 @@
 attrs==19.3.0
 beautifulsoup4==4.10.0
+brotli==1.0.9
 cachelib==0.4.1
 certifi==2020.4.5.1
 cffi==1.15.0

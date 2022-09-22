@@ -14,7 +14,7 @@ RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r re
 
 FROM python:3.11.0a5-alpine
 
-RUN apk add --update --no-cache tor curl openrc
+RUN apk add --update --no-cache tor curl openrc libstdc++
 # libcurl4-openssl-dev
 
 RUN apk -U upgrade

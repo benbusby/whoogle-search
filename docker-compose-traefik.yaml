@@ -72,6 +72,8 @@ services:
       # - WHOOGLE_CONFIG_SEARCH_LANGUAGE=lang_en
       # - WHOOGLE_CONFIG_GET_ONLY=1
       # - WHOOGLE_CONFIG_COUNTRY=FR
+      # - WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED=1
+      # - WHOOGLE_CONFIG_PREFERENCES_KEY="NEEDS_TO_BE_MODIFIED"
     #env_file: # Alternatively, load variables from whoogle.env
       #- whoogle.env
     ports:

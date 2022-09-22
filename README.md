@@ -389,23 +389,25 @@ There are a few optional environment variables available for customizing a Whoog
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
 
-| Variable                       | Description                                                     |
-| ------------------------------ | --------------------------------------------------------------- |
-| WHOOGLE_CONFIG_DISABLE         | Hide config from UI and disallow changes to config by client    |
-| WHOOGLE_CONFIG_COUNTRY         | Filter results by hosting country                               |
-| WHOOGLE_CONFIG_LANGUAGE        | Set interface language                                          |
-| WHOOGLE_CONFIG_SEARCH_LANGUAGE | Set search result language                                      |
-| WHOOGLE_CONFIG_BLOCK           | Block websites from search results (use comma-separated list)   |
-| WHOOGLE_CONFIG_THEME           | Set theme mode (light, dark, or system)                         |
-| WHOOGLE_CONFIG_SAFE            | Enable safe searches                                            |
-| WHOOGLE_CONFIG_ALTS            | Use social media site alternatives (nitter, invidious, etc)     |
-| WHOOGLE_CONFIG_NEAR            | Restrict results to only those near a particular city           |
-| WHOOGLE_CONFIG_TOR             | Use Tor routing (if available)                                  |
-| WHOOGLE_CONFIG_NEW_TAB         | Always open results in new tab                                  |
-| WHOOGLE_CONFIG_VIEW_IMAGE      | Enable View Image option                                        |
-| WHOOGLE_CONFIG_GET_ONLY        | Search using GET requests only                                  |
-| WHOOGLE_CONFIG_URL             | The root url of the instance (`https://<your url>/`)            |
-| WHOOGLE_CONFIG_STYLE           | The custom CSS to use for styling (should be single line)       |
+| Variable                             | Description                                                     |
+| ------------------------------------ | --------------------------------------------------------------- |
+| WHOOGLE_CONFIG_DISABLE               | Hide config from UI and disallow changes to config by client    |
+| WHOOGLE_CONFIG_COUNTRY               | Filter results by hosting country                               |
+| WHOOGLE_CONFIG_LANGUAGE              | Set interface language                                          |
+| WHOOGLE_CONFIG_SEARCH_LANGUAGE       | Set search result language                                      |
+| WHOOGLE_CONFIG_BLOCK                 | Block websites from search results (use comma-separated list)   |
+| WHOOGLE_CONFIG_THEME                 | Set theme mode (light, dark, or system)                         |
+| WHOOGLE_CONFIG_SAFE                  | Enable safe searches                                            |
+| WHOOGLE_CONFIG_ALTS                  | Use social media site alternatives (nitter, invidious, etc)     |
+| WHOOGLE_CONFIG_NEAR                  | Restrict results to only those near a particular city           |
+| WHOOGLE_CONFIG_TOR                   | Use Tor routing (if available)                                  |
+| WHOOGLE_CONFIG_NEW_TAB               | Always open results in new tab                                  |
+| WHOOGLE_CONFIG_VIEW_IMAGE            | Enable View Image option                                        |
+| WHOOGLE_CONFIG_GET_ONLY              | Search using GET requests only                                  |
+| WHOOGLE_CONFIG_URL                   | The root url of the instance (`https://<your url>/`)            |
+| WHOOGLE_CONFIG_STYLE                 | The custom CSS to use for styling (should be single line)       |
+| WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED | Encrypt preferences token, requires preferences key             |
+| WHOOGLE_CONFIG_PREFERENCES_KEY       | Key to encrypt preferences in URL (REQUIRED to show url)        |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.

@@ -193,6 +193,9 @@ def index():
         session['error_message'] = ''
         return render_template('error.html', error_message=error_message)
 
+    # Update user config if specified in search args
+    g.user_config = g.user_config.from_params(g.request_params)
+
     return render_template('index.html',
                            has_update=app.config['HAS_UPDATE'],
                            languages=app.config['LANGUAGES'],
@@ -231,7 +234,8 @@ def opensearch():
         main_url=opensearch_url,
         request_type='' if get_only else 'method="post"',
         search_type=request.args.get('tbm'),
-        search_name=get_search_name(request.args.get('tbm'))
+        search_name=get_search_name(request.args.get('tbm')),
+        preferences=g.user_config.preferences
     ), 200, {'Content-Type': 'application/xml'}
 
 
@@ -334,6 +338,7 @@ def search():
     tabs = get_tabs_content(app.config['HEADER_TABS'],
                             search_util.full_query,
                             search_util.search_type,
+                            g.user_config.preferences,
                             translation)
 
     # Feature to display currency_card
@@ -341,6 +346,9 @@ def search():
     if conversion:
         html_soup = bsoup(str(response), 'html.parser')
         response = add_currency_card(html_soup, conversion)
+
+    preferences = g.user_config.preferences
+    home_url = f"home?preferences={preferences}" if preferences else "home"
 
     return render_template(
         'display.html',
@@ -365,6 +373,7 @@ def search():
         version_number=app.config['VERSION_NUMBER'],
         search_header=render_template(
             'header.html',
+            home_url=home_url,
             config=g.user_config,
             translation=translation,
             languages=app.config['LANGUAGES'],
