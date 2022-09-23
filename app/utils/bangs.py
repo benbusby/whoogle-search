@@ -53,24 +53,29 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
              wasn't a match or didn't contain a bang operator
 
     """
+    # if ! no in request simply return (speed up processing)
+    if '!' not in query:
+        return ''
+
+    split_query = query.strip().split(' ')
+
     # Ensure bang search is case insensitive
-    query = query.lower()
-    split_query = query.split(' ')
-    for operator in bangs_dict.keys():
-        if operator not in split_query \
-                and operator[1:] + operator[0] not in split_query:
-            continue
+    # Assumes query starts with bang
+    operator = split_query[0].lower()
 
-        bang_query = query.replace(
-            operator if operator in split_query else operator[1:] +
-            operator[0], ''
-        ).strip()
+    # rebuild the query string
+    bang_query = ' '.join(split_query[1:]).strip()
+    print("split_query", bang_query)
 
-        bang_url = bangs_dict[operator]['url']
+    # Check if operator is a key in bangs and get bang if exists
+    bang = bangs_dict.get(operator, None)
+    if bang:
+        bang_url = bang['url']
 
         if bang_query:
             return bang_url.replace('{}', bang_query, 1)
         else:
             parsed_url = urlparse.urlparse(bang_url)
+            print("no query", f'{parsed_url.scheme}://{parsed_url.netloc}')
             return f'{parsed_url.scheme}://{parsed_url.netloc}'
     return ''
