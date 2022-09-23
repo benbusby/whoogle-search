@@ -53,9 +53,6 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
              wasn't a match or didn't contain a bang operator
 
     """
-    # if ! no in request simply return (speed up processing)
-    if '!' not in query:
-        return ''
 
     split_query = query.strip().split(' ')
 
@@ -63,9 +60,12 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
     # Assumes query starts with bang
     operator = split_query[0].lower()
 
+    #if ! not in operator simply return (speed up processing)
+    if '!' not in operator:
+        return ''
+
     # rebuild the query string
     bang_query = ' '.join(split_query[1:]).strip()
-    print("split_query", bang_query)
 
     # Check if operator is a key in bangs and get bang if exists
     bang = bangs_dict.get(operator, None)
@@ -76,6 +76,5 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
             return bang_url.replace('{}', bang_query, 1)
         else:
             parsed_url = urlparse.urlparse(bang_url)
-            print("no query", f'{parsed_url.scheme}://{parsed_url.netloc}')
             return f'{parsed_url.scheme}://{parsed_url.netloc}'
     return ''
