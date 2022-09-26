@@ -54,27 +54,37 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
 
     """
 
-    split_query = query.strip().split(' ')
-
-    # Ensure bang search is case insensitive
-    # Assumes query starts with bang
-    operator = split_query[0].lower()
-
-    #if ! not in operator simply return (speed up processing)
-    if '!' not in operator:
+    #if ! not in query simply return (speed up processing)
+    if '!' not in query:
         return ''
 
-    # rebuild the query string
-    bang_query = ' '.join(split_query[1:]).strip()
+    split_query = query.strip().split(' ')
 
-    # Check if operator is a key in bangs and get bang if exists
-    bang = bangs_dict.get(operator, None)
-    if bang:
-        bang_url = bang['url']
+    # look for operator in query if one is found, list operator should be of
+    # length 1, operator should not be case-sensitive here to remove it later
+    operator = [
+        word
+        for word in split_query
+        if word.lower() in bangs_dict
+    ]
+    if len(operator) == 1:
+        # get operator
+        operator = operator[0]
 
-        if bang_query:
-            return bang_url.replace('{}', bang_query, 1)
-        else:
-            parsed_url = urlparse.urlparse(bang_url)
-            return f'{parsed_url.scheme}://{parsed_url.netloc}'
+        # removes operator from query
+        split_query.remove(operator)
+
+        # rebuild the query string
+        bang_query = ' '.join(split_query).strip()
+
+        # Check if operator is a key in bangs and get bang if exists
+        bang = bangs_dict.get(operator.lower(), None)
+        if bang:
+            bang_url = bang['url']
+
+            if bang_query:
+                return bang_url.replace('{}', bang_query, 1)
+            else:
+                parsed_url = urlparse.urlparse(bang_url)
+                return f'{parsed_url.scheme}://{parsed_url.netloc}'
     return ''
