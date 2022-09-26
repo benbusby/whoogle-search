@@ -37,11 +37,6 @@ def test_ddg_bang(client):
     assert rv._status_code == 302
     assert rv.headers.get('Location').startswith('https://www.reddit.com')
 
-    # Move '!' to end of the bang
-    rv = client.get(f'/{Endpoint.search}?q=gitlab%20w!')
-    assert rv._status_code == 302
-    assert rv.headers.get('Location').startswith('https://en.wikipedia.org')
-
     # Ensure bang is case insensitive
     rv = client.get(f'/{Endpoint.search}?q=!GH%20whoogle')
     assert rv._status_code == 302

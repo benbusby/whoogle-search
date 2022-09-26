@@ -1,0 +1,14 @@
+{
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": false,
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": false,
+        },
+    },
+    "editor.rulers": [
+        79,
+        88,
+        120
+    ],
+}
