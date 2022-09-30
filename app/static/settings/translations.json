@@ -908,7 +908,7 @@
         "config-tor": "ใช้ Tor",
         "config-get-only": "รับคำขอเท่านั้น",
         "config-url": "URL หลัก",
-        "config-pref-url": "URL ค่ากำหนด",
+        "config-pref-url": "URL การตั้งค่า",
         "config-pref-encryption": "เข้ารหัสการตั้งค่า",
         "config-pref-help": "จำเป็นต้องมี WHOOGLE_CONFIG_PREFERENCES_KEY ไม่เช่นนั้นจะถูกละเว้นไป",
         "config-css": "กำหนด CSS เอง",
