@@ -90,7 +90,7 @@ Provides:
 - A HTTPS url (https://\<your app name\>.herokuapp.com)
 
 Notes:
-- Requires a **paid** Heroku Account.
+- Requires a **PAID** Heroku Account.
 - Sometimes has issues with auto-redirecting to `https`. Make sure to navigate to the `https` version of your app before adding as a default search engine.
 
 ### B) [Repl.it](https://repl.it)
