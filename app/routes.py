@@ -326,7 +326,7 @@ def search():
             farside='https://farside.link',
             config=g.user_config,
             query=urlparse.unquote(query),
-            params=g.user_config.to_params()), 503
+            params=g.user_config.to_params(keys=['preferences'])), 503
     response = bold_search_terms(response, query)
 
     # Feature to display IP address
