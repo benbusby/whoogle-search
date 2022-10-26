@@ -31,7 +31,6 @@ else
     else
         python3 -um app \
           --host "${ADDRESS:-0.0.0.0}" \
-          --port "${PORT:-"${EXPOSE_PORT:-5000}"}" \
-          --debug
+          --port "${PORT:-"${EXPOSE_PORT:-5000}"}"
     fi
 fi
