@@ -158,14 +158,17 @@ class Config:
             self[param_key] = param_val
         return self
 
-    def to_params(self) -> str:
+    def to_params(self, keys: list = []) -> str:
         """Generates a set of safe params for using in Whoogle URLs
 
         Returns:
             str -- a set of URL parameters
         """
+        if not len(keys):
+            keys = self.safe_keys
+
         param_str = ''
-        for safe_key in self.safe_keys:
+        for safe_key in keys:
             if not self[safe_key]:
                 continue
             param_str = param_str + f'&{safe_key}={self[safe_key]}'
