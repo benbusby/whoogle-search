@@ -63,7 +63,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         if len(element) == len(target_word):
             return
 
-        if not re.match('.*[a-zA-Z0-9].*', target_word) or (
+        if re.match('.*[@_!#$%^&*()<>?/\|}{~:].*', target_word) or (
                 element.parent and element.parent.name == 'style'):
             return
 
@@ -76,7 +76,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
 
     # Split all words out of query, grouping the ones wrapped in quotes
     for word in re.split(r'\s+(?=[^"]*(?:"[^"]*"[^"]*)*$)', query):
-        word = re.sub(r'[^A-Za-z0-9 ]+', '', word)
+        word = re.sub(r'[@_!#$%^&*()<>?/\|}{~:]+', '', word)
         target = response.find_all(
             text=re.compile(r'' + re.escape(word), re.I))
         for nav_str in target:
