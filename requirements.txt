@@ -17,13 +17,12 @@ MarkupSafe==1.1.1
 more-itertools==8.3.0
 packaging==20.4
 pluggy==0.13.1
-py==1.10.0
 pycodestyle==2.6.0
 pycparser==2.21
 pyOpenSSL==19.1.0
 pyparsing==2.4.7
 PySocks==1.7.1
-pytest==6.2.5
+pytest==7.2.0
 python-dateutil==2.8.1
 requests==2.25.1
 soupsieve==1.9.5
