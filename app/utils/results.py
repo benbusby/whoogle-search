@@ -63,6 +63,9 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         if len(element) == len(target_word):
             return
 
+        # Ensure target word is escaped for regex
+        target_word = re.escape(target_word)
+
         if re.match('.*[@_!#$%^&*()<>?/\|}{~:].*', target_word) or (
                 element.parent and element.parent.name == 'style'):
             return
@@ -417,7 +420,7 @@ def get_tabs_content(tabs: dict,
 
         if tab_content['tbm'] is not None:
             query = f"{query}&tbm={tab_content['tbm']}"
-        
+
         if preferences:
             query = f"{query}&preferences={preferences}"
 
