@@ -161,6 +161,9 @@ class Config:
     def to_params(self, keys: list = []) -> str:
         """Generates a set of safe params for using in Whoogle URLs
 
+        Args:
+            keys (list) -- optional list of keys of URL parameters
+
         Returns:
             str -- a set of URL parameters
         """
