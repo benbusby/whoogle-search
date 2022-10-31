@@ -86,12 +86,11 @@ There are a few different ways to begin using the app, depending on your prefere
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search/tree/main)
 
 Provides:
-- Free deployment of app
-- Free HTTPS url (https://\<your app name\>.herokuapp.com)
-- Downtime after periods of inactivity \([solution](https://github.com/benbusby/whoogle-search#prevent-downtime-heroku-only)\)
+- Easy Deployment of App
+- A HTTPS url (https://\<your app name\>.herokuapp.com)
 
 Notes:
-- Requires a (free) Heroku account
+- Requires a **PAID** Heroku Account.
 - Sometimes has issues with auto-redirecting to `https`. Make sure to navigate to the `https` version of your app before adding as a default search engine.
 
 ### B) [Repl.it](https://repl.it)
@@ -595,7 +594,6 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://whoogle.dcs0.hu](https://whoogle.dcs0.hu) | 🇭🇺 HU | Multi-choice | |
 | [https://whoogle.esmailelbob.xyz](https://whoogle.esmailelbob.xyz) | 🇨🇦 CA | Multi-choice | |
 | [https://gowogle.voring.me](https://gowogle.voring.me) | 🇺🇸 US | Multi-choice | |
-| [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
 | [https://whoogle.privacydev.net](https://whoogle.privacydev.net) | 🇺🇸 US | Multi-choice | |
 | [https://wg.vern.cc](https://wg.vern.cc) | 🇺🇸 US | English |  |
 

@@ -188,6 +188,8 @@ class Request:
             config.lang_search if config.lang_search else ''
         )
 
+        self.country = config.country if config.country else ''
+
         # For setting Accept-language Header
         self.lang_interface = ''
         if config.accept_language:
@@ -244,7 +246,11 @@ class Request:
         """
         ac_query = dict(q=query)
         if self.language:
-            ac_query['hl'] = self.language
+            ac_query['lr'] = self.language
+        if self.country:
+            ac_query['gl'] = self.country
+        if self.lang_interface:
+            ac_query['hl'] = self.lang_interface
 
         response = self.send(base_url=AUTOCOMPLETE_URL,
                              query=urlparse.urlencode(ac_query)).text
