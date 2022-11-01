@@ -595,7 +595,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://gowogle.voring.me](https://gowogle.voring.me) | 🇺🇸 US | Multi-choice | |
 | [https://whoogle.privacydev.net](https://whoogle.privacydev.net) | 🇺🇸 US | Multi-choice | |
 | [https://wg.vern.cc](https://wg.vern.cc) | 🇺🇸 US | English |  |
-
+| [https://www.indexia.gq](https://www.indexia.gq) | 🇨🇦 CA | Multi-choice | ✅ |
 
 
 * A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare.com). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
