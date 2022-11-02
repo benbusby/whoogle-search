@@ -48,6 +48,7 @@
   {"name": "Turkish (Türk)", "value": "lang_tr"},
   {"name": "Ukrainian (Український)", "value": "lang_uk"},
   {"name": "Vietnamese (Tiếng Việt)", "value": "lang_vi"},
+  {"name": "Welsh (Cymraeg)", "value": "lang_cy"},
   {"name": "Xhosa (isiXhosa)", "value": "lang_xh"},
   {"name": "Zulu (isiZulu)", "value": "lang_zu"}
 ]
