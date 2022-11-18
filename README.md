@@ -1,4 +1,4 @@
-![Whoogle Search](docs/banner.png)
+![Phantom Search](docs/banner.png)
 
 [![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
