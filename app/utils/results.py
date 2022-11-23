@@ -34,7 +34,8 @@ SITE_ALTS = {
     'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'farside.link/bibliogram/u'),
     'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'farside.link/libreddit'),
     **dict.fromkeys([
-        'medium.com',
+        '.medium.com',
+        '//medium.com',
         'levelup.gitconnected.com'
     ], os.getenv('WHOOGLE_ALT_MD', 'farside.link/scribe')),
     'imgur.com': os.getenv('WHOOGLE_ALT_IMG', 'farside.link/rimgo'),
@@ -73,7 +74,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         element.replace_with(BeautifulSoup(
             re.sub(fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b',
                    r'<b>\1</b>',
-                   html.escape(element),
+                   element,
                    flags=re.I), 'html.parser')
         )
 
@@ -135,6 +136,12 @@ def get_site_alt(link: str) -> str:
     # subdomains as well
     parsed_link = urlparse.urlparse(link)
     hostname = parsed_link.hostname
+
+    # The full scheme + hostname is used when comparing against the list of
+    # available alternative services, due to how Medium links are constructed.
+    # (i.e. for medium.com: "https://something.medium.com" should match,
+    # "https://medium.com/..." should match, but "philomedium.com" should not)
+    hostcomp = f'{parsed_link.scheme}://{hostname}'
 
     for site_key in SITE_ALTS.keys():
         if not hostname or site_key not in hostname or not SITE_ALTS[site_key]:
