@@ -317,7 +317,7 @@ def search():
     translation = app.config['TRANSLATIONS'][localization_lang]
     translate_to = localization_lang.replace('lang_', '')
 
-    # removing st-card to only use local time selector
+    # removing st-card to only use whoogle time selector
     soup = bsoup(response, "html.parser");
     for x in soup.find_all(attrs={"id": "st-card"}):
         x.replace_with("")

@@ -91,8 +91,8 @@ def gen_query(query, args, config) -> str:
     if ':past' in query and 'tbs' not in args:
         time_range = str.strip(query.split(':past', 1)[-1])
         param_dict['tbs'] = '&tbs=' + ('qdr:' + str.lower(time_range[0]))
-    elif 'tbs' in args:
-        result_tbs = args.get('tbs')
+    elif 'tbs' in args or 'tbs' in config:
+        result_tbs = args.get('tbs') if 'tbs' in args else config['tbs']
         param_dict['tbs'] = '&tbs=' + result_tbs
 
         # Occasionally the 'tbs' param provided by google also contains a
