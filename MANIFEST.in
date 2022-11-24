@@ -2,4 +2,5 @@ graft app/static
 graft app/templates
 graft app/misc
 include requirements.txt
+recursive-include test
 global-exclude *.pyc
