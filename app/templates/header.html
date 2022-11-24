@@ -135,6 +135,20 @@
                 </option>
             {% endfor %}
         </select>
+        <label for="config-time-period">Time period: </label>
+        <select name="time-period" id="result-time-period">
+            {% for time_period in time_periods %}
+                <option value="{{ time_period.value }}"
+                        {% if (
+                            config.tbs != '' and config.tbs in time_period.value
+                        )
+                        %}
+                        selected
+                        {% endif %}>
+                {{ time_period.name }}
+                </option>
+            {% endfor %}
+        </select>
     </div>
 </div>
 
