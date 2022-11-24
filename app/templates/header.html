@@ -89,6 +89,7 @@
                                 dir="auto">
                         <input name="tbm" value="{{ search_type }}" style="display: none">
                         <input name="country" value="{{ config.country }}" style="display: none;">
+                        <input name="tbs" value="{{ config.tbs }}" style="display: none;">
                         <input type="submit" style="display: none;">
                         <div class="sc"></div>
                     </div>
@@ -136,12 +137,13 @@
             {% endfor %}
         </select>
         <label for="config-time-period">Time period: </label>
-        <select name="time-period" id="result-time-period">
+        <select name="tbs" id="result-time-period">
             {% for time_period in time_periods %}
                 <option value="{{ time_period.value }}"
                         {% if (
                             config.tbs != '' and config.tbs in time_period.value
-                        )
+                        ) or (
+                            config.tbs == '' and time_period.value == '')
                         %}
                         selected
                         {% endif %}>

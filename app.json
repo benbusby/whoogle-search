@@ -110,6 +110,11 @@
         "value": "",
         "required": false
     },
+    "WHOOGLE_CONFIG_TIME_PERIOD" : {
+        "description": "[CONFIG] The time period to use for restricting search results",
+        "value": "",
+        "required": false
+    },
     "WHOOGLE_CONFIG_LANGUAGE": {
         "description": "[CONFIG] The language to use for the interface (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
         "value": "",
