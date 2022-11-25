@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.utils.misc import read_config_bool
+from app.version import __version__
 
 app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + '/static')
@@ -36,7 +37,7 @@ if read_config_bool('HTTPS_ONLY'):
     app.config['SESSION_COOKIE_NAME'] = '__Secure-session'
     app.config['SESSION_COOKIE_SECURE'] = True
 
-app.config['VERSION_NUMBER'] = '0.8.0'
+app.config['VERSION_NUMBER'] = __version__
 app.config['APP_ROOT'] = os.getenv(
     'APP_ROOT',
     os.path.dirname(os.path.abspath(__file__)))
