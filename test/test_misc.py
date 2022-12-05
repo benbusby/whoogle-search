@@ -2,7 +2,7 @@ from cryptography.fernet import Fernet
 
 from app import app
 from app.models.endpoint import Endpoint
-from app.utils.session import generate_user_key, valid_user_session
+from app.utils.session import generate_key, valid_user_session
 
 
 JAPAN_PREFS = 'uG-gGIJwHdqxl6DrS3mnu_511HlQcRpxYlG03Xs-' \
@@ -20,9 +20,9 @@ JAPAN_PREFS = 'uG-gGIJwHdqxl6DrS3mnu_511HlQcRpxYlG03Xs-' \
 
 
 def test_generate_user_keys():
-    key = generate_user_key()
+    key = generate_key()
     assert Fernet(key)
-    assert generate_user_key() != key
+    assert generate_key() != key
 
 
 def test_valid_session(client):

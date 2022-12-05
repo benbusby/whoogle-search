@@ -22,7 +22,7 @@ from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
 from app.utils.results import add_ip_card, bold_search_terms,\
     add_currency_card, check_currency, get_tabs_content
 from app.utils.search import Search, needs_https, has_captcha
-from app.utils.session import generate_user_key, valid_user_session
+from app.utils.session import valid_user_session
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for, g
@@ -67,11 +67,16 @@ def auth_required(f):
 def session_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if (valid_user_session(session)):
-            g.session_key = session['key']
-        else:
+        if not valid_user_session(session):
             session.pop('_permanent', None)
-            g.session_key = app.default_key
+
+        # Note: This sets all requests to use the encryption key determined per
+        # instance on app init. This can be updated in the future to use a key
+        # that is unique for their session (session['key']) but this should use
+        # a config setting to enable the session based key. Otherwise there can
+        # be problems with searches performed by users with cookies blocked if
+        # a session based key is always used.
+        g.session_key = app.enc_key
 
         # Clear out old sessions
         invalid_sessions = []
@@ -130,13 +135,16 @@ def before_request_func():
         if os.path.exists(app.config['DEFAULT_CONFIG']) else {}
 
     # Generate session values for user if unavailable
-    if (not valid_user_session(session)):
+    if not valid_user_session(session):
         session['config'] = default_config
         session['uuid'] = str(uuid.uuid4())
-        session['key'] = generate_user_key()
+        session['key'] = app.enc_key
 
     # Establish config values per user session
     g.user_config = Config(**session['config'])
+
+    # Update user config if specified in search args
+    g.user_config = g.user_config.from_params(g.request_params)
 
     if not g.user_config.url:
         g.user_config.url = get_request_url(request.url_root)
@@ -192,9 +200,6 @@ def index():
         error_message = session['error_message']
         session['error_message'] = ''
         return render_template('error.html', error_message=error_message)
-
-    # Update user config if specified in search args
-    g.user_config = g.user_config.from_params(g.request_params)
 
     return render_template('index.html',
                            has_update=app.config['HAS_UPDATE'],
@@ -283,9 +288,6 @@ def autocomplete():
 @session_required
 @auth_required
 def search():
-    # Update user config if specified in search args
-    g.user_config = g.user_config.from_params(g.request_params)
-
     search_util = Search(request, g.user_config, g.session_key)
     query = search_util.new_search_query()
 
