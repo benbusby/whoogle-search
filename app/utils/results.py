@@ -34,8 +34,7 @@ SITE_ALTS = {
     'instagram.com': os.getenv('WHOOGLE_ALT_IG', 'farside.link/bibliogram/u'),
     'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'farside.link/libreddit'),
     **dict.fromkeys([
-        '.medium.com',
-        '//medium.com',
+        'medium.com',
         'levelup.gitconnected.com'
     ], os.getenv('WHOOGLE_ALT_MD', 'farside.link/scribe')),
     'imgur.com': os.getenv('WHOOGLE_ALT_IMG', 'farside.link/rimgo'),
@@ -144,7 +143,8 @@ def get_site_alt(link: str) -> str:
     hostcomp = f'{parsed_link.scheme}://{hostname}'
 
     for site_key in SITE_ALTS.keys():
-        if not hostname or site_key not in hostname or not SITE_ALTS[site_key]:
+        site_alt = f'{parsed_link.scheme}://{site_key}'
+        if not hostname or site_alt not in hostcomp or not SITE_ALTS[site_key]:
             continue
 
         # Wikipedia -> Wikiless replacements require the subdomain (if it's
