@@ -134,7 +134,12 @@ def get_site_alt(link: str) -> str:
     # Need to replace full hostname with alternative to encapsulate
     # subdomains as well
     parsed_link = urlparse.urlparse(link)
-    hostname = parsed_link.hostname
+
+    # Extract subdomain separately from the domain+tld. The subdomain
+    # is used for wikiless translations.
+    split_host = parsed_link.netloc.split('.')
+    subdomain = split_host[0] if len(split_host) > 2 else ''
+    hostname = '.'.join(split_host[-2:])
 
     # The full scheme + hostname is used when comparing against the list of
     # available alternative services, due to how Medium links are constructed.
@@ -151,10 +156,9 @@ def get_site_alt(link: str) -> str:
         # a 2-char language code) to be passed as a URL param to Wikiless
         # in order to preserve the language setting.
         params = ''
-        if 'wikipedia' in hostname:
-            subdomain = hostname.split('.')[0]
-            if len(subdomain) == 2:
-                params = f'?lang={subdomain}'
+        if 'wikipedia' in hostname and len(subdomain) == 2:
+            hostname = f'{subdomain}.{hostname}'
+            params = f'?lang={subdomain}'
 
         parsed_alt = urlparse.urlparse(SITE_ALTS[site_key])
         link = link.replace(hostname, SITE_ALTS[site_key]) + params
