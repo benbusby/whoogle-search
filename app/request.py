@@ -209,19 +209,13 @@ class Request:
             proxy_pass = os.environ.get('WHOOGLE_PROXY_PASS', '')
             auth_str = ''
             if proxy_user:
-                auth_str = proxy_user + ':' + proxy_pass
-            self.proxies = {
-                'https': proxy_type + '://' +
-                ((auth_str + '@') if auth_str else '') + proxy_path,
-            }
+                auth_str = f'{proxy_user}:{proxy_pass}@'
 
-            # Need to ensure both HTTP and HTTPS are in the proxy dict,
-            # regardless of underlying protocol
-            if proxy_type == 'https':
-                self.proxies['http'] = self.proxies['https'].replace(
-                    'https', 'http')
-            else:
-                self.proxies['http'] = self.proxies['https']
+            proxy_str = f'{proxy_type}://{auth_str}{proxy_path}'
+            self.proxies = {
+                'https': proxy_str,
+                'http': proxy_str
+            }
         else:
             self.proxies = {
                 'http': 'socks5://127.0.0.1:9050',
