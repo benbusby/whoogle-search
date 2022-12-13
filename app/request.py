@@ -1,5 +1,6 @@
 from app.models.config import Config
 from app.utils.misc import read_config_bool
+from app.utils import captcha
 from datetime import datetime
 from defusedxml import ElementTree as ET
 import random
@@ -330,6 +331,11 @@ class Request:
             proxies=self.proxies,
             headers=headers,
             cookies=cookies)
+        if response.status_code == "429":
+            # google's CAPTCHA
+            # we have to handle it here because we filter out scripts from the page source
+            # later
+            captcha.solve(response.text)
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:

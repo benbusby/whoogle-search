@@ -318,17 +318,6 @@ def search():
     translation = app.config['TRANSLATIONS'][localization_lang]
     translate_to = localization_lang.replace('lang_', '')
 
-    # Return 503 if temporarily blocked by captcha
-    if has_captcha(str(response)):
-        return render_template(
-            'error.html',
-            blocked=True,
-            error_message=translation['ratelimit'],
-            translation=translation,
-            farside='https://farside.link',
-            config=g.user_config,
-            query=urlparse.unquote(query),
-            params=g.user_config.to_params(keys=['preferences'])), 503
     response = bold_search_terms(response, query)
 
     # Feature to display IP address
