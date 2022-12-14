@@ -331,11 +331,23 @@ class Request:
             proxies=self.proxies,
             headers=headers,
             cookies=cookies)
-        if response.status_code == "429":
+        if response.status_code == 429:
             # google's CAPTCHA
             # we have to handle it here because we filter out scripts from the page source
             # later
-            captcha.solve(response.text)
+            print("WARN: CAPTCHA detected")
+            solved = captcha.solve(response, self.proxies, url=self.search_url + query)
+            if solved:
+                print("INFO: CAPTCHA solved. Retrying...")
+                response = requests.get(
+                    (base_url or self.search_url) + query,
+                    proxies=self.proxies,
+                    headers=headers,
+                    cookies=cookies
+                )
+                if response.status_code == 429:
+                    print("ERROR: It seems our IP is still blacklisted")
+
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:

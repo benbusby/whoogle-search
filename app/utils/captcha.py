@@ -3,6 +3,8 @@ Itegration with third party CAPTCHA solving services
 """
 # only deathbycaptcha atm but whatever
 import os
+import json
+import requests
 
 from bs4 import BeautifulSoup as bs
 
@@ -10,7 +12,6 @@ try:
     import deathbycaptcha
 except ImportError:
     deathbycaptcha = None
-
 
 class UnableToSolve(Exception):
     """
@@ -25,7 +26,6 @@ def parse_params(response):
     params = {
         "googlekey": "",
         "data-s": "",
-        "pageurl": "",
     }
     soup = bs(response.text)
 
@@ -37,27 +37,53 @@ def parse_params(response):
             "Couldn't find the element with the CAPTCHA params"
             "Are you sure this page contains Google's reCAPTCHA v2 with callback?"
         )
+    hidden_q = soup.find(type="hidden")
+    params["q"] = hidden_q.attrs["value"]
     params["googlekey"] = recaptcha.attrs["data-sitekey"]
     params["data-s"] = recaptcha.attrs["data-s"]
-
-    params["pageurl"] = response.url
 
     return params
 
 
-def solve(response):
+def solve(response, proxies, url):
     """
     Get a response with a reCAPTCHA v2 and solve it using a third-party service
     """
     if deathbycaptcha is None:
-        raise ImportError("The deathbycaptcha client is not installed")
+        print("WARN: The deathbycaptcha client is not installed")
+        return False
 
     client = deathbycaptcha.HttpClient(
         os.environ.get("DBC_USER", "username"), os.environ.get("DBC_PASS", "password")
     )
 
     params = parse_params(response)
+    params["pageurl"] = url
+    params["proxy"] = proxies.get("https", None)
+    params["proxytype"] = "HTTP"
 
-    token = client.decode(type=4, token_params=params)
-    if not token or token == "?":
-        raise UnableToSolve("Deathbycaptcha was unable to solve the captcha")
+    q = params.pop("q")
+
+    token = ""
+    try:
+        token = client.decode(type=4, token_params=json.dumps(params))
+    except Exception as exc:
+        print(
+            "ERROR: Deathbycaptcha was unable to solve the captcha. Original exception:", exc
+        )
+        return False
+
+    if not token or token.get("is_correct", "false") == "false":
+        print("ERROR: Deathbycaptcha was unable to solve the captcha")
+        return False
+    text = token.get("text", None)
+    if text:
+        form_params = {
+            "q": q,
+            "continue": url,
+            "g-recaptcha-response": text,
+        }
+        response = requests.post("https://www.google.com/sorry/index", data=form_params, proxies=proxies)
+        print(response, form_params, response.text)
+        return True
+    return False
