@@ -109,7 +109,7 @@
                             </select>
                         </div>
                         <div class="config-div">
-                            <label for="config-time-period">Time period: </label>
+                            <label for="config-time-period">{{ translation['config-time-period'] }}</label>
                             <select name="tbs" id="config-time-period">
                                 {% for time_period in time_periods %}
                                     <option value="{{ time_period.value }}"
@@ -120,7 +120,7 @@
                                             %}
                                             selected
                                             {% endif %}>
-                                    {{ time_period.name }}
+                                    {{ translation[time_period.value] }}
                                     </option>
                                 {% endfor %}
                             </select>
