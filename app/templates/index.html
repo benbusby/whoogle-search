@@ -108,6 +108,23 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        <div class="config-div">
+                            <label for="config-time-period">{{ translation['config-time-period'] }}</label>
+                            <select name="tbs" id="config-time-period">
+                                {% for time_period in time_periods %}
+                                    <option value="{{ time_period.value }}"
+                                            {% if (
+                                                config.tbs != '' and config.tbs in time_period.value
+                                            ) or (
+                                                config.tbs == '' and time_period.value == '')
+                                            %}
+                                            selected
+                                            {% endif %}>
+                                    {{ translation[time_period.value] }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <div class="config-div config-div-lang">
                             <label for="config-lang-interface">{{ translation['config-lang'] }}: </label>
                             <select name="lang_interface" id="config-lang-interface">

@@ -205,6 +205,7 @@ def index():
                            has_update=app.config['HAS_UPDATE'],
                            languages=app.config['LANGUAGES'],
                            countries=app.config['COUNTRIES'],
+                           time_periods=app.config['TIME_PERIODS'],
                            themes=app.config['THEMES'],
                            autocomplete_enabled=autocomplete_enabled,
                            translation=app.config['TRANSLATIONS'][
@@ -318,6 +319,12 @@ def search():
     translation = app.config['TRANSLATIONS'][localization_lang]
     translate_to = localization_lang.replace('lang_', '')
 
+    # removing st-card to only use whoogle time selector
+    soup = bsoup(response, "html.parser");
+    for x in soup.find_all(attrs={"id": "st-card"}):
+        x.replace_with("")
+    response = str(soup)
+
     # Return 503 if temporarily blocked by captcha
     if has_captcha(str(response)):
         return render_template(
@@ -380,6 +387,7 @@ def search():
             translation=translation,
             languages=app.config['LANGUAGES'],
             countries=app.config['COUNTRIES'],
+            time_periods=app.config['TIME_PERIODS'],
             logo=render_template('logo.html', dark=g.user_config.dark),
             query=urlparse.unquote(query),
             search_type=search_util.search_type,

@@ -1,5 +1,6 @@
 {
     "lang_en": {
+        "": "--",
         "search": "Search",
         "config": "Configuration",
         "config-country": "Country",
@@ -30,6 +31,7 @@
         "config-pref-encryption": "Encrypt Preferences",
         "config-pref-help": "Requires WHOOGLE_CONFIG_PREFERENCES_KEY, otherwise this will be ignored.",
         "config-css": "Custom CSS",
+        "config-time-period": "Time Period",
         "load": "Load",
         "apply": "Apply",
         "save-as": "Save As...",
@@ -46,7 +48,12 @@
         "videos": "Videos",
         "news": "News",
         "books": "Books",
-        "anon-view": "Anonymous View"
+        "anon-view": "Anonymous View",
+        "qdr:h": "Past hour",
+        "qdr:d": "Past 24 hours",
+        "qdr:w": "Past week",
+        "qdr:m": "Past month",
+        "qdr:y": "Past year"
     },
     "lang_nl": {
         "search": "Zoeken",
@@ -95,7 +102,14 @@
         "videos": "Videos",
         "news": "Nieuws",
         "books": "Boeken",
-        "anon-view": "Anonieme Weergave"
+        "anon-view": "Anonieme Weergave",
+        "": "--",
+        "qdr:h": "Afgelopen uur",
+        "qdr:d": "Afgelopen 24 uur",
+        "qdr:w": "Vorige week",
+        "qdr:m": "Afgelopen maand",
+        "qdr:y": "Afgelopen jaar",
+        "config-time-period": "Tijdsperiode"
     },
     "lang_de": {
         "search": "Suchen",
@@ -144,7 +158,14 @@
         "videos": "Videos",
         "news": "Nachrichten",
         "books": "Bücher",
-        "anon-view": "Anonyme Ansicht"
+        "anon-view": "Anonyme Ansicht",
+        "": "--",
+        "qdr:h": "Letzte Stunde",
+        "qdr:d": "Vergangene 24 Stunden",
+        "qdr:w": "Letzte Woche",
+        "qdr:m": "Letzten Monat",
+        "qdr:y": "Vergangenes Jahr",
+        "config-time-period": "Zeitraum"
     },
     "lang_es": {
         "search": "Buscar",
@@ -193,7 +214,14 @@
         "videos": "Vídeos",
         "news": "Noticias",
         "books": "Libros",
-        "anon-view": "Vista Anónima"
+        "anon-view": "Vista Anónima",
+        "": "--",
+        "qdr:h": "Hora pasada",
+        "qdr:d": "últimas 24 horas",
+        "qdr:w": "Semana pasada",
+        "qdr:m": "El mes pasado",
+        "qdr:y": "Año pasado",
+        "config-time-period": "Periodo de tiempo"
     },
     "lang_it": {
         "search": "Cerca",
@@ -242,7 +270,14 @@
         "videos": "Video",
         "news": "Notizie",
         "books": "Libri",
-        "anon-view": "Vista Anonima"
+        "anon-view": "Vista Anonima",
+        "": "--",
+        "qdr:h": "Ultima ora",
+        "qdr:d": "Ultime 24 ore",
+        "qdr:w": "Settimana scorsa",
+        "qdr:m": "Mese scorso",
+        "qdr:y": "L'anno scorso",
+        "config-time-period": "Periodo di tempo"
     },
     "lang_pt": {
         "search": "Pesquisar",
@@ -291,7 +326,14 @@
         "videos": "Vídeos",
         "news": "Notícias",
         "books": "Livros",
-        "anon-view": "Visualização Anônima"
+        "anon-view": "Visualização Anônima",
+        "": "--",
+        "qdr:h": "Hora passada",
+        "qdr:d": "últimas 24 horas",
+        "qdr:w": "Semana passada",
+        "qdr:m": "Mês passado",
+        "qdr:y": "Ano passado",
+        "config-time-period": "Período de tempo"
     },
     "lang_ru": {
         "search": "Поиск",
@@ -340,7 +382,14 @@
         "videos": "Видео",
         "news": "Новости",
         "books": "Книги",
-        "anon-view": "Анонимный просмотр"
+        "anon-view": "Анонимный просмотр",
+        "": "--",
+        "qdr:h": "Прошедший час",
+        "qdr:d": "Последние 24 часа",
+        "qdr:w": "На прошлой неделе",
+        "qdr:m": "Прошлый месяц",
+        "qdr:y": "Прошлый год",
+        "config-time-period": "Временной период"
     },
     "lang_zh-CN": {
         "search": "搜索",
@@ -389,7 +438,14 @@
         "videos": "视频",
         "news": "新闻",
         "books": "书籍",
-        "anon-view": "匿名视图"
+        "anon-view": "匿名视图",
+        "": "--",
+        "qdr:h": "过去一小时",
+        "qdr:d": "过去 24 小时",
+        "qdr:w": "上周",
+        "qdr:m": "过去一个月",
+        "qdr:y": "过去一年",
+        "config-time-period": "时间段"
     },
     "lang_si": {
         "search": "සොයන්න",
@@ -438,7 +494,14 @@
         "videos": "වීඩියෝ",
         "news": "අනුරූප",
         "books": "පොත්",
-        "anon-view": "නිර්නාමික දසුන"
+        "anon-view": "නිර්නාමික දසුන",
+        "": "--",
+        "qdr:h": "පසුගිය පැය",
+        "qdr:d": "පසුගිය පැය 24",
+        "qdr:w": "පසුගිය සතිය",
+        "qdr:m": "පසුගිය මාසය",
+        "qdr:y": "පසුගිය වසර",
+        "config-time-period": "කාල සීමාව"
     },
     "lang_fr": {
         "search": "Chercher",
@@ -487,7 +550,14 @@
         "videos": "Vidéos",
         "news": "Actualités",
         "books": "Livres",
-        "anon-view": "Vue anonyme"
+        "anon-view": "Vue anonyme",
+        "": "--",
+        "qdr:h": "Heure passée",
+        "qdr:d": "Dernières 24 heures",
+        "qdr:w": "La semaine dernière",
+        "qdr:m": "Mois passé",
+        "qdr:y": "L'année passée",
+        "config-time-period": "Période de temps"
     },
     "lang_fa": {
         "search": "جستجو",
@@ -536,7 +606,14 @@
         "videos": "ویدئوها",
         "news": "اخبار",
         "books": "کتاب‌ها",
-        "anon-view": "نمای ناشناس"
+        "anon-view": "نمای ناشناس",
+        "": "--",
+        "qdr:h": "ساعت گذشته",
+        "qdr:d": "24 ساعت گذشته",
+        "qdr:w": "هفته گذشته",
+        "qdr:m": "ماه گذشته",
+        "qdr:y": "سال گذشته",
+        "config-time-period": "بازه زمانی"
     },
     "lang_cs": {
         "search": "Hledat",
@@ -585,7 +662,14 @@
         "videos": "Videa",
         "news": "Zprávy",
         "books": "Knihy",
-        "anon-view": "Anonymní pohled"
+        "anon-view": "Anonymní pohled",
+        "": "--",
+        "qdr:h": "Poslední hodina",
+        "qdr:d": "Posledních 24 hodin",
+        "qdr:w": "Minulý týden",
+        "qdr:m": "Minulý měsíc",
+        "qdr:y": "Minulý rok",
+        "config-time-period": "Časový úsek"
     },
     "lang_zh-TW": {
         "search": "搜尋",
@@ -634,7 +718,14 @@
         "videos": "影片",
         "news": "新聞",
         "books": "書籍",
-        "anon-view": "匿名檢視"
+        "anon-view": "匿名檢視",
+        "": "--",
+        "qdr:h": "过去一小时",
+        "qdr:d": "过去 24 小时",
+        "qdr:w": "上周",
+        "qdr:m": "过去一个月",
+        "qdr:y": "过去一年",
+        "config-time-period": "时间段"
     },
     "lang_bg": {
         "search": "Търсене",
@@ -683,7 +774,14 @@
         "videos": "Новини",
         "news": "Карти",
         "books": "Книги",
-        "anon-view": "Анонимен изглед"
+        "anon-view": "Анонимен изглед",
+        "": "--",
+        "qdr:h": "Последния час",
+        "qdr:d": "Последните 24 часа",
+        "qdr:w": "Миналата седмица",
+        "qdr:m": "Миналия месец",
+        "qdr:y": "Изминалата година",
+        "config-time-period": "Времеви период"
     },
     "lang_hi": {
         "search": "खोज",
@@ -732,7 +830,14 @@
         "videos": "मैप",
         "news": "समाचार",
         "books": "किताबें",
-        "anon-view": "अनाम दृश्य"
+        "anon-view": "अनाम दृश्य",
+        "": "--",
+        "qdr:h": "पिछले घंटे",
+        "qdr:d": "पिछले 24 घंटे",
+        "qdr:w": "पिछले सप्ताह",
+        "qdr:m": "पिछले महीने",
+        "qdr:y": "पिछला वर्ष",
+        "config-time-period": "समय सीमा"
     },
     "lang_ja": {
         "search": "検索",
@@ -781,7 +886,14 @@
         "videos": "動画",
         "news": "ニュース",
         "books": "書籍",
-        "anon-view": "匿名ビュー"
+        "anon-view": "匿名ビュー",
+        "": "--",
+        "qdr:h": "過去 1 時間",
+        "qdr:d": "過去 24 時間",
+        "qdr:w": "この1週間",
+        "qdr:m": "先月",
+        "qdr:y": "過年度",
+        "config-time-period": "期間"
     },
     "lang_ko": {
         "search": "검색",
@@ -830,7 +942,14 @@
         "videos": "동영상",
         "news": "뉴스",
         "books": "도서",
-        "anon-view": "익명 보기"
+        "anon-view": "익명 보기",
+        "": "--",
+        "qdr:h": "지난 시간",
+        "qdr:d": "지난 24시간",
+        "qdr:w": "지난 주",
+        "qdr:m": "지난달",
+        "qdr:y": "지난 해",
+        "config-time-period": "기간"
     },
     "lang_ku": {
         "search": "Bigere",
@@ -879,9 +998,16 @@
         "videos": "Vîdyo",
         "news": "Nûçe",
         "books": "Pirtûk",
-        "anon-view": "Dîtina Nenas"
+        "anon-view": "Dîtina Nenas",
+        "": "--",
+        "qdr:h": "Saet berê",
+        "qdr:d": "24 saetên borî",
+        "qdr:w": "Hefteya borî",
+        "qdr:m": "Meha borî",
+        "qdr:y": "Sala borî",
+        "config-time-period": "Dem Period"
     },
-     "lang_th": {
+    "lang_th": {
         "search": "ค้นหา",
         "config": "กำหนดค่า",
         "config-country": "ประเทศ",
@@ -928,7 +1054,14 @@
         "videos": "วิดีโอ",
         "news": "ข่าว",
         "books": "หนังสือ",
-        "anon-view": "มุมมองที่ไม่ระบุตัวตน"
+        "anon-view": "มุมมองที่ไม่ระบุตัวตน",
+        "": "--",
+        "qdr:h": "ชั่วโมงที่ผ่านมา",
+        "qdr:d": "24 ชั่วโมงที่ผ่านมา",
+        "qdr:w": "สัปดาห์ที่ผ่านมา",
+        "qdr:m": "เดือนที่ผ่านมา",
+        "qdr:y": "ปีที่ผ่านมา",
+        "config-time-period": "ระยะเวลา"
     },
     "lang_cy": {
         "search": "Chwiliwch",
@@ -977,6 +1110,13 @@
         "videos": "Fideos",
         "news": "Newyddion",
         "books": "Llyfrau",
-        "anon-view": "Golwg Anhysbys"
+        "anon-view": "Golwg Anhysbys",
+        "": "--",
+        "qdr:h": "Yr awr ddiwethaf",
+        "qdr:d": "24 awr diwethaf",
+        "qdr:w": "Yr wythnos ddiwethaf",
+        "qdr:m": "Mis diwethaf",
+        "qdr:y": "Y flwyddyn ddiwethaf",
+        "config-time-period": "Cyfnod Amser"
     }
 }
