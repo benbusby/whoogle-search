@@ -53,6 +53,9 @@ app.config['LANGUAGES'] = json.load(open(
 app.config['COUNTRIES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json'),
     encoding='utf-8'))
+app.config['TIME_PERIODS'] = json.load(open(
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/time_periods.json'),
+    encoding='utf-8'))
 app.config['TRANSLATIONS'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json'),
     encoding='utf-8'))

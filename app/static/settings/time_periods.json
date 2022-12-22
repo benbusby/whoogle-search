@@ -1,0 +1,8 @@
+[
+  {"name": "Any time", "value": ""},
+  {"name": "Past hour", "value": "qdr:h"},
+  {"name": "Past 24 hours", "value": "qdr:d"},
+  {"name": "Past week", "value": "qdr:w"},
+  {"name": "Past month", "value": "qdr:m"},
+  {"name": "Past year", "value": "qdr:y"}
+]
