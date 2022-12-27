@@ -47,7 +47,7 @@ def parse_params(response):
 
 def solve(response, proxies, url):
     """
-    Get a response with a reCAPTCHA v2 and solve it using a third-party service
+    Get a response with a reCAPTCHA v2 and solve it using a third-party service.
     """
     if deathbycaptcha is None:
         print("WARN: The deathbycaptcha client is not installed")
@@ -84,6 +84,5 @@ def solve(response, proxies, url):
             "g-recaptcha-response": text,
         }
         response = requests.post("https://www.google.com/sorry/index", data=form_params, proxies=proxies)
-        print(response, form_params, response.text)
         return True
     return False
