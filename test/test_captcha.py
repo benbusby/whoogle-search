@@ -40,7 +40,7 @@ def test_parse():
     expected = {
         "googlekey": "6LfwuyUTAAAAAOAmoS0fdqijC2PbbdH4kjq62Y1b",
         "data-s": data_s,
-        "pageurl": "https://www.google.com/search?gbv=1&num=10&q=Liddell&safe=off",
+        'q': 'EgTIadcWGIXS4pwGIjDL-1ocR_DlZgts3Rfama1w7aWKF_5y2vFWA8eORDe5SvseqGuuMVzIObjhBnZPpgAyAXI'
     }
 
     message = "Results differ\n" f"Expected: {expected}\n" f"Got: {res}"
