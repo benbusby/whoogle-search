@@ -10,7 +10,7 @@ from urllib.parse import parse_qs
 import re
 
 SKIP_ARGS = ['ref_src', 'utm']
-SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
+SKIP_PREFIX = ['//www.', '//mobile.', '//m.', 'www.']
 GOOG_STATIC = 'www.gstatic.com'
 G_M_LOGO_URL = 'https://www.gstatic.com/m/images/icons/googleg.gif'
 GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
