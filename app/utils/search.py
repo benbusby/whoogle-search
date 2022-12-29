@@ -1,7 +1,6 @@
 import os
 import re
 from typing import Any
-
 from app.filter import Filter
 from app.request import gen_query
 from app.utils.misc import get_proxy_host_url
@@ -142,7 +141,8 @@ class Search:
                                        force_mobile=view_image)
 
         # Produce cleanable html soup from response
-        html_soup = bsoup(get_body.text, 'html.parser')
+        get_body_safed = get_body.text.replace("&lt;","andlt;").replace("&gt;","andgt;")
+        html_soup = bsoup(get_body_safed, 'html.parser')
 
         # Replace current soup if view_image is active
         if view_image:
