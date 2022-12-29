@@ -38,6 +38,7 @@ Contents
     4. [Using with Firefox Containers](#using-with-firefox-containers)
     5. [Reverse Proxying](#reverse-proxying)
         1. [Nginx](#nginx)
+    6. [CAPTCHA Troubleshooting](#captcha-troubleshooting)
 7. [Contributing](#contributing)
 8. [FAQ](#faq)
 9. [Public Instances](#public-instances)
@@ -515,6 +516,22 @@ server {
 ```
 
 You can then add SSL support using LetsEncrypt by following a guide such as [this one](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/).
+
+### CAPTCHA Troubleshooting
+
+**Note:** The maintainer(s) of Whoogle do not endorse or recommend any
+particular approach for solving CAPTCHAs. The solution outlined below was
+implemented by the community, and is available to anyone who is interested.
+
+#### Death By Captcha ([https://deathbycaptcha.com/](https://deathbycaptcha.com/))
+
+To use Death By Captcha (DBC) with Whoogle, you'll need to perform the
+following steps:
+
+1. [Create an account with DBC](https://deathbycaptcha.com/register)
+2. Install the `deathbycaptcha` pip package (`pip install deathbycaptcha`)
+3. Set the `DBC_USER` environment variable to your DBC username
+4. Set the `DBC_PASS` environment variable to your DBC password
 
 ## Contributing
 

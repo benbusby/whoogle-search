@@ -27,7 +27,7 @@ def parse_params(response):
         "googlekey": "",
         "data-s": "",
     }
-    soup = bs(response.text)
+    soup = bs(response.text, "html.parser")
 
     recaptcha = soup.find(id="recaptcha")
     if not recaptcha:
