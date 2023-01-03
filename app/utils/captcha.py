@@ -13,12 +13,6 @@ try:
 except ImportError:
     deathbycaptcha = None
 
-class UnableToSolve(Exception):
-    """
-    The third-party service was unable to solve the CAPTCHA
-    """
-
-
 def parse_params(response):
     """
     Parses a page with bs4 to fetch the data needed to solve the captcha.
