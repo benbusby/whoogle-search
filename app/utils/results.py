@@ -171,7 +171,10 @@ def get_site_alt(link: str) -> str:
             link = '//'.join(link.split('//')[1:])
 
         for prefix in SKIP_PREFIX:
-            link = link.replace(prefix, '//')
+            if parsed_alt.scheme:
+                link = link.replace(prefix, '')
+            else:
+                link = link.replace(prefix, '//')
         break
 
     return link
