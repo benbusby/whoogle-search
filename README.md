@@ -18,17 +18,17 @@ Get Google search results, but without any ads, javascript, AMP links, cookies, 
 
 Contents
 1. [Features](#features)
-2. [Dependencies](#dependencies)
-3. [Install/Deploy](#install)
-    1. [Heroku Quick Deploy](#a-heroku-quick-deploy)
-    2. [Repl.it](#b-replit)
-    3. [Fly.io](#c-flyio)
-    4. [pipx](#d-pipx)
-    5. [pip](#e-pip)
-    6. [Manual](#f-manual)
-    7. [Docker](#g-manual-docker)
-    8. [Arch/AUR](#arch-linux--arch-based-distributions)
-    9. [Helm/Kubernetes](#helm-chart-for-kubernetes)
+3. [Install/Deploy Options](#install)
+    1. [Heroku Quick Deploy](#heroku-quick-deploy)
+    1. [Repl.it](#replit)
+    1. [Fly.io](#flyio)
+    1. [Koyeb](#koyeb)
+    1. [pipx](#pipx)
+    1. [pip](#pip)
+    1. [Manual](#manual)
+    1. [Docker](#manual-docker)
+    1. [Arch/AUR](#arch-linux--arch-based-distributions)
+    1. [Helm/Kubernetes](#helm-chart-for-kubernetes)
 4. [Environment Variables and Configuration](#environment-variables)
 5. [Usage](#usage)
 6. [Extra Steps](#extra-steps)
@@ -68,21 +68,12 @@ Contents
 
 <sup>***If deployed to a remote server, or configured to send requests through a VPN, Tor, proxy, etc.</sup>
 
-## Dependencies
-If using Heroku Quick Deploy, **you can skip this section**.
-
-- Docker ([Windows](https://docs.docker.com/docker-for-windows/install/), [macOS](https://docs.docker.com/docker-for-mac/install/), [Ubuntu](https://docs.docker.com/engine/install/ubuntu/), [other Linux distros](https://docs.docker.com/engine/install/binaries/))
-  - Only needed if you intend on deploying the app as a Docker image
-- [Python3](https://www.python.org/downloads/)
-- `libcurl4-openssl-dev` and `libssl-dev`
-  - macOS: `brew install openssl curl-openssl`
-  - Ubuntu: `sudo apt-get install -y libcurl4-openssl-dev libssl-dev`
-  - Arch: `pacman -S curl openssl`
-
 ## Install
 There are a few different ways to begin using the app, depending on your preferences:
 
-### A) [Heroku Quick Deploy](https://heroku.com/about)
+___
+
+### [Heroku Quick Deploy](https://heroku.com/about)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benbusby/whoogle-search/tree/main)
 
 Provides:
@@ -93,7 +84,9 @@ Notes:
 - Requires a **PAID** Heroku Account.
 - Sometimes has issues with auto-redirecting to `https`. Make sure to navigate to the `https` version of your app before adding as a default search engine.
 
-### B) [Repl.it](https://repl.it)
+___
+
+### [Repl.it](https://repl.it)
 [![Run on Repl.it](https://repl.it/badge/github/benbusby/whoogle-search)](https://repl.it/github/benbusby/whoogle-search)
 
 *Note: Requires a (free) Replit account*
@@ -104,7 +97,9 @@ Provides:
     - Supports custom domains
 - Downtime after periods of inactivity \([solution 1](https://repl.it/talk/ask/use-this-pingmat1replco-just-enter/28821/101298), [solution 2](https://repl.it/talk/learn/How-to-use-and-setup-UptimeRobot/9003)\)
 
-### C) [Fly.io](https://fly.io)
+___
+
+### [Fly.io](https://fly.io)
 
 You will need a **PAID** [Fly.io](https://fly.io) account to deploy Whoogle.
 
@@ -119,7 +114,18 @@ flyctl launch --image benbusby/whoogle-search:latest
 
 Your app is now available at `https://<app-name>.fly.dev`.
 
-### D) [pipx](https://github.com/pipxproject/pipx#install-pipx)
+___
+
+### [Koyeb](https://www.koyeb.com)
+
+Use one of the following guides to install Whoogle on Koyeb:
+
+1. Using GitHub: https://www.koyeb.com/docs/quickstart/deploy-with-git
+2. Using Docker: https://www.koyeb.com/docs/quickstart/deploy-a-docker-application
+
+___
+
+### [pipx](https://github.com/pipxproject/pipx#install-pipx)
 Persistent install:
 
 `pipx install git+https://github.com/benbusby/whoogle-search.git`
@@ -128,7 +134,9 @@ Sandboxed temporary instance:
 
 `pipx run --spec git+https://github.com/benbusby/whoogle-search.git whoogle-search`
 
-### E) pip
+___
+
+### pip
 `pip install whoogle-search`
 
 ```bash
@@ -155,9 +163,20 @@ optional arguments:
 ```
 See the [available environment variables](#environment-variables) for additional configuration.
 
-### F) Manual
+___
+
+### Manual
 
 *Note: `Content-Security-Policy` headers can be sent by Whoogle if you set `WHOOGLE_CSP`.*
+
+#### Dependencies
+- [Python3](https://www.python.org/downloads/)
+- `libcurl4-openssl-dev` and `libssl-dev`
+  - macOS: `brew install openssl curl-openssl`
+  - Ubuntu: `sudo apt-get install -y libcurl4-openssl-dev libssl-dev`
+  - Arch: `pacman -S curl openssl`
+  
+#### Install
 
 Clone the repo and run the following commands to start the app in a local-only environment:
 
@@ -272,7 +291,9 @@ There are two authentication methods, password and cookie. You will need to make
           - `WHOOGLE_CONFIG_TOR=1`
           - `WHOOGLE_TOR_USE_PASS=1`
 
-### G) Manual (Docker)
+___
+
+### Manual (Docker)
 1. Ensure the Docker daemon is running, and is accessible by your user account
   - To add user permissions, you can execute `sudo usermod -aG docker yourusername`
   - Running `docker ps` should return something besides an error. If you encounter an error saying the daemon isn't running, try `sudo systemctl start docker` (Linux) or ensure the docker tool is running (Windows/macOS).
@@ -333,15 +354,21 @@ heroku open
 This series of commands can take a while, but once you run it once, you shouldn't have to run it again. The final command, `heroku open` will launch a tab in your web browser, where you can test out Whoogle and even [set it as your primary search engine](https://github.com/benbusby/whoogle#set-whoogle-as-your-primary-search-engine).
 You may also edit environment variables from your app’s Settings tab in the Heroku Dashboard.
 
-#### Arch Linux & Arch-based Distributions
+___
+
+### Arch Linux & Arch-based Distributions
 There is an [AUR package available](https://aur.archlinux.org/packages/whoogle-git/), as well as a pre-built and daily updated package available at [Chaotic-AUR](https://chaotic.cx).
 
-#### Helm chart for Kubernetes
+___
+
+### Helm chart for Kubernetes
 To use the Kubernetes Helm Chart:
 1. Ensure you have [Helm](https://helm.sh/docs/intro/install/) `>=3.0.0` installed
 2. Clone this repository
 3. Update [charts/whoogle/values.yaml](./charts/whoogle/values.yaml) as desired
 4. Run `helm install whoogle ./charts/whoogle`
+
+___
 
 #### Using your own server, or alternative container deployment
 There are other methods for deploying docker containers that are well outlined in [this article](https://rollout.io/blog/the-shortlist-of-docker-hosting/), but there are too many to describe set up for each here. Generally it should be about the same amount of effort as the Heroku deployment.
