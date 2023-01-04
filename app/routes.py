@@ -327,6 +327,7 @@ def search():
 
     # Return 503 if temporarily blocked by captcha
     if has_captcha(str(response)):
+        app.logger.error('503 (CAPTCHA)')
         return render_template(
             'error.html',
             blocked=True,
