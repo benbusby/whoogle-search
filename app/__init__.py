@@ -28,7 +28,7 @@ dot_env_path = (
     '../whoogle.env'))
 
 # Load .env file if enabled
-if read_config_bool('WHOOGLE_DOTENV'):
+if os.path.exists(dot_env_path):
     load_dotenv(dot_env_path)
 
 app.enc_key = generate_key()
