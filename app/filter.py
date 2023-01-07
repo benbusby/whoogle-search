@@ -610,13 +610,15 @@ class Filter:
 
         # get some tags that are unchanged between mobile and pc versions
         cor_suggested = soup.find_all('table', attrs={'class': "By0U9"})
-        next_pages = soup.find_all('table', attrs={'class': "uZgmoc"})[0]
+        next_pages = soup.find('table', attrs={'class': "uZgmoc"})
 
         results = []
         # find results div
-        results_div = soup.find_all('div', attrs={'class': "nQvrDb"})[0]
-        # find all the results
-        results_all = results_div.find_all('div', attrs={'class': "lIMUZd"})
+        results_div = soup.find('div', attrs={'class': "nQvrDb"})
+        # find all the results (if any)
+        results_all = []
+        if results_div:
+            results_all = results_div.find_all('div', attrs={'class': "lIMUZd"})
 
         for item in results_all:
             urls = item.find('a')['href'].split('&imgrefurl=')

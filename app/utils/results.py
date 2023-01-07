@@ -10,7 +10,7 @@ from urllib.parse import parse_qs
 import re
 
 SKIP_ARGS = ['ref_src', 'utm']
-SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
+SKIP_PREFIX = ['//www.', '//mobile.', '//m.', 'www.', 'mobile.', 'm.']
 GOOG_STATIC = 'www.gstatic.com'
 G_M_LOGO_URL = 'https://www.gstatic.com/m/images/icons/googleg.gif'
 GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
@@ -171,7 +171,10 @@ def get_site_alt(link: str) -> str:
             link = '//'.join(link.split('//')[1:])
 
         for prefix in SKIP_PREFIX:
-            link = link.replace(prefix, '//')
+            if parsed_alt.scheme:
+                link = link.replace(prefix, '')
+            else:
+                link = link.replace(prefix, '//')
         break
 
     return link

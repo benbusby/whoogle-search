@@ -284,7 +284,6 @@ def autocomplete():
         g.user_request.autocomplete(q) if not g.user_config.tor else []
     ])
 
-
 @app.route(f'/{Endpoint.search}', methods=['GET', 'POST'])
 @session_required
 @auth_required
@@ -323,10 +322,12 @@ def search():
     soup = bsoup(response, "html.parser");
     for x in soup.find_all(attrs={"id": "st-card"}):
         x.replace_with("")
+
     response = str(soup)
 
     # Return 503 if temporarily blocked by captcha
     if has_captcha(str(response)):
+        app.logger.error('503 (CAPTCHA)')
         return render_template(
             'error.html',
             blocked=True,
@@ -336,6 +337,7 @@ def search():
             config=g.user_config,
             query=urlparse.unquote(query),
             params=g.user_config.to_params(keys=['preferences'])), 503
+
     response = bold_search_terms(response, query)
 
     # Feature to display IP address
@@ -358,6 +360,7 @@ def search():
 
     preferences = g.user_config.preferences
     home_url = f"home?preferences={preferences}" if preferences else "home"
+    cleanresponse = str(response).replace("andlt;","&lt;").replace("andgt;","&gt;")
 
     return render_template(
         'display.html',
@@ -378,7 +381,7 @@ def search():
         is_translation=any(
             _ in query.lower() for _ in [translation['translate'], 'translate']
         ) and not search_util.search_type,  # Standard search queries only
-        response=response,
+        response=cleanresponse,
         version_number=app.config['VERSION_NUMBER'],
         search_header=render_template(
             'header.html',
