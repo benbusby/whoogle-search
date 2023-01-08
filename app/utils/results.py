@@ -44,6 +44,28 @@ SITE_ALTS = {
 }
 
 
+def contains_cjko(s: str) -> bool:
+    """This function check whether or not a string contains Chinese, Japanese,
+    or Korean characters. It employs regex and uses the u escape sequence to
+    match any character in the following Unicode ranges:
+    - 4e00-9fff: Chinese characters
+    - 3040-309f: Japanese hiragana
+    - 30a0-30ff: Japanese katakana
+    - 4e00-9faf: Japanese kanji
+    - ac00-d7af: Korean hangul syllables
+    - 1100-11ff: Korean hangul jamo
+
+    Args:
+        s (str): string to be checked
+
+    Returns:
+        bool: True if the input s contains the characters and False otherwise
+    """
+    return bool(
+        re.search(
+            r'[\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf\uac00-\ud7af\u1100-\u11ff]', s))
+
+
 def bold_search_terms(response: str, query: str) -> BeautifulSoup:
     """Wraps all search terms in bold tags (<b>). If any terms are wrapped
     in quotes, only that exact phrase will be made bold.
@@ -66,12 +88,18 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         # Ensure target word is escaped for regex
         target_word = re.escape(target_word)
 
+        # Check if the word contains Chinese, Japanese, or Korean characters
+        if contains_cjko(target_word):
+            reg_pattern = fr'((?![{{}}<>-]){target_word}(?![{{}}<>-]))'
+        else:
+            reg_pattern = fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b'
+
         if re.match('.*[@_!#$%^&*()<>?/\|}{~:].*', target_word) or (
                 element.parent and element.parent.name == 'style'):
             return
 
         element.replace_with(BeautifulSoup(
-            re.sub(fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b',
+            re.sub(reg_pattern,
                    r'<b>\1</b>',
                    element,
                    flags=re.I), 'html.parser')
