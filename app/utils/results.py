@@ -47,13 +47,7 @@ SITE_ALTS = {
 def contains_cjko(s: str) -> bool:
     """This function check whether or not a string contains Chinese, Japanese,
     or Korean characters. It employs regex and uses the u escape sequence to
-    match any character in the following Unicode ranges:
-    - 4e00-9fff: Chinese characters
-    - 3040-309f: Japanese hiragana
-    - 30a0-30ff: Japanese katakana
-    - 4e00-9faf: Japanese kanji
-    - ac00-d7af: Korean hangul syllables
-    - 1100-11ff: Korean hangul jamo
+    match any character in a set of Unicode ranges.
 
     Args:
         s (str): string to be checked
@@ -61,9 +55,14 @@ def contains_cjko(s: str) -> bool:
     Returns:
         bool: True if the input s contains the characters and False otherwise
     """
-    return bool(
-        re.search(
-            r'[\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf\uac00-\ud7af\u1100-\u11ff]', s))
+    unicode_ranges = ('\u4e00-\u9fff' # Chinese characters
+                      '\u3040-\u309f' # Japanese hiragana
+                      '\u30a0-\u30ff' # Japanese katakana
+                      '\u4e00-\u9faf' # Japanese kanji
+                      '\uac00-\ud7af' # Korean hangul syllables
+                      '\u1100-\u11ff' # Korean hangul jamo
+                      )
+    return bool(re.search(fr'[{unicode_ranges}]', s))
 
 
 def bold_search_terms(response: str, query: str) -> BeautifulSoup:
