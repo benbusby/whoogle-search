@@ -112,6 +112,9 @@ flyctl auth login
 flyctl launch --image benbusby/whoogle-search:latest
 ```
 
+The first deploy won't succeed because the default `internal_port` is wrong.
+To fix this, open the generated `fly.toml` file, set `services.internal_port` to `5000` and run `flyctl launch` again.
+
 Your app is now available at `https://<app-name>.fly.dev`.
 
 ___
