@@ -1168,11 +1168,11 @@
         "videos": "Videos",
         "news": "News",
         "books": "Books",
-        "anon-view": "Anonymous View",
-        "qdr:h": "Past hour",
-        "qdr:d": "Past 24 hours",
-        "qdr:w": "Past week",
-        "qdr:m": "Past month",
-        "qdr:y": "Past year"
+        "anon-view": "Ανώνυμη Προβολή",
+        "qdr:h": "Τελευταία ώρα",
+        "qdr:d": "Τελευταίες 24 ώρες",
+        "qdr:w": "Τελευταία Βδομάδα",
+        "qdr:m": "Τελευταίος Μήνας",
+        "qdr:y": "Τελευταίος Χρόνος"
     },
 }
