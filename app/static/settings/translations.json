@@ -1118,8 +1118,8 @@
         "qdr:m": "Mis diwethaf",
         "qdr:y": "Y flwyddyn ddiwethaf",
         "config-time-period": "Cyfnod Amser"
-    }
-        "lang_el": {
+    },
+    "lang_el": {
         "": "--",
         "search": "Αναζήτηση",
         "config": "Ρυθμήσεις",
@@ -1174,5 +1174,5 @@
         "qdr:w": "Τελευταία Βδομάδα",
         "qdr:m": "Τελευταίος Μήνας",
         "qdr:y": "Τελευταίος Χρόνος"
-    },
+    }
 }
