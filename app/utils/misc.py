@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup as bsoup
 from flask import Request
 import hashlib
 import os
+import re
 from requests import exceptions, get
 from urllib.parse import urlparse
 
@@ -40,8 +41,16 @@ def get_request_url(url: str) -> str:
 def get_proxy_host_url(r: Request, default: str, root=False) -> str:
     scheme = r.headers.get('X-Forwarded-Proto', 'https')
     http_host = r.headers.get('X-Forwarded-Host')
+
+    full_path = r.full_path if not root else ''
+    if full_path.startswith('/'):
+        full_path = f'/{full_path}'
+
     if http_host:
-        return f'{scheme}://{http_host}{r.full_path if not root else "/"}'
+        prefix = os.environ.get('WHOOGLE_URL_PREFIX', '')
+        if prefix:
+            prefix = f'/{re.sub("[^0-9a-zA-Z]+", "", prefix)}'
+        return f'{scheme}://{http_host}{prefix}{full_path}'
 
     return default
 
