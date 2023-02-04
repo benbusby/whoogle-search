@@ -625,7 +625,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://gowogle.voring.me](https://gowogle.voring.me) | 🇺🇸 US | Multi-choice | |
 | [https://whoogle.privacydev.net](https://whoogle.privacydev.net) | 🇺🇸 US | English | |
 | [https://wg.vern.cc](https://wg.vern.cc) | 🇺🇸 US | English |  |
-| [https://www.indexia.gq](https://www.indexia.gq) | 🇨🇦 CA | Multi-choice | ✅ |
+| [https://whoogle.hxvy0.gq](https://whoogle.hxvy0.gq) | 🇨🇦 CA | Turkish Only | ✅ |
 | [https://whoogle.hostux.net](https://whoogle.hostux.net) | 🇫🇷 FR | Multi-choice | |
 | [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
 | [https://whoogle.rhyshl.live](https://whoogle.rhyshl.live) | 🇬🇧 GB | Multi-choice | ✅ |
