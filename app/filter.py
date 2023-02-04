@@ -459,7 +459,7 @@ class Filter:
         if any(url in link_netloc for url in unsupported_g_pages):
             # FIXME: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
-            
+
             # Replaces the /url google unsupported link to the direct url
             link['href'] = link_netloc
             parent = link.parent
@@ -588,10 +588,9 @@ class Filter:
                 # replaced (i.e. 'philomedium.com' should stay as it is).
                 if 'medium.com' in link_str:
                     if link_str.startswith('medium.com') or '.medium.com' in link_str:
-                        new_desc.string = link_str.replace(
-                            'medium.com', 'farside.link/scribe')
-                    else:
-                        new_desc.string = link_str
+                        link_str = 'farside.link/scribe' + link_str[
+                            link_str.find('medium.com') + len('medium.com'):]
+                    new_desc.string = link_str
                 else:
                     new_desc.string = link_str.replace(site, alt)
 
