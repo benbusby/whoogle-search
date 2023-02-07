@@ -186,6 +186,8 @@ def get_site_alt(link: str) -> str:
         if 'wikipedia' in hostname and len(subdomain) == 2:
             hostname = f'{subdomain}.{hostname}'
             params = f'?lang={subdomain}'
+        elif 'medium' in hostname and len(subdomain) > 0:
+            hostname = f'{subdomain}.{hostname}'
 
         parsed_alt = urlparse.urlparse(SITE_ALTS[site_key])
         link = link.replace(hostname, SITE_ALTS[site_key]) + params
