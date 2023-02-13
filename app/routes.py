@@ -19,7 +19,8 @@ from app.utils.misc import get_proxy_host_url
 from app.filter import Filter
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
     check_for_update
-from app.utils.results import add_ip_card, bold_search_terms,\
+from app.utils.widgets import *
+from app.utils.results import bold_search_terms,\
     add_currency_card, check_currency, get_tabs_content
 from app.utils.search import Search, needs_https, has_captcha
 from app.utils.session import valid_user_session
@@ -340,10 +341,15 @@ def search():
 
     response = bold_search_terms(response, query)
 
-    # Feature to display IP address
-    if search_util.check_kw_ip():
+    # check for widgets and add if requested
+    if search_util.widget != '':
         html_soup = bsoup(str(response), 'html.parser')
-        response = add_ip_card(html_soup, get_client_ip(request))
+        match search_util.widget:
+            case 'ip':
+                response = add_ip_card(html_soup, get_client_ip(request))
+            case 'calculator':
+                if not 'nojs' in request.args:
+                    response = add_calculator_card(html_soup)
 
     # Update tabs content
     tabs = get_tabs_content(app.config['HEADER_TABS'],
@@ -353,6 +359,8 @@ def search():
                             translation)
 
     # Feature to display currency_card
+    # Since this is determined by more than just the
+    # query is it not defined as a standard widget
     conversion = check_currency(str(response))
     if conversion:
         html_soup = bsoup(str(response), 'html.parser')
@@ -395,7 +403,7 @@ def search():
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile,
-            tabs=tabs))
+            tabs=tabs)).replace("  ", "")
 
 
 @app.route(f'/{Endpoint.config}', methods=['GET', 'POST', 'PUT'])
