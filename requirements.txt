@@ -30,5 +30,5 @@ stem==1.8.0
 urllib3==1.26.5
 waitress==2.1.2
 wcwidth==0.1.9
-Werkzeug==0.16.0
+Werkzeug==2.2.3
 python-dotenv==0.16.0
