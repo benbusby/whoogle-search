@@ -188,6 +188,8 @@ class Filter:
             # Remove divs that have multiple links beyond just page navigation
             [_.decompose() for _ in footer.find_all('div', recursive=False)
              if len(_.find_all('a', href=True)) > 3]
+            for link in footer.find_all('a', href=True):
+                link['href'] = f'{link["href"]}&preferences={self.config.preferences}'
 
         header = self.soup.find('header')
         if header:
