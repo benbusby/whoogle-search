@@ -52,6 +52,10 @@
     }
 
     function focusSearch () {
+        if (window.usingCalculator) {
+            // if this function exists, it means the calculator widget has been displayed
+            if (usingCalculator()) return;
+        }
         activeIdx = -1;
         searchBar.focus();
     }

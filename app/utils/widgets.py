@@ -51,6 +51,7 @@ def add_calculator_card(html_soup: BeautifulSoup) -> BeautifulSoup:
         widget_file = open('app/static/widgets/calculator.html')
         widget_tag = html_soup.new_tag('div')
         widget_tag['class'] = 'ZINbbc xpd O9g5cc uUPGi'
+        widget_tag['id'] = 'calculator-wrapper'
         calculator_text = html_soup.new_tag('div')
         calculator_text['class'] = 'kCrYT ip-address-div'
         calculator_text.string = 'Calculator'

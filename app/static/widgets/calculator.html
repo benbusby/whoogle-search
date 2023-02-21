@@ -123,6 +123,15 @@ function factorial(num) {
       return (num * factorial(num - 1));
   }
 }
+// returns true if the user is currently focused on the calculator widget
+function usingCalculator() {
+    let activeElement = document.activeElement;
+    while (true) {
+        if (!activeElement) return false;
+        if (activeElement.id === "calculator-wrapper") return true;   
+        activeElement = activeElement.parentElement;
+    }
+}
 const $ = q => document.querySelectorAll(q);
 // key bindings for commonly used buttons
 const keybindings = {
@@ -149,6 +158,7 @@ const keybindings = {
     "Backspace": "BCK",
 }
 window.addEventListener("keydown", event => {
+    if (!usingCalculator()) return;
     if (event.key === "Enter" && document.activeElement.id !== "search-bar")
         event.preventDefault();
     if (keybindings[event.key])
