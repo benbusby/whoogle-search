@@ -6,7 +6,8 @@ RUN apk --update add \
     libxslt-dev \
     openssl-dev \
     libffi-dev \
-    rust
+    rust \
+    cargo
 
 COPY requirements.txt .
 
