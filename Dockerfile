@@ -5,7 +5,8 @@ RUN apk --update add \
     libxml2-dev \
     libxslt-dev \
     openssl-dev \
-    libffi-dev
+    libffi-dev \
+    rust
 
 COPY requirements.txt .
 
