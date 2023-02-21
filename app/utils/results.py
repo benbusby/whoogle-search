@@ -281,44 +281,6 @@ def append_anon_view(result: BeautifulSoup, config: Config) -> None:
     av_link['class'] = 'anon-view'
     result.append(av_link)
 
-
-def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
-    """Adds the client's IP address to the search results
-        if query contains keywords
-
-    Args:
-        html_soup: The parsed search result containing the keywords
-        ip: ip address of the client
-
-    Returns:
-        BeautifulSoup
-
-    """
-    main_div = html_soup.select_one('#main')
-    if main_div:
-        # HTML IP card tag
-        ip_tag = html_soup.new_tag('div')
-        ip_tag['class'] = 'ZINbbc xpd O9g5cc uUPGi'
-
-        # For IP Address html tag
-        ip_address = html_soup.new_tag('div')
-        ip_address['class'] = 'kCrYT ip-address-div'
-        ip_address.string = ip
-
-        # Text below the IP address
-        ip_text = html_soup.new_tag('div')
-        ip_text.string = 'Your public IP address'
-        ip_text['class'] = 'kCrYT ip-text-div'
-
-        # Adding all the above html tags to the IP card
-        ip_tag.append(ip_address)
-        ip_tag.append(ip_text)
-
-        # Insert the element at the top of the result list
-        main_div.insert_before(ip_tag)
-    return html_soup
-
-
 def check_currency(response: str) -> dict:
     """Check whether the results have currency conversion
 

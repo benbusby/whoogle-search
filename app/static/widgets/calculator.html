@@ -1,0 +1,260 @@
+<!--
+    Calculator widget.
+    This file should contain all required 
+    CSS, HTML, and JS for it.
+-->
+
+<style>
+    #calc-text {
+        background: var(--whoogle-dark-page-bg);
+        padding: 8px;
+        border-radius: 8px;
+        text-align: right;
+        font-family: monospace;
+        font-size: 16px;
+        color: var(--whoogle-dark-text);
+    }
+    #prev-equation {
+        text-align: right;
+    }
+    .error-border {
+        border: 1px solid red;
+    }
+
+    #calc-btns {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        gap: 5px;
+    }
+    #calc-btns button {
+        background: #313141;
+        color: var(--whoogle-dark-text);
+        border: none;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+    }
+    #calc-btns button:hover {
+        background: #414151;
+    }
+    #calc-btns .common {
+        background: #51516a;
+    }
+    #calc-btns .common:hover {
+        background: #61617a;
+    }
+    #calc-btn-0 { grid-row: 5; grid-column: 3; }
+    #calc-btn-1 { grid-row: 4; grid-column: 3; }
+    #calc-btn-2 { grid-row: 4; grid-column: 4; }
+    #calc-btn-3 { grid-row: 4; grid-column: 5; }
+    #calc-btn-4 { grid-row: 3; grid-column: 3; }
+    #calc-btn-5 { grid-row: 3; grid-column: 4; }
+    #calc-btn-6 { grid-row: 3; grid-column: 5; }
+    #calc-btn-7 { grid-row: 2; grid-column: 3; }
+    #calc-btn-8 { grid-row: 2; grid-column: 4; }
+    #calc-btn-9 { grid-row: 2; grid-column: 5; }
+    #calc-btn-EQ { grid-row: 5; grid-column: 5; }
+    #calc-btn-PT { grid-row: 5; grid-column: 4; }
+    #calc-btn-BCK { grid-row: 5; grid-column: 6; }
+    #calc-btn-ADD { grid-row: 4; grid-column: 6; }
+    #calc-btn-SUB { grid-row: 3; grid-column: 6; }
+    #calc-btn-MLT { grid-row: 2; grid-column: 6; }
+    #calc-btn-DIV { grid-row: 1; grid-column: 6; }
+    #calc-btn-CLR { grid-row: 1; grid-column: 5; }
+    #calc-btn-PRC{ grid-row: 1; grid-column: 4; }
+    #calc-btn-RP { grid-row: 1; grid-column: 3; }
+    #calc-btn-LP { grid-row: 1; grid-column: 2; }
+    #calc-btn-ABS { grid-row: 1; grid-column: 1; }
+    #calc-btn-SIN { grid-row: 2; grid-column: 2; }
+    #calc-btn-COS { grid-row: 3; grid-column: 2; }
+    #calc-btn-TAN { grid-row: 4; grid-column: 2; }
+    #calc-btn-SQR { grid-row: 5; grid-column: 2; }
+    #calc-btn-EXP { grid-row: 2; grid-column: 1; }
+    #calc-btn-E { grid-row: 3; grid-column: 1; }
+    #calc-btn-PI { grid-row: 4; grid-column: 1; }
+    #calc-btn-LOG { grid-row: 5; grid-column: 1; }
+</style>
+<p id="prev-equation"></p>
+<div id="calculator-widget">
+    <p id="calc-text">0</p>
+    <div id="calc-btns">
+        <button id="calc-btn-0" class="common">0</button>
+        <button id="calc-btn-1" class="common">1</button>
+        <button id="calc-btn-2" class="common">2</button>
+        <button id="calc-btn-3" class="common">3</button>
+        <button id="calc-btn-4" class="common">4</button>
+        <button id="calc-btn-5" class="common">5</button>
+        <button id="calc-btn-6" class="common">6</button>
+        <button id="calc-btn-7" class="common">7</button>
+        <button id="calc-btn-8" class="common">8</button>
+        <button id="calc-btn-9" class="common">9</button>
+        <button id="calc-btn-EQ" class="common">=</button>
+        <button id="calc-btn-PT" class="common">.</button>
+        <button id="calc-btn-BCK">⬅</button>
+        <button id="calc-btn-ADD">+</button>
+        <button id="calc-btn-SUB">-</button>
+        <button id="calc-btn-MLT">x</button>
+        <button id="calc-btn-DIV">/</button>
+        <button id="calc-btn-CLR">C</button>
+        <button id="calc-btn-PRC">%</button>
+        <button id="calc-btn-RP">)</button>
+        <button id="calc-btn-LP">(</button>
+        <button id="calc-btn-ABS">|x|</button>
+        <button id="calc-btn-SIN">sin</button>
+        <button id="calc-btn-COS">cos</button>
+        <button id="calc-btn-TAN">tan</button>
+        <button id="calc-btn-SQR">√</button>
+        <button id="calc-btn-EXP">^</button>
+        <button id="calc-btn-E">ℇ</button>
+        <button id="calc-btn-PI">π</button>
+        <button id="calc-btn-LOG">log</button>
+    </div>
+</div>
+<script>
+// JS does not have this by default.
+// from https://www.freecodecamp.org/news/how-to-factorialize-a-number-in-javascript-9263c89a4b38/
+function factorial(num) {
+  if (num < 0) 
+        return -1;
+  else if (num === 0) 
+      return 1;
+  else {
+      return (num * factorial(num - 1));
+  }
+}
+// returns true if the user is currently focused on the calculator widget
+function usingCalculator() {
+    let activeElement = document.activeElement;
+    while (true) {
+        if (!activeElement) return false;
+        if (activeElement.id === "calculator-wrapper") return true;   
+        activeElement = activeElement.parentElement;
+    }
+}
+const $ = q => document.querySelectorAll(q);
+// key bindings for commonly used buttons
+const keybindings = {
+    "0": "0",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+    "6": "6",
+    "7": "7",
+    "8": "8",
+    "9": "9",
+    "Enter": "EQ",
+    ".": "PT",
+    "+": "ADD",
+    "-": "SUB",
+    "*": "MLT",
+    "/": "DIV",
+    "%": "PRC",
+    "c": "CLR",
+    "(": "LP",
+    ")": "RP",
+    "Backspace": "BCK",
+}
+window.addEventListener("keydown", event => {
+    if (!usingCalculator()) return;
+    if (event.key === "Enter" && document.activeElement.id !== "search-bar")
+        event.preventDefault();
+    if (keybindings[event.key])
+        document.getElementById("calc-btn-" + keybindings[event.key]).click();
+})
+// calculates the string 
+const calc = () => {
+    var mathtext = document.getElementById("calc-text");
+    var statement = mathtext.innerHTML
+        // remove empty ()
+        .replace("()", "")
+        // special constants
+        .replace("π", "(Math.PI)")
+        .replace("ℇ", "(Math.E)")
+        // turns 3(1+2) into 3*(1+2) (for example)
+        .replace(/(?<=[0-9\)])(?<=[^+\-x*\/%^])\(/, "x(")
+        // same except reversed
+        .replace(/\)(?=[0-9\(])(?=[^+\-x*\/%^])/, ")x")
+        // replace human friendly x with JS *
+        .replace("x", "*")
+        // trig & misc functions
+        .replace("sin", "Math.sin")
+        .replace("cos", "Math.cos")
+        .replace("tan", "Math.tan")
+        .replace("√", "Math.sqrt")
+        .replace("^", "**")
+        .replace("abs", "Math.abs")
+        .replace("log", "Math.log")
+        ;
+    // add any missing )s to the end
+    while(true) if (
+        (statement.match(/\(/g) || []).length > 
+        (statement.match(/\)/g) || []).length
+    ) statement += ")"; else break;
+    // evaluate the expression.
+    console.log("calculating [" + statement + "]");
+    try {
+        var result = eval(statement);
+        document.getElementById("prev-equation").innerHTML = mathtext.innerHTML + " = ";
+        mathtext.innerHTML = result;
+        mathtext.classList.remove("error-border");
+    } catch (e) {
+        mathtext.classList.add("error-border");
+        console.error(e);
+    }
+}
+const updateCalc = (e) => {
+    // character(s) recieved from button
+    var c = event.target.innerHTML;
+    var mathtext = document.getElementById("calc-text");
+    if (mathtext.innerHTML === "0") mathtext.innerHTML = "";
+    // special cases
+    switch (c) {
+        case "C":
+            // Clear
+            mathtext.innerHTML = "0";
+            break;
+        case "⬅":
+            // Delete
+            mathtext.innerHTML = mathtext.innerHTML.slice(0, -1);
+            if (mathtext.innerHTML.length === 0) {
+                mathtext.innerHTML = "0";
+            }
+            break;
+        case "=":
+            calc()
+            break;
+        case "sin":
+        case "cos":
+        case "tan":
+        case "log":
+        case "√":
+            mathtext.innerHTML += `${c}(`;
+            break;
+        case "|x|":
+            mathtext.innerHTML += "abs("
+            break;
+        case "+":
+        case "-":
+        case "x":
+        case "/":
+        case "%":
+        case "^":
+            if (mathtext.innerHTML.length === 0) mathtext.innerHTML = "0"; 
+            // prevent typing 2 operators in a row
+            if (mathtext.innerHTML.match(/[+\-x\/%^] $/))
+                mathtext.innerHTML = mathtext.innerHTML.slice(0, -3);
+            mathtext.innerHTML += ` ${c} `;
+            break;
+        default:
+            mathtext.innerHTML += c;
+    }
+}
+for (let i of $("#calc-btns button")) {
+    i.addEventListener('click', event => {
+        updateCalc(event);
+    })
+}
+</script>
