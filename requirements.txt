@@ -13,7 +13,7 @@ Flask==1.1.1
 idna==2.9
 itsdangerous==1.1.0
 Jinja2==2.11.3
-MarkupSafe==1.1.1
+MarkupSafe==2.1.1
 more-itertools==8.3.0
 packaging==20.4
 pluggy==0.13.1
