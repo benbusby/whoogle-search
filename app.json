@@ -60,11 +60,6 @@
       "value": "farside.link/invidious",
       "required": false
     },
-    "WHOOGLE_ALT_IG": {
-      "description": "The site to use as a replacement for instagram.com when site alternatives are enabled in the config.",
-      "value": "farside.link/bibliogram/u",
-      "required": false
-    },
     "WHOOGLE_ALT_RD": {
       "description": "The site to use as a replacement for reddit.com when site alternatives are enabled in the config.",
       "value": "farside.link/libreddit",

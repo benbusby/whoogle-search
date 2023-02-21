@@ -36,7 +36,6 @@ conf: {}
   # HTTPS_ONLY: ""           # Enforce HTTPS. (See https://github.com/benbusby/whoogle-search#https-enforcement)
   # WHOOGLE_ALT_TW: ""       # The twitter.com alternative to use when site alternatives are enabled in the config.
   # WHOOGLE_ALT_YT: ""       # The youtube.com alternative to use when site alternatives are enabled in the config.
-  # WHOOGLE_ALT_IG: ""       # The instagram.com alternative to use when site alternatives are enabled in the config.
   # WHOOGLE_ALT_RD: ""       # The reddit.com alternative to use when site alternatives are enabled in the config.
   # WHOOGLE_ALT_TL: ""       # The Google Translate alternative to use. This is used for all "translate ____" searches.
   # WHOOGLE_ALT_MD: ""       # The medium.com alternative to use when site alternatives are enabled in the config.
@@ -63,7 +62,7 @@ conf: {}
   # WHOOGLE_CONFIG_URL: ""                   # The root url of the instance (https://<your url>/)
   # WHOOGLE_CONFIG_STYLE: ""                 # The custom CSS to use for styling (should be single line)
   # WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED: "" # Encrypt preferences token, requires key
-  # WHOOGLE_CONFIG_PREFERENCES_KEY: ""       # Key to encrypt preferences in URL (REQUIRED to show url) 
+  # WHOOGLE_CONFIG_PREFERENCES_KEY: ""       # Key to encrypt preferences in URL (REQUIRED to show url)
 
 podAnnotations: {}
 podSecurityContext: {}
