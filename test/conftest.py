@@ -20,4 +20,5 @@ def client():
             session['uuid'] = 'test'
             session['key'] = app.enc_key
             session['config'] = {}
+            session['auth'] = False
         yield client
