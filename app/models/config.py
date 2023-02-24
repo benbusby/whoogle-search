@@ -1,4 +1,5 @@
 from inspect import Attribute
+from typing import Optional
 from app.utils.misc import read_config_bool
 from flask import current_app
 import os
@@ -8,6 +9,31 @@ import pickle
 from cryptography.fernet import Fernet
 import hashlib
 import brotli
+import logging
+
+import cssutils
+from cssutils.css.cssstylesheet import CSSStyleSheet
+from cssutils.css.cssstylerule import CSSStyleRule
+
+# removes warnings from cssutils
+cssutils.log.setLevel(logging.CRITICAL)
+
+
+def get_rule_for_selector(stylesheet: CSSStyleSheet,
+                          selector: str) -> Optional[CSSStyleRule]:
+    """Search for a rule that matches a given selector in a stylesheet.
+
+    Args:
+        stylesheet (CSSStyleSheet) -- the stylesheet to search
+        selector (str) -- the selector to search for
+
+    Returns:
+        Optional[CSSStyleRule] -- the rule that matches the selector or None
+    """
+    for rule in stylesheet.cssRules:
+        if hasattr(rule, "selectorText") and selector == rule.selectorText:
+            return rule
+    return None
 
 
 class Config:
@@ -16,10 +42,8 @@ class Config:
         self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
         self.lang_search = os.getenv('WHOOGLE_CONFIG_SEARCH_LANGUAGE', '')
         self.lang_interface = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
-        self.style = os.getenv(
-            'WHOOGLE_CONFIG_STYLE',
-            open(os.path.join(app_config['STATIC_FOLDER'],
-                              'css/variables.css')).read())
+        self.style_modified = os.getenv(
+            'WHOOGLE_CONFIG_STYLE', '')
         self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
         self.block_title = os.getenv('WHOOGLE_CONFIG_BLOCK_TITLE', '')
         self.block_url = os.getenv('WHOOGLE_CONFIG_BLOCK_URL', '')
@@ -87,6 +111,33 @@ class Config:
         return {name: attr for name, attr in self.__dict__.items()
                 if not name.startswith("__")
                 and (type(attr) is bool or type(attr) is str)}
+
+    @property
+    def style(self) -> str:
+        """Returns the default style updated with specified modifications.
+
+        Returns:
+            str -- the new style
+        """
+        style_sheet = cssutils.parseString(
+            open(os.path.join(current_app.config['STATIC_FOLDER'],
+                              'css/variables.css')).read()
+        )
+
+        modified_sheet = cssutils.parseString(self.style_modified)
+        for rule in modified_sheet:
+            rule_default = get_rule_for_selector(style_sheet,
+                                                 rule.selectorText)
+            # if modified rule is in default stylesheet, update it
+            if rule_default is not None:
+                # TODO: update this in a smarter way to handle :root better
+                # for now if we change a varialbe in :root all other default
+                # variables need to be also present
+                rule_default.style = rule.style
+            # else add the new rule to the default stylesheet
+            else:
+                style_sheet.add(rule)
+        return str(style_sheet.cssText, 'utf-8')
 
     @property
     def preferences(self) -> str:

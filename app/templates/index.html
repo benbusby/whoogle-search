@@ -243,15 +243,13 @@
                                 {{ translation['config-css'] }}:
                             </a>
                             <textarea
-                                    name="style"
+                                    name="style_modified"
                                     id="config-style"
                                     autocapitalize="off"
                                     autocomplete="off"
                                     spellcheck="false"
                                     autocorrect="off"
-                                    value="">
-                                {{ config.style.replace('\t', '') }}
-                            </textarea>
+                                    value="">{{ config.style_modified.replace('\t', '') }}</textarea>
                         </div>
                         <div class="config-div config-div-pref-url">
                             <label for="config-pref-encryption">{{ translation['config-pref-encryption'] }}: </label>
