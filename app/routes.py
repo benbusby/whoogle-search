@@ -48,6 +48,14 @@ def get_search_name(tbm):
 def auth_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        # do not ask password if cookies already present
+        if (
+            valid_user_session(session)
+            and 'cookies_disabled' not in request.args
+            and session['auth']
+        ):
+            return f(*args, **kwargs)
+
         auth = request.authorization
 
         # Skip if username/password not set
@@ -57,6 +65,7 @@ def auth_required(f):
                 auth
                 and whoogle_user == auth.username
                 and whoogle_pass == auth.password):
+            session['auth'] = True
             return f(*args, **kwargs)
         else:
             return make_response('Not logged in', 401, {
@@ -140,6 +149,7 @@ def before_request_func():
         session['config'] = default_config
         session['uuid'] = str(uuid.uuid4())
         session['key'] = app.enc_key
+        session['auth'] = False
 
     # Establish config values per user session
     g.user_config = Config(**session['config'])
