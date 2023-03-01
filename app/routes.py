@@ -344,12 +344,10 @@ def search():
     # check for widgets and add if requested
     if search_util.widget != '':
         html_soup = bsoup(str(response), 'html.parser')
-        match search_util.widget:
-            case 'ip':
-                response = add_ip_card(html_soup, get_client_ip(request))
-            case 'calculator':
-                if not 'nojs' in request.args:
-                    response = add_calculator_card(html_soup)
+        if search_util.widget == 'ip':
+            response = add_ip_card(html_soup, get_client_ip(request))
+        elif search_util.widget == 'calculator' and not 'nojs' in request.args:
+            response = add_calculator_card(html_soup)
 
     # Update tabs content
     tabs = get_tabs_content(app.config['HEADER_TABS'],
