@@ -17,9 +17,6 @@
         {% if search_type %}
             <Param name="tbm" value="{{ search_type }}"/>
         {% endif %}
-        {% if preferences %}
-            <Param name="preferences" value="{{ preferences }}"/>
-        {% endif %}
     </Url>
     <Url type="application/x-suggestions+json" {{ request_type|safe }} template="{{ main_url }}/autocomplete">
         <Param name="q" value="{searchTerms}"/>

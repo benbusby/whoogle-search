@@ -251,8 +251,7 @@ def opensearch():
         main_url=opensearch_url,
         request_type='' if get_only else 'method="post"',
         search_type=request.args.get('tbm'),
-        search_name=get_search_name(request.args.get('tbm')),
-        preferences=g.user_config.preferences
+        search_name=get_search_name(request.args.get('tbm'))
     ), 200, {'Content-Type': 'application/xml'}
 
 
