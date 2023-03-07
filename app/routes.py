@@ -557,6 +557,11 @@ def window():
     )
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error.html', error_message=str(e)), 404
+
+
 def run_app() -> None:
     parser = argparse.ArgumentParser(
         description='Whoogle Search console runner')
