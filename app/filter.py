@@ -225,7 +225,7 @@ class Filter:
     def remove_block_titles(self) -> None:
         if not self.main_divs or not self.config.block_title:
             return
-        block_title = re.compile(self.block_title)
+        block_title = re.compile(self.config.block_title)
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
             block_divs = [_ for _ in div.find_all('h3', recursive=True)
                           if block_title.search(_.text) is not None]
@@ -234,7 +234,7 @@ class Filter:
     def remove_block_url(self) -> None:
         if not self.main_divs or not self.config.block_url:
             return
-        block_url = re.compile(self.block_url)
+        block_url = re.compile(self.config.block_url)
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
             block_divs = [_ for _ in div.find_all('a', recursive=True)
                           if block_url.search(_.attrs['href']) is not None]
