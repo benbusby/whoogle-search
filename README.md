@@ -427,6 +427,8 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_LANGUAGE              | Set interface language                                          |
 | WHOOGLE_CONFIG_SEARCH_LANGUAGE       | Set search result language                                      |
 | WHOOGLE_CONFIG_BLOCK                 | Block websites from search results (use comma-separated list)   |
+| WHOOGLE_CONFIG_BLOCK_TITLE           | Block search result with a REGEX filter on title                |
+| WHOOGLE_CONFIG_BLOCK_URL             | Block search result with a REGEX filter on URL                  |
 | WHOOGLE_CONFIG_THEME                 | Set theme mode (light, dark, or system)                         |
 | WHOOGLE_CONFIG_SAFE                  | Enable safe searches                                            |
 | WHOOGLE_CONFIG_ALTS                  | Use social media site alternatives (nitter, invidious, etc)     |
