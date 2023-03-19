@@ -728,6 +728,7 @@
         "config-time-period": "Časový úsek"
     },
     "lang_zh-TW": {
+        "": "--",
         "search": "搜尋",
         "config": "設定",
         "config-country": "設定國家",
@@ -750,7 +751,7 @@
         "config-alts-help": "將 Twitter/YouTube 等網站之連結替換為尊重隱私的第三方網站。",
         "config-new-tab": "以新分頁開啟連結",
         "config-images": "完整尺寸圖片搜尋",
-        "config-images-help": "（實驗性）在桌面版圖片搜尋中增加「檢視圖片」選項。這會使搜尋結果圖片解析度降低",
+        "config-images-help": "（實驗性）在桌面版圖片搜尋中增加「檢視圖片」選項。這會使搜尋結果圖片解析度降低。",
         "config-tor": "使用 Tor",
         "config-get-only": "僅限於 GET 要求",
         "config-url": "首頁網址",
@@ -758,6 +759,7 @@
         "config-pref-encryption": "加密設定",
         "config-pref-help": "需要一併設定 WHOOGLE_CONFIG_PREFERENCES_KEY，否則將會被忽略。",
         "config-css": "自定 CSS",
+        "config-time-period": "時間範圍",
         "load": "載入",
         "apply": "套用",
         "save-as": "另存為...",
@@ -775,13 +777,11 @@
         "news": "新聞",
         "books": "書籍",
         "anon-view": "匿名檢視",
-        "": "--",
-        "qdr:h": "过去一小时",
-        "qdr:d": "过去 24 小时",
-        "qdr:w": "上周",
-        "qdr:m": "过去一个月",
-        "qdr:y": "过去一年",
-        "config-time-period": "时间段"
+        "qdr:h": "過去 1 小時",
+        "qdr:d": "過去 24 小時",
+        "qdr:w": "過去 1 週",
+        "qdr:m": "過去 1 個月",
+        "qdr:y": "過去 1 年"
     },
     "lang_bg": {
         "search": "Търсене",
