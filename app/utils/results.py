@@ -1,6 +1,6 @@
 from app.models.config import Config
 from app.models.endpoint import Endpoint
-from bs4 import BeautifulSoup, NavigableString, MarkupResemblesLocatorWarning
+from bs4 import BeautifulSoup, NavigableString
 import copy
 from flask import current_app
 import html
@@ -9,9 +9,6 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import re
 import warnings
-
-# Suppress incorrect warnings from bs4 related to parsing HTML content
-warnings.filterwarnings('ignore', category=MarkupResemblesLocatorWarning)
 
 SKIP_ARGS = ['ref_src', 'utm']
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.', 'www.', 'mobile.', 'm.']

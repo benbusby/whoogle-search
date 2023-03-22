@@ -4,14 +4,16 @@ from app.utils.session import generate_key
 from app.utils.bangs import gen_bangs_json
 from app.utils.misc import gen_file_hash, read_config_bool
 from base64 import b64encode
+from bs4 import MarkupResemblesLocatorWarning
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 from flask import Flask
 import json
 import logging.config
 import os
 from stem import Signal
 import threading
-from dotenv import load_dotenv
+import warnings
 
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -173,6 +175,9 @@ app.jinja_env.globals.update(
 
 # Attempt to acquire tor identity, to determine if Tor config is available
 send_tor_signal(Signal.HEARTBEAT)
+
+# Suppress spurious warnings from BeautifulSoup
+warnings.simplefilter('ignore', MarkupResemblesLocatorWarning)
 
 from app import routes  # noqa
 
