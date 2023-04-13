@@ -3,7 +3,7 @@ name: whoogle
 description: A self hosted search engine on Kubernetes
 type: application
 version: 0.1.0
-appVersion: 0.8.1
+appVersion: 0.8.2
 
 icon: https://github.com/benbusby/whoogle-search/raw/main/app/static/img/favicon/favicon-96x96.png
 
