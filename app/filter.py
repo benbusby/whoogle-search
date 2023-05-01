@@ -486,7 +486,9 @@ class Filter:
                     if parent.name == 'footer' or f'{GClasses.footer}' in p_cls:
                         link.decompose()
                     parent = parent.parent
-            return
+            
+            if link.decomposed:
+                return
 
         # Replace href with only the intended destination (no "utm" type tags)
         href = link['href'].replace('https://www.google.com', '')
