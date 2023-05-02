@@ -10,7 +10,7 @@ cryptography==3.3.2; platform_machine == 'armv7l'
 cryptography==39.0.1; platform_machine != 'armv7l'
 cssutils==2.6.0
 defusedxml==0.7.1
-Flask==2.2.3
+Flask==2.3.2
 idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
