@@ -191,8 +191,9 @@ class Filter:
             for link in footer.find_all('a', href=True):
                 link['href'] = f'{link["href"]}&preferences={self.config.preferences}'
             # Remove useless stuff in footer
-            for element in footer.find_all('div', {"class": "EOlPnc"}):
-                element.decompose()
+            useless = footer.find("div", id="EOlPnc")
+            if useless:
+                useless.decompose()
 
         header = self.soup.find('header')
         if header:
