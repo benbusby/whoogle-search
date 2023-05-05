@@ -190,6 +190,9 @@ class Filter:
              if len(_.find_all('a', href=True)) > 3]
             for link in footer.find_all('a', href=True):
                 link['href'] = f'{link["href"]}&preferences={self.config.preferences}'
+            # Remove useless stuff in footer
+            for element in footer.find_all('div', {"class": "EOlPnc"}):
+                element.decompose()
 
         header = self.soup.find('header')
         if header:
@@ -486,7 +489,7 @@ class Filter:
                     if parent.name == 'footer' or f'{GClasses.footer}' in p_cls:
                         link.decompose()
                     parent = parent.parent
-            
+
             if link.decomposed:
                 return
 
