@@ -1,3 +1,10 @@
+html {
+		background-image: url("static/img/bg.svg");
+		background-repeat: repeat;
+		background-size: 30%;
+		background-color: #06476d !important;
+}
+
 body {
     font-family: Avenir, Helvetica, Arial, sans-serif;
 }
