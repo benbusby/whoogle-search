@@ -4,7 +4,7 @@ version: "2.4"
 
 services:
   whoogle-search:
-    image: ${WHOOGLE_IMAGE:-benbusby/whoogle-search}
+    build: .
     container_name: whoogle-search
     restart: unless-stopped
     pids_limit: 50
@@ -42,7 +42,11 @@ services:
       #- WHOOGLE_ALT_WIKI=farside.link/wikiless
       #- WHOOGLE_ALT_IMDB=farside.link/libremdb
       #- WHOOGLE_ALT_QUORA=farside.link/quetre
-    #env_file: # Alternatively, load variables from whoogle.env
-      #- whoogle.env
-    ports:
-      - 5000:5000
+    env_file: # Alternatively, load variables from whoogle.env
+      - whoogle.env
+  cloudflared:
+    container_name: cloudflared-search
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    env_file: cloudflared.env

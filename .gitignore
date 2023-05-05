@@ -23,3 +23,5 @@ whoogle.env
 # vim
 *~
 *.swp
+
+cloudflared.env
