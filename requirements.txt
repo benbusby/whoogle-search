@@ -10,7 +10,7 @@ cryptography==3.3.2; platform_machine == 'armv7l'
 cryptography==39.0.1; platform_machine != 'armv7l'
 cssutils==2.6.0
 defusedxml==0.7.1
-Flask==2.2.3
+Flask==2.3.2
 idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
@@ -32,5 +32,5 @@ stem==1.8.1
 urllib3==1.26.14
 waitress==2.1.2
 wcwidth==0.2.6
-Werkzeug==2.2.3
+Werkzeug==2.3.3
 python-dotenv==0.21.1
