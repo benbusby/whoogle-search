@@ -144,7 +144,8 @@ class Search:
                       and not g.user_request.mobile)
 
         get_body = g.user_request.send(query=full_query,
-                                       force_mobile=view_image)
+                                       force_mobile=view_image,
+                                       user_agent=self.user_agent)
 
         # Produce cleanable html soup from response
         get_body_safed = get_body.text.replace("&lt;","andlt;").replace("&gt;","andgt;")

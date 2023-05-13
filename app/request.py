@@ -269,7 +269,7 @@ class Request:
             return []
 
     def send(self, base_url='', query='', attempt=0,
-             force_mobile=False) -> Response:
+             force_mobile=False, user_agent='') -> Response:
         """Sends an outbound request to a URL. Optionally sends the request
         using Tor, if enabled by the user.
 
@@ -285,10 +285,14 @@ class Request:
             Response: The Response object returned by the requests call
 
         """
-        if force_mobile and not self.mobile:
-            modified_user_agent = self.modified_user_agent_mobile
+        use_client_user_agent = int(os.environ.get('WHOOGLE_USE_CLIENT_USER_AGENT', '0'))
+        if user_agent and use_client_user_agent == 1:
+            modified_user_agent = user_agent
         else:
-            modified_user_agent = self.modified_user_agent
+            if force_mobile and not self.mobile:
+                modified_user_agent = self.modified_user_agent_mobile
+            else:
+                modified_user_agent = self.modified_user_agent
 
         headers = {
             'User-Agent': modified_user_agent
