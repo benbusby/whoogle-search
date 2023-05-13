@@ -73,6 +73,14 @@ def send_tor_signal(signal: Signal) -> bool:
 
 
 def gen_user_agent(is_mobile) -> str:
+    user_agent = os.environ.get('WHOOGLE_USER_AGENT', '')
+    user_agent_mobile = os.environ.get('WHOOGLE_USER_AGENT_MOBILE', '')
+    if user_agent and not is_mobile:
+        return user_agent
+
+    if user_agent_mobile and is_mobile:
+        return user_agent_mobile
+
     firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
     linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
 
