@@ -486,7 +486,7 @@ def element():
         pass
 
     empty_gif = base64.b64decode(
-        'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
+        'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='+'====')
     return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
 
 
