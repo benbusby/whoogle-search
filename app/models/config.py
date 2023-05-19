@@ -254,7 +254,8 @@ class Config:
                 key = self._get_fernet_key(self.preferences_key)
 
                 config = Fernet(key).decrypt(
-                    brotli.decompress(urlsafe_b64decode(preferences.encode()))
+                    brotli.decompress(urlsafe_b64decode(
+                        preferences.encode() + b'=='))
                 )
 
                 config = pickle.loads(brotli.decompress(config))
@@ -262,7 +263,8 @@ class Config:
                 config = {}
         elif mode == 'u': # preferences are not encrypted
             config = pickle.loads(
-                brotli.decompress(urlsafe_b64decode(preferences.encode()))
+                brotli.decompress(urlsafe_b64decode(
+                    preferences.encode() + b'=='))
             )
         else: # preferences are incorrectly formatted
             config = {}
