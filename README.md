@@ -33,10 +33,11 @@ Contents
 5. [Usage](#usage)
 6. [Extra Steps](#extra-steps)
     1. [Set Primary Search Engine](#set-whoogle-as-your-primary-search-engine)
-    2. [Prevent Downtime (Heroku Only)](#prevent-downtime-heroku-only)
-    3. [Manual HTTPS Enforcement](#https-enforcement)
-    4. [Using with Firefox Containers](#using-with-firefox-containers)
-    5. [Reverse Proxying](#reverse-proxying)
+	2. [Custom Redirecting](#custom-redirecting)
+    3. [Prevent Downtime (Heroku Only)](#prevent-downtime-heroku-only)
+    4. [Manual HTTPS Enforcement](#https-enforcement)
+    5. [Using with Firefox Containers](#using-with-firefox-containers)
+    6. [Reverse Proxying](#reverse-proxying)
         1. [Nginx](#nginx)
 7. [Contributing](#contributing)
 8. [FAQ](#faq)
@@ -401,6 +402,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_USER_AGENT   | The desktop user agent to use. Defaults to a randomly generated one.                      |
 | WHOOGLE_USER_AGENT_MOBILE | The mobile user agent to use. Defaults to a randomly generated one.                  |
 | WHOOGLE_USE_CLIENT_USER_AGENT | Enable to use your own user agent for all requests. Defaults to false.           |
+| WHOOGLE_REDIRECTS    | Specify sites that should be redirected elsewhere. See (custom redirecting)(#custom-redirecting). |
 | EXPOSE_PORT          | The port where Whoogle will be exposed.                                                   |
 | HTTPS_ONLY           | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
 | WHOOGLE_ALT_TW       | The twitter.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
@@ -451,6 +453,7 @@ Same as most search engines, with the exception of filtering by time range.
 To filter by a range of time, append ":past <time>" to the end of your search, where <time> can be `hour`, `day`, `month`, or `year`. Example: `coronavirus updates :past hour`
 
 ## Extra Steps
+
 ### Set Whoogle as your primary search engine
 *Note: If you're using a reverse proxy to run Whoogle Search, make sure the "Root URL" config option on the home page is set to your URL before going through these steps.*
 
@@ -494,6 +497,32 @@ Browser settings:
       - Visit the home page of your Whoogle Search instance -- this will automatically add the search engine if the [requirements](https://www.chromium.org/tab-to-search/) are met (GET request, no OnSubmit script, no path). If not, you can add it manually.
     - Manual
       - Under search engines > manage search engines > add, manually enter your Whoogle instance details with a `<whoogle url>/search?q=%s` formatted search URL.
+
+### Custom Redirecting
+You can set custom site redirects using the `WHOOGLE_REDIRECTS` environment
+variable. A lot of sites, such as Twitter, Reddit, etc, have built-in redirects
+to [Farside links](https://sr.ht/~benbusby/farside), but you may want to define
+your own.
+
+To do this, you can use the following syntax:
+
+```
+WHOOGLE_REDIRECTS="<parent_domain>:<new_domain>"
+```
+
+For example, if you want to redirect from "badsite.com" to "goodsite.com":
+
+```
+WHOOGLE_REDIRECTS="badsite.com:goodsite.com"
+```
+
+This can be used for multiple sites as well, with comma separation:
+
+```
+WHOOGLE_REDIRECTS="badA.com:goodA.com,badB.com:goodB.com"
+```
+
+NOTE: Do not include "http(s)://" when defining your redirect.
 
 ### Prevent Downtime (Heroku only)
 Part of the deal with Heroku's free tier is that you're allocated 550 hours/month (meaning it can't stay active 24/7), and the app is temporarily shut down after 30 minutes of inactivity. Once it becomes inactive, any Whoogle searches will still work, but it'll take an extra 10-15 seconds for the app to come back online before displaying the result, which can be frustrating if you're in a hurry.
