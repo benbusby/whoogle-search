@@ -411,7 +411,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  Set to "" to disable. |
 | WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_ALT_IMG      | The imgur.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
-| WHOOGLE_ALT_WIKI     | The wikipedia.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_WIKI     | The wikipedia.org alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_ALT_IMDB     | The imdb.com alternative to use when site alternatives are enabled in the config. Set to "" to disable.  |
 | WHOOGLE_ALT_QUORA    | The quora.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable. |
