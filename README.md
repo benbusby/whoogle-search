@@ -96,7 +96,7 @@ Provides:
 - Free deployment of app
 - Free HTTPS url (https://\<app name\>.\<username\>\.repl\.co)
     - Supports custom domains
-- Downtime after periods of inactivity \([solution 1](https://repl.it/talk/ask/use-this-pingmat1replco-just-enter/28821/101298), [solution 2](https://repl.it/talk/learn/How-to-use-and-setup-UptimeRobot/9003)\)
+- Downtime after periods of inactivity ([solution](https://repl.it/talk/learn/How-to-use-and-setup-UptimeRobot/9003)\)
 
 ___
 
@@ -661,7 +661,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://whoogle.hostux.net](https://whoogle.hostux.net) | 🇫🇷 FR | Multi-choice | |
 | [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
 | [https://wgl.frail.duckdns.org](https://wgl.frail.duckdns.org) | 🇧🇷 BR | Multi-choice | |
-| [https://whoogle.no-logs.com/)(https://whoogle.no-logs.com/) | 🇸🇪 SE | Multi-choice | |
+| [https://whoogle.no-logs.com](https://whoogle.no-logs.com/) | 🇸🇪 SE | Multi-choice | |
 | [https://search.rubberverse.xyz](https://search.rubberverse.xyz) | 🇵🇱 PL | English | |
 | [https://whoogle.link](https://whoogle.link) | 🇩🇪 DE | Multi-choice | |
 
