@@ -14,7 +14,7 @@
   </tr>
 </table>
 
-Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
+Get Google search results, but without any ads, JavaScript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
 Contents
 1. [Features](#features)
@@ -411,7 +411,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_TL       | The Google Translate alternative to use. This is used for all "translate ____" searches.  Set to "" to disable. |
 | WHOOGLE_ALT_MD       | The medium.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_ALT_IMG      | The imgur.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
-| WHOOGLE_ALT_WIKI     | The wikipedia.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_WIKI     | The wikipedia.org alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_ALT_IMDB     | The imdb.com alternative to use when site alternatives are enabled in the config. Set to "" to disable.  |
 | WHOOGLE_ALT_QUORA    | The quora.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable. |
@@ -600,7 +600,7 @@ Under the hood, Whoogle is a basic Flask app with the following structure:
     - `opensearch.xml`: A template used for supporting [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/OpenSearch).
     - `imageresults.html`: An "experimental" template used for supporting the "Full Size" image feature on desktop.
   - `static/<css|js>`
-    - CSS/Javascript files, should be self-explanatory
+    - CSS/JavaScript files, should be self-explanatory
   - `static/settings`
     - Key-value JSON files for establishing valid configuration values
 
@@ -639,7 +639,7 @@ I'm a huge fan of Searx though and encourage anyone to use that instead if they 
 
 **Why does the image results page look different?**
 
-A lot of the app currently piggybacks on Google's existing support for fetching results pages with Javascript disabled. To their credit, they've done an excellent job with styling pages, but it seems that the image results page - particularly on mobile - is a little rough. Moving forward, with enough interest, I'd like to transition to fetching the results and parsing them into a unique Whoogle-fied interface that I can style myself.
+A lot of the app currently piggybacks on Google's existing support for fetching results pages with JavaScript disabled. To their credit, they've done an excellent job with styling pages, but it seems that the image results page - particularly on mobile - is a little rough. Moving forward, with enough interest, I'd like to transition to fetching the results and parsing them into a unique Whoogle-fied interface that I can style myself.
 
 ## Public Instances
 
