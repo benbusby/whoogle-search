@@ -653,7 +653,6 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://s.tokhmi.xyz](https://s.tokhmi.xyz) | 🇺🇸 US | Multi-choice | ✅ |
 | [https://search.sethforprivacy.com](https://search.sethforprivacy.com) | 🇩🇪 DE | English | |
 | [https://whoogle.dcs0.hu](https://whoogle.dcs0.hu) | 🇭🇺 HU | Multi-choice | |
-| [https://whoogle.esmailelbob.xyz](https://whoogle.esmailelbob.xyz) | 🇨🇦 CA | Multi-choice | |
 | [https://gowogle.voring.me](https://gowogle.voring.me) | 🇺🇸 US | Multi-choice | |
 | [https://whoogle.privacydev.net](https://whoogle.privacydev.net) | 🇳🇱 NL | English | |
 | [https://wg.vern.cc](https://wg.vern.cc) | 🇺🇸 US | English |  |
