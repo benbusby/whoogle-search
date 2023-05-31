@@ -1,0 +1,575 @@
+<!-- Color Picker Widget -->
+<script>
+/*
+    All of the necesary color format conversion functions.
+    Taken from https://github.com/Qix-/color-convert/blob/master/conversions.js
+    Used under MIT licence.
+*/
+function HEXtoRGB(args) {
+    const match = args.toString(16).match(/[a-f0-9]{6}|[a-f0-9]{3}/i);
+    if (!match) {
+        return [0, 0, 0];
+    }
+    let colorString = match[0];
+    if (match[0].length === 3) {
+        colorString = colorString.split('').map(char => {
+            return char + char;
+        }).join('');
+    }
+    const integer = parseInt(colorString, 16);
+    const r = (integer >> 16) & 0xFF;
+    const g = (integer >> 8) & 0xFF;
+    const b = integer & 0xFF;
+    return [r, g, b];
+};
+function CMYKtoRGB(cmyk) {
+    const c = cmyk[0] / 100;
+    const m = cmyk[1] / 100;
+    const y = cmyk[2] / 100;
+    const k = cmyk[3] / 100;
+    const r = 1 - Math.min(1, c * (1 - k) + k);
+    const g = 1 - Math.min(1, m * (1 - k) + k);
+    const b = 1 - Math.min(1, y * (1 - k) + k);
+    return [r * 255, g * 255, b * 255];
+};
+function HSLtoHSV(hsl) {
+    const h = hsl[0];
+    let s = hsl[1] / 100;
+    let l = hsl[2] / 100;
+    let smin = s;
+    const lmin = Math.max(l, 0.01);
+
+    l *= 2;
+    s *= (l <= 1) ? l : 2 - l;
+    smin *= lmin <= 1 ? lmin : 2 - lmin;
+    const v = (l + s) / 2;
+    const sv = l === 0 ? (2 * smin) / (lmin + smin) : (2 * s) / (l + s);
+
+    return [h, sv * 100, v * 100];
+};
+function RGBtoHEX(args) {
+    const integer = ((Math.round(args[0]) & 0xFF) << 16)
+        + ((Math.round(args[1]) & 0xFF) << 8)
+        + (Math.round(args[2]) & 0xFF);
+
+    const string = integer.toString(16).toUpperCase();
+    return '000000'.substring(string.length) + string;
+};
+function RGBtoHSV(rgb) {
+    let rdif;
+    let gdif;
+    let bdif;
+    let h;
+    let s;
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[2] / 255;
+    const v = Math.max(r, g, b);
+    const diff = v - Math.min(r, g, b);
+    const diffc = function (c) {
+        return (v - c) / 6 / diff + 1 / 2;
+    };
+    if (diff === 0) {
+        h = 0;
+        s = 0;
+    } else {
+        s = diff / v;
+        rdif = diffc(r);
+        gdif = diffc(g);
+        bdif = diffc(b);
+        if (r === v) {
+            h = bdif - gdif;
+        } else if (g === v) {
+            h = (1 / 3) + rdif - bdif;
+        } else if (b === v) {
+            h = (2 / 3) + gdif - rdif;
+        }
+        if (h < 0) {
+            h += 1;
+        } else if (h > 1) {
+            h -= 1;
+        }
+    }
+    return [
+        h * 360,
+        s * 100,
+        v * 100
+    ];
+};
+function RGBtoCMYK(rgb) {
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[2] / 255;
+
+    const k = Math.min(1 - r, 1 - g, 1 - b);
+    const c = (1 - r - k) / (1 - k) || 0;
+    const m = (1 - g - k) / (1 - k) || 0;
+    const y = (1 - b - k) / (1 - k) || 0;
+
+    return [c * 100, m * 100, y * 100, k * 100];
+};
+function RGBtoHSL(rgb) {
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[2] / 255;
+    const min = Math.min(r, g, b);
+    const max = Math.max(r, g, b);
+    const delta = max - min;
+    let h;
+    let s;
+
+    if (max === min) {
+        h = 0;
+    } else if (r === max) {
+        h = (g - b) / delta;
+    } else if (g === max) {
+        h = 2 + (b - r) / delta;
+    } else if (b === max) {
+        h = 4 + (r - g) / delta;
+    }
+
+    h = Math.min(h * 60, 360);
+
+    if (h < 0) {
+        h += 360;
+    }
+
+    const l = (min + max) / 2;
+
+    if (max === min) {
+        s = 0;
+    } else if (l <= 0.5) {
+        s = delta / (max + min);
+    } else {
+        s = delta / (2 - max - min);
+    }
+
+    return [h, s * 100, l * 100];
+};
+function HSVtoRGB(h, s, v) {
+    var r, g, b, i, f, p, q, t;
+    if (arguments.length === 1) {
+        s = h.s, v = h.v, h = h.h;
+    }
+    i = Math.floor(h * 6);
+    f = h * 6 - i;
+    p = v * (1 - s);
+    q = v * (1 - f * s);
+    t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+    return [
+        Math.round(r * 255),
+        Math.round(g * 255),
+        Math.round(b * 255)
+    ];
+}
+</script>
+<style>
+.slidecontainer {
+    text-align: center;
+}
+.slider {
+    --SliderColor: hsl(0, 100%, 50%);
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    border-radius: 1rem;
+    background: linear-gradient(to right, hsl(0, 100%, 50%),
+        hsl(60, 100%, 50%),
+        hsl(120, 100%, 50%),
+        hsl(180, 100%, 50%),
+        hsl(240, 100%, 50%),
+        hsl(300, 100%, 50%),
+        hsl(360, 100%, 50%)
+    );
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 10px;
+    background-color: var(--SliderColor);
+    border: 2px solid white;
+    transform: scale(1.5);
+    overflow: visible;
+    cursor: pointer;
+}
+.slider::-moz-range-thumb {
+    -moz-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 10px;
+    background-color: var(--SliderColor);
+    border: 2px solid white;
+    transform: scale(1.5);
+    overflow: visible;
+    cursor: pointer;
+}
+.slider::-moz-focus-outer { border: 0; }
+.colordisplay {
+    width: 100%;
+}
+[data-cslotindex="0"] {
+    border-top: 3px solid white;
+}
+.colordisplay[data-active="true"] {
+    border-left: 3px solid white;
+    width: -webkit-calc(100% - 3px);
+    width:    -moz-calc(100% - 3px);
+    width:         calc(100% - 3px);
+}
+.cdisplay {
+    background: none;
+    border: none;
+    padding: 6px;
+    text-align: center;
+    border-radius: 6px;
+}
+.cdisplay-wrapper {
+    white-space: nowrap;
+}
+#numbers {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.cdisplay-remove {
+    margin: 0;
+    float: right;
+    cursor: pointer;
+    color: black;
+    background: white;
+}
+.colordisplay-innerwrapper {
+    display: flex;
+    flex-direction: row;
+}
+#cd1 {background:green}
+</style>
+<br>
+<input type="range" min="0" max="360" value="0" class="slider" id="hue">
+<br><br>
+<canvas id="picker"></canvas>
+<span id="colordisplay-wrapper">
+    <span class="colordisplay-innerwrapper">
+        <div class="colordisplay" data-active="false" data-cslotindex="0"><br><br></div>
+        <p class="cdisplay-remove">x</p>
+    </span>
+</span>
+<br>
+<div id="numbers">
+    <span class="cdisplay-wrapper">
+    HEX <input class="cdisplay" id="hexdisplay" value="#abc123">
+    </span>
+    <br>
+    <span class="cdisplay-wrapper">
+    RGB <input class="cdisplay" id="rgbdisplay" value="100, 50, 200">
+    </span>
+    <br>
+    <span class="cdisplay-wrapper">
+    CMYK <input class="cdisplay" id="cmykdisplay" value="50%, 50%, 100%, 25%">
+    </span>
+    <br>
+    <span class="cdisplay-wrapper">
+    HSL <input class="cdisplay" id="hsldisplay" value="163, 50%, 90%">
+    </span>
+    <br>
+    <span class="cdisplay-wrapper">
+    HSV <input class="cdisplay" id="hsvdisplay" value="122, 50%, 90%">
+    </span>
+</div>
+<button id="addColorSlot">Add Color</button>
+<script>
+// list tracking every color slot.
+window.color = [
+    {
+        h: 0,
+        s: 0,
+        v: 0,
+    },
+];
+var mouseovercanvas = false;
+var currentColorSlot = 0;
+var canvas = document.getElementById('picker');
+// track if the mouse if over the canvas
+canvas.addEventListener("mouseover", () => mouseovercanvas = true);
+canvas.addEventListener("mouseleave", () => mouseovercanvas = false);
+// https://stackoverflow.com/questions/322378/javascript-check-if-mouse-button-down
+var mouseDown = 0;
+document.body.onmousedown = function() {
+    ++mouseDown;
+}
+document.body.onmouseup = function() {
+    --mouseDown;
+}
+var slider = document.getElementById('hue');
+function addColorDisplayClickListeners() {
+    // add event listeners to the block color displays to switch which of them is being edited currently.
+    let displays = document.getElementsByClassName("colordisplay");
+    for (let i = 0; i < displays.length; i++) {
+        displays[i].addEventListener("click", e => {
+            currentColorSlot = parseInt(e.currentTarget.dataset.cslotindex);
+            for (let j = 0; j < displays.length; j++) {
+                displays[j].dataset.active = "false";
+            }
+            e.currentTarget.dataset.active = "true";
+            c = window.color[currentColorSlot];
+            slider.value = c.h * 360;
+            updateEverything();
+        });
+    }
+    // add event listeners to the close buttons of the color displays
+    let closebtns = document.getElementsByClassName("cdisplay-remove");
+    for (let i = 0; i < closebtns.length; i++) {
+        closebtns[i].addEventListener("click", e => {
+            var parent = e.currentTarget.parentElement;
+            var slot = parseInt(parent.querySelectorAll(".colordisplay")[0].dataset.cslotindex);
+            var wasActive = parent.dataset.active === "true";
+            var numOfColors = parent.parentElement.childElementCount;
+            var isFirst = slot === 0;
+            var isLast = slot === (numOfColors - 1);
+            if (numOfColors === 1) return;
+            var newSelection;
+            if (isFirst) newSelection = 0;
+            else if (isLast) newSelection = numOfColors - 2;
+            else newSelection = slot;
+            if (slot != currentColorSlot) {
+                if (slot != currentColorSlot) {
+                    if (slot < currentColorSlot) {
+                        newSelection = currentColorSlot - 1;
+                    } else {
+                        newSelection = currentColorSlot;
+                    }
+                }
+            }
+            var displaysWrapper = parent.parentElement;
+            parent.remove();
+            var displays = displaysWrapper.querySelectorAll(".colordisplay");
+            for (let j = 0; j < displays.length; j++) {
+                displays[j].dataset.active = "false";
+                displays[j].dataset.cslotindex = j;
+            }
+            window.color.splice(slot, 1);
+            currentColorSlot = newSelection;
+            slider.value = window.color[currentColorSlot].h * 360;
+            updateEverything();
+            document.querySelectorAll(`[data-cslotindex="${currentColorSlot}"]`)[0].dataset.active = "true";
+        })
+    }
+}
+addColorDisplayClickListeners();
+// functionality for the button to add a color slot
+document.getElementById("addColorSlot").addEventListener("click", () => {
+    let wrapper = document.getElementById("colordisplay-wrapper");
+    let wrapperdivs = wrapper.querySelectorAll("div");
+    let last = wrapperdivs[wrapperdivs.length - 1];
+    let indexOfNew = parseInt(last.dataset.cslotindex) + 1;
+    wrapper.innerHTML += `<span class="colordisplay-innerwrapper">
+        <div class="colordisplay" data-active="false" data-cslotindex="${indexOfNew}"><br><br></div>
+        <p class="cdisplay-remove">x</p>
+    </span>`;
+    document.querySelectorAll(`.colordisplay[data-cslotindex="${currentColorSlot}"]`)[0].dataset.active = "false";
+    document.querySelectorAll(`.colordisplay[data-cslotindex="${indexOfNew}"]`)[0].dataset.active = "true";
+    currentColorSlot = indexOfNew;
+    addColorDisplayClickListeners();
+    c = window.color[currentColorSlot - 1];
+    window.color.push(c);
+    slider.value = c.h * 360;
+    updateEverything();
+});
+// updates the color picker canvas based on s and v
+// after returning to this code after more than a month the h paramter seems to be redundant, I tried to remove it but utterly failed so here it stays for now.
+function updatePicker(h, s, v) {
+    var picker = document.getElementById('picker');
+    var ctx = picker.getContext('2d');
+    var width = picker.clientWidth;
+    var height = picker.clientHeight;
+    var hue = slider.value / 360;
+    // counters
+    var byte = 0;
+    var pixel = 0;
+    var row = 0;
+    // allows prevention of expensive division inside the loop
+    var rowmult = 1 / height;
+    var colmult = 1 / width;
+    // the imagedata byte array
+    var imgdata = ctx.getImageData(0, 0, width, height);
+    var data = imgdata.data;
+    // this manually draws the color picker background gradient using the
+    // canvas's ImageData array since it is significantly faster.
+    while (true) {
+        var column = pixel % width;
+        var color = HSVtoRGB(hue, column * colmult, (row * -1 + height) * rowmult);
+        data[byte++] = color[0];
+        data[byte++] = color[1];
+        data[byte++] = color[2];
+        data[byte++] = 255; // alpha
+        if (byte > data.length - 1) break;
+        pixel++;
+        if (column === 0) row++;
+    }
+    imgdata.data = data;
+    ctx.putImageData(imgdata, 0, 0);
+    ctx.strokeStyle = '#fff';
+    // indicator
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    ctx.arc((s * canvas.width) - 5, ((v * -1 + 1) * canvas.height) - 5, 10, 0, 2 * Math.PI);
+    ctx.stroke();
+    // update the lower displays
+    window.color[currentColorSlot] = {
+        h: hue,
+        s: s,
+        v: v,
+    };
+    var rgbcolor = HSVtoRGB(window.color[currentColorSlot]);
+    var cmykcolor = RGBtoCMYK(rgbcolor).map(x => Math.round(x));
+    var hslcolor = RGBtoHSL(rgbcolor).map(x => Math.round(x));
+    var hsvcolor = window.color[currentColorSlot];
+    var str = `rgb(${rgbcolor[0]}, ${rgbcolor[1]}, ${rgbcolor[2]})`;
+    document.querySelectorAll(`[data-cslotindex="${currentColorSlot}"]`)[0].style.background = str;
+    document.getElementById('rgbdisplay').value = `${rgbcolor[0]}, ${rgbcolor[1]}, ${rgbcolor[2]}`;
+    document.getElementById('hexdisplay').value = `#${RGBtoHEX(rgbcolor)}`;
+    document.getElementById('cmykdisplay').value = `${cmykcolor[0]}%, ${cmykcolor[1]}%, ${cmykcolor[2]}%, ${cmykcolor[3]}%`;
+    document.getElementById('hsldisplay').value = `${hslcolor[0]}, ${hslcolor[1]}%, ${hslcolor[2]}%`;
+    document.getElementById('hsvdisplay').value = `${
+        Math.round(hsvcolor.h * 360)
+    }, ${
+        Math.round(hsvcolor.s * 100)
+    }%, ${
+        Math.round(hsvcolor.v * 100)
+    }%`;
+}
+// resises the canvas on window resize
+function resizePicker() {
+    let e = document.getElementById('color-picker-wrapper');
+    let w = e.clientWidth - 32; // 32 is the padding
+    let h = w * 0.3;
+    let picker = document.getElementById('picker');
+    picker.width = w;
+    picker.height = h;
+    let c = window.color[currentColorSlot];
+    updatePicker(c.h, c.s, c.v);
+}
+// handle adjusting of the s and v values of the canvas via mouse pointer.
+function mousemove(event) {
+    if (mouseovercanvas && mouseDown) {
+        var rect = event.target.getBoundingClientRect();
+        updatePicker(
+            slider.value,
+            (event.clientX - rect.left) / canvas.width,
+            ((event.clientY - rect.top) / canvas.height) * -1 + 1,
+        )
+    }
+}
+window.onmousemove = mousemove;
+window.onmousedown = mousemove;
+window.onresize = resizePicker;
+// based on the global variable currentColorSlot and color, as well as the slider state, update the entire UI
+function updateEverything() {
+    updatePicker(slider.value, window.color[currentColorSlot].s, window.color[currentColorSlot].v);
+    slider.style.setProperty('--SliderColor', `hsl(${slider.value}, 100%, 50%)`);
+}
+slider.oninput = updateEverything;
+// allow updating of the picker via the text representations of the colors below the canvas
+hexdisplay = document.getElementById('hexdisplay');
+rgbdisplay = document.getElementById('rgbdisplay');
+cmykdisplay = document.getElementById('cmykdisplay');
+hsldisplay = document.getElementById('hsldisplay');
+hsvdisplay = document.getElementById('hsvdisplay');
+hexdisplay.onchange = () => {
+    let val = hexdisplay.value;
+    val = val.replace('#', '');
+    let rgb = HEXtoRGB(val);
+    let hsv = RGBtoHSV(rgb);
+    console.log({val, rgb, hsv});
+    window.color[currentColorSlot].s = hsv[1] / 100;
+    window.color[currentColorSlot].v = hsv[2] / 100;
+    document.getElementById('hue').value = Math.round(hsv[0]).toString();
+    updateEverything();
+}
+rgbdisplay.onchange = () => {
+    let val = rgbdisplay.value;
+    var rgbArray = val.replace(/[^\d,]/g, "").split(",");
+    var intArray = [];
+    for (var i = 0; i < rgbArray.length; i++) {
+        var num = parseInt(rgbArray[i]);
+        if (num > 255) num = 255;
+        if (num < 0) num = 0;
+        intArray.push(num);
+    }
+    rgbdisplay.value = `${intArray[0]}, ${intArray[1]}, ${intArray[2]}`;
+    let hsv = RGBtoHSV(intArray);
+    window.color[currentColorSlot].s = hsv[1] / 100;
+    window.color[currentColorSlot].v = hsv[2] / 100;
+    document.getElementById('hue').value = Math.round(hsv[0]).toString();
+    updateEverything();
+}
+cmykdisplay.onchange = () => {
+    let val = cmykdisplay.value;
+    var cmykArray = val.replace(/[^\d,]/g, "").split(",");
+    var intArray = [];
+    for (var i = 0; i < cmykArray.length; i++) {
+        var num = parseInt(cmykArray[i]);
+        if (num > 100) num = 100;
+        if (num < 0) num = 0;
+        intArray.push(num);
+    }
+    cmykdisplay.value = `${intArray[0]}%, ${intArray[1]}%, ${intArray[2]}%, ${intArray[3]}%`;
+    let rgb = CMYKtoRGB(intArray);
+    let hsv = RGBtoHSV(rgb);
+    window.color[currentColorSlot].s = hsv[1] / 100;
+    window.color[currentColorSlot].v = hsv[2] / 100;
+    document.getElementById('hue').value = Math.round(hsv[0]).toString();
+    updateEverything();
+}
+hsldisplay.onchange = () => {
+    let val = hsldisplay.value;
+    var hslArray = val.replace(/[^\d,]/g, "").split(",");
+    var intArray = [];
+    for (var i = 0; i < hslArray.length; i++) {
+        var num = parseInt(hslArray[i]);
+        if (i === 0) {
+            if (num > 359) num = 359;
+        } else {
+            if (num > 100) num = 100;
+        }
+        if (num < 0) num = 0;
+        intArray.push(num);
+    }
+    hsldisplay.value = `${intArray[0]}, ${intArray[1]}%, ${intArray[2]}%`;
+    let hsv = HSLtoHSV(intArray);
+    window.color[currentColorSlot].s = hsv[1] / 100;
+    window.color[currentColorSlot].v = hsv[2] / 100;
+    document.getElementById('hue').value = Math.round(hsv[0]).toString();
+    updateEverything();
+}
+hsvdisplay.onchange = () => {
+    let val = hsvdisplay.value;
+    var hsvArray = val.replace(/[^\d,]/g, "").split(",");
+    var intArray = [];
+    for (var i = 0; i < hsvArray.length; i++) {
+        var num = parseInt(hsvArray[i]);
+        if (i === 0) {
+            if (num > 360) num = 360;
+        } else {
+            if (num > 100) num = 100;
+        }
+        if (num < 0) num = 0;
+        intArray.push(num);
+    }
+    hsvdisplay.value = `${intArray[0]}, ${intArray[1]}%, ${intArray[2]}%`;
+    window.color[currentColorSlot].s = intArray[1] / 100;
+    window.color[currentColorSlot].v = intArray[2] / 100;
+    document.getElementById('hue').value = Math.round(intArray[0]).toString();
+    updateEverything();
+}
+resizePicker();
+</script>

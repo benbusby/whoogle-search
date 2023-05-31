@@ -110,6 +110,7 @@ class Search:
                         "($|( *[^a-z0-9] *(((addres|address|adres|" +
                         "adress)|a)? *$)))", self.query.lower()) else self.widget
         self.widget = 'calculator' if re.search("calculator|calc|calclator|math", self.query.lower()) else self.widget
+        self.widget = 'color_picker' if re.search("color|colour", self.query.lower()) else self.widget
         return self.query
 
     def generate_response(self) -> str:

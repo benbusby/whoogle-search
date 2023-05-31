@@ -355,8 +355,8 @@ def search():
         html_soup = bsoup(str(response), 'html.parser')
         if search_util.widget == 'ip':
             response = add_ip_card(html_soup, get_client_ip(request))
-        elif search_util.widget == 'calculator' and not 'nojs' in request.args:
-            response = add_calculator_card(html_soup)
+        elif not 'nojs' in request.args:
+            response = add_widget(html_soup, search_util.widget)
 
     # Update tabs content
     tabs = get_tabs_content(app.config['HEADER_TABS'],
