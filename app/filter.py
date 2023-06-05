@@ -593,7 +593,7 @@ class Filter:
                 # replaced (i.e. 'philomedium.com' should stay as it is).
                 if 'medium.com' in link_str:
                     if link_str.startswith('medium.com') or '.medium.com' in link_str:
-                        link_str = 'farside.link/scribe' + link_str[
+                        link_str = SITE_ALTS['medium.com'] + link_str[
                             link_str.find('medium.com') + len('medium.com'):]
                     new_desc.string = link_str
                 else:
