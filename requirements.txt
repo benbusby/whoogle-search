@@ -27,7 +27,7 @@ PySocks==1.7.1
 pytest==7.2.1
 python-dateutil==2.8.2
 requests==2.31.0
-soupsieve==2.4
+soupsieve==2.4.1
 stem==1.8.1
 urllib3==1.26.14
 waitress==2.1.2
