@@ -1,5 +1,5 @@
 attrs==23.1.0
-beautifulsoup4==4.11.2
+beautifulsoup4==4.12.2
 brotli==1.0.9
 cachelib==0.10.2
 certifi==2022.12.7
