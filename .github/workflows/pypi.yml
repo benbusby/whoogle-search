@@ -10,7 +10,7 @@ jobs:
     name: Build and publish to TestPyPI
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
@@ -41,7 +41,7 @@ jobs:
     name: Build and publish to PyPI
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
