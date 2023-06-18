@@ -28,7 +28,7 @@ pytest==7.3.2
 python-dateutil==2.8.2
 requests==2.31.0
 soupsieve==2.4.1
-stem==1.8.1
+stem==1.8.2
 urllib3==2.0.3
 waitress==2.1.2
 wcwidth==0.2.6
