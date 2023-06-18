@@ -20,7 +20,7 @@ packaging==23.1
 pluggy==1.0.0
 pycodestyle==2.10.0
 pycparser==2.21
-pyOpenSSL==19.1.0; platform_machine == 'armv7l'
+pyOpenSSL==23.2.0; platform_machine == 'armv7l'
 pyOpenSSL==23.2.0; platform_machine != 'armv7l'
 pyparsing==3.0.9
 PySocks==1.7.1
