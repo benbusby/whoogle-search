@@ -1,4 +1,4 @@
-FROM python:3.12.0b2-alpine as builder
+FROM python:3.12.0b3-alpine as builder
 
 RUN apk --update add \
     build-base \
@@ -12,7 +12,7 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r requirements.txt
 
-FROM python:3.12.0b2-alpine
+FROM python:3.12.0b3-alpine
 
 RUN apk add --update --no-cache tor curl openrc libstdc++
 # libcurl4-openssl-dev
