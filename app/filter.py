@@ -557,18 +557,19 @@ class Filter:
         is enabled
         """
         for site, alt in SITE_ALTS.items():
-            for div in self.soup.find_all('div', text=re.compile(site)):
-                # Use the number of words in the div string to determine if the
-                # string is a result description (shouldn't replace domains used
-                # in desc text).
-                # Also ignore medium.com replacements since these are handled
+            if site != "medium.com" and alt != "":
+                # Ignore medium.com replacements since these are handled
                 # specifically in the link description replacement, and medium
                 # results are never given their own "card" result where this
                 # replacement would make sense.
-                if site == 'medium.com' or len(div.string.split(' ')) > 1:
-                    continue
-
-                div.string = div.string.replace(site, alt)
+                # Also ignore if the alt is empty, since this is used to indicate
+                # that the alt is not enabled.
+                for div in self.soup.find_all('div', text=re.compile(site)):
+                    # Use the number of words in the div string to determine if the
+                    # string is a result description (shouldn't replace domains used
+                    # in desc text).
+                    if len(div.string.split(' ')) == 1:
+                        div.string = div.string.replace(site, alt)
 
             for link in self.soup.find_all('a', href=True):
                 # Search and replace all link descriptions
@@ -592,7 +593,7 @@ class Filter:
                 # replaced (i.e. 'philomedium.com' should stay as it is).
                 if 'medium.com' in link_str:
                     if link_str.startswith('medium.com') or '.medium.com' in link_str:
-                        link_str = 'farside.link/scribe' + link_str[
+                        link_str = SITE_ALTS['medium.com'] + link_str[
                             link_str.find('medium.com') + len('medium.com'):]
                     new_desc.string = link_str
                 else:
