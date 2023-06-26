@@ -557,6 +557,15 @@ def window():
     )
 
 
+@app.route(f'/robots.txt')
+def robots():
+    response = make_response(
+'''User-Agent: *
+Disallow: /''', 200)
+    response.mimetype = 'text/plain'
+    return response
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error.html', error_message=str(e)), 404
