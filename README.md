@@ -663,6 +663,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://whoogle.no-logs.com](https://whoogle.no-logs.com/) | 🇸🇪 SE | Multi-choice | |
 | [https://search.rubberverse.xyz](https://search.rubberverse.xyz) | 🇵🇱 PL | English | |
 | [https://whoogle.ftw.lol](https://whoogle.ftw.lol) | 🇩🇪 DE | Multi-choice | |
+| [https://whoogle-search--replitcomreside.repl.co](https://whoogle-search--replitcomreside.repl.co) | 🇺🇸 US | English |  |
 
 
 * A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare.com). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
