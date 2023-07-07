@@ -1056,12 +1056,12 @@
         "books": "Pirtûk",
         "anon-view": "Dîtina Nenas",
         "": "--",
-        "qdr:h": "Saet berê",
-        "qdr:d": "24 saetên borî",
+        "qdr:h": "Demjimêra borî",
+        "qdr:d": "24 Demjimêrên borî",
         "qdr:w": "Hefteya borî",
         "qdr:m": "Meha borî",
         "qdr:y": "Sala borî",
-        "config-time-period": "Dem Period"
+        "config-time-period": "Pêşsazkariyên demê"
     },
     "lang_th": {
         "search": "ค้นหา",

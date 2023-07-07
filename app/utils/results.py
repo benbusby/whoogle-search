@@ -1,5 +1,6 @@
 from app.models.config import Config
 from app.models.endpoint import Endpoint
+from app.utils.misc import list_to_dict
 from bs4 import BeautifulSoup, NavigableString
 import copy
 from flask import current_app
@@ -42,6 +43,9 @@ SITE_ALTS = {
     'imdb.com': os.getenv('WHOOGLE_ALT_IMDB', 'farside.link/libremdb'),
     'quora.com': os.getenv('WHOOGLE_ALT_QUORA', 'farside.link/quetre')
 }
+
+# Include custom site redirects from WHOOGLE_REDIRECTS
+SITE_ALTS.update(list_to_dict(re.split(',|:', os.getenv('WHOOGLE_REDIRECTS', ''))))
 
 
 def contains_cjko(s: str) -> bool:

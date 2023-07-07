@@ -79,3 +79,10 @@ def get_abs_url(url, page_url):
     elif url.startswith('./'):
         return f'{page_url}{url[2:]}'
     return url
+
+
+def list_to_dict(lst: list) -> dict:
+    if len(lst) < 2:
+        return {}
+    return {lst[i].replace(' ', ''): lst[i+1].replace(' ', '')
+            for i in range(0, len(lst), 2)}
