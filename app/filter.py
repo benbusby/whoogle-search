@@ -79,7 +79,15 @@ def clean_query(query: str) -> str:
     Returns:
         str: The query string without any "-site:..." filters
     """
-    return query[:query.find('-site:')] if '-site:' in query else query
+
+    RestrictedWords = ["porn", "sex", "horny", "nsfw"]
+    
+    query = query[:query.find('-site:')] if '-site:' in query else query
+
+    for word in RestrictedWords:
+        query = query.replace(word, " ")
+    
+    return query
 
 
 def clean_css(css: str, page_url: str) -> str:
