@@ -15,9 +15,16 @@ RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r re
 FROM python:3.11.0a5-alpine
 
 RUN apk add --update --no-cache tor curl openrc libstdc++
+# git go //for obfs4proxy
 # libcurl4-openssl-dev
 
 RUN apk -U upgrade
+
+# uncomment to build obfs4proxy
+# RUN git clone https://gitlab.com/yawning/obfs4.git
+# WORKDIR /obfs4
+# RUN go build -o obfs4proxy/obfs4proxy ./obfs4proxy
+# RUN cp ./obfs4proxy/obfs4proxy /usr/bin/obfs4proxy
 
 ARG DOCKER_USER=whoogle
 ARG DOCKER_USERID=927

@@ -7,3 +7,6 @@ ExtORPortCookieAuthFileGroupReadable 1
 CacheDirectoryGroupReadable 1
 CookieAuthFile /var/lib/tor/control_auth_cookie
 Log debug-notice file /dev/null
+# UseBridges 1
+# ClientTransportPlugin obfs4 exec /usr/bin/obfs4proxy
+# Bridge obfs4 ip and so on
