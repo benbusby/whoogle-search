@@ -44,7 +44,7 @@ def extract_q(q_str: str, href: str) -> str:
     Returns:
         str: The 'q' element of the link, or an empty string
     """
-    return parse_qs(q_str)['q'][0] if ('&q=' in href or '?q=' in href) else ''
+    return parse_qs(q_str, keep_blank_values=True)['q'][0] if ('&q=' in href or '?q=' in href) else ''
 
 
 def build_map_url(href: str) -> str:
