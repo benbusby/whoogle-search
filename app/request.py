@@ -308,7 +308,7 @@ class Request:
         now = datetime.now()
         cookies = {
             'CONSENT': 'PENDING+987',
-            'SOCS': 'CAESHAgBEhJnd3NfMjAyMzA4MTAtMF9SQzIaAmRlIAEaBgiAo_CmBg', 
+            'SOCS': 'CAESHAgBEhIaAB', 
         }
 
         # Validate Tor conn and request new identity if the last one failed
