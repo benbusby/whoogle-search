@@ -102,7 +102,7 @@ ___
 
 ### [Fly.io](https://fly.io)
 
-You will need a **PAID** [Fly.io](https://fly.io) account to deploy Whoogle.
+You will need a [Fly.io](https://fly.io) account to deploy Whoogle. The [free allowances](https://fly.io/docs/about/pricing/#free-allowances) are enough for personal use.
 
 #### Install the CLI: https://fly.io/docs/hands-on/installing/
 
