@@ -52,10 +52,20 @@ spec:
             httpGet:
               path: /
               port: http
+              {{- if and .Values.conf.WHOOGLE_USER .Values.conf.WHOOGLE_PASS }}
+              httpHeaders:
+                - name: Authorization
+                  value: Basic {{ b64enc (printf "%s:%s" .Values.conf.WHOOGLE_USER .Values.conf.WHOOGLE_PASS) }}
+              {{- end }}
           readinessProbe:
             httpGet:
               path: /
               port: http
+              {{- if and .Values.conf.WHOOGLE_USER .Values.conf.WHOOGLE_PASS }}
+              httpHeaders:
+                - name: Authorization
+                  value: Basic {{ b64enc (printf "%s:%s" .Values.conf.WHOOGLE_USER .Values.conf.WHOOGLE_PASS) }}
+              {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
