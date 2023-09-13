@@ -234,6 +234,7 @@ ExecStart=<python_install_dir>/python3 <whoogle_install_dir>/whoogle-search --ho
 ExecStart=<whoogle_repo_dir>/run
 # For example:
 # ExecStart=/var/www/whoogle-search/run
+WorkingDirectory=<whoogle_repo_dir>
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=3
