@@ -4,8 +4,10 @@ import io
 import json
 import os
 import pickle
+import re
 import urllib.parse as urlparse
 import uuid
+import validators
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -420,13 +422,18 @@ def config():
     config_disabled = (
             app.config['CONFIG_DISABLE'] or
             not valid_user_session(session))
+
+    name = ''
+    if 'name' in request.args:
+        name = os.path.normpath(request.args.get('name'))
+        if not re.match(r'^[A-Za-z0-9_.+-]+$', name):
+            return make_response('Invalid config name', 400)
+
     if request.method == 'GET':
         return json.dumps(g.user_config.__dict__)
     elif request.method == 'PUT' and not config_disabled:
-        if 'name' in request.args:
-            config_pkl = os.path.join(
-                app.config['CONFIG_PATH'],
-                request.args.get('name'))
+        if name:
+            config_pkl = os.path.join(app.config['CONFIG_PATH'], name)
             session['config'] = (pickle.load(open(config_pkl, 'rb'))
                                  if os.path.exists(config_pkl)
                                  else session['config'])
@@ -444,7 +451,7 @@ def config():
                 config_data,
                 open(os.path.join(
                     app.config['CONFIG_PATH'],
-                    request.args.get('name')), 'wb'))
+                    name), 'wb'))
 
         session['config'] = config_data
         return redirect(config_data['url'])
@@ -463,6 +470,8 @@ def imgres():
 @session_required
 @auth_required
 def element():
+    empty_gif = base64.b64decode(
+        'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
     element_url = src_url = request.args.get('url')
     if element_url.startswith('gAAAAA'):
         try:
@@ -475,6 +484,11 @@ def element():
 
     src_type = request.args.get('type')
 
+    # Ensure requested element is from a valid domain
+    domain = urlparse.urlparse(src_url).netloc
+    if not validators.domain(domain):
+        return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
+
     try:
         file_data = g.user_request.send(base_url=src_url).content
         tmp_mem = io.BytesIO()
@@ -485,8 +499,6 @@ def element():
     except exceptions.RequestException:
         pass
 
-    empty_gif = base64.b64decode(
-        'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
     return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
 
 
@@ -504,6 +516,13 @@ def window():
         root_url=request.url_root,
         config=g.user_config)
     target = urlparse.urlparse(target_url)
+
+    # Ensure requested URL has a valid domain
+    if not validators.domain(target.netloc):
+        return render_template(
+            'error.html',
+            error_message='Invalid location'), 400
+
     host_url = f'{target.scheme}://{target.netloc}'
 
     get_body = g.user_request.send(base_url=target_url).text
