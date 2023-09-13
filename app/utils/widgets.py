@@ -1,4 +1,9 @@
+from pathlib import Path
 from bs4 import BeautifulSoup
+
+
+# root
+BASE_DIR = Path(__file__).parent.parent.parent
 
 def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
     """Adds the client's IP address to the search results
@@ -48,7 +53,8 @@ def add_calculator_card(html_soup: BeautifulSoup) -> BeautifulSoup:
     """
     main_div = html_soup.select_one('#main')
     if main_div:
-        widget_file = open('app/static/widgets/calculator.html')
+        # absolute path
+        widget_file = open(BASE_DIR / 'app/static/widgets/calculator.html', encoding="utf8")
         widget_tag = html_soup.new_tag('div')
         widget_tag['class'] = 'ZINbbc xpd O9g5cc uUPGi'
         widget_tag['id'] = 'calculator-wrapper'
@@ -56,7 +62,7 @@ def add_calculator_card(html_soup: BeautifulSoup) -> BeautifulSoup:
         calculator_text['class'] = 'kCrYT ip-address-div'
         calculator_text.string = 'Calculator'
         calculator_widget = html_soup.new_tag('div')
-        calculator_widget.append(BeautifulSoup(widget_file, 'html.parser'));
+        calculator_widget.append(BeautifulSoup(widget_file, 'html.parser'))
         calculator_widget['class'] = 'kCrYT ip-text-div'
         widget_tag.append(calculator_text)
         widget_tag.append(calculator_widget)
