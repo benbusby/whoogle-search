@@ -648,6 +648,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 | Website | Country | Language | Cloudflare |
 |-|-|-|-|
+| [https://search.neadond.space](https://search.neadond.space/) | 🇷🇺 RU | Multi-choice | ✅ |
 | [https://search.albony.xyz](https://search.albony.xyz/) | 🇮🇳 IN | Multi-choice |  |
 | [https://search.garudalinux.org](https://search.garudalinux.org) | 🇫🇮 FI | Multi-choice | ✅ |
 | [https://search.dr460nf1r3.org](https://search.dr460nf1r3.org) | 🇩🇪 DE | Multi-choice | ✅ |
