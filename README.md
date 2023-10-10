@@ -447,6 +447,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_STYLE                 | The custom CSS to use for styling (should be single line)       |
 | WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED | Encrypt preferences token, requires preferences key             |
 | WHOOGLE_CONFIG_PREFERENCES_KEY       | Key to encrypt preferences in URL (REQUIRED to show url)        |
+| WHOOGLE_CONFIG_ANON_VIEW             | Include the "anonymous view" option for each search result      |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
