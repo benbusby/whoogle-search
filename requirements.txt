@@ -29,7 +29,7 @@ python-dateutil==2.8.2
 requests==2.31.0
 soupsieve==2.4
 stem==1.8.1
-urllib3==1.26.14
+urllib3==1.26.17
 validators==0.22.0
 waitress==2.1.2
 wcwidth==0.2.6
