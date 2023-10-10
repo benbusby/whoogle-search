@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 from cryptography.fernet import Fernet
 from flask import render_template
+import html
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import re
@@ -160,6 +161,9 @@ class Filter:
         self.update_styling()
         self.remove_block_tabs()
 
+        for div in self.main_divs:
+            self.sanitize_div(div)
+
         for img in [_ for _ in self.soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
 
@@ -196,6 +200,34 @@ class Filter:
             header.decompose()
         self.remove_site_blocks(self.soup)
         return self.soup
+
+    def sanitize_div(self, div) -> None:
+        """Removes escaped script and iframe tags from results
+
+        Returns:
+            None (The soup object is modified directly)
+        """
+        if not div:
+            return
+
+        for d in div.find_all('div', recursive=True):
+            d_text = d.find(text=True, recursive=False)
+
+            # Ensure we're working with tags that contain text content
+            if not d_text or not d.string:
+                continue
+
+            d.string = html.unescape(d_text)
+            div_soup = BeautifulSoup(d.string, 'html.parser')
+
+            # Remove all valid script or iframe tags in the div
+            for script in div_soup.find_all('script'):
+                script.decompose()
+
+            for iframe in div_soup.find_all('iframe'):
+                iframe.decompose()
+
+            d.string = str(div_soup)
 
     def remove_site_blocks(self, soup) -> None:
         if not self.config.block or not soup.body:
@@ -486,7 +518,7 @@ class Filter:
                     if parent.name == 'footer' or f'{GClasses.footer}' in p_cls:
                         link.decompose()
                     parent = parent.parent
-            
+
             if link.decomposed:
                 return
 
