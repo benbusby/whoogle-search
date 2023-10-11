@@ -1,3 +1,4 @@
+import base64
 from bs4 import BeautifulSoup as bsoup
 from flask import Request
 import hashlib
@@ -5,6 +6,19 @@ import os
 import re
 from requests import exceptions, get
 from urllib.parse import urlparse
+
+empty_gif = base64.b64decode(
+    'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
+
+placeholder_img = base64.b64decode(
+    'iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAABF0lEQVRIS8XWPw9EMBQA8Eok' \
+    'JBKrMFqMBt//GzAYLTZ/VomExPDu6uLiaPteqVynBn0/75W2Vp7nEIYhe6p1XcespmmAd7Is' \
+    'M+4URcGiKPogvMMvmIS2eN9MOMKbKWgf54SYgI4vKkTuQKJKSJErkKzUSkQHUs0lilAg7GMh' \
+    'ISoIA/hYMiKCKIA2soeowCWEMkfHtUmrXLcyGYYBfN9HF8djiaglWzNZlgVs21YisoAUaEXG' \
+    'cQTP86QIFgi7vyLzPIPjOEIEC7ANQv/4aZrAdd0TUtc1i+MYnSsMWjPp+x6CIPgJVlUVS5KE' \
+    'DKig/+wnVzM4pnzaGeHd+ENlWbI0TbVLJBtw2uMfP63wc9d2kDCWxi5Q27bsBerSJ9afJbeL' \
+    'AAAAAElFTkSuQmCC'
+)
 
 
 def gen_file_hash(path: str, static_file: str) -> str:

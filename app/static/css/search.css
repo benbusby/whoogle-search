@@ -59,8 +59,23 @@ details summary span {
 }
 
 .site-favicon {
-	float: right;
+	float: left;
 	width: 25px;
+	padding-right: 5px;
+}
+
+.sCuL3 {
+	padding-left: 30px;
+}
+
+#flex_text_audio_icon_chunk {
+	display: none;
+}
+
+audio {
+	display: block;
+	margin-right: auto;
+	padding-bottom: 5px;
 }
 
 @media (min-width: 801px) {

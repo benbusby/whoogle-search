@@ -172,6 +172,7 @@ class Filter:
 
         for audio in [_ for _ in self.soup.find_all('audio') if 'src' in _.attrs]:
             self.update_element_src(audio, 'audio/mpeg')
+            audio['controls'] = ''
 
         for link in self.soup.find_all('a', href=True):
             self.update_link(link)
