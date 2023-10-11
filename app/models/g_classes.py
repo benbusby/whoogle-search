@@ -14,6 +14,7 @@ class GClasses:
     footer = 'TuS8Ad'
     result_class_a = 'ZINbbc'
     result_class_b = 'luh4td'
+    scroller_class = 'idg8be'
 
     result_classes = {
         result_class_a: ['Gx5Zad'],

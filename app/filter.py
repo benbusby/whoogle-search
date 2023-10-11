@@ -251,9 +251,9 @@ class Filter:
         # favicon attached, and that the div is a result div
         while parent:
             p_cls = parent.attrs.get('class') or []
-            if 'has-favicon' in p_cls:
+            if 'has-favicon' in p_cls or GClasses.scroller_class in p_cls:
                 return
-            elif f'{GClasses.result_class_a}' not in p_cls:
+            elif GClasses.result_class_a not in p_cls:
                 parent = parent.parent
             else:
                 is_result_div = True
@@ -279,6 +279,9 @@ class Filter:
             p_cls.append('has-favicon')
             parent['class'] = p_cls
             parent = parent.parent
+
+            if GClasses.result_class_a in p_cls:
+                break
 
     def remove_site_blocks(self, soup) -> None:
         if not self.config.block or not soup.body:
