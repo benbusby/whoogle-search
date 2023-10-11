@@ -29,6 +29,7 @@ else
         python3 -um app \
           --unix-socket "$UNIX_SOCKET"
     else
+        echo "Running on http://${ADDRESS:-0.0.0.0}:${PORT:-"${EXPOSE_PORT:-5000}"}"
         python3 -um app \
           --host "${ADDRESS:-0.0.0.0}" \
           --port "${PORT:-"${EXPOSE_PORT:-5000}"}"
