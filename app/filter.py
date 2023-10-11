@@ -161,8 +161,11 @@ class Filter:
         self.update_styling()
         self.remove_block_tabs()
 
-        for div in self.main_divs:
-            self.sanitize_div(div)
+        # self.main_divs is only populated for the main page of search results
+        # (i.e. not images/news/etc).
+        if self.main_divs:
+            for div in self.main_divs:
+                self.sanitize_div(div)
 
         for img in [_ for _ in self.soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
