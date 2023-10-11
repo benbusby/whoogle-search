@@ -490,7 +490,13 @@ def element():
         return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
 
     try:
-        file_data = g.user_request.send(base_url=src_url).content
+        response = g.user_request.send(base_url=src_url)
+
+        # Display an empty gif if the requested element couldn't be retrieved
+        if response.status_code != 200:
+            return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
+
+        file_data = response.content
         tmp_mem = io.BytesIO()
         tmp_mem.write(file_data)
         tmp_mem.seek(0)
