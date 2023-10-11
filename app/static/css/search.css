@@ -58,6 +58,11 @@ details summary span {
     text-align: center;
 }
 
+.site-favicon {
+	float: right;
+	width: 25px;
+}
+
 @media (min-width: 801px) {
     body {
         min-width: 736px !important;

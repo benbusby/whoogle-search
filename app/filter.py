@@ -172,6 +172,7 @@ class Filter:
 
         for link in self.soup.find_all('a', href=True):
             self.update_link(link)
+            self.add_favicon(link)
 
         if self.config.alts:
             self.site_alt_swap()
@@ -228,6 +229,52 @@ class Filter:
                 iframe.decompose()
 
             d.string = str(div_soup)
+
+    def add_favicon(self, link) -> None:
+        """Adds icons for each returned result, using the result site's favicon
+
+        Returns:
+            None (The soup object is modified directly)
+        """
+        # Skip empty, parentless, or internal links
+        if not link or not link.parent or not link['href'].startswith('http'):
+            return
+
+        parent = link.parent
+        is_result_div = False
+
+        # Check each parent to make sure that the div doesn't already have a
+        # favicon attached, and that the div is a result div
+        while parent:
+            p_cls = parent.attrs.get('class') or []
+            if 'has-favicon' in p_cls:
+                return
+            elif f'{GClasses.result_class_a}' not in p_cls:
+                parent = parent.parent
+            else:
+                is_result_div = True
+                break
+
+        if not is_result_div:
+            return
+
+        # Construct the html for inserting the icon into the parent div
+        parsed = urlparse.urlparse(link['href'])
+        src = f'{self.root_url}/{Endpoint.element}?url=' + (
+                f'{parsed.scheme}://{parsed.netloc}/favicon.ico'
+            ) + '&type=image/x-icon'
+        html = f'<img class="site-favicon" src="{src}">'
+
+        favicon = BeautifulSoup(html, 'html.parser')
+        link.parent.insert(0, favicon)
+
+        # Update all parents to indicate that a favicon has been attached
+        parent = link.parent
+        while parent:
+            p_cls = parent.get('class') or []
+            p_cls.append('has-favicon')
+            parent['class'] = p_cls
+            parent = parent.parent
 
     def remove_site_blocks(self, soup) -> None:
         if not self.config.block or not soup.body:
