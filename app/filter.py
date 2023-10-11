@@ -264,9 +264,11 @@ class Filter:
 
         # Construct the html for inserting the icon into the parent div
         parsed = urlparse.urlparse(link['href'])
-        src = f'{self.root_url}/{Endpoint.element}?url=' + (
-                f'{parsed.scheme}://{parsed.netloc}/favicon.ico'
-            ) + '&type=image/x-icon'
+        favicon = self.encrypt_path(
+            f'{parsed.scheme}://{parsed.netloc}/favicon.ico',
+            is_element=True)
+        src = f'{self.root_url}/{Endpoint.element}?url={favicon}' + \
+            '&type=image/x-icon'
         html = f'<img class="site-favicon" src="{src}">'
 
         favicon = BeautifulSoup(html, 'html.parser')
