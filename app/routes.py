@@ -17,7 +17,8 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.misc import empty_gif, placeholder_img, get_proxy_host_url
+from app.utils.misc import empty_gif, placeholder_img, get_proxy_host_url, \
+    fetch_favicon
 from app.filter import Filter
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
     check_for_update
@@ -493,7 +494,8 @@ def element():
         # Display an empty gif if the requested element couldn't be retrieved
         if response.status_code != 200 or len(response.content) == 0:
             if 'favicon' in src_url:
-                return send_file(io.BytesIO(placeholder_img), mimetype='image/png')
+                favicon = fetch_favicon(src_url)
+                return send_file(io.BytesIO(favicon), mimetype='image/png')
             else:
                 return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
 
