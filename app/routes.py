@@ -21,7 +21,7 @@ from app.utils.misc import empty_gif, placeholder_img, get_proxy_host_url, \
     fetch_favicon
 from app.filter import Filter
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
-    check_for_update
+    check_for_update, encrypt_string
 from app.utils.widgets import *
 from app.utils.results import bold_search_terms,\
     add_currency_card, check_currency, get_tabs_content
@@ -34,6 +34,7 @@ from requests import exceptions
 from requests.models import PreparedRequest
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.exceptions import InvalidSignature
+from werkzeug.datastructures import MultiDict
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE'])) or {}
@@ -184,6 +185,7 @@ def before_request_func():
 def after_request_func(resp):
     resp.headers['X-Content-Type-Options'] = 'nosniff'
     resp.headers['X-Frame-Options'] = 'DENY'
+    resp.headers['Cache-Control'] = 'max-age=86400'
 
     if os.getenv('WHOOGLE_CSP', False):
         resp.headers['Content-Security-Policy'] = app.config['CSP']
@@ -301,6 +303,13 @@ def autocomplete():
 @session_required
 @auth_required
 def search():
+    if request.method == 'POST':
+        # Redirect as a GET request with an encrypted query
+        post_data = MultiDict(request.form)
+        post_data['q'] = encrypt_string(g.session_key, post_data['q'])
+        get_req_str = urlparse.urlencode(post_data)
+        return redirect(url_for('.search') + '?' + get_req_str)
+
     search_util = Search(request, g.user_config, g.session_key)
     query = search_util.new_search_query()
 

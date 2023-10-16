@@ -1,5 +1,6 @@
 import base64
 from bs4 import BeautifulSoup as bsoup
+from cryptography.fernet import Fernet
 from flask import Request
 import hashlib
 import io
@@ -126,3 +127,13 @@ def list_to_dict(lst: list) -> dict:
         return {}
     return {lst[i].replace(' ', ''): lst[i+1].replace(' ', '')
             for i in range(0, len(lst), 2)}
+
+
+def encrypt_string(key: bytes, string: str) -> str:
+    cipher_suite = Fernet(key)
+    return cipher_suite.encrypt(string.encode()).decode()
+
+
+def decrypt_string(key: bytes, string: str) -> str:
+    cipher_suite = Fernet(g.session_key)
+    return cipher_suite.decrypt(string.encode()).decode()
