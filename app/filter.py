@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 from cryptography.fernet import Fernet
 from flask import render_template
+import html
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import re
@@ -44,7 +45,7 @@ def extract_q(q_str: str, href: str) -> str:
     Returns:
         str: The 'q' element of the link, or an empty string
     """
-    return parse_qs(q_str)['q'][0] if ('&q=' in href or '?q=' in href) else ''
+    return parse_qs(q_str, keep_blank_values=True)['q'][0] if ('&q=' in href or '?q=' in href) else ''
 
 
 def build_map_url(href: str) -> str:
@@ -160,14 +161,22 @@ class Filter:
         self.update_styling()
         self.remove_block_tabs()
 
+        # self.main_divs is only populated for the main page of search results
+        # (i.e. not images/news/etc).
+        if self.main_divs:
+            for div in self.main_divs:
+                self.sanitize_div(div)
+
         for img in [_ for _ in self.soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
 
         for audio in [_ for _ in self.soup.find_all('audio') if 'src' in _.attrs]:
             self.update_element_src(audio, 'audio/mpeg')
+            audio['controls'] = ''
 
         for link in self.soup.find_all('a', href=True):
             self.update_link(link)
+            self.add_favicon(link)
 
         if self.config.alts:
             self.site_alt_swap()
@@ -200,6 +209,85 @@ class Filter:
             header.decompose()
         self.remove_site_blocks(self.soup)
         return self.soup
+
+    def sanitize_div(self, div) -> None:
+        """Removes escaped script and iframe tags from results
+
+        Returns:
+            None (The soup object is modified directly)
+        """
+        if not div:
+            return
+
+        for d in div.find_all('div', recursive=True):
+            d_text = d.find(text=True, recursive=False)
+
+            # Ensure we're working with tags that contain text content
+            if not d_text or not d.string:
+                continue
+
+            d.string = html.unescape(d_text)
+            div_soup = BeautifulSoup(d.string, 'html.parser')
+
+            # Remove all valid script or iframe tags in the div
+            for script in div_soup.find_all('script'):
+                script.decompose()
+
+            for iframe in div_soup.find_all('iframe'):
+                iframe.decompose()
+
+            d.string = str(div_soup)
+
+    def add_favicon(self, link) -> None:
+        """Adds icons for each returned result, using the result site's favicon
+
+        Returns:
+            None (The soup object is modified directly)
+        """
+        # Skip empty, parentless, or internal links
+        if not link or not link.parent or not link['href'].startswith('http'):
+            return
+
+        parent = link.parent
+        is_result_div = False
+
+        # Check each parent to make sure that the div doesn't already have a
+        # favicon attached, and that the div is a result div
+        while parent:
+            p_cls = parent.attrs.get('class') or []
+            if 'has-favicon' in p_cls or GClasses.scroller_class in p_cls:
+                return
+            elif GClasses.result_class_a not in p_cls:
+                parent = parent.parent
+            else:
+                is_result_div = True
+                break
+
+        if not is_result_div:
+            return
+
+        # Construct the html for inserting the icon into the parent div
+        parsed = urlparse.urlparse(link['href'])
+        favicon = self.encrypt_path(
+            f'{parsed.scheme}://{parsed.netloc}/favicon.ico',
+            is_element=True)
+        src = f'{self.root_url}/{Endpoint.element}?url={favicon}' + \
+            '&type=image/x-icon'
+        html = f'<img class="site-favicon" src="{src}">'
+
+        favicon = BeautifulSoup(html, 'html.parser')
+        link.parent.insert(0, favicon)
+
+        # Update all parents to indicate that a favicon has been attached
+        parent = link.parent
+        while parent:
+            p_cls = parent.get('class') or []
+            p_cls.append('has-favicon')
+            parent['class'] = p_cls
+            parent = parent.parent
+
+            if GClasses.result_class_a in p_cls:
+                break
 
     def remove_site_blocks(self, soup) -> None:
         if not self.config.block or not soup.body:

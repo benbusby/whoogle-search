@@ -307,9 +307,8 @@ class Request:
         # view is suppressed correctly
         now = datetime.now()
         cookies = {
-            'CONSENT': 'YES+cb.{:d}{:02d}{:02d}-17-p0.de+F+678'.format(
-                now.year, now.month, now.day
-            )
+            'CONSENT': 'PENDING+987',
+            'SOCS': 'CAESHAgBEhIaAB', 
         }
 
         # Validate Tor conn and request new identity if the last one failed

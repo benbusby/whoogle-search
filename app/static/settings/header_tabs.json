@@ -13,7 +13,7 @@
   },
   "maps": {
       "tbm": null,
-      "href": "https://maps.google.com/maps?q={query}",
+      "href": "https://maps.google.com/maps?q={map_query}",
       "name": "Maps",
       "selected": false
   },

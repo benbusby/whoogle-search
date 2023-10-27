@@ -418,6 +418,10 @@ def get_tabs_content(tabs: dict,
     Returns:
         dict: contains the name, the href and if the tab is selected or not
     """
+    map_query = full_query
+    if '-site:' in full_query:
+        block_idx = full_query.index('-site:')
+        map_query = map_query[:block_idx]
     tabs = copy.deepcopy(tabs)
     for tab_id, tab_content in tabs.items():
         # update name to desired language
@@ -433,7 +437,9 @@ def get_tabs_content(tabs: dict,
         if preferences:
             query = f"{query}&preferences={preferences}"
 
-        tab_content['href'] = tab_content['href'].format(query=query)
+        tab_content['href'] = tab_content['href'].format(
+            query=query,
+            map_query=map_query)
 
         # update if selected tab (default all tab is selected)
         if tab_content['tbm'] == search_type:

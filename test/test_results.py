@@ -44,17 +44,11 @@ def test_get_results(client):
 
 def test_post_results(client):
     rv = client.post(f'/{Endpoint.search}', data=dict(q='test'))
-    assert rv._status_code == 200
-
-    # Depending on the search, there can be more
-    # than 10 result divs
-    results = get_search_results(rv.data)
-    assert len(results) >= 10
-    assert len(results) <= 15
+    assert rv._status_code == 302
 
 
 def test_translate_search(client):
-    rv = client.post(f'/{Endpoint.search}', data=dict(q='translate hola'))
+    rv = client.get(f'/{Endpoint.search}?q=translate hola')
     assert rv._status_code == 200
 
     # Pretty weak test, but better than nothing
@@ -64,7 +58,7 @@ def test_translate_search(client):
 
 
 def test_block_results(client):
-    rv = client.post(f'/{Endpoint.search}', data=dict(q='pinterest'))
+    rv = client.get(f'/{Endpoint.search}?q=pinterest')
     assert rv._status_code == 200
 
     has_pinterest = False
@@ -79,7 +73,7 @@ def test_block_results(client):
     rv = client.post(f'/{Endpoint.config}', data=demo_config)
     assert rv._status_code == 302
 
-    rv = client.post(f'/{Endpoint.search}', data=dict(q='pinterest'))
+    rv = client.get(f'/{Endpoint.search}?q=pinterest')
     assert rv._status_code == 200
 
     for link in BeautifulSoup(rv.data, 'html.parser').find_all('a', href=True):
@@ -90,7 +84,7 @@ def test_block_results(client):
 
 
 def test_view_my_ip(client):
-    rv = client.post(f'/{Endpoint.search}', data=dict(q='my ip address'))
+    rv = client.get(f'/{Endpoint.search}?q=my ip address')
     assert rv._status_code == 200
 
     # Pretty weak test, but better than nothing
@@ -107,7 +101,7 @@ def test_recent_results(client):
     }
 
     for time, num_days in times.items():
-        rv = client.post(f'/{Endpoint.search}', data=dict(q='test :' + time))
+        rv = client.get(f'/{Endpoint.search}?q=test :' + time)
         result_divs = get_search_results(rv.data)
 
         current_date = datetime.now()

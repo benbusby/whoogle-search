@@ -4,8 +4,10 @@ import io
 import json
 import os
 import pickle
+import re
 import urllib.parse as urlparse
 import uuid
+import validators
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -15,10 +17,11 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.misc import get_proxy_host_url
+from app.utils.misc import empty_gif, placeholder_img, get_proxy_host_url, \
+    fetch_favicon
 from app.filter import Filter
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
-    check_for_update
+    check_for_update, encrypt_string
 from app.utils.widgets import *
 from app.utils.results import bold_search_terms,\
     add_currency_card, check_currency, get_tabs_content
@@ -31,6 +34,7 @@ from requests import exceptions
 from requests.models import PreparedRequest
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.exceptions import InvalidSignature
+from werkzeug.datastructures import MultiDict
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE'])) or {}
@@ -181,6 +185,7 @@ def before_request_func():
 def after_request_func(resp):
     resp.headers['X-Content-Type-Options'] = 'nosniff'
     resp.headers['X-Frame-Options'] = 'DENY'
+    resp.headers['Cache-Control'] = 'max-age=86400'
 
     if os.getenv('WHOOGLE_CSP', False):
         resp.headers['Content-Security-Policy'] = app.config['CSP']
@@ -298,6 +303,13 @@ def autocomplete():
 @session_required
 @auth_required
 def search():
+    if request.method == 'POST':
+        # Redirect as a GET request with an encrypted query
+        post_data = MultiDict(request.form)
+        post_data['q'] = encrypt_string(g.session_key, post_data['q'])
+        get_req_str = urlparse.urlencode(post_data)
+        return redirect(url_for('.search') + '?' + get_req_str)
+
     search_util = Search(request, g.user_config, g.session_key)
     query = search_util.new_search_query()
 
@@ -420,13 +432,18 @@ def config():
     config_disabled = (
             app.config['CONFIG_DISABLE'] or
             not valid_user_session(session))
+
+    name = ''
+    if 'name' in request.args:
+        name = os.path.normpath(request.args.get('name'))
+        if not re.match(r'^[A-Za-z0-9_.+-]+$', name):
+            return make_response('Invalid config name', 400)
+
     if request.method == 'GET':
         return json.dumps(g.user_config.__dict__)
     elif request.method == 'PUT' and not config_disabled:
-        if 'name' in request.args:
-            config_pkl = os.path.join(
-                app.config['CONFIG_PATH'],
-                request.args.get('name'))
+        if name:
+            config_pkl = os.path.join(app.config['CONFIG_PATH'], name)
             session['config'] = (pickle.load(open(config_pkl, 'rb'))
                                  if os.path.exists(config_pkl)
                                  else session['config'])
@@ -444,7 +461,7 @@ def config():
                 config_data,
                 open(os.path.join(
                     app.config['CONFIG_PATH'],
-                    request.args.get('name')), 'wb'))
+                    name), 'wb'))
 
         session['config'] = config_data
         return redirect(config_data['url'])
@@ -475,8 +492,23 @@ def element():
 
     src_type = request.args.get('type')
 
+    # Ensure requested element is from a valid domain
+    domain = urlparse.urlparse(src_url).netloc
+    if not validators.domain(domain):
+        return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
+
     try:
-        file_data = g.user_request.send(base_url=src_url).content
+        response = g.user_request.send(base_url=src_url)
+
+        # Display an empty gif if the requested element couldn't be retrieved
+        if response.status_code != 200 or len(response.content) == 0:
+            if 'favicon' in src_url:
+                favicon = fetch_favicon(src_url)
+                return send_file(io.BytesIO(favicon), mimetype='image/png')
+            else:
+                return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
+
+        file_data = response.content
         tmp_mem = io.BytesIO()
         tmp_mem.write(file_data)
         tmp_mem.seek(0)
@@ -485,8 +517,6 @@ def element():
     except exceptions.RequestException:
         pass
 
-    empty_gif = base64.b64decode(
-        'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
     return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
 
 
@@ -504,6 +534,13 @@ def window():
         root_url=request.url_root,
         config=g.user_config)
     target = urlparse.urlparse(target_url)
+
+    # Ensure requested URL has a valid domain
+    if not validators.domain(target.netloc):
+        return render_template(
+            'error.html',
+            error_message='Invalid location'), 400
+
     host_url = f'{target.scheme}://{target.netloc}'
 
     get_body = g.user_request.send(base_url=target_url).text

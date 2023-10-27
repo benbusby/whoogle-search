@@ -109,7 +109,9 @@ class Search:
         self.widget = "ip" if re.search("([^a-z0-9]|^)my *[^a-z0-9] *(ip|internet protocol)" +
                         "($|( *[^a-z0-9] *(((addres|address|adres|" +
                         "adress)|a)? *$)))", self.query.lower()) else self.widget
-        self.widget = 'calculator' if re.search("calculator|calc|calclator|math", self.query.lower()) else self.widget
+        self.widget = 'calculator' if re.search(
+                r"\bcalculator\b|\bcalc\b|\bcalclator\b|\bmath\b",
+                self.query.lower()) else self.widget
         return self.query
 
     def generate_response(self) -> str:
