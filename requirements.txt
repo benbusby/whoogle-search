@@ -33,5 +33,5 @@ urllib3==1.26.18
 validators==0.22.0
 waitress==2.1.2
 wcwidth==0.2.6
-Werkzeug==2.3.3
+Werkzeug==3.0.1
 python-dotenv==0.21.1
