@@ -7,7 +7,7 @@ cffi==1.15.1
 chardet==5.1.0
 click==8.1.3
 cryptography==3.3.2; platform_machine == 'armv7l'
-cryptography==41.0.4; platform_machine != 'armv7l'
+cryptography==41.0.6; platform_machine != 'armv7l'
 cssutils==2.6.0
 defusedxml==0.7.1
 Flask==2.3.2
