@@ -96,13 +96,13 @@ def test_view_my_ip(client):
 
 def test_recent_results(client):
     times = {
-        'past year': 365,
-        'past month': 31,
-        'past week': 7
+        'tbs=qdr:y': 365,
+        'tbs=qdr:m': 31,
+        'tbs=qdr:w': 7
     }
 
     for time, num_days in times.items():
-        rv = client.get(f'/{Endpoint.search}?q=test :' + time)
+        rv = client.get(f'/{Endpoint.search}?q=test&' + time)
         result_divs = get_search_results(rv.data)
 
         current_date = datetime.now()
