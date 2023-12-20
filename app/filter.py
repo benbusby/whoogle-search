@@ -244,7 +244,9 @@ class Filter:
             None (The soup object is modified directly)
         """
         # Skip empty, parentless, or internal links
-        if not link or not link.parent or not link['href'].startswith('http'):
+        show_favicons = read_config_bool('WHOOGLE_SHOW_FAVICONS', True)
+        is_valid_link = link and link.parent and link['href'].startswith('http')
+        if not show_favicons or not is_valid_link:
             return
 
         parent = link.parent

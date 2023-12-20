@@ -135,7 +135,8 @@ def before_request_func():
 
     # Check for latest version if needed
     now = datetime.now()
-    if now - timedelta(hours=24) > app.config['LAST_UPDATE_CHECK']:
+    needs_update_check = now - timedelta(hours=24) > app.config['LAST_UPDATE_CHECK']
+    if read_config_bool('WHOOGLE_UPDATE_CHECK', True) and needs_update_check:
         app.config['LAST_UPDATE_CHECK'] = now
         app.config['HAS_UPDATE'] = check_for_update(
             app.config['RELEASES_URL'],
