@@ -627,6 +627,11 @@ def run_app() -> None:
         metavar='</path/to/unix.sock>',
         help='Listen for app on unix socket instead of host:port')
     parser.add_argument(
+        '--unix-socket-perms',
+        default='600',
+        metavar='<octal permissions>',
+        help='Octal permissions to use for the Unix domain socket (default 600)')
+    parser.add_argument(
         '--debug',
         default=False,
         action='store_true',
@@ -677,7 +682,7 @@ def run_app() -> None:
     if args.debug:
         app.run(host=args.host, port=args.port, debug=args.debug)
     elif args.unix_socket:
-        waitress.serve(app, unix_socket=args.unix_socket)
+        waitress.serve(app, unix_socket=args.unix_socket, unix_socket_perms=args.unix_socket_perms)
     else:
         waitress.serve(
             app,
