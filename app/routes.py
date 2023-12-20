@@ -609,6 +609,26 @@ def page_not_found(e):
     return render_template('error.html', error_message=str(e)), 404
 
 
+@app.errorhandler(Exception)
+def internal_error(e):
+    query = ''
+    if request.method == 'POST':
+        query = request.form.get('q')
+    else:
+        query = request.args.get('q')
+
+    localization_lang = g.user_config.get_localization_lang()
+    translation = app.config['TRANSLATIONS'][localization_lang]
+    return render_template(
+            'error.html',
+            error_message='Internal server error (500)',
+            translation=translation,
+            farside='https://farside.link',
+            config=g.user_config,
+            query=urlparse.unquote(query),
+            params=g.user_config.to_params(keys=['preferences'])), 500
+
+
 def run_app() -> None:
     parser = argparse.ArgumentParser(
         description='Whoogle Search console runner')
