@@ -56,8 +56,8 @@ def gen_file_hash(path: str, static_file: str) -> str:
     return filename_split[0] + '.' + file_hash + filename_split[-1]
 
 
-def read_config_bool(var: str) -> bool:
-    val = os.getenv(var, '0')
+def read_config_bool(var: str, default: bool=False) -> bool:
+    val = os.getenv(var, '1' if default else '0')
     # user can specify one of the following values as 'true' inputs (all
     # variants with upper case letters will also work):
     # ('true', 't', '1', 'yes', 'y')

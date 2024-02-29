@@ -422,6 +422,8 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_TOR_SERVICE  | Enable/disable the Tor service on startup. Default on -- use '0' to disable.              |
 | WHOOGLE_TOR_USE_PASS | Use password authentication for tor control port. |
 | WHOOGLE_TOR_CONF | The absolute path to the config file containing the password for the tor control port. Default: ./misc/tor/control.conf WHOOGLE_TOR_PASS must be 1 for this to work.|
+| WHOOGLE_SHOW_FAVICONS | Show/hide favicons next to search result URLs. Default on.                               |
+| WHOOGLE_UPDATE_CHECK  | Enable/disable the automatic daily check for new versions of Whoogle. Default on.        |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
@@ -663,12 +665,12 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
 | [https://wgl.frail.duckdns.org](https://wgl.frail.duckdns.org) | 🇧🇷 BR | Multi-choice | |
 | [https://whoogle.no-logs.com](https://whoogle.no-logs.com/) | 🇸🇪 SE | Multi-choice | |
-| [https://search.rubberverse.xyz](https://search.rubberverse.xyz) | 🇵🇱 PL | English | |
 | [https://whoogle.ftw.lol](https://whoogle.ftw.lol) | 🇩🇪 DE | Multi-choice | |
 | [https://whoogle-search--replitcomreside.repl.co](https://whoogle-search--replitcomreside.repl.co) | 🇺🇸 US | English |  |
 | [https://search.notrustverify.ch](https://search.notrustverify.ch) | 🇨🇭 CH | Multi-choice |  |
 | [https://whoogle.datura.network](https://whoogle.datura.network) | 🇩🇪 DE | Multi-choice | |
 | [https://whoogle.yepserver.xyz](https://whoogle.yepserver.xyz) | 🇺🇦 UA | Multi-choice | |
+| [https://search.nezumi.party](https://search.nezumi.party) | 🇮🇹 IT | Multi-choice | |
 
 
 * A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare.com). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.

@@ -12,7 +12,7 @@ import re
 import warnings
 
 SKIP_ARGS = ['ref_src', 'utm']
-SKIP_PREFIX = ['//www.', '//mobile.', '//m.', 'www.', 'mobile.', 'm.']
+SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
 GOOG_STATIC = 'www.gstatic.com'
 G_M_LOGO_URL = 'https://www.gstatic.com/m/images/icons/googleg.gif'
 GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
@@ -152,11 +152,12 @@ def get_first_link(soup: BeautifulSoup) -> str:
     return ''
 
 
-def get_site_alt(link: str) -> str:
+def get_site_alt(link: str, site_alts: dict = SITE_ALTS) -> str:
     """Returns an alternative to a particular site, if one is configured
 
     Args:
-        link: A string result URL to check against the SITE_ALTS map
+        link: A string result URL to check against the site_alts map
+        site_alts: A map of site alternatives to replace with. defaults to SITE_ALTS
 
     Returns:
         str: An updated (or ignored) result link
@@ -178,9 +179,9 @@ def get_site_alt(link: str) -> str:
     # "https://medium.com/..." should match, but "philomedium.com" should not)
     hostcomp = f'{parsed_link.scheme}://{hostname}'
 
-    for site_key in SITE_ALTS.keys():
+    for site_key in site_alts.keys():
         site_alt = f'{parsed_link.scheme}://{site_key}'
-        if not hostname or site_alt not in hostcomp or not SITE_ALTS[site_key]:
+        if not hostname or site_alt not in hostcomp or not site_alts[site_key]:
             continue
 
         # Wikipedia -> Wikiless replacements require the subdomain (if it's
@@ -193,9 +194,8 @@ def get_site_alt(link: str) -> str:
         elif 'medium' in hostname and len(subdomain) > 0:
             hostname = f'{subdomain}.{hostname}'
 
-        parsed_alt = urlparse.urlparse(SITE_ALTS[site_key])
-        link = link.replace(hostname, SITE_ALTS[site_key]) + params
-
+        parsed_alt = urlparse.urlparse(site_alts[site_key])
+        link = link.replace(hostname, site_alts[site_key]) + params
         # If a scheme is specified in the alternative, this results in a
         # replaced link that looks like "https://http://altservice.tld".
         # In this case, we can remove the original scheme from the result
@@ -205,9 +205,12 @@ def get_site_alt(link: str) -> str:
 
         for prefix in SKIP_PREFIX:
             if parsed_alt.scheme:
-                link = link.replace(prefix, '')
+                # If a scheme is specified, remove everything before the
+                # first occurence of it
+                link = f'{parsed_alt.scheme}{link.split(parsed_alt.scheme, 1)[-1]}'
             else:
-                link = link.replace(prefix, '//')
+                # Otherwise, replace the first occurrence of the prefix
+                link = link.replace(prefix, '//', 1)
         break
 
     return link

@@ -135,7 +135,8 @@ def before_request_func():
 
     # Check for latest version if needed
     now = datetime.now()
-    if now - timedelta(hours=24) > app.config['LAST_UPDATE_CHECK']:
+    needs_update_check = now - timedelta(hours=24) > app.config['LAST_UPDATE_CHECK']
+    if read_config_bool('WHOOGLE_UPDATE_CHECK', True) and needs_update_check:
         app.config['LAST_UPDATE_CHECK'] = now
         app.config['HAS_UPDATE'] = check_for_update(
             app.config['RELEASES_URL'],
@@ -608,6 +609,26 @@ def page_not_found(e):
     return render_template('error.html', error_message=str(e)), 404
 
 
+@app.errorhandler(Exception)
+def internal_error(e):
+    query = ''
+    if request.method == 'POST':
+        query = request.form.get('q')
+    else:
+        query = request.args.get('q')
+
+    localization_lang = g.user_config.get_localization_lang()
+    translation = app.config['TRANSLATIONS'][localization_lang]
+    return render_template(
+            'error.html',
+            error_message='Internal server error (500)',
+            translation=translation,
+            farside='https://farside.link',
+            config=g.user_config,
+            query=urlparse.unquote(query),
+            params=g.user_config.to_params(keys=['preferences'])), 500
+
+
 def run_app() -> None:
     parser = argparse.ArgumentParser(
         description='Whoogle Search console runner')
@@ -626,6 +647,11 @@ def run_app() -> None:
         default='',
         metavar='</path/to/unix.sock>',
         help='Listen for app on unix socket instead of host:port')
+    parser.add_argument(
+        '--unix-socket-perms',
+        default='600',
+        metavar='<octal permissions>',
+        help='Octal permissions to use for the Unix domain socket (default 600)')
     parser.add_argument(
         '--debug',
         default=False,
@@ -677,7 +703,7 @@ def run_app() -> None:
     if args.debug:
         app.run(host=args.host, port=args.port, debug=args.debug)
     elif args.unix_socket:
-        waitress.serve(app, unix_socket=args.unix_socket)
+        waitress.serve(app, unix_socket=args.unix_socket, unix_socket_perms=args.unix_socket_perms)
     else:
         waitress.serve(
             app,

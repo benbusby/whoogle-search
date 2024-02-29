@@ -29,8 +29,11 @@ unsupported_g_pages = [
     'google.com/preferences',
     'google.com/intl',
     'advanced_search',
-    'tbm=shop'
+    'tbm=shop',
+    'ageverification.google.co.kr'
 ]
+
+unsupported_g_divs = ['google.com/preferences?hl=', 'ageverification.google.co.kr']
 
 
 def extract_q(q_str: str, href: str) -> str:
@@ -245,7 +248,9 @@ class Filter:
             None (The soup object is modified directly)
         """
         # Skip empty, parentless, or internal links
-        if not link or not link.parent or not link['href'].startswith('http'):
+        show_favicons = read_config_bool('WHOOGLE_SHOW_FAVICONS', True)
+        is_valid_link = link and link.parent and link['href'].startswith('http')
+        if not show_favicons or not is_valid_link:
             return
 
         parent = link.parent
@@ -558,7 +563,7 @@ class Filter:
             link['href'] = link_netloc
             parent = link.parent
 
-            if 'google.com/preferences?hl=' in link_netloc:
+            if any(divlink in link_netloc for divlink in unsupported_g_divs):
                 # Handle case where a search is performed in a different
                 # language than what is configured. This usually returns a
                 # div with the same classes as normal search results, but with
