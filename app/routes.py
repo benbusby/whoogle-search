@@ -622,7 +622,7 @@ def internal_error(e):
     return render_template(
             'error.html',
             error_message='Internal server error (500)',
-            translation=translation,
+            continue_search_message=translation.get('continue-search', ''),
             farside='https://farside.link',
             config=g.user_config,
             query=urlparse.unquote(query),

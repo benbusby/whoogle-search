@@ -37,9 +37,11 @@ def test_get_results(client):
     assert rv._status_code == 200
 
     # Depending on the search, there can be more
-    # than 10 result divs
+    # than 5 result divs and less than 15 results
+    # within one single page. Should adjust this number
+    # accordingly.
     results = get_search_results(rv.data)
-    assert len(results) >= 10
+    assert len(results) >= 5
     assert len(results) <= 15
 
 

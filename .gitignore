@@ -23,3 +23,6 @@ whoogle.env
 # vim
 *~
 *.swp
+
+# vscode
+.vscode/launch.json
