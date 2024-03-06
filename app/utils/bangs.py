@@ -2,7 +2,7 @@ import json
 import requests
 import urllib.parse as urlparse
 
-DDG_BANGS = 'https://duckduckgo.com/bang.v255.js'
+DDG_BANGS = 'https://duckduckgo.com/bang.js'
 
 
 def gen_bangs_json(bangs_file: str) -> None:
