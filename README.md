@@ -20,6 +20,7 @@ Contents
 1. [Features](#features)
 3. [Install/Deploy Options](#install)
     1. [Heroku Quick Deploy](#heroku-quick-deploy)
+    1. [Render.com](#render)
     1. [Repl.it](#replit)
     1. [Fly.io](#flyio)
     1. [Koyeb](#koyeb)
@@ -84,6 +85,16 @@ Provides:
 Notes:
 - Requires a **PAID** Heroku Account.
 - Sometimes has issues with auto-redirecting to `https`. Make sure to navigate to the `https` version of your app before adding as a default search engine.
+
+___
+
+### [Render](https://render.com)
+
+Create an account on [render.com](https://render.com) and import the Whoogle repo with the following settings:
+
+- Runtime: `Python 3`
+- Build Command: `pip install -r requirements.txt`
+- Run Command: `./run`
 
 ___
 
