@@ -42,10 +42,10 @@ jobs:
           docker buildx ls
           docker buildx build --push \
             --tag benbusby/whoogle-search:latest \
-            --platform linux/amd64,linux/arm/v7,linux/arm64 .
+            --platform linux/amd64,linux/arm64 .
           docker buildx build --push \
             --tag ghcr.io/benbusby/whoogle-search:latest \
-            --platform linux/amd64,linux/arm/v7,linux/arm64 .
+            --platform linux/amd64,linux/arm64 .
       - name: build and push tag
         if: startsWith(github.ref, 'refs/tags')
         run: |
