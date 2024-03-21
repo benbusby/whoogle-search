@@ -17,7 +17,7 @@ def gen_bangs_json(bangs_file: str) -> None:
     """
     try:
         # Request full list from DDG
-        r = requests.get(DDG_BANGS)
+        r = requests.get(DDG_BANGS, timeout=60)
         r.raise_for_status()
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)

@@ -1,6 +1,6 @@
 import json
 import pathlib
-import requests
+from security import safe_requests
 
 lingva = 'https://lingva.ml/api/v1/en'
 
@@ -25,7 +25,7 @@ def translate(v: str, lang: str) -> str:
 
     lingva_req = f'{lingva}/{lang}/{v}'
 
-    response = requests.get(lingva_req).json()
+    response = safe_requests.get(lingva_req, timeout=60).json()
 
     if 'translation' in response:
         return response['translation']
