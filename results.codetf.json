@@ -1,0 +1,1176 @@
+{
+  "vendor": "pixee",
+  "tool": "pixee-cli",
+  "version": "0.5.5",
+  "commandLine": "/usr/local/bin/pixee fix --apply-fixes",
+  "elapsed": 22962,
+  "results": [
+    {
+      "codemod": "pixee:python/add-requests-timeouts",
+      "summary": "Add timeout to `requests` calls",
+      "description": "Many developers will be surprised to learn that `requests` library calls do not include timeouts by default. This means that an attempted request could hang indefinitely if no connection is established or if no data is received from the server. \n\nThe [requests documentation](https://requests.readthedocs.io/en/latest/user/advanced/#timeouts) suggests that most calls should explicitly include a `timeout` parameter. This codemod adds a default timeout value in order to set an upper bound on connection times and ensure that requests connect or fail in a timely manner. This value also ensures the connection will timeout if the server does not respond with data within a reasonable amount of time. \n\nWhile timeout values will be application dependent, we believe that this codemod adds a reasonable default that serves as an appropriate ceiling for most situations. \n\nOur changes look like the following:\n```diff\n import requests\n \n- requests.get(\"http://example.com\")\n+ requests.get(\"http://example.com\", timeout=60)\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python-requests.org/en/master/user/quickstart/#timeouts",
+          "description": "https://docs.python-requests.org/en/master/user/quickstart/#timeouts"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [
+        {
+          "path": "app/request.py",
+          "diff": "--- \n+++ \n@@ -323,7 +323,7 @@\n         if self.tor:\n             try:\n                 tor_check = requests.get('https://check.torproject.org/',\n-                                         proxies=self.proxies, headers=headers)\n+                                         proxies=self.proxies, headers=headers, timeout=60)\n                 self.tor_valid = 'Congratulations' in tor_check.text\n \n                 if not self.tor_valid:\n@@ -340,7 +340,7 @@\n             (base_url or self.search_url) + query,\n             proxies=self.proxies,\n             headers=headers,\n-            cookies=cookies)\n+            cookies=cookies, timeout=60)\n \n         # Retry query with new identity if using Tor (max 10 attempts)\n         if 'form id=\"captcha-form\"' in response.text and self.tor:\n",
+          "changes": [
+            {
+              "lineNumber": "325",
+              "description": "Add timeout to `requests` call",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            },
+            {
+              "lineNumber": "339",
+              "description": "Add timeout to `requests` call",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        },
+        {
+          "path": "app/utils/bangs.py",
+          "diff": "--- \n+++ \n@@ -17,7 +17,7 @@\n     \"\"\"\n     try:\n         # Request full list from DDG\n-        r = requests.get(DDG_BANGS)\n+        r = requests.get(DDG_BANGS, timeout=60)\n         r.raise_for_status()\n     except requests.exceptions.HTTPError as err:\n         raise SystemExit(err)\n",
+          "changes": [
+            {
+              "lineNumber": "20",
+              "description": "Add timeout to `requests` call",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        },
+        {
+          "path": "app/utils/misc.py",
+          "diff": "--- \n+++ \n@@ -36,7 +36,7 @@\n     \"\"\"\n     domain = urlparse(url).netloc\n \n-    response = get(f'{ddg_favicon_site}/{domain}.ico')\n+    response = get(f'{ddg_favicon_site}/{domain}.ico', timeout=60)\n \n     if response.status_code == 200 and len(response.content) > 0:\n         tmp_mem = io.BytesIO()\n@@ -99,7 +99,7 @@\n def check_for_update(version_url: str, current: str) -> int:\n     # Check for the latest version of Whoogle\n     try:\n-        update = bsoup(get(version_url).text, 'html.parser')\n+        update = bsoup(get(version_url, timeout=60).text, 'html.parser')\n         latest = update.select_one('[class=\"Link--primary\"]').string[1:]\n         current = int(''.join(filter(str.isdigit, current)))\n         latest = int(''.join(filter(str.isdigit, latest)))\n",
+          "changes": [
+            {
+              "lineNumber": "39",
+              "description": "Add timeout to `requests` call",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            },
+            {
+              "lineNumber": "102",
+              "description": "Add timeout to `requests` call",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        },
+        {
+          "path": "misc/update-translations.py",
+          "diff": "--- \n+++ \n@@ -25,7 +25,7 @@\n \n     lingva_req = f'{lingva}/{lang}/{v}'\n \n-    response = requests.get(lingva_req).json()\n+    response = requests.get(lingva_req, timeout=60).json()\n \n     if 'translation' in response:\n         return response['translation']\n",
+          "changes": [
+            {
+              "lineNumber": "28",
+              "description": "Add timeout to `requests` call",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "codemod": "pixee:python/bad-lock-with-statement",
+      "summary": "Separate Lock Instantiation from `with` Call",
+      "description": "This codemod separates creating a threading lock instance from calling it as a context manager. Calling `with threading.Lock()` does not have the effect you would expect. The lock is not acquired. Instead, to correctly acquire a lock, create the instance separately, before calling it as a context manager.\n\nThe change will apply to any of these `threading` classes: `Lock`, `RLock`, `Condition`, `Semaphore`, and `BoundedSemaphore`.\n\nThe change looks like this:\n\n```diff\n  import threading\n- with threading.Lock():\n+ lock = threading.Lock()\n+ with lock:\n     ...\n```\n",
+      "references": [
+        {
+          "url": "https://pylint.pycqa.org/en/latest/user_guide/messages/warning/useless-with-lock.",
+          "description": "https://pylint.pycqa.org/en/latest/user_guide/messages/warning/useless-with-lock."
+        },
+        {
+          "url": "https://docs.python.org/3/library/threading.html#using-locks-conditions-and-semaphores-in-the-with-statement",
+          "description": "https://docs.python.org/3/library/threading.html#using-locks-conditions-and-semaphores-in-the-with-statement"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/combine-startswith-endswith",
+      "summary": "Simplify Boolean Expressions Using `startswith` and `endswith`",
+      "description": "Many developers are not necessarily aware that the `startswith` and `endswith` methods of `str` objects can accept a tuple of strings to match. This means that there is a lot of code that uses boolean expressions such as `x.startswith('foo') or x.startswith('bar')` instead of the simpler expression `x.startswith(('foo', 'bar'))`.\n\nThis codemod simplifies the boolean expressions where possible which leads to cleaner and more concise code.\n\nThe changes from this codemod look like this:\n\n```diff\n  x = 'foo'\n- if x.startswith(\"foo\") or x.startswith(\"bar\"):\n+ if x.startswith((\"foo\", \"bar\")):\n     ...\n```\n",
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/django-debug-flag-on",
+      "summary": "Disable Django Debug Mode",
+      "description": "This codemod will flip django's `DEBUG` flag to `False` if it's `True` on the `settings.py` file within django's default directory structure.\n\nHaving the debug flag on may result in sensitive information exposure. When an exception occurs while the `DEBUG` flag in on, it will dump metadata of your environment, including the settings module. The attacker can purposefully request a non-existing url to trigger an exception and gather information about your system.\n\n```diff\n- DEBUG = True\n+ DEBUG = False\n```\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure",
+          "description": "https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure"
+        },
+        {
+          "url": "https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-DEBUG",
+          "description": "https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-DEBUG"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/django-json-response-type",
+      "summary": "Set content type to `application/json` for `django.http.HttpResponse` with JSON data",
+      "description": "The default `content_type` for `HttpResponse` in Django is `'text/html'`. This is true even when the response contains JSON data.\nIf the JSON contains (unsanitized) user-supplied input, a malicious user may supply HTML code which leaves the application vulnerable to cross-site scripting (XSS). \nThis fix explicitly sets the response type to `application/json` when the response body is JSON data to avoid this vulnerability. Our changes look something like this:\n\n```diff\nfrom django.http import HttpResponse\nimport json\n\ndef foo(request):\n    json_response = json.dumps({ \"user_input\": request.GET.get(\"input\") })\n-    return HttpResponse(json_response)\n+    return HttpResponse(json_response, content_type=\"application/json\")\n```\n",
+      "references": [
+        {
+          "url": "https://docs.djangoproject.com/en/4.0/ref/request-response/#django.http.HttpResponse.__init__",
+          "description": "https://docs.djangoproject.com/en/4.0/ref/request-response/#django.http.HttpResponse.__init__"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-javascript-contexts",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-javascript-contexts"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/django-receiver-on-top",
+      "summary": "Ensure Django @receiver is the first decorator",
+      "description": "Django uses signals to notify and handle actions that happens elsewhere in the application. You can define a response to a given signal by decorating a function with the `@receiver(signal)` decorator. The order in which the decorators are declared for this function is important. If the `@receiver` decorator is not on top, any decorators before it will be ignored. \nOur changes look something like this:\n\n```diff\nfrom django.dispatch import receiver\nfrom django.views.decorators.csrf import csrf_exempt\nfrom django.core.signals import request_finished\n\n+@receiver(request_finished)\n@csrf_exempt\n-@receiver(request_finished)\ndef foo():\n    pass\n```\n",
+      "references": [
+        {
+          "url": "https://docs.djangoproject.com/en/4.1/topics/signals/",
+          "description": "https://docs.djangoproject.com/en/4.1/topics/signals/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/django-session-cookie-secure-off",
+      "summary": "Secure Setting for Django `SESSION_COOKIE_SECURE` flag",
+      "description": "This codemod will set django's `SESSION_COOKIE_SECURE` flag to `True` if it's `False` or missing on the `settings.py` file within django's default directory structure.\n\n```diff\n+ SESSION_COOKIE_SECURE = True\n```\n\nSetting this flag on ensures that the session cookies are only sent under an HTTPS connection. Leaving this flag off may enable an attacker to use a sniffer to capture the unencrypted session cookie and hijack the user's session.\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/controls/SecureCookieAttribute",
+          "description": "https://owasp.org/www-community/controls/SecureCookieAttribute"
+        },
+        {
+          "url": "https://docs.djangoproject.com/en/4.2/ref/settings/#session-cookie-secure",
+          "description": "https://docs.djangoproject.com/en/4.2/ref/settings/#session-cookie-secure"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/enable-jinja2-autoescape",
+      "summary": "Enable Jinja2 Autoescape",
+      "description": "This codemod enables autoescaping of HTML content in `jinja2`. Unfortunately, the jinja2 default behavior is to not autoescape when rendering templates, which makes your applications potentially vulnerable to Cross-Site Scripting (XSS) attacks.\n\nOur codemod checks if you forgot to enable autoescape or if you explicitly disabled it. The change looks as follows:\n\n```diff\n  from jinja2 import Environment\n\n- env = Environment()\n- env = Environment(autoescape=False, loader=some_loader)\n+ env = Environment(autoescape=True)\n+ env = Environment(autoescape=True, loader=some_loader)\n  ...\n```\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/attacks/xss/",
+          "description": "https://owasp.org/www-community/attacks/xss/"
+        },
+        {
+          "url": "https://jinja.palletsprojects.com/en/3.1.x/api/#autoescaping",
+          "description": "https://jinja.palletsprojects.com/en/3.1.x/api/#autoescaping"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/exception-without-raise",
+      "summary": "Ensure bare exception statements are raised",
+      "description": "This codemod fixes cases where an exception is referenced by itself in a statement without being raised. This most likely indicates a bug: you probably meant to actually raise the exception. \n\nOur changes look something like this:\n```diff\ntry:\n-   ValueError\n+   raise ValueError\nexcept:\n    pass\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/tutorial/errors.html#raising-exceptions",
+          "description": "https://docs.python.org/3/tutorial/errors.html#raising-exceptions"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/fix-assert-tuple",
+      "summary": "Fix `assert` on Non-Empty Tuple Literal",
+      "description": "An assertion on a non-empty tuple will always evaluate to `True`. This means that `assert` statements involving non-empty tuple literals are likely unintentional and should be rewritten. This codemod rewrites the original `assert` statement by creating a new `assert` for each item in the original tuple.\n\nThe changes from this codemod look like this:\n\n```diff\n- assert (1 == 1, 2 == 2)\n+ assert 1 == 1\n+ assert 2 == 2\n```\n",
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/fix-async-task-instantiation",
+      "summary": "Use High-Level `asyncio` API Functions to Create Tasks",
+      "description": "The `asyncio` [documentation](https://docs.python.org/3/library/asyncio-task.html#asyncio.Task) explicitly discourages manual instantiation of a `Task` instance and instead recommends calling `create_task`. This keeps your code in line with recommended best practices and promotes maintainability.\n\nOur changes look like the following:\n```diff\n import asyncio\n\n- task = asyncio.Task(my_coroutine(), name=\"my task\")\n+ task = asyncio.create_task(my_coroutine(), name=\"my task\")\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/asyncio-task.html#asyncio.Task",
+          "description": "https://docs.python.org/3/library/asyncio-task.html#asyncio.Task"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/fix-deprecated-abstractproperty",
+      "summary": "Replace deprecated abstractproperty",
+      "description": "The `@abstractproperty` decorator from `abc` has been [deprecated](https://docs.python.org/3/library/abc.html#abc.abstractproperty) since Python 3.3. This is because it's possible to use `@property` in combination with `@abstractmethod`. \n\nOur changes look like the following:\n```diff\n import abc\n\n class Foo:\n-   @abc.abstractproperty\n+   @property\n+   @abc.abstractmethod\n    def bar():\n        ...\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/abc.html#abc.abstractproperty",
+          "description": "https://docs.python.org/3/library/abc.html#abc.abstractproperty"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/fix-deprecated-logging-warn",
+      "summary": "Replace Deprecated `logging.warn`",
+      "description": "The `warn` method from `logging` has been [deprecated](https://docs.python.org/3/library/logging.html#logging.Logger.warning) in favor of `warning` since Python 3.3. Since the old method `warn` has been retained for a long time, there are a lot of developers that are unaware of this change and consequently a lot of code using the older method.\n\nOur changes look like the following:\n```diff\n import logging\n\n- logging.warn(\"hello\")\n+ logging.warning(\"hello\")\n ...\n log = logging.getLogger(\"my logger\")\n- log.warn(\"hello\")\n+ log.warning(\"hello\") \n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/logging.html#logging.Logger.warning",
+          "description": "https://docs.python.org/3/library/logging.html#logging.Logger.warning"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/fix-empty-sequence-comparison",
+      "summary": "Replace Comparisons to Empty Sequence with Implicit Boolean Comparison",
+      "description": "Empty sequences in Python always evaluate to `False`. This means that comparison expressions that use empty sequences can sometimes be simplified. In these cases no explicit comparison is required: instead we can rely on the [truth value](https://docs.python.org/3/library/stdtypes.html#truth-value-testing) of the object under comparison. This is sometimes referred to as \"implicit\" comparison. Using implicit boolean comparison expressions is considered best practice and can lead to better code.\n\nOur changes look like the following:\n```diff\n x = [1]\n\n- if x != []:\n+ if x:\n    pass \n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/stdtypes.html#truth-value-testing",
+          "description": "https://docs.python.org/3/library/stdtypes.html#truth-value-testing"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/fix-file-resource-leak",
+      "summary": "Automatically Close Resources",
+      "description": "This codemod wraps assignments of `open` calls in a with statement. Without explicit closing, these resources will be \"leaked\" and won't be re-claimed until garbage collection. In situations where these resources are leaked rapidly (either through malicious repetitive action or unusually spiky usage), connection pool or file handle exhaustion will occur. These types of failures tend to be catastrophic, resulting in downtime and many times affect downstream applications.\n\nOur changes look something like this:\n\n```diff\nimport tempfile\npath = tempfile.NamedTemporaryFile().name\n-file = open(path, 'w', encoding='utf-8')\n-file.write('Hello World')\n+with open(path, 'w', encoding='utf-8') as file:\n+   file.write('Hello World')\n```\n",
+      "references": [
+        {
+          "url": "https://cwe.mitre.org/data/definitions/772.html",
+          "description": "https://cwe.mitre.org/data/definitions/772.html"
+        },
+        {
+          "url": "https://cwe.mitre.org/data/definitions/404.html",
+          "description": "https://cwe.mitre.org/data/definitions/404.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/fix-mutable-params",
+      "summary": "Replace Mutable Default Parameters",
+      "description": "Using mutable values for default arguments is not a safe practice.\nLook at the following very simple example code:\n\n```python\ndef foo(x, y=[]):\n    y.append(x)\n    print(y)\n```\n\nThe function `foo` doesn't do anything very interesting; it just prints the result of `x` appended to `y`. Naively we might expect this to simply print an array containing only `x` every time `foo` is called, like this:\n\n```python\n>>> foo(1)\n[1]\n>>> foo(2)\n[2]\n```\n\nBut that's not what happens!\n\n```python\n>>> foo(1)\n[1]\n>>> foo(2)\n[1, 2]\n```\n\nThe value of `y` is preserved between calls! This might seem surprising, and it is. It's due to the way that scope works for function arguments in Python.\n\nThe result is that any default argument value will be preserved between function calls. This is problematic for *mutable* types, including things like `list`, `dict`, and `set`.\n\nRelying on this behavior is unpredictable and generally considered to be unsafe. Most of us who write code like this were not anticipating the surprising behavior, so it's best to fix it.\n\nOur codemod makes an update that looks like this:\n```diff\n- def foo(x, y=[]):\n+ def foo(x, y=None):\n+   y = [] if y is None else y\n    y.append(x)\n    print(y)\n```\n\nUsing `None` is a much safer default. The new code checks if `None` is passed, and if so uses an empty `list` for the value of `y`. This will guarantee consistent and safe behavior between calls.\n",
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/flask-enable-csrf-protection",
+      "summary": "Enable CSRF protection globally for a Flask app.",
+      "description": "Cross-site request forgery (CSRF) is an attack where a user is tricked by a malicious agent to submit a unintended request (e.g login requests). A common way to mitigate this issue is to embed an additional token into requests to identify requests from unauthorized locations.\n\nFlask views using `FlaskForm` have CSRF protection enabled by default. However other views may use AJAX to perform unsafe HTTP methods. FlaskWTF provides a way to enable CSRF protection globally for all views of a Flask app.\n\nThe changes in this codemod may require manual additions to maintain proper functionality. You need to setup either a flask `SECRET_KEY` or a `WTF_CSRF_SECRET_KEY` in you app configuration and adjust any views with HTML forms and javascript requests to include the CSRF token. See the [FlaskWTF docs](https://flask-wtf.readthedocs.io/en/1.2.x/csrf/) for examples on how to do it.\n\nOur changes look something like this:\n\n```diff\nfrom flask import Flask\n+from flask_wtf.csrf import CSRFProtect\n\napp = Flask(__name__)\n+csrf_app = CSRFProtect(app)\n```\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/attacks/csrf",
+          "description": "https://owasp.org/www-community/attacks/csrf"
+        },
+        {
+          "url": "https://flask-wtf.readthedocs.io/en/1.2.x/csrf/",
+          "description": "https://flask-wtf.readthedocs.io/en/1.2.x/csrf/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/flask-json-response-type",
+      "summary": "Set content type to `application/json` for `flask.make_response` with JSON data",
+      "description": "The default `mimetype` for `make_response` in Flask is `'text/html'`. This is true even when the response contains JSON data.\nIf the JSON contains (unsanitized) user-supplied input, a malicious user may supply HTML code which leaves the application vulnerable to cross-site scripting (XSS). \nThis fix explicitly sets the response type to `application/json` when the response body is JSON data to avoid this vulnerability. Our changes look something like this:\n\n```diff\nfrom flask import make_response, Flask\nimport json\n\napp = Flask(__name__)\n\n@app.route(\"/test\")\ndef foo(request):\n    json_response = json.dumps({ \"user_input\": request.GET.get(\"input\") })\n-   return make_response(json_response)\n+   return make_response(json_response, {'Content-Type':'application/json'})\n```\n",
+      "references": [
+        {
+          "url": "https://flask.palletsprojects.com/en/2.3.x/patterns/javascript/#return-json-from-views",
+          "description": "https://flask.palletsprojects.com/en/2.3.x/patterns/javascript/#return-json-from-views"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-javascript-contexts",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-javascript-contexts"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/harden-pyyaml",
+      "summary": "Replace unsafe `pyyaml` loader with `SafeLoader`",
+      "description": "This codemod hardens all [`yaml.load()`](https://pyyaml.org/wiki/PyYAMLDocumentation) calls against attacks that could result from deserializing untrusted data.\n\nThe fix uses a safety check that already exists in the `yaml` module, replacing unsafe loader class with `SafeLoader`.\nThe changes from this codemod look like this:\n\n```diff\n  import yaml\n  data = b'!!python/object/apply:subprocess.Popen \\\\n- ls'\n- deserialized_data = yaml.load(data, yaml.Loader)\n+ deserialized_data = yaml.load(data, Loader=yaml.SafeLoader)\n```\nThe codemod will also catch if you pass in the loader argument as a kwarg and if you use any loader other than `SafeLoader`,\nincluding `FullLoader` and `UnsafeLoader`.\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data",
+          "description": "https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/harden-ruamel",
+      "summary": "Use `typ='safe'` in ruamel.yaml() Calls",
+      "description": "This codemod hardens any unsafe [`ruamel.yaml.YAML()`](https://yaml.readthedocs.io/en/latest/) calls against attacks that could result from deserializing untrusted data.\n\nThe fix uses a safety check that already exists in the `ruamel` module, replacing an unsafe `typ` argument with `typ=\"safe\"`.\nThe changes from this codemod look like this:\n\n```diff\n  from ruamel.yaml import YAML\n- serializer = YAML(typ=\"unsafe\")\n- serializer = YAML(typ=\"base\")\n+ serializer = YAML(typ=\"safe\")\n+ serializer = YAML(typ=\"safe\")\n```\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data",
+          "description": "https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/https-connection",
+      "summary": "Enforce HTTPS Connection for `urllib3`",
+      "description": "This codemod replaces calls to `urllib3.connectionpool.HTTPConnectionPool` and `urllib3.HTTPConnectionPool` with their secure variant (`HTTPSConnectionPool`).\n\nProgrammers should opt to use HTTPS over HTTP for secure encrypted communication whenever possible.\n\n```diff\nimport urllib3\n- urllib3.HTTPConnectionPool(\"www.example.com\",\"80\")\n+ urllib3.HTTPSConnectionPool(\"www.example.com\",\"80\")\n```\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/Insecure_Transport",
+          "description": "https://owasp.org/www-community/vulnerabilities/Insecure_Transport"
+        },
+        {
+          "url": "https://urllib3.readthedocs.io/en/stable/reference/urllib3.connectionpool.html#urllib3.HTTPConnectionPool",
+          "description": "https://urllib3.readthedocs.io/en/stable/reference/urllib3.connectionpool.html#urllib3.HTTPConnectionPool"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/jwt-decode-verify",
+      "summary": "Verify JWT Decode",
+      "description": "This codemod ensures calls to [jwt.decode](https://pyjwt.readthedocs.io/en/stable/api.html#jwt.decode) do not disable signature validation and other verifications. It checks that both the `verify` parameter (soon to be deprecated) and any `verify` key in the `options` dict parameter are not assigned to `False`.\n\nOur change looks as follows:\n\n```diff\n  import jwt\n  ...\n- decoded_payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[\"HS256\"], verify=False)\n+ decoded_payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[\"HS256\"], verify=True)\n  ...\n- decoded_payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[\"HS256\"], options={\"verify_signature\": False, \"verify_exp\": False})\n+ decoded_payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[\"HS256\"], options={\"verify_signature\": True, \"verify_exp\": True})\n```\n\nAny `verify` parameter not listed relies on the secure `True` default value.\n",
+      "references": [
+        {
+          "url": "https://pyjwt.readthedocs.io/en/stable/api.html",
+          "description": "https://pyjwt.readthedocs.io/en/stable/api.html"
+        },
+        {
+          "url": "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens",
+          "description": "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/lazy-logging",
+      "summary": "Convert Eager Logging to Lazy Logging",
+      "description": "This codemod converts \"eager\" logging into \"lazy\" logging, which is preferred for performance efficiency and resource optimization.\nLazy logging defers the actual construction and formatting of log messages until it's confirmed that the message will be logged based on the current log level, thereby avoiding unnecessary computation for messages that will not be logged. \n\nOur changes look something like this:\n\n```diff\nimport logging\ne = \"Some error\"\n- logging.error(\"Error occurred: %s\" % e)\n- logging.error(\"Error occurred: \" + e)\n+ logging.error(\"Error occurred: %s\", e)\n+ logging.error(\"Error occurred: %s\", e)\n```\n",
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/limit-readline",
+      "summary": "Limit readline()",
+      "description": "This codemod hardens all [`readline()`](https://docs.python.org/3/library/io.html#io.IOBase.readline) calls from file objects returned from an `open()` call, `StringIO` and `BytesIO` against denial of service attacks. A stream influenced by an attacker could keep providing bytes until the system runs out of memory, causing a crash.\n\nFixing it is straightforward by providing adding a size argument to any `readline()` calls.\nThe changes from this codemod look like this:\n\n```diff\n  file = open('some_file.txt')\n- file.readline()\n+ file.readline(5_000_000)\n```\n",
+      "references": [
+        {
+          "url": "https://cwe.mitre.org/data/definitions/400.html",
+          "description": "https://cwe.mitre.org/data/definitions/400.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/literal-or-new-object-identity",
+      "summary": "Replace `is` with `==` for literal or new object comparisons",
+      "description": "The `is` and `is not` operators only evaluate to `True` when the expressions on each side have the same `id`. In other words, `a is b` is equivalent to `id(a) == id(b)`. With few exceptions, objects and literals have unique identities and thus shouldn't generally be compared by using the `is` or `is not` operators.\n\nOur changes look something like this:\n\n```diff\ndef foo(l):\n-    return l is [1,2,3]\n+    return l == [1,2,3]\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/stdtypes.html#comparisons",
+          "description": "https://docs.python.org/3/library/stdtypes.html#comparisons"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/numpy-nan-equality",
+      "summary": "Replace == comparison with numpy.isnan()",
+      "description": "Comparisons against `numpy.nan` always result in `False`. Thus comparing an expression directly against `numpy.nan` is always unintended. The correct way to compare a value for `NaN` is to use the `numpy.isnan` function.\n\nOur changes look something like this:\n\n```diff\nimport numpy as np\n\na = np.nan\n-if a == np.nan:\n+if np.isnan(a):\n    pass\n```\n",
+      "references": [
+        {
+          "url": "https://numpy.org/doc/stable/reference/constants.html#numpy.nan",
+          "description": "https://numpy.org/doc/stable/reference/constants.html#numpy.nan"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/remove-assertion-in-pytest-raises",
+      "summary": "Moves assertions out of `pytest.raises` scope",
+      "description": "The context manager object `pytest.raises(<exception>)` will assert if the code contained within its scope will raise an exception of type `<exception>`. The documentation points that the exception must be raised in the last line of its scope and any line afterwards won't be executed. \nIncluding asserts at the end of the scope is a common error. This codemod addresses that by moving them out of the scope.\nOur changes look something like this:\n\n```diff\nimport pytest\n\ndef test_foo():\n    with pytest.raises(ZeroDivisionError):\n        error = 1/0\n-       assert 1\n-       assert 2\n+   assert 1\n+   assert 2\n```\n",
+      "references": [
+        {
+          "url": "https://docs.pytest.org/en/7.4.x/reference/reference.html#pytest-raises",
+          "description": "https://docs.pytest.org/en/7.4.x/reference/reference.html#pytest-raises"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/remove-debug-breakpoint",
+      "summary": "Remove Calls to `builtin` `breakpoint` and `pdb.set_trace",
+      "description": "This codemod removes any calls to `breakpoint()` or `pdb.set_trace()` which are generally only used for interactive debugging and should not be deployed in production code.\n\nIn most cases if these calls are included in committed code, they were left there by mistake and indicate a potential problem.\n\n```diff\n print(\"hello\")\n- breakpoint()\n print(\"world\")\n```\n",
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/remove-future-imports",
+      "summary": "Remove deprecated `__future__` imports",
+      "description": "Many older codebases have `__future__` imports for forwards compatibility with features. As of this writing, all but one of those features is now stable in all currently supported versions of Python and so the imports are no longer needed. While such imports are harmless, they are also unnecessary and in most cases you probably just forgot to remove them. \n\nThis codemod removes all such `__future__` imports, preserving only those that are still necessary for forwards compatibility. \n\nOur changes look like the following:\n```diff\n import os\n-from __future__ import print_function\n\n print(\"HELLO\")\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/__future__.html",
+          "description": "https://docs.python.org/3/library/__future__.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/remove-module-global",
+      "summary": "Remove `global` Usage at Module Level",
+      "description": "Using the `global` keyword is necessary only when you intend to modify a module-level (aka global) variable within a non-global scope, such as within a class or function. It is unnecessary to call `global` at the module-level.\n\nOur changes look something like this:\n\n```diff\n price = 25\n print(\"hello\")\n- global price\n price = 30\n```\n",
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/remove-unnecessary-f-str",
+      "summary": "Remove Unnecessary F-strings",
+      "description": "This codemod converts any f-strings without interpolated variables into regular strings.\nIn these cases the use of f-string is not necessary; a simple string literal is sufficient. \n\nWhile in some (extreme) cases we might expect a very modest performance\nimprovement, in general this is a fix that improves the overall cleanliness and\nquality of your code.\n\n```diff\n- var = f\"hello\"\n+ var = \"hello\"\n  ...\n```\n",
+      "references": [
+        {
+          "url": "https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/f-string-without-interpolation.html",
+          "description": "https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/f-string-without-interpolation.html"
+        },
+        {
+          "url": "https://github.com/Instagram/LibCST/blob/main/libcst/codemod/commands/unnecessary_format_string.py",
+          "description": "https://github.com/Instagram/LibCST/blob/main/libcst/codemod/commands/unnecessary_format_string.py"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/replace-flask-send-file",
+      "summary": "Replace unsafe usage of `flask.send_file`",
+      "description": "The `Flask` `send_file` function from Flask is susceptible to a path traversal attack if its input is not properly validated.\nIn a path traversal attack, the malicious agent can craft a path containing special paths like `./` or `../` to resolve a file outside of the expected directory path. This potentially allows the agent to overwrite, delete or read arbitrary files. In the case of `flask.send_file`, the result is that a malicious user could potentially download sensitive files that exist on the filesystem where the application is being hosted.\nFlask offers a native solution with the `flask.send_from_directory` function that validates the given path.\n\nOur changes look something like this:\n\n```diff\n-from flask import Flask, send_file\n+from flask import Flask\n+import flask\n+from pathlib import Path\n\napp = Flask(__name__)\n\n@app.route(\"/uploads/<path:name>\")\ndef download_file(name):\n-    return send_file(f'path/to/{name}.txt')\n+    return flask.send_from_directory((p := Path(f'path/to/{name}.txt')).parent, p.name)\n```\n",
+      "references": [
+        {
+          "url": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.send_from_directory",
+          "description": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.send_from_directory"
+        },
+        {
+          "url": "https://owasp.org/www-community/attacks/Path_Traversal",
+          "description": "https://owasp.org/www-community/attacks/Path_Traversal"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/requests-verify",
+      "summary": "Verify SSL Certificates for Requests.",
+      "description": "This codemod checks that calls to the `requests` module API or the `httpx` library use `verify=True` or a path to a CA bundle to ensure TLS certificate validation.\n\nThe [requests documentation](https://requests.readthedocs.io/en/latest/api/) warns that the `verify` flag\n> When set to False, requests will accept any TLS certificate presented by the server, and will ignore hostname mismatches and/or expired certificates, which will make your application vulnerable to man-in-the-middle (MitM) attacks. Setting verify to False may be useful during local development or testing.\n\nSimilarly, setting `verify=False` when using the `httpx` library to make requests disables certificate verification.\n\nThe changes from this codemod look like this:\n\n\n```diff\n  import requests\n  \n- requests.get(\"www.google.com\", ...,verify=False)\n+ requests.get(\"www.google.com\", ...,verify=True)\n...\nimport httpx\n  \n- httpx.get(\"www.google.com\", ...,verify=False)\n+ httpx.get(\"www.google.com\", ...,verify=True)\n\n```\n\nThis codemod also checks other methods in the `requests` module and `httpx` library that accept a `verify` flag (e.g. `requests.post`, `httpx.AsyncClient`, etc.)\n",
+      "references": [
+        {
+          "url": "https://requests.readthedocs.io/en/latest/api/",
+          "description": "https://requests.readthedocs.io/en/latest/api/"
+        },
+        {
+          "url": "https://www.python-httpx.org/",
+          "description": "https://www.python-httpx.org/"
+        },
+        {
+          "url": "https://owasp.org/www-community/attacks/Manipulator-in-the-middle_attack",
+          "description": "https://owasp.org/www-community/attacks/Manipulator-in-the-middle_attack"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/safe-lxml-parser-defaults",
+      "summary": "Use Safe Defaults for `lxml` Parsers",
+      "description": "This codemod configures safe parameter values when initializing `lxml.etree.XMLParser`, `lxml.etree.ETCompatXMLParser`, `lxml.etree.XMLTreeBuilder`, or `lxml.etree.XMLPullParser`. If parameters `resolve_entities`, `no_network`, and `dtd_validation` are not set to safe values, your code may be vulnerable to entity expansion attacks and external entity (XXE) attacks.\n\nParameters `no_network` and `dtd_validation` have safe default values of `True` and `False`, respectively, so this codemod will set each to the default safe value if your code has assigned either to an unsafe value.\n\nParameter `resolve_entities` has an unsafe default value of `True`. This codemod will set `resolve_entities=False` if set to `True` or omitted.\n\nThe changes look as follows:\n\n```diff\n  import lxml.etree\n\n- parser = lxml.etree.XMLParser()\n- parser = lxml.etree.XMLParser(resolve_entities=True)\n- parser = lxml.etree.XMLParser(resolve_entities=True, no_network=False, dtd_validation=True)\n+ parser = lxml.etree.XMLParser(resolve_entities=False)\n+ parser = lxml.etree.XMLParser(resolve_entities=False)\n+ parser = lxml.etree.XMLParser(resolve_entities=False, no_network=True, dtd_validation=False)\n```\n",
+      "references": [
+        {
+          "url": "https://lxml.de/apidoc/lxml.etree.html#lxml.etree.XMLParser",
+          "description": "https://lxml.de/apidoc/lxml.etree.html#lxml.etree.XMLParser"
+        },
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing",
+          "description": "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/safe-lxml-parsing",
+      "summary": "Use Safe Parsers in `lxml` Parsing Functions",
+      "description": "This codemod sets the `parser` parameter in calls to  `lxml.etree.parse`  and `lxml.etree.fromstring` if omitted or set to `None` (the default value). Unfortunately, the default `parser=None` means `lxml` will rely on an unsafe parser, making your code potentially vulnerable to entity expansion attacks and external entity (XXE) attacks.\n\nThe changes look as follows:\n\n```diff\n  import lxml.etree\n- lxml.etree.parse(\"path_to_file\")\n- lxml.etree.fromstring(\"xml_str\")\n+ lxml.etree.parse(\"path_to_file\", parser=lxml.etree.XMLParser(resolve_entities=False))\n+ lxml.etree.fromstring(\"xml_str\", parser=lxml.etree.XMLParser(resolve_entities=False))\n```\n",
+      "references": [
+        {
+          "url": "https://lxml.de/apidoc/lxml.etree.html#lxml.etree.XMLParser",
+          "description": "https://lxml.de/apidoc/lxml.etree.html#lxml.etree.XMLParser"
+        },
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing",
+          "description": "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/sandbox-process-creation",
+      "summary": "Sandbox Process Creation",
+      "description": "This codemod sandboxes all instances of [subprocess.run](https://docs.python.org/3/library/subprocess.html#subprocess.run) and [subprocess.call](https://docs.python.org/3/library/subprocess.html#subprocess.call) to offer protection against attack.\n\nLeft unchecked, `subprocess.run` and `subprocess.call` can execute any arbitrary system command. If an attacker can control part of the strings used as program paths or arguments, they could execute arbitrary programs, install malware, and anything else they could do if they had a shell open on the application host.\n\nOur change introduces a sandbox which protects the application:\n\n```diff\n  import subprocess\n+ from security import safe_command\n  ...\n- subprocess.run(\"echo 'hi'\", shell=True)\n+ safe_command.run(subprocess.run, \"echo 'hi'\", shell=True)\n  ...\n- subprocess.call([\"ls\", \"-l\"])\n+ safe_command.call(subprocess.call, [\"ls\", \"-l\"])\n```\n\nThe default `safe_command` restrictions applied are the following:\n* **Prevent command chaining**. Many exploits work by injecting command separators and causing the shell to interpret a second, malicious command. The `safe_command` functions attempt to parse the given command, and throw a `SecurityException` if multiple commands are present.\n* **Prevent arguments targeting sensitive files.** There is little reason for custom code to target sensitive system files like `/etc/passwd`, so the sandbox prevents arguments that point to these files that may be targets for exfiltration.\n\nThere are [more options for sandboxing](https://github.com/pixee/python-security/blob/main/src/security/safe_command/api.py#L5) if you are interested in locking down system commands even more.\n\n## Dependency Updates\n\nThis codemod relies on an external dependency. We have automatically added this dependency to your project's `requirements.txt` file. \n\nThis library holds security tools for protecting Python API calls. \n\nThere are a number of places where Python project dependencies can be expressed, including `setup.py`, `pyproject.toml`, `setup.cfg`, and `requirements.txt` files. If this change is incorrect, or if you are using another packaging system such as `poetry`, it may be necessary for you to manually add the dependency to the proper location in your project.\n",
+      "references": [
+        {
+          "url": "https://github.com/pixee/python-security/blob/main/src/security/safe_command/api.py",
+          "description": "https://github.com/pixee/python-security/blob/main/src/security/safe_command/api.py"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [
+        {
+          "path": "misc/replit.py",
+          "diff": "--- \n+++ \n@@ -1,5 +1,6 @@\n import subprocess\n+from security import safe_command\n \n # A plague upon Replit and all who have built it\n replit_cmd = \"killall -q python3 > /dev/null 2>&1; pip install -r requirements.txt && ./run\"\n-subprocess.run(replit_cmd, shell=True)\n+safe_command.run(subprocess.run, replit_cmd, shell=True)\n",
+          "changes": [
+            {
+              "lineNumber": "5",
+              "description": "Replaces subprocess.{func} with more secure safe_command library functions.",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        },
+        {
+          "path": "requirements.txt",
+          "diff": "--- \n+++ \n@@ -35,3 +35,4 @@\n wcwidth==0.2.6\n Werkzeug==3.0.1\n python-dotenv==0.21.1\n+security~=1.2.0\n",
+          "changes": [
+            {
+              "lineNumber": "38",
+              "description": "This library holds security tools for protecting Python API calls.\n\nLicense: [MIT](https://opensource.org/license/MIT/) \u2705 [Open Source](https://github.com/pixee/python-security) \u2705 [More facts](https://pypi.org/project/security/)\n",
+              "properties": {
+                "contextual_description": true,
+                "contextual_description_position": "right"
+              },
+              "diffSide": "right",
+              "packageActions": [
+                {
+                  "action": "ADD",
+                  "result": "COMPLETED",
+                  "package": "security~=1.2.0"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "codemod": "pixee:python/secure-flask-cookie",
+      "summary": "Use Safe Parameters in `flask` Response `set_cookie` Call",
+      "description": "This codemod sets the most secure parameters when Flask applications call `set_cookie` on a response object. Without these parameters, your Flask\napplication cookies may be vulnerable to being intercepted and used to gain access to sensitive data.\n\nThe changes from this codemod look like this:\n\n```diff\n  from flask import Flask, session, make_response\n  app = Flask(__name__)\n  @app.route('/')\n    def index():\n      resp = make_response('Custom Cookie Set')\n    - resp.set_cookie('custom_cookie', 'value')\n    + resp.set_cookie('custom_cookie', 'value', secure=True, httponly=True, samesite='Lax')\n      return resp\n```\n",
+      "references": [
+        {
+          "url": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.Response.set_cookie",
+          "description": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.Response.set_cookie"
+        },
+        {
+          "url": "https://owasp.org/www-community/controls/SecureCookieAttribute",
+          "description": "https://owasp.org/www-community/controls/SecureCookieAttribute"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/secure-flask-session-configuration",
+      "summary": "Flip Insecure `Flask` Session Configurations",
+      "description": "Flask applications can configure sessions behavior at the application level. \nThis codemod looks for Flask application configuration that set `SESSION_COOKIE_HTTPONLY`, `SESSION_COOKIE_SECURE`, or `SESSION_COOKIE_SAMESITE` to an insecure value and changes it to a secure one.\n\nThe changes from this codemod look like this:\n\n```diff\n  from flask import Flask\n  app = Flask(__name__)\n- app.config['SESSION_COOKIE_HTTPONLY'] = False\n- app.config.update(SESSION_COOKIE_SECURE=False)\n+ app.config['SESSION_COOKIE_HTTPONLY'] = True\n+ app.config.update(SESSION_COOKIE_SECURE=True)\n```\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/controls/SecureCookieAttribute",
+          "description": "https://owasp.org/www-community/controls/SecureCookieAttribute"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/secure-random",
+      "summary": "Secure Source of Randomness",
+      "description": "This codemod replaces all instances of functions in the `random` module (e.g. `random.random()` with their, much more secure, equivalents from the `secrets` module (e.g. `secrets.SystemRandom().random()`).\n\nThere is significant algorithmic complexity in getting computers to generate genuinely unguessable random bits. The `random.random()` function uses a method of pseudo-random number generation that unfortunately emits fairly predictable numbers.\n\nIf the numbers it emits are predictable, then it's obviously not safe to use in cryptographic operations, file name creation, token construction, password generation, and anything else that's related to security. In fact, it may affect security even if it's not directly obvious.\n\nSwitching to a more secure version is simple and the changes look something like this:\n\n```diff\n- import random\n+ import secrets\n  ...\n- random.random()\n+ secrets.SystemRandom().random()\n```\n",
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/Insecure_Randomness",
+          "description": "https://owasp.org/www-community/vulnerabilities/Insecure_Randomness"
+        },
+        {
+          "url": "https://docs.python.org/3/library/random.html",
+          "description": "https://docs.python.org/3/library/random.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [
+        {
+          "path": "app/request.py",
+          "diff": "--- \n+++ \n@@ -2,7 +2,6 @@\n from app.utils.misc import read_config_bool\n from datetime import datetime\n from defusedxml import ElementTree as ET\n-import random\n import requests\n from requests import Response, ConnectionError\n import urllib.parse as urlparse\n@@ -11,6 +10,7 @@\n from stem.connection import AuthenticationFailure\n from stem.control import Controller\n from stem.connection import authenticate_cookie, authenticate_password\n+import secrets\n \n MAPS_URL = 'https://maps.google.com/maps'\n AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'\n@@ -81,8 +81,8 @@\n     if user_agent_mobile and is_mobile:\n         return user_agent_mobile\n \n-    firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'\n-    linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'\n+    firefox = secrets.SystemRandom().choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'\n+    linux = secrets.SystemRandom().choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'\n \n     if is_mobile:\n         return MOBILE_UA.format(\"Mozilla\", firefox)\n",
+          "changes": [
+            {
+              "lineNumber": "84",
+              "description": "Replace random.{func} with more secure secrets library functions.",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            },
+            {
+              "lineNumber": "85",
+              "description": "Replace random.{func} with more secure secrets library functions.",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "codemod": "pixee:python/secure-tempfile",
+      "summary": "Upgrade and Secure Temp File Creation",
+      "description": "This codemod replaces all `tempfile.mktemp` calls to the more secure `tempfile.mkstemp`.\n\nThe Python [tempfile documentation](https://docs.python.org/3/library/tempfile.html#tempfile.mktemp) is explicit\nthat `tempfile.mktemp` should be deprecated to avoid an unsafe and unexpected race condition.\nThe changes from this codemod look like this:\n\n\n```diff\n  import tempfile\n- tempfile.mktemp(...)\n+ tempfile.mkstemp(...)\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/tempfile.html#tempfile.mktemp",
+          "description": "https://docs.python.org/3/library/tempfile.html#tempfile.mktemp"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/sql-parameterization",
+      "summary": "Parameterize SQL Queries",
+      "description": "This codemod refactors SQL statements to be parameterized, rather than built by hand.\n\nWithout parameterization, developers must remember to escape string inputs using the rules for that column type and database. This usually results in bugs -- and sometimes vulnerabilities. Although we can't tell for sure if your code is actually exploitable, this change will make the code more robust in case the conditions which prevent exploitation today ever go away.\n\nOur changes look something like this:\n\n```diff\nimport sqlite3\n\nname = input()\nconnection = sqlite3.connect(\"my_db.db\")\ncursor = connection.cursor()\n- cursor.execute(\"SELECT * from USERS WHERE name ='\" + name + \"'\")\n+ cursor.execute(\"SELECT * from USERS WHERE name =?\", (name, ))\n```\n",
+      "references": [
+        {
+          "url": "https://cwe.mitre.org/data/definitions/89.html",
+          "description": "https://cwe.mitre.org/data/definitions/89.html"
+        },
+        {
+          "url": "https://owasp.org/www-community/attacks/SQL_Injection",
+          "description": "https://owasp.org/www-community/attacks/SQL_Injection"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/str-concat-in-sequence-literals",
+      "summary": "Convert Implicit String Concat Inside Sequence into Individual Elements",
+      "description": "This codemod fixes cases of implicit string concatenation inside lists, sets, or tuples. This is most likely a mistake: you probably meant include a comma in between the concatenated strings. \n\nOur changes look something like this:\n```diff\nbad = [\n-    \"ab\"\n+    \"ab\",\n     \"cd\",\n     \"ef\",\n-    \"gh\"\n+    \"gh\",\n     \"ij\",\n]\n```\n",
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/subprocess-shell-false",
+      "summary": "Use `shell=False` in `subprocess` Function Calls",
+      "description": "This codemod sets the `shell` keyword argument to `False` in `subprocess` module function calls that have set it to `True`.\n\nSetting `shell=True` will execute the provided command through the system shell which can lead to shell injection vulnerabilities. In the worst case this can give an attacker the ability to run arbitrary commands on your system. In most cases using `shell=False` is sufficient and leads to much safer code.\n\nThe changes from this codemod look like this:\n\n```diff\n import subprocess\n- subprocess.run(\"echo 'hi'\", shell=True)\n+ subprocess.run(\"echo 'hi'\", shell=False)\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/subprocess.html#security-considerations",
+          "description": "https://docs.python.org/3/library/subprocess.html#security-considerations"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Code_injection#Shell_injection",
+          "description": "https://en.wikipedia.org/wiki/Code_injection#Shell_injection"
+        },
+        {
+          "url": "https://stackoverflow.com/a/3172488",
+          "description": "https://stackoverflow.com/a/3172488"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/upgrade-sslcontext-minimum-version",
+      "summary": "Upgrade SSLContext Minimum Version",
+      "description": "This codemod replaces all unsafe and/or deprecated SSL/TLS versions when used\nto set the `ssl.SSLContext.minimum_version` attribute. It uses\n`ssl.TLSVersion.TLSv1_2` instead, which ensures a safe default minimum TLS\nversion.\n\nOur change involves modifying the `minimum_version` attribute of\n`ssl.SSLContext` instances to use `ssl.TLSVersion.TLSv1_2`.\n\n```diff\n  import ssl\n  context = ssl.SSLContext(protocol=PROTOCOL_TLS_CLIENT)\n- context.minimum_version = ssl.TLSVersion.SSLv3\n+ context.minimum_version = ssl.TLSVersion.TLSv1_2\n```\n\nThere is no functional difference between the unsafe and safe versions, and all modern servers offer TLSv1.2.\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/ssl.html#security-considerations",
+          "description": "https://docs.python.org/3/library/ssl.html#security-considerations"
+        },
+        {
+          "url": "https://datatracker.ietf.org/doc/rfc8996/",
+          "description": "https://datatracker.ietf.org/doc/rfc8996/"
+        },
+        {
+          "url": "https://www.digicert.com/blog/depreciating-tls-1-0-and-1-1",
+          "description": "https://www.digicert.com/blog/depreciating-tls-1-0-and-1-1"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/upgrade-sslcontext-tls",
+      "summary": "Upgrade TLS Version In SSLContext",
+      "description": "This codemod replaces the use of all unsafe and/or deprecated SSL/TLS versions\nin the `ssl.SSLContext` constructor. It uses `PROTOCOL_TLS_CLIENT` instead,\nwhich ensures a safe default TLS version. It also sets the `protocol` parameter\nto `PROTOCOL_TLS_CLIENT` in calls without it, which is now deprecated.\n\nOur change involves modifying the argument to `ssl.SSLContext()` to\nuse `PROTOCOL_TLS_CLIENT`.\n\n```diff\n  import ssl\n- context = ssl.SSLContext()  \n+ context = ssl.SSLContext(protocol=PROTOCOL_TLS_CLIENT)\n- context = ssl.SSLContext(protocol=PROTOCOL_SSLv3)\n+ context = ssl.SSLContext(protocol=PROTOCOL_TLS_CLIENT)\n```\n\nThere is no functional difference between the unsafe and safe versions, and all modern servers offer TLSv1.2.\n\nThe use of explicit TLS versions (even safe ones) is deprecated by the `ssl`\nmodule, so it is necessary to choose either `PROTOCOL_TLS_CLIENT` or\n`PROTOCOL_TLS_SERVER`. Using `PROTOCOL_TLS_CLIENT` is expected to be the\ncorrect choice for most applications but in some cases it will be necessary to\nuse `PROTOCOL_TLS_SERVER` instead.\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/ssl.html#security-considerations",
+          "description": "https://docs.python.org/3/library/ssl.html#security-considerations"
+        },
+        {
+          "url": "https://datatracker.ietf.org/doc/rfc8996/",
+          "description": "https://datatracker.ietf.org/doc/rfc8996/"
+        },
+        {
+          "url": "https://www.digicert.com/blog/depreciating-tls-1-0-and-1-1",
+          "description": "https://www.digicert.com/blog/depreciating-tls-1-0-and-1-1"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/url-sandbox",
+      "summary": "Sandbox URL Creation",
+      "description": "This codemod sandboxes calls to [`requests.get`](https://requests.readthedocs.io/en/latest/api/#requests.get) to be more resistant to Server-Side Request Forgery (SSRF) attacks.\n\nMost of the time when you make a `GET` request to a URL, you're intending to reference an HTTP endpoint, like an internal microservice. However, URLs can point to local file system files, a Gopher stream in your local network, a JAR file on a remote Internet site, and all kinds of other unexpected and undesirable outcomes. When the URL values are influenced by attackers, they can trick your application into fetching internal resources, running malicious code, or otherwise harming the system.\nConsider the following code for a Flask app:\n\n```python\nfrom flask import Flask, request\nimport requests\n\napp = Flask(__name__)\n\n@app.route(\"/request-url\")\ndef request_url():\n    url = request.args[\"loc\"]\n    resp = requests.get(url)\n    ...\n```\n\nIn this case, an attacker could supply a value like `\"http://169.254.169.254/user-data/\"` and attempt to access user information.\n\nOur changes introduce sandboxing around URL creation that force developers to specify some boundaries on the types of URLs they expect to create:\n\n```diff\n  from flask import Flask, request\n- import requests\n+ from security import safe_requests\n\n  app = Flask(__name__)\n\n  @app.route(\"/request-url\")\n  def request_url():\n    url = request.args[\"loc\"]\n-   resp = requests.get(url)\n+   resp = safe_requests.get(url)\n    ...\n```\n\nThis change alone reduces attack surface significantly because the default behavior of `safe_requests.get` raises a `SecurityException` if\na user attempts to access a known infrastructure location, unless specifically disabled.\n\n\nIf you have feedback on this codemod, [please let us know](mailto:feedback@pixee.ai)!\n\n## F.A.Q. \n\n### Why does this codemod require a Pixee dependency?\n\nWe always prefer to use built-in Python functions or one from a well-known and trusted community dependency. However, we cannot find any such control. If you know of one, [please let us know](https://ask.pixee.ai/feedback).\n\n### Why is this codemod marked as Merge After Cursory Review?\n\nBy default, the protection only weaves in 2 checks, which we believe will not cause any issues with the vast majority of code:\n1. The given URL must be HTTP/HTTPS.\n2. The given URL must not point to a \"well-known infrastructure target\", which includes things like AWS Metadata Service endpoints, and internal routers (e.g., 192.168.1.1) which are common targets of attacks.\n\nHowever, on rare occasions an application may use a URL protocol like \"file://\" or \"ftp://\" in backend or middleware code.\n\nIf you want to allow those protocols, change the incoming PR to look more like this and get the best security possible:\n\n```diff\n-resp = requests.get(url)\n+resp = safe_requests.get(url, allowed_protocols=(\"ftp\",))\n```\n\n## Dependency Updates\n\nThis codemod relies on an external dependency. We have automatically added this dependency to your project's `setup.cfg` file. \n\nThis library holds security tools for protecting Python API calls. \n\nThere are a number of places where Python project dependencies can be expressed, including `setup.py`, `pyproject.toml`, `setup.cfg`, and `requirements.txt` files. If this change is incorrect, or if you are using another packaging system such as `poetry`, it may be necessary for you to manually add the dependency to the proper location in your project.\n",
+      "references": [
+        {
+          "url": "https://github.com/pixee/python-security/blob/main/src/security/safe_requests/api.py",
+          "description": "https://github.com/pixee/python-security/blob/main/src/security/safe_requests/api.py"
+        },
+        {
+          "url": "https://portswigger.net/web-security/ssrf",
+          "description": "https://portswigger.net/web-security/ssrf"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://www.rapid7.com/blog/post/2021/11/23/owasp-top-10-deep-dive-defending-against-server-side-request-forgery/",
+          "description": "https://www.rapid7.com/blog/post/2021/11/23/owasp-top-10-deep-dive-defending-against-server-side-request-forgery/"
+        },
+        {
+          "url": "https://blog.assetnote.io/2021/01/13/blind-ssrf-chains/",
+          "description": "https://blog.assetnote.io/2021/01/13/blind-ssrf-chains/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [
+        {
+          "path": "app/request.py",
+          "diff": "--- \n+++ \n@@ -11,6 +11,7 @@\n from stem.control import Controller\n from stem.connection import authenticate_cookie, authenticate_password\n import secrets\n+from security import safe_requests\n \n MAPS_URL = 'https://maps.google.com/maps'\n AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'\n@@ -336,8 +337,7 @@\n                     \"Error raised during Tor connection validation\",\n                     disable=True)\n \n-        response = requests.get(\n-            (base_url or self.search_url) + query,\n+        response = safe_requests.get((base_url or self.search_url) + query,\n             proxies=self.proxies,\n             headers=headers,\n             cookies=cookies, timeout=60)\n",
+          "changes": [
+            {
+              "lineNumber": "339",
+              "description": "Switch use of requests for security.safe_requests",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        },
+        {
+          "path": "app/utils/misc.py",
+          "diff": "--- \n+++ \n@@ -6,7 +6,7 @@\n import io\n import os\n import re\n-from requests import exceptions, get\n+from security.safe_requests import exceptions, get\n from urllib.parse import urlparse\n \n ddg_favicon_site = 'http://icons.duckduckgo.com/ip2'\n",
+          "changes": [
+            {
+              "lineNumber": "39",
+              "description": "Switch use of requests for security.safe_requests",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            },
+            {
+              "lineNumber": "102",
+              "description": "Switch use of requests for security.safe_requests",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        },
+        {
+          "path": "misc/update-translations.py",
+          "diff": "--- \n+++ \n@@ -1,6 +1,6 @@\n import json\n import pathlib\n-import requests\n+from security import safe_requests\n \n lingva = 'https://lingva.ml/api/v1/en'\n \n@@ -25,7 +25,7 @@\n \n     lingva_req = f'{lingva}/{lang}/{v}'\n \n-    response = requests.get(lingva_req, timeout=60).json()\n+    response = safe_requests.get(lingva_req, timeout=60).json()\n \n     if 'translation' in response:\n         return response['translation']\n",
+          "changes": [
+            {
+              "lineNumber": "28",
+              "description": "Switch use of requests for security.safe_requests",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        },
+        {
+          "path": "setup.cfg",
+          "diff": "--- \n+++ \n@@ -29,6 +29,7 @@\n     stem\n     validators\n     waitress\n+    security~=1.2.0\n \n [options.extras_require]\n test =\n",
+          "changes": [
+            {
+              "lineNumber": "32",
+              "description": "This library holds security tools for protecting Python API calls.\n\nLicense: [MIT](https://opensource.org/license/MIT/) \u2705 [Open Source](https://github.com/pixee/python-security) \u2705 [More facts](https://pypi.org/project/security/)\n",
+              "properties": {
+                "contextual_description": true,
+                "contextual_description_position": "right"
+              },
+              "diffSide": "right",
+              "packageActions": [
+                {
+                  "action": "ADD",
+                  "result": "COMPLETED",
+                  "package": "security~=1.2.0"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "codemod": "pixee:python/use-defusedxml",
+      "summary": "Use `defusedxml` for Parsing XML",
+      "description": "You might be surprised to learn that Python's built-in XML libraries are [considered insecure](https://docs.python.org/3/library/xml.html#xml-vulnerabilities) against various kinds of attacks.\n\nIn fact, the [Python documentation itself](https://docs.python.org/3/library/xml.html#the-defusedxml-package) recommends the use of [defusedxml](https://pypi.org/project/defusedxml/) for parsing untrusted XML data. `defusedxml` is an [open-source](https://github.com/tiran/defusedxml), permissively licensed project that is intended as a drop-in replacement for Python's standard library XML parsers.\n\nThis codemod updates all relevant uses of the standard library parsers with safe versions from `defusedxml`. It also adds the `defusedxml` dependency to your project where possible.\n\nThe changes from this codemod look like this:\n```diff\n- from xml.etree.ElementTree import parse\n+ import defusedxml.ElementTree\n\n- et = parse('data.xml')\n+ et = defusedxml.ElementTree.parse('data.xml')\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/xml.html#xml-vulnerabilities",
+          "description": "https://docs.python.org/3/library/xml.html#xml-vulnerabilities"
+        },
+        {
+          "url": "https://docs.python.org/3/library/xml.html#the-defusedxml-package",
+          "description": "https://docs.python.org/3/library/xml.html#the-defusedxml-package"
+        },
+        {
+          "url": "https://pypi.org/project/defusedxml/",
+          "description": "https://pypi.org/project/defusedxml/"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/use-generator",
+      "summary": "Use Generator Expressions Instead of List Comprehensions",
+      "description": "Imagine that someone handed you a pile of 100 apples and then asked you to count how many of them were green without putting any of them down. You'd probably find this quite challenging and you'd struggle to hold the pile of apples at all. Now imagine someone handed you the apples one at a time and asked you to just count the green ones. This would be a much easier task.\n\nIn Python, when we use list comprehensions, it's like we've created the entire pile of apples and asked the interpreter to hold onto it. Sometimes, a better practice involves using generator expressions, which create iterators that yield objects one at a time. For large data sets, this can turn a slow, memory intensive operation into a relatively fast one.\n\nUsing generator expressions instead of list comprehensions can lead to better performance. This is especially true for functions such as `any` where it's not always necessary to evaluate the entire list before returning. For other functions such as `max` or `sum` it means that the program does not need to store the entire list in memory. These performance effects becomes more noticeable as the sizes of the lists involved grow large.\n\nThis codemod replaces the use of a list comprehension expression with a generator expression within certain function calls. Generators allow for lazy evaluation of the iterator, which can have performance benefits.\n\nThe changes from this codemod look like this:\n```diff\n- result = sum([x for x in range(1000)])\n+ result = sum(x for x in range(1000))\n```\n",
+      "references": [
+        {
+          "url": "https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/use-a-generator.html",
+          "description": "https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/use-a-generator.html"
+        },
+        {
+          "url": "https://docs.python.org/3/glossary.html#term-generator-expression",
+          "description": "https://docs.python.org/3/glossary.html#term-generator-expression"
+        },
+        {
+          "url": "https://docs.python.org/3/glossary.html#term-list-comprehension",
+          "description": "https://docs.python.org/3/glossary.html#term-list-comprehension"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/use-set-literal",
+      "summary": "Use Set Literals Instead of Sets from Lists",
+      "description": "This codemod converts Python set constructions using literal list arguments into more efficient and readable set literals. It simplifies expressions like `set([1, 2, 3])` to `{1, 2, 3}`, enhancing both performance and code clarity.\n\nOur changes look like this:\n```diff\n-x = set([1, 2, 3])\n+x = {1, 2, 3}\n```\n",
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "pixee:python/use-walrus-if",
+      "summary": "Use Assignment Expression (Walrus) In Conditional",
+      "description": "This codemod updates places where two separate statements involving an assignment and conditional can be replaced with a single Assignment Expression (commonly known as the walrus operator).\n\nMany developers use this operator in new code that they write but don't have the time to find and update every place in existing code. So we do it for you! We believe this leads to more concise and readable code.\n\nThe changes from this codemod look like this:\n\n```diff\n- x = foo()\n- if x is not None:\n+ if (x := foo()) is not None:\n      print(x)\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/whatsnew/3.8.html#assignment-expressions",
+          "description": "https://docs.python.org/3/whatsnew/3.8.html#assignment-expressions"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [
+        {
+          "path": "app/request.py",
+          "diff": "--- \n+++ \n@@ -211,8 +211,7 @@\n             self.modified_user_agent_mobile = gen_user_agent(True)\n \n         # Set up proxy, if previously configured\n-        proxy_path = os.environ.get('WHOOGLE_PROXY_LOC', '')\n-        if proxy_path:\n+        if proxy_path := os.environ.get('WHOOGLE_PROXY_LOC', ''):\n             proxy_type = os.environ.get('WHOOGLE_PROXY_TYPE', '')\n             proxy_user = os.environ.get('WHOOGLE_PROXY_USER', '')\n             proxy_pass = os.environ.get('WHOOGLE_PROXY_PASS', '')\n",
+          "changes": [
+            {
+              "lineNumber": "214",
+              "description": "Replaces multiple expressions involving `if` operator with 'walrus' operator.",
+              "properties": {},
+              "diffSide": "right",
+              "packageActions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "codemod": "sonar:python/django-json-response-type-S5131",
+      "summary": "Sonar: Set content type to `application/json` for `django.http.HttpResponse` with JSON data",
+      "description": "This codemod acts upon the following Sonar rules: 'pythonsecurity:S5131'.\n\nThe default `content_type` for `HttpResponse` in Django is `'text/html'`. This is true even when the response contains JSON data.\nIf the JSON contains (unsanitized) user-supplied input, a malicious user may supply HTML code which leaves the application vulnerable to cross-site scripting (XSS). \nThis fix explicitly sets the response type to `application/json` when the response body is JSON data to avoid this vulnerability. Our changes look something like this:\n\n```diff\nfrom django.http import HttpResponse\nimport json\n\ndef foo(request):\n    json_response = json.dumps({ \"user_input\": request.GET.get(\"input\") })\n-    return HttpResponse(json_response)\n+    return HttpResponse(json_response, content_type=\"application/json\")\n```\n",
+      "references": [
+        {
+          "url": "https://docs.djangoproject.com/en/4.0/ref/request-response/#django.http.HttpResponse.__init__",
+          "description": "https://docs.djangoproject.com/en/4.0/ref/request-response/#django.http.HttpResponse.__init__"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-javascript-contexts",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-javascript-contexts"
+        },
+        {
+          "url": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5131/",
+          "description": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5131/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "sonar:python/django-receiver-on-top-S6552",
+      "summary": "Sonar: Ensure Django @receiver is the first decorator",
+      "description": "This codemod acts upon the following Sonar rules: 'python:S6552'.\n\nDjango uses signals to notify and handle actions that happens elsewhere in the application. You can define a response to a given signal by decorating a function with the `@receiver(signal)` decorator. The order in which the decorators are declared for this function is important. If the `@receiver` decorator is not on top, any decorators before it will be ignored. \nOur changes look something like this:\n\n```diff\nfrom django.dispatch import receiver\nfrom django.views.decorators.csrf import csrf_exempt\nfrom django.core.signals import request_finished\n\n+@receiver(request_finished)\n@csrf_exempt\n-@receiver(request_finished)\ndef foo():\n    pass\n```\n",
+      "references": [
+        {
+          "url": "https://docs.djangoproject.com/en/4.1/topics/signals/",
+          "description": "https://docs.djangoproject.com/en/4.1/topics/signals/"
+        },
+        {
+          "url": "https://rules.sonarsource.com/python/type/Bug/RSPEC-6552/",
+          "description": "https://rules.sonarsource.com/python/type/Bug/RSPEC-6552/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "sonar:python/exception-without-raise-S3984",
+      "summary": "Sonar: Ensure bare exception statements are raised",
+      "description": "This codemod acts upon the following Sonar rules: 'python:S3984'.\n\nThis codemod fixes cases where an exception is referenced by itself in a statement without being raised. This most likely indicates a bug: you probably meant to actually raise the exception. \n\nOur changes look something like this:\n```diff\ntry:\n-   ValueError\n+   raise ValueError\nexcept:\n    pass\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/tutorial/errors.html#raising-exceptions",
+          "description": "https://docs.python.org/3/tutorial/errors.html#raising-exceptions"
+        },
+        {
+          "url": "https://rules.sonarsource.com/python/type/Bug/RSPEC-3984/",
+          "description": "https://rules.sonarsource.com/python/type/Bug/RSPEC-3984/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "sonar:python/fix-assert-tuple-S5905",
+      "summary": "Sonar: Fix `assert` on Non-Empty Tuple Literal",
+      "description": "This codemod acts upon the following Sonar rules: 'python:S5905'.\n\nAn assertion on a non-empty tuple will always evaluate to `True`. This means that `assert` statements involving non-empty tuple literals are likely unintentional and should be rewritten. This codemod rewrites the original `assert` statement by creating a new `assert` for each item in the original tuple.\n\nThe changes from this codemod look like this:\n\n```diff\n- assert (1 == 1, 2 == 2)\n+ assert 1 == 1\n+ assert 2 == 2\n```\n",
+      "references": [
+        {
+          "url": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5905/",
+          "description": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5905/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "sonar:python/flask-json-response-type-S5131",
+      "summary": "Sonar: Set content type to `application/json` for `flask.make_response` with JSON data",
+      "description": "This codemod acts upon the following Sonar rules: 'pythonsecurity:S5131'.\n\nThe default `mimetype` for `make_response` in Flask is `'text/html'`. This is true even when the response contains JSON data.\nIf the JSON contains (unsanitized) user-supplied input, a malicious user may supply HTML code which leaves the application vulnerable to cross-site scripting (XSS). \nThis fix explicitly sets the response type to `application/json` when the response body is JSON data to avoid this vulnerability. Our changes look something like this:\n\n```diff\nfrom flask import make_response, Flask\nimport json\n\napp = Flask(__name__)\n\n@app.route(\"/test\")\ndef foo(request):\n    json_response = json.dumps({ \"user_input\": request.GET.get(\"input\") })\n-   return make_response(json_response)\n+   return make_response(json_response, {'Content-Type':'application/json'})\n```\n",
+      "references": [
+        {
+          "url": "https://flask.palletsprojects.com/en/2.3.x/patterns/javascript/#return-json-from-views",
+          "description": "https://flask.palletsprojects.com/en/2.3.x/patterns/javascript/#return-json-from-views"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-javascript-contexts",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-javascript-contexts"
+        },
+        {
+          "url": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5131/",
+          "description": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5131/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "sonar:python/literal-or-new-object-identity-S5796",
+      "summary": "Sonar: Replace `is` with `==` for literal or new object comparisons",
+      "description": "This codemod acts upon the following Sonar rules: 'python:S5796'.\n\nThe `is` and `is not` operators only evaluate to `True` when the expressions on each side have the same `id`. In other words, `a is b` is equivalent to `id(a) == id(b)`. With few exceptions, objects and literals have unique identities and thus shouldn't generally be compared by using the `is` or `is not` operators.\n\nOur changes look something like this:\n\n```diff\ndef foo(l):\n-    return l is [1,2,3]\n+    return l == [1,2,3]\n```\n",
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/stdtypes.html#comparisons",
+          "description": "https://docs.python.org/3/library/stdtypes.html#comparisons"
+        },
+        {
+          "url": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5796/",
+          "description": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5796/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "sonar:python/numpy-nan-equality-S6725",
+      "summary": "Sonar: Replace == comparison with numpy.isnan()",
+      "description": "This codemod acts upon the following Sonar rules: 'python:S6725'.\n\nComparisons against `numpy.nan` always result in `False`. Thus comparing an expression directly against `numpy.nan` is always unintended. The correct way to compare a value for `NaN` is to use the `numpy.isnan` function.\n\nOur changes look something like this:\n\n```diff\nimport numpy as np\n\na = np.nan\n-if a == np.nan:\n+if np.isnan(a):\n    pass\n```\n",
+      "references": [
+        {
+          "url": "https://numpy.org/doc/stable/reference/constants.html#numpy.nan",
+          "description": "https://numpy.org/doc/stable/reference/constants.html#numpy.nan"
+        },
+        {
+          "url": "https://rules.sonarsource.com/python/type/Bug/RSPEC-6725/",
+          "description": "https://rules.sonarsource.com/python/type/Bug/RSPEC-6725/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    },
+    {
+      "codemod": "sonar:python/remove-assertion-in-pytest-raises-S5915",
+      "summary": "Sonar: Moves assertions out of `pytest.raises` scope",
+      "description": "This codemod acts upon the following Sonar rules: 'python:S5915'.\n\nThe context manager object `pytest.raises(<exception>)` will assert if the code contained within its scope will raise an exception of type `<exception>`. The documentation points that the exception must be raised in the last line of its scope and any line afterwards won't be executed. \nIncluding asserts at the end of the scope is a common error. This codemod addresses that by moving them out of the scope.\nOur changes look something like this:\n\n```diff\nimport pytest\n\ndef test_foo():\n    with pytest.raises(ZeroDivisionError):\n        error = 1/0\n-       assert 1\n-       assert 2\n+   assert 1\n+   assert 2\n```\n",
+      "references": [
+        {
+          "url": "https://docs.pytest.org/en/7.4.x/reference/reference.html#pytest-raises",
+          "description": "https://docs.pytest.org/en/7.4.x/reference/reference.html#pytest-raises"
+        },
+        {
+          "url": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5915/",
+          "description": "https://rules.sonarsource.com/python/type/Bug/RSPEC-5915/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": []
+    }
+  ]
+}

@@ -2,7 +2,6 @@ from app.models.config import Config
 from app.utils.misc import read_config_bool
 from datetime import datetime
 from defusedxml import ElementTree as ET
-import random
 import requests
 from requests import Response, ConnectionError
 import urllib.parse as urlparse
@@ -11,6 +10,8 @@ from stem import Signal, SocketError
 from stem.connection import AuthenticationFailure
 from stem.control import Controller
 from stem.connection import authenticate_cookie, authenticate_password
+import secrets
+from security import safe_requests
 
 MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
@@ -81,8 +82,8 @@ def gen_user_agent(is_mobile) -> str:
     if user_agent_mobile and is_mobile:
         return user_agent_mobile
 
-    firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
-    linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
+    firefox = secrets.SystemRandom().choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
+    linux = secrets.SystemRandom().choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
 
     if is_mobile:
         return MOBILE_UA.format("Mozilla", firefox)
@@ -210,8 +211,7 @@ class Request:
             self.modified_user_agent_mobile = gen_user_agent(True)
 
         # Set up proxy, if previously configured
-        proxy_path = os.environ.get('WHOOGLE_PROXY_LOC', '')
-        if proxy_path:
+        if proxy_path := os.environ.get('WHOOGLE_PROXY_LOC', ''):
             proxy_type = os.environ.get('WHOOGLE_PROXY_TYPE', '')
             proxy_user = os.environ.get('WHOOGLE_PROXY_USER', '')
             proxy_pass = os.environ.get('WHOOGLE_PROXY_PASS', '')
@@ -323,7 +323,7 @@ class Request:
         if self.tor:
             try:
                 tor_check = requests.get('https://check.torproject.org/',
-                                         proxies=self.proxies, headers=headers)
+                                         proxies=self.proxies, headers=headers, timeout=60)
                 self.tor_valid = 'Congratulations' in tor_check.text
 
                 if not self.tor_valid:
@@ -336,11 +336,10 @@ class Request:
                     "Error raised during Tor connection validation",
                     disable=True)
 
-        response = requests.get(
-            (base_url or self.search_url) + query,
+        response = safe_requests.get((base_url or self.search_url) + query,
             proxies=self.proxies,
             headers=headers,
-            cookies=cookies)
+            cookies=cookies, timeout=60)
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:
