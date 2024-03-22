@@ -48,6 +48,13 @@ def test_ddg_bang(client):
     assert rv.headers.get('Location').startswith('https://github.com')
 
 
+def test_custom_bang(client):
+    # Bang at beginning of query
+    rv = client.get(f'/{Endpoint.search}?q=!i%20whoogle')
+    assert rv._status_code == 302
+    assert rv.headers.get('Location').startswith('search?q=')
+
+
 def test_config(client):
     rv = client.post(f'/{Endpoint.config}', data=demo_config)
     assert rv._status_code == 302

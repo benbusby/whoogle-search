@@ -1,8 +1,56 @@
 import json
 import requests
 import urllib.parse as urlparse
+import os
+import glob
 
+bangs_dict = {}
 DDG_BANGS = 'https://duckduckgo.com/bang.js'
+
+
+def load_all_bangs(ddg_bangs_file: str, ddg_bangs: dict = {}):
+    """Loads all the bang files in alphabetical order
+
+    Args:
+        ddg_bangs_file: The str path to the new DDG bangs json file
+        ddg_bangs: The dict of ddg bangs. If this is empty, it will load the
+                   bangs from the file
+
+    Returns:
+        None
+
+    """
+    global bangs_dict
+    ddg_bangs_file = os.path.normpath(ddg_bangs_file)
+
+    if (bangs_dict and not ddg_bangs) or os.path.getsize(ddg_bangs_file) <= 4:
+        return
+
+    bangs = {}
+    bangs_dir = os.path.dirname(ddg_bangs_file)
+    bang_files = glob.glob(os.path.join(bangs_dir, '*.json'))
+
+    # Normalize the paths
+    bang_files = [os.path.normpath(f) for f in bang_files]
+
+    # Move the ddg bangs file to the beginning
+    bang_files = sorted([f for f in bang_files if f != ddg_bangs_file])
+
+    if ddg_bangs:
+        bangs |= ddg_bangs
+    else:
+        bang_files.insert(0, ddg_bangs_file)
+
+    for i, bang_file in enumerate(bang_files):
+        try:
+            bangs |= json.load(open(bang_file))
+        except json.decoder.JSONDecodeError:
+            # Ignore decoding error only for the ddg bangs file, since this can
+            # occur if file is still being written
+            if i != 0:
+                raise
+
+    bangs_dict = dict(sorted(bangs.items()))
 
 
 def gen_bangs_json(bangs_file: str) -> None:
@@ -37,22 +85,35 @@ def gen_bangs_json(bangs_file: str) -> None:
 
     json.dump(bangs_data, open(bangs_file, 'w'))
     print('* Finished creating ddg bangs json')
+    load_all_bangs(bangs_file, bangs_data)
 
 
-def resolve_bang(query: str, bangs_dict: dict) -> str:
+def suggest_bang(query: str) -> list[str]:
+    """Suggests bangs for a user's query
+
+    Args:
+        query: The search query
+
+    Returns:
+        list[str]: A list of bang suggestions
+
+    """
+    global bangs_dict
+    return [bangs_dict[_]['suggestion'] for _ in bangs_dict if _.startswith(query)]
+
+
+def resolve_bang(query: str) -> str:
     """Transform's a user's query to a bang search, if an operator is found
 
     Args:
         query: The search query
-        bangs_dict: The dict of available bang operators, with corresponding
-                    format string search URLs
-                    (i.e. "!w": "https://en.wikipedia.org...?search={}")
 
     Returns:
         str: A formatted redirect for a bang search, or an empty str if there
              wasn't a match or didn't contain a bang operator
 
     """
+    global bangs_dict
 
     #if ! not in query simply return (speed up processing)
     if '!' not in query:

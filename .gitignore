@@ -1,4 +1,5 @@
 venv/
+.venv/
 .idea/
 __pycache__/
 *.pyc
@@ -10,7 +11,8 @@ test/static
 flask_session/
 app/static/config
 app/static/custom_config
-app/static/bangs
+app/static/bangs/*
+!app/static/bangs/00-whoogle.json
 
 # pip stuff
 /build/
