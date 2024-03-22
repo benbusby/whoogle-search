@@ -1,7 +1,7 @@
 from app.filter import clean_query
 from app.request import send_tor_signal
 from app.utils.session import generate_key
-from app.utils.bangs import gen_bangs_json
+from app.utils.bangs import gen_bangs_json, load_all_bangs
 from app.utils.misc import gen_file_hash, read_config_bool
 from base64 import b64encode
 from bs4 import MarkupResemblesLocatorWarning
@@ -139,7 +139,9 @@ app.config['CSP'] = 'default-src \'none\';' \
                     'connect-src \'self\';'
 
 # Generate DDG bang filter
+generating_bangs = False
 if not os.path.exists(app.config['BANG_FILE']):
+    generating_bangs = True
     json.dump({}, open(app.config['BANG_FILE'], 'w'))
     bangs_thread = threading.Thread(
         target=gen_bangs_json,
@@ -180,7 +182,11 @@ send_tor_signal(Signal.HEARTBEAT)
 warnings.simplefilter('ignore', MarkupResemblesLocatorWarning)
 
 from app import routes  # noqa
-routes.load_bangs()
+
+# The gen_bangs_json function takes care of loading bangs, so skip it here if
+# it's already being loaded
+if not generating_bangs:
+    load_all_bangs(app.config['BANG_FILE'])
 
 # Disable logging from imported modules
 logging.config.dictConfig({

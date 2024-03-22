@@ -8,7 +8,8 @@ import re
 import urllib.parse as urlparse
 import uuid
 import validators
-import glob
+import sys
+import traceback
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -17,7 +18,7 @@ from app import app
 from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
-from app.utils.bangs import resolve_bang
+from app.utils.bangs import suggest_bang, resolve_bang
 from app.utils.misc import empty_gif, placeholder_img, get_proxy_host_url, \
     fetch_favicon
 from app.filter import Filter
@@ -37,36 +38,8 @@ from cryptography.fernet import Fernet, InvalidToken
 from cryptography.exceptions import InvalidSignature
 from werkzeug.datastructures import MultiDict
 
-# Load DDG bang json files only on init
-bang_json = {}
-
 ac_var = 'WHOOGLE_AUTOCOMPLETE'
 autocomplete_enabled = os.getenv(ac_var, '1')
-
-
-def load_bangs():
-    global bang_json
-    bangs = {}
-    bang_files = glob.glob(os.path.join(app.config['BANG_PATH'], '*.json'))
-
-    # Normalize the paths
-    bang_files = [os.path.normpath(f) for f in bang_files]
-
-    # Move the ddg bangs file to the beginning
-    ddg_bangs_file = os.path.normpath(app.config['BANG_FILE'])
-    bang_files = sorted([f for f in bang_files if f != ddg_bangs_file])
-    bang_files.insert(0, ddg_bangs_file)
-
-    for i, bang_file in enumerate(bang_files):
-        try:
-            bangs |= json.load(open(bang_file))
-        except json.decoder.JSONDecodeError:
-            # Ignore decoding error only for the ddg bangs file, since this can
-            # occur if file is still being written
-            if i != 0:
-                raise
-
-    bang_json = dict(sorted(bangs.items()))
 
 
 def get_search_name(tbm):
@@ -156,7 +129,6 @@ def session_required(f):
 
 @app.before_request
 def before_request_func():
-    global bang_json
     session.permanent = True
 
     # Check for latest version if needed
@@ -197,10 +169,6 @@ def before_request_func():
         config=g.user_config)
 
     g.app_location = g.user_config.url
-
-    # Attempt to reload bangs json if not generated yet
-    if not bang_json and os.path.getsize(app.config['BANG_FILE']) > 4:
-        load_bangs()
 
 
 @app.after_request
@@ -303,8 +271,7 @@ def autocomplete():
 
     # Search bangs if the query begins with "!", but not "! " (feeling lucky)
     if q.startswith('!') and len(q) > 1 and not q.startswith('! '):
-        return jsonify([q, [bang_json[_]['suggestion'] for _ in bang_json if
-                            _.startswith(q)]])
+        return jsonify([q, suggest_bang(q)])
 
     if not q and not request.data:
         return jsonify({'?': []})
@@ -335,7 +302,7 @@ def search():
     search_util = Search(request, g.user_config, g.session_key)
     query = search_util.new_search_query()
 
-    bang = resolve_bang(query, bang_json)
+    bang = resolve_bang(query)
     if bang:
         return redirect(bang)
 
