@@ -180,6 +180,7 @@ send_tor_signal(Signal.HEARTBEAT)
 warnings.simplefilter('ignore', MarkupResemblesLocatorWarning)
 
 from app import routes  # noqa
+routes.load_bangs()
 
 # Disable logging from imported modules
 logging.config.dictConfig({

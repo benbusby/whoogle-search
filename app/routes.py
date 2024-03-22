@@ -8,6 +8,7 @@ import re
 import urllib.parse as urlparse
 import uuid
 import validators
+import glob
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -37,10 +38,35 @@ from cryptography.exceptions import InvalidSignature
 from werkzeug.datastructures import MultiDict
 
 # Load DDG bang json files only on init
-bang_json = json.load(open(app.config['BANG_FILE'])) or {}
+bang_json = {}
 
 ac_var = 'WHOOGLE_AUTOCOMPLETE'
 autocomplete_enabled = os.getenv(ac_var, '1')
+
+
+def load_bangs():
+    global bang_json
+    bangs = {}
+    bang_files = glob.glob(os.path.join(app.config['BANG_PATH'], '*.json'))
+
+    # Normalize the paths
+    bang_files = [os.path.normpath(f) for f in bang_files]
+
+    # Move the ddg bangs file to the beginning
+    ddg_bangs_file = os.path.normpath(app.config['BANG_FILE'])
+    bang_files = sorted([f for f in bang_files if f != ddg_bangs_file])
+    bang_files.insert(0, ddg_bangs_file)
+
+    for i, bang_file in enumerate(bang_files):
+        try:
+            bangs |= json.load(open(bang_file))
+        except json.decoder.JSONDecodeError:
+            # Ignore decoding error only for the ddg bangs file, since this can
+            # occur if file is still being written
+            if i != 0:
+                raise
+
+    bang_json = dict(sorted(bangs.items()))
 
 
 def get_search_name(tbm):
@@ -174,12 +200,7 @@ def before_request_func():
 
     # Attempt to reload bangs json if not generated yet
     if not bang_json and os.path.getsize(app.config['BANG_FILE']) > 4:
-        try:
-            bang_json = json.load(open(app.config['BANG_FILE']))
-        except json.decoder.JSONDecodeError:
-            # Ignore decoding error, can occur if file is still
-            # being written
-            pass
+        load_bangs()
 
 
 @app.after_request
