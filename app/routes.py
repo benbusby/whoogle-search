@@ -8,6 +8,8 @@ import re
 import urllib.parse as urlparse
 import uuid
 import validators
+import sys
+import traceback
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -621,6 +623,15 @@ def internal_error(e):
         query = request.form.get('q')
     else:
         query = request.args.get('q')
+
+    # Attempt to parse the query
+    try:
+        search_util = Search(request, g.user_config, g.session_key)
+        query = search_util.new_search_query()
+    except Exception:
+        pass
+
+    print(traceback.format_exc(), file=sys.stderr)
 
     localization_lang = g.user_config.get_localization_lang()
     translation = app.config['TRANSLATIONS'][localization_lang]
