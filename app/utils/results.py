@@ -147,8 +147,8 @@ def get_first_link(soup: BeautifulSoup) -> str:
     # Replace hrefs with only the intended destination (no "utm" type tags)
     for a in soup.find_all('a', href=True):
         # Return the first search result URL
-        if 'url?q=' in a['href']:
-            return filter_link_args(a['href'])
+        if a['href'].startswith('http://') or a['href'].startswith('https://'):
+            return a['href']
     return ''
 
 

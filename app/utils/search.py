@@ -161,22 +161,25 @@ class Search:
         if g.user_request.tor_valid:
             html_soup.insert(0, bsoup(TOR_BANNER, 'html.parser'))
 
+        formatted_results = content_filter.clean(html_soup)
         if self.feeling_lucky:
-            return get_first_link(html_soup)
-        else:
-            formatted_results = content_filter.clean(html_soup)
+            if lucky_link := get_first_link(formatted_results):
+                return lucky_link
 
-            # Append user config to all search links, if available
-            param_str = ''.join('&{}={}'.format(k, v)
-                                for k, v in
-                                self.request_params.to_dict(flat=True).items()
-                                if self.config.is_safe_key(k))
-            for link in formatted_results.find_all('a', href=True):
-                link['rel'] = "nofollow noopener noreferrer"
-                if 'search?' not in link['href'] or link['href'].index(
-                        'search?') > 1:
-                    continue
-                link['href'] += param_str
+            # Fall through to regular search if unable to find link
+            self.feeling_lucky = False
 
-            return str(formatted_results)
+        # Append user config to all search links, if available
+        param_str = ''.join('&{}={}'.format(k, v)
+                            for k, v in
+                            self.request_params.to_dict(flat=True).items()
+                            if self.config.is_safe_key(k))
+        for link in formatted_results.find_all('a', href=True):
+            link['rel'] = "nofollow noopener noreferrer"
+            if 'search?' not in link['href'] or link['href'].index(
+                    'search?') > 1:
+                continue
+            link['href'] += param_str
+
+        return str(formatted_results)
 
