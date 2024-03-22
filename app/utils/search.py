@@ -102,9 +102,15 @@ class Search:
             except InvalidToken:
                 pass
 
-        # Strip leading '! ' for "feeling lucky" queries
-        self.feeling_lucky = q.startswith('! ')
-        self.query = q[2:] if self.feeling_lucky else q
+        # Strip '!' for "feeling lucky" queries
+        if match := re.search("(^|\s)!($|\s)", q):
+            self.feeling_lucky = True
+            start, end = match.span()
+            self.query = " ".join([seg for seg in [q[:start], q[end:]] if seg])
+        else:
+            self.feeling_lucky = False
+            self.query = q
+
         # Check for possible widgets
         self.widget = "ip" if re.search("([^a-z0-9]|^)my *[^a-z0-9] *(ip|internet protocol)" +
                         "($|( *[^a-z0-9] *(((addres|address|adres|" +
