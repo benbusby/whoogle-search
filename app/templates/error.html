@@ -19,87 +19,88 @@
         {{ error_message }}
     </p>
     <hr>
-    <p>
-        <h4><a class="link" href="https://farside.link">{{ translation['continue-search'] }}</a></h4>
-        <ul>
-            <li>
-                <a href="https://github.com/benbusby/whoogle-search">Whoogle</a>
-                <ul>
-                    <li>
-                        <a class="link-color" href="{{farside}}/whoogle/search?q={{query}}{{params}}">
-                            {{farside}}/whoogle/search?q={{query}}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="https://github.com/searxng/searxng">SearXNG</a>
-                <ul>
-                    <li>
-                        <a class="link-color" href="{{farside}}/searxng/search?q={{query}}">
-                            {{farside}}/searxng/search?q={{query}}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <hr>
-        <h4>Other options:</h4>
-        <ul>
-            <li>
-                <a href="https://kagi.com">Kagi</a>
-                <ul>
-                    <li>Recommended by Whoogle maintainer</li>
-                    <li>Requires account</li>
-                    <li>
-                        <a class="link-color" href="https://kagi.com/search?q={{query}}">
-                            kagi.com/search?q={{query}}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="https://duckduckgo.com">DuckDuckGo</a>
-                <ul>
-                    <li>
-                        <a class="link-color" href="https://duckduckgo.com/search?q={{query}}">
-                            duckduckgo.com/search?q={{query}}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="https://search.brave.com">Brave Search</a>
-                <ul>
-                    <li>
-                        <a class="link-color" href="https://search.brave.com/search?q={{query}}">
-                            search.brave.com/search?q={{query}}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="https://ecosia.com">Ecosia</a>
-                <ul>
-                    <li>
-                        <a class="link-color" href="https://ecosia.com/search?q={{query}}">
-                            ecosia.com/search?q={{query}}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="https://google.com">Google</a>
-                <ul>
-                    <li>
-                        <a class="link-color" href="https://google.com/search?q={{query}}">
-                            google.com/search?q={{query}}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <hr>
-    </p>
+    {% if query and translation %}
+        <p>
+            <h4><a class="link" href="https://farside.link">{{ translation['continue-search'] }}</a></h4>
+            <ul>
+                <li>
+                    <a href="https://github.com/benbusby/whoogle-search">Whoogle</a>
+                    <ul>
+                        <li>
+                            <a class="link-color" href="{{farside}}/whoogle/search?q={{query}}{{params}}">
+                                {{farside}}/whoogle/search?q={{query}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="https://github.com/searxng/searxng">SearXNG</a>
+                    <ul>
+                        <li>
+                            <a class="link-color" href="{{farside}}/searxng/search?q={{query}}">
+                                {{farside}}/searxng/search?q={{query}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <hr>
+            <h4>Other options:</h4>
+            <ul>
+                <li>
+                    <a href="https://kagi.com">Kagi</a>
+                    <ul>
+                        <li>Requires account</li>
+                        <li>
+                            <a class="link-color" href="https://kagi.com/search?q={{query}}">
+                                kagi.com/search?q={{query}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="https://duckduckgo.com">DuckDuckGo</a>
+                    <ul>
+                        <li>
+                            <a class="link-color" href="https://duckduckgo.com/search?q={{query}}">
+                                duckduckgo.com/search?q={{query}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="https://search.brave.com">Brave Search</a>
+                    <ul>
+                        <li>
+                            <a class="link-color" href="https://search.brave.com/search?q={{query}}">
+                                search.brave.com/search?q={{query}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="https://ecosia.com">Ecosia</a>
+                    <ul>
+                        <li>
+                            <a class="link-color" href="https://ecosia.com/search?q={{query}}">
+                                ecosia.com/search?q={{query}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="https://google.com">Google</a>
+                    <ul>
+                        <li>
+                            <a class="link-color" href="https://google.com/search?q={{query}}">
+                                google.com/search?q={{query}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <hr>
+        </p>
+    {% endif %}
     <a class="link" href="home">Return Home</a>
 </div>

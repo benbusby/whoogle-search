@@ -20,6 +20,7 @@ Contents
 1. [Features](#features)
 3. [Install/Deploy Options](#install)
     1. [Heroku Quick Deploy](#heroku-quick-deploy)
+    1. [Render.com](#render)
     1. [Repl.it](#replit)
     1. [Fly.io](#flyio)
     1. [Koyeb](#koyeb)
@@ -84,6 +85,16 @@ Provides:
 Notes:
 - Requires a **PAID** Heroku Account.
 - Sometimes has issues with auto-redirecting to `https`. Make sure to navigate to the `https` version of your app before adding as a default search engine.
+
+___
+
+### [Render](https://render.com)
+
+Create an account on [render.com](https://render.com) and import the Whoogle repo with the following settings:
+
+- Runtime: `Python 3`
+- Build Command: `pip install -r requirements.txt`
+- Run Command: `./run`
 
 ___
 
@@ -671,6 +682,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://whoogle.datura.network](https://whoogle.datura.network) | 🇩🇪 DE | Multi-choice | |
 | [https://whoogle.yepserver.xyz](https://whoogle.yepserver.xyz) | 🇺🇦 UA | Multi-choice | |
 | [https://search.nezumi.party](https://search.nezumi.party) | 🇮🇹 IT | Multi-choice | |
+| [https://search.snine.nl](https://search.snine.nl) | 🇳🇱 NL | Mult-choice | ✅ |
 
 
 * A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare.com). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.

@@ -595,13 +595,18 @@ def window():
     )
 
 
-@app.route(f'/robots.txt')
+@app.route('/robots.txt')
 def robots():
     response = make_response(
 '''User-Agent: *
 Disallow: /''', 200)
     response.mimetype = 'text/plain'
     return response
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('img/favicon.ico')
 
 
 @app.errorhandler(404)
