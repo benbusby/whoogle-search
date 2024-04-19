@@ -8,6 +8,8 @@ import re
 import urllib.parse as urlparse
 import uuid
 import validators
+import sys
+import traceback
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -16,7 +18,7 @@ from app import app
 from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
-from app.utils.bangs import resolve_bang
+from app.utils.bangs import suggest_bang, resolve_bang
 from app.utils.misc import empty_gif, placeholder_img, get_proxy_host_url, \
     fetch_favicon
 from app.filter import Filter
@@ -35,9 +37,6 @@ from requests.models import PreparedRequest
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.exceptions import InvalidSignature
 from werkzeug.datastructures import MultiDict
-
-# Load DDG bang json files only on init
-bang_json = json.load(open(app.config['BANG_FILE'])) or {}
 
 ac_var = 'WHOOGLE_AUTOCOMPLETE'
 autocomplete_enabled = os.getenv(ac_var, '1')
@@ -130,7 +129,6 @@ def session_required(f):
 
 @app.before_request
 def before_request_func():
-    global bang_json
     session.permanent = True
 
     # Check for latest version if needed
@@ -171,15 +169,6 @@ def before_request_func():
         config=g.user_config)
 
     g.app_location = g.user_config.url
-
-    # Attempt to reload bangs json if not generated yet
-    if not bang_json and os.path.getsize(app.config['BANG_FILE']) > 4:
-        try:
-            bang_json = json.load(open(app.config['BANG_FILE']))
-        except json.decoder.JSONDecodeError:
-            # Ignore decoding error, can occur if file is still
-            # being written
-            pass
 
 
 @app.after_request
@@ -282,8 +271,7 @@ def autocomplete():
 
     # Search bangs if the query begins with "!", but not "! " (feeling lucky)
     if q.startswith('!') and len(q) > 1 and not q.startswith('! '):
-        return jsonify([q, [bang_json[_]['suggestion'] for _ in bang_json if
-                            _.startswith(q)]])
+        return jsonify([q, suggest_bang(q)])
 
     if not q and not request.data:
         return jsonify({'?': []})
@@ -314,7 +302,7 @@ def search():
     search_util = Search(request, g.user_config, g.session_key)
     query = search_util.new_search_query()
 
-    bang = resolve_bang(query, bang_json)
+    bang = resolve_bang(query)
     if bang:
         return redirect(bang)
 

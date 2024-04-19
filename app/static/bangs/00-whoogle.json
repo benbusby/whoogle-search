@@ -1,0 +1,14 @@
+{
+  "!i": {
+    "url": "search?q={}&tbm=isch",
+    "suggestion": "!i (Whoogle Images)"
+  },
+  "!v": {
+    "url": "search?q={}&tbm=vid",
+    "suggestion": "!v (Whoogle Videos)"
+  },
+  "!n": {
+    "url": "search?q={}&tbm=nws",
+    "suggestion": "!n (Whoogle News)"
+  }
+}
