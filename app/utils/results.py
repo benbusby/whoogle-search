@@ -144,12 +144,26 @@ def get_first_link(soup: BeautifulSoup) -> str:
         str: A str link to the first result
 
     """
+    first_link = ''
+    orig_details = []
+
+    # Temporarily remove details so we don't grab those links
+    for details in soup.find_all('details'):
+        temp_details = soup.new_tag('removed_details')
+        orig_details.append(details.replace_with(temp_details))
+
     # Replace hrefs with only the intended destination (no "utm" type tags)
     for a in soup.find_all('a', href=True):
         # Return the first search result URL
-        if 'url?q=' in a['href']:
-            return filter_link_args(a['href'])
-    return ''
+        if a['href'].startswith('http://') or a['href'].startswith('https://'):
+            first_link = a['href']
+            break
+
+    # Add the details back
+    for orig_detail, details in zip(orig_details, soup.find_all('removed_details')):
+        details.replace_with(orig_detail)
+
+    return first_link
 
 
 def get_site_alt(link: str, site_alts: dict = SITE_ALTS) -> str:
