@@ -21,16 +21,6 @@ const handleUserInput = () => {
     xhrRequest.send('q=' + searchInput.value);
 };
 
-const closeAllLists = el => {
-    // Close all autocomplete suggestions
-    let suggestions = document.getElementsByClassName("autocomplete-items");
-    for (let i = 0; i < suggestions.length; i++) {
-        if (el !== suggestions[i] && el !== searchInput) {
-            suggestions[i].parentNode.removeChild(suggestions[i]);
-        }
-    }
-};
-
 const removeActive = suggestion => {
     // Remove "autocomplete-active" class from previously active suggestion
     for (let i = 0; i < suggestion.length; i++) {
@@ -71,7 +61,7 @@ const addActive = (suggestion) => {
 
 const autocompleteInput = (e) => {
     // Handle navigation between autocomplete suggestions
-    let suggestion = document.getElementById(this.id + "-autocomplete-list");
+    let suggestion = document.getElementById("autocomplete-list");
     if (suggestion) suggestion = suggestion.getElementsByTagName("div");
     if (e.keyCode === 40) { // down
         e.preventDefault();
@@ -92,29 +82,28 @@ const autocompleteInput = (e) => {
 };
 
 const updateAutocompleteList = () => {
-    let autocompleteList, autocompleteItem, i;
+    let autocompleteItem, i;
     let val = originalSearch;
-    closeAllLists();
+
+    let autocompleteList = document.getElementById("autocomplete-list");
+    autocompleteList.innerHTML = "";
 
     if (!val || !autocompleteResults) {
         return false;
     }
 
     currentFocus = -1;
-    autocompleteList = document.createElement("div");
-    autocompleteList.setAttribute("id", this.id + "-autocomplete-list");
-    autocompleteList.setAttribute("class", "autocomplete-items");
-    searchInput.parentNode.appendChild(autocompleteList);
 
     for (i = 0; i < autocompleteResults.length; i++) {
         if (autocompleteResults[i].substr(0, val.length).toUpperCase() === val.toUpperCase()) {
             autocompleteItem = document.createElement("div");
+            autocompleteItem.setAttribute("class", "autocomplete-item");
             autocompleteItem.innerHTML = "<strong>" + autocompleteResults[i].substr(0, val.length) + "</strong>";
             autocompleteItem.innerHTML += autocompleteResults[i].substr(val.length);
             autocompleteItem.innerHTML += "<input type=\"hidden\" value=\"" + autocompleteResults[i] + "\">";
             autocompleteItem.addEventListener("click", function () {
                 searchInput.value = this.getElementsByTagName("input")[0].value;
-                closeAllLists();
+                autocompleteList.innerHTML = "";
                 document.getElementById("search-form").submit();
             });
             autocompleteList.appendChild(autocompleteItem);
@@ -123,10 +112,16 @@ const updateAutocompleteList = () => {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
+    let autocompleteList = document.createElement("div");
+    autocompleteList.setAttribute("id", "autocomplete-list");
+    autocompleteList.setAttribute("class", "autocomplete-items");
+
     searchInput = document.getElementById("search-bar");
+    searchInput.parentNode.appendChild(autocompleteList);
+
     searchInput.addEventListener("keydown", (event) => autocompleteInput(event));
 
     document.addEventListener("click", function (e) {
-        closeAllLists(e.target);
+        autocompleteList.innerHTML = "";
     });
 });
