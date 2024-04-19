@@ -101,7 +101,10 @@ if not os.path.exists(app.config['BUILD_FOLDER']):
 # Session values
 app_key_path = os.path.join(app.config['CONFIG_PATH'], 'whoogle.key')
 if os.path.exists(app_key_path):
-    app.config['SECRET_KEY'] = open(app_key_path, 'r').read()
+    try:
+        app.config['SECRET_KEY'] = open(app_key_path, 'r').read()
+    except PermissionError:
+        app.config['SECRET_KEY'] = str(b64encode(os.urandom(32)))
 else:
     app.config['SECRET_KEY'] = str(b64encode(os.urandom(32)))
     with open(app_key_path, 'w') as key_file:
