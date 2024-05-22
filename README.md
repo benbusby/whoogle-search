@@ -504,7 +504,7 @@ Browser settings:
         - Search string to use: `https://\<your whoogle url\>/search?q=%s`
   - [Alfred](https://www.alfredapp.com/) (Mac OS X)
 	  1. Go to `Alfred Preferences` > `Features` > `Web Search` and click `Add Custom Search`. Then configure these settings
-		   - Search URL: `https://\<your whoogle url\>/search?q={query}
+		   - Search URL: `https://\<your whoogle url\>/search?q={query}`
 		   - Title: `Whoogle for '{query}'` (or whatever you want)
 		   - Keyword: `whoogle`
 
