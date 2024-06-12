@@ -33,15 +33,15 @@ BLACKLIST = [
 SITE_ALTS = {
     'twitter.com': os.getenv('WHOOGLE_ALT_TW', 'farside.link/nitter'),
     'youtube.com': os.getenv('WHOOGLE_ALT_YT', 'farside.link/invidious'),
-    'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'farside.link/libreddit'),
+     'reddit.com': os.getenv('WHOOGLE_ALT_RD', 'redlib--readit.repl.co'),
     **dict.fromkeys([
         'medium.com',
         'levelup.gitconnected.com'
     ], os.getenv('WHOOGLE_ALT_MD', 'farside.link/scribe')),
     'imgur.com': os.getenv('WHOOGLE_ALT_IMG', 'farside.link/rimgo'),
-    'wikipedia.org': os.getenv('WHOOGLE_ALT_WIKI', 'farside.link/wikiless'),
+    # 'wikipedia.org': os.getenv('WHOOGLE_ALT_WIKI', 'wikiless.org'),
     'imdb.com': os.getenv('WHOOGLE_ALT_IMDB', 'farside.link/libremdb'),
-    'quora.com': os.getenv('WHOOGLE_ALT_QUORA', 'farside.link/quetre'),
+    'quora.com': os.getenv('WHOOGLE_ALT_QUORA', 'quetre-ual0.onrender.com'),
   'stackoverflow.com': os.getenv('WHOOGLE_ALT_STACKOVERFLOW', 'farside.link/anonymousoverflow'),
   'fandom.com': os.getenv('WHOOGLE_ALT_FANDOM', 'bw.artemislena.eu'),
   'github.com': os.getenv('WHOOGLE_ALT_GITHUB', 'farside.link/gothub')
