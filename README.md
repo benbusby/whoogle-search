@@ -145,7 +145,7 @@ ___
 ### [pipx](https://github.com/pipxproject/pipx#install-pipx)
 Persistent install:
 
-`pipx install git+https://github.com/benbusby/whoogle-search.git`
+`pipx install https://github.com/benbusby/whoogle-search/archive/refs/heads/main.zip`
 
 Sandboxed temporary instance:
 
