@@ -235,7 +235,7 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_WIKI=farside.link/wikiless
 #Environment=WHOOGLE_ALT_IMDB=farside.link/libremdb
 #Environment=WHOOGLE_ALT_QUORA=farside.link/quetre
-#Enviroment=WHOOGLE_ALT_SO=farside.link/anonymousoverflow
+#Environment=WHOOGLE_ALT_SO=farside.link/anonymousoverflow
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
