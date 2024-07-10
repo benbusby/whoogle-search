@@ -52,6 +52,7 @@ ARG imgur_alt='farside.link/rimgo'
 ARG wikipedia_alt='farside.link/wikiless'
 ARG imdb_alt='farside.link/libremdb'
 ARG quora_alt='farside.link/quetre'
+ARG so_alt='farside.link/anonymousoverflow'
 
 ENV CONFIG_VOLUME=$config_dir \
     WHOOGLE_URL_PREFIX=$url_prefix \
@@ -72,7 +73,8 @@ ENV CONFIG_VOLUME=$config_dir \
     WHOOGLE_ALT_IMG=$imgur_alt \
     WHOOGLE_ALT_WIKI=$wikipedia_alt \
     WHOOGLE_ALT_IMDB=$imdb_alt \
-    WHOOGLE_ALT_QUORA=$quora_alt
+    WHOOGLE_ALT_QUORA=$quora_alt \
+    WHOOGLE_ALT_SO=$so_alt
 
 WORKDIR /whoogle
 

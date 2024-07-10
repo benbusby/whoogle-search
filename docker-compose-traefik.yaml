@@ -68,6 +68,7 @@ services:
       #- WHOOGLE_ALT_WIKI=farside.link/wikiless
       #- WHOOGLE_ALT_IMDB=farside.link/libremdb
       #- WHOOGLE_ALT_QUORA=farside.link/quetre
+      #- WHOOGLE_ALT_SO=farside.link/anonymousoverflow
       # - WHOOGLE_CONFIG_DISABLE=1
       # - WHOOGLE_CONFIG_SEARCH_LANGUAGE=lang_en
       # - WHOOGLE_CONFIG_GET_ONLY=1
