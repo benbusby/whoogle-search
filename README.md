@@ -596,6 +596,7 @@ server {
 	    proxy_set_header X-Forwarded-Proto $scheme;
 	    proxy_set_header Host $host;
 	    proxy_set_header X-NginX-Proxy true;
+	    proxy_set_header X-Forwarded-Host $http_host;
 	    proxy_pass http://localhost:5000;
 	}
 }
