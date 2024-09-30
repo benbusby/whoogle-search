@@ -1,13 +1,15 @@
 import base64
-from bs4 import BeautifulSoup as bsoup
-from cryptography.fernet import Fernet
-from flask import Request
 import hashlib
+import contextlib
 import io
 import os
 import re
+
 from requests import exceptions, get
 from urllib.parse import urlparse
+from bs4 import BeautifulSoup as bsoup
+from cryptography.fernet import Fernet
+from flask import Request
 
 ddg_favicon_site = 'http://icons.duckduckgo.com/ip2'
 
@@ -34,9 +36,7 @@ def fetch_favicon(url: str) -> bytes:
         bytes - the favicon bytes, or a placeholder image if one
         was not returned
     """
-    domain = urlparse(url).netloc
-
-    response = get(f'{ddg_favicon_site}/{domain}.ico')
+    response = get(f'{ddg_favicon_site}/{urlparse(url).netloc}.ico')
 
     if response.status_code == 200 and len(response.content) > 0:
         tmp_mem = io.BytesIO()
@@ -44,8 +44,7 @@ def fetch_favicon(url: str) -> bytes:
         tmp_mem.seek(0)
 
         return tmp_mem.read()
-    else:
-        return placeholder_img
+    return placeholder_img
 
 
 def gen_file_hash(path: str, static_file: str) -> str:
@@ -53,7 +52,7 @@ def gen_file_hash(path: str, static_file: str) -> str:
     file_hash = hashlib.md5(file_contents).hexdigest()[:8]
     filename_split = os.path.splitext(static_file)
 
-    return filename_split[0] + '.' + file_hash + filename_split[-1]
+    return f'{filename_split[0]}.{file_hash}{filename_split[-1]}'
 
 
 def read_config_bool(var: str, default: bool=False) -> bool:
@@ -61,15 +60,14 @@ def read_config_bool(var: str, default: bool=False) -> bool:
     # user can specify one of the following values as 'true' inputs (all
     # variants with upper case letters will also work):
     # ('true', 't', '1', 'yes', 'y')
-    val = val.lower() in ('true', 't', '1', 'yes', 'y')
-    return val
+    return val.lower() in ('true', 't', '1', 'yes', 'y')
 
 
 def get_client_ip(r: Request) -> str:
     if r.environ.get('HTTP_X_FORWARDED_FOR') is None:
         return r.environ['REMOTE_ADDR']
-    else:
-        return r.environ['HTTP_X_FORWARDED_FOR']
+
+    return r.environ['HTTP_X_FORWARDED_FOR']
 
 
 def get_request_url(url: str) -> str:
@@ -98,27 +96,28 @@ def get_proxy_host_url(r: Request, default: str, root=False) -> str:
 
 def check_for_update(version_url: str, current: str) -> int:
     # Check for the latest version of Whoogle
-    try:
+    has_update = ''
+    with contextlib.suppress(exceptions.ConnectionError, AttributeError):
         update = bsoup(get(version_url).text, 'html.parser')
         latest = update.select_one('[class="Link--primary"]').string[1:]
         current = int(''.join(filter(str.isdigit, current)))
         latest = int(''.join(filter(str.isdigit, latest)))
         has_update = '' if current >= latest else latest
-    except (exceptions.ConnectionError, AttributeError):
-        # Ignore failures, assume current version is up to date
-        has_update = ''
 
     return has_update
 
 
 def get_abs_url(url, page_url):
     # Creates a valid absolute URL using a partial or relative URL
-    if url.startswith('//'):
-        return f'https:{url}'
-    elif url.startswith('/'):
-        return f'{urlparse(page_url).netloc}{url}'
-    elif url.startswith('./'):
-        return f'{page_url}{url[2:]}'
+    urls = {
+        "//": f"https:{url}",
+        "/": f"{urlparse(page_url).netloc}{url}",
+        "./": f"{page_url}{url[2:]}"
+    }
+    for start in urls:
+        if url.startswith(start):
+            return urls[start]
+
     return url
 
 
