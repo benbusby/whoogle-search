@@ -27,8 +27,8 @@ BLACKLIST = [
     'Reklama', 'Реклама', 'Anunț', '광고', 'annons', 'Annonse', 'Iklan',
     '広告', 'Augl.', 'Mainos', 'Advertentie', 'إعلان', 'Գովազդ', 'विज्ञापन',
     'Reklam', 'آگهی', 'Reklāma', 'Reklaam', 'Διαφήμιση', 'מודעה', 'Hirdetés',
-    'Anúncio', 'Quảng cáo', 'โฆษณา', 'sponsored', 'patrocinado', 'gesponsert', 
-    'Sponzorováno'
+    'Anúncio', 'Quảng cáo', 'โฆษณา', 'sponsored', 'patrocinado', 'gesponsert',
+    'Sponzorováno', '스폰서'
 ]
 
 SITE_ALTS = {
