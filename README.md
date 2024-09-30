@@ -115,7 +115,7 @@ ___
 
 ### [Fly.io](https://fly.io)
 
-You will need a [Fly.io](https://fly.io) account to deploy Whoogle. The [free allowances](https://fly.io/docs/about/pricing/#free-allowances) are enough for personal use.
+You will need a [Fly.io](https://fly.io) account to deploy Whoogle.
 
 #### Install the CLI: https://fly.io/docs/hands-on/installing/
 
@@ -130,6 +130,9 @@ The first deploy won't succeed because the default `internal_port` is wrong.
 To fix this, open the generated `fly.toml` file, set `services.internal_port` to `5000` and run `flyctl launch` again.
 
 Your app is now available at `https://<app-name>.fly.dev`.
+
+Notes:
+- Requires a [**PAID**](https://fly.io/docs/about/pricing/#free-allowances) Fly.io Account.
 
 ___
 
