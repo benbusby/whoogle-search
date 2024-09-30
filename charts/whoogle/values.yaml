@@ -43,6 +43,7 @@ conf: {}
   # WHOOGLE_ALT_WIKI: ""     # The wikipedia.com alternative to use when site alternatives are enabled in the config.
   # WHOOGLE_ALT_IMDB: ""     # The imdb.com alternative to use. Set to "" to continue using imdb.com when site alternatives are enabled.
   # WHOOGLE_ALT_QUORA: ""    # The quora.com alternative to use. Set to "" to continue using quora.com when site alternatives are enabled.
+  # WHOOGLE_ALT_SO: ""       # The stackoverflow.com alternative to use. Set to "" to continue using stackoverflow.com when site alternatives are enabled. 
   # WHOOGLE_AUTOCOMPLETE: "" # Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable
   # WHOOGLE_MINIMAL: ""      # Remove everything except basic result cards from all search queries.
 

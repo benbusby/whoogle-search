@@ -238,6 +238,7 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_WIKI=farside.link/wikiless
 #Environment=WHOOGLE_ALT_IMDB=farside.link/libremdb
 #Environment=WHOOGLE_ALT_QUORA=farside.link/quetre
+#Environment=WHOOGLE_ALT_SO=farside.link/anonymousoverflow
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
 Type=simple
@@ -431,6 +432,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_ALT_WIKI     | The wikipedia.org alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_ALT_IMDB     | The imdb.com alternative to use when site alternatives are enabled in the config. Set to "" to disable.  |
 | WHOOGLE_ALT_QUORA    | The quora.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
+| WHOOGLE_ALT_SO       | The stackoverflow.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_AUTOCOMPLETE | Controls visibility of autocomplete/search suggestions. Default on -- use '0' to disable. |
 | WHOOGLE_MINIMAL      | Remove everything except basic result cards from all search queries.                      |
 | WHOOGLE_CSP          | Sets a default set of 'Content-Security-Policy' headers                                   |

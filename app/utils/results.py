@@ -41,7 +41,8 @@ SITE_ALTS = {
     'imgur.com': os.getenv('WHOOGLE_ALT_IMG', 'farside.link/rimgo'),
     'wikipedia.org': os.getenv('WHOOGLE_ALT_WIKI', 'farside.link/wikiless'),
     'imdb.com': os.getenv('WHOOGLE_ALT_IMDB', 'farside.link/libremdb'),
-    'quora.com': os.getenv('WHOOGLE_ALT_QUORA', 'farside.link/quetre')
+    'quora.com': os.getenv('WHOOGLE_ALT_QUORA', 'farside.link/quetre'),
+    'stackoverflow.com': os.getenv('WHOOGLE_ALT_SO', 'farside.link/anonymousoverflow')
 }
 
 # Include custom site redirects from WHOOGLE_REDIRECTS
