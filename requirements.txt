@@ -2,7 +2,7 @@ attrs==22.2.0
 beautifulsoup4==4.11.2
 brotli==1.0.9
 cachelib==0.10.2
-certifi==2023.7.22
+certifi==2024.7.4
 cffi==1.15.1
 chardet==5.1.0
 click==8.1.3
