@@ -176,7 +176,7 @@ for cb_dir in cache_busting_dirs:
 # Templating functions
 app.jinja_env.globals.update(clean_query=clean_query)
 app.jinja_env.globals.update(
-    cb_url=lambda f: app.config['CACHE_BUSTING_MAP'][f])
+    cb_url=lambda f: app.config['CACHE_BUSTING_MAP'][f.lower()])
 
 # Attempt to acquire tor identity, to determine if Tor config is available
 send_tor_signal(Signal.HEARTBEAT)
