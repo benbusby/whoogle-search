@@ -11,7 +11,7 @@ cryptography==43.0.1; platform_machine != 'armv7l'
 cssutils==2.6.0
 defusedxml==0.7.1
 Flask==2.3.2
-idna==3.4
+idna==3.7
 itsdangerous==2.1.2
 Jinja2==3.1.4
 MarkupSafe==2.1.2
