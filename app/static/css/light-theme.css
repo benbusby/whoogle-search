@@ -45,6 +45,10 @@ select {
     box-shadow: 0 1px 6px rgba(32,33,36,0.28) !important;
 }
 
+.BsXmcf {
+    background-color: unset !important;
+}
+
 .BVG0Nb {
     background-color: var(--whoogle-result-bg) !important;
 }

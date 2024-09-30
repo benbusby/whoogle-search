@@ -15,6 +15,7 @@ class GClasses:
     result_class_a = 'ZINbbc'
     result_class_b = 'luh4td'
     scroller_class = 'idg8be'
+    line_tag = 'BsXmcf'
 
     result_classes = {
         result_class_a: ['Gx5Zad'],
