@@ -99,7 +99,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         else:
             reg_pattern = fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b'
 
-        if re.match('.*[@_!#$%^&*()<>?/\|}{~:].*', target_word) or (
+        if re.match(r'.*[@_!#$%^&*()<>?/\|}{~:].*', target_word) or (
                 element.parent and element.parent.name == 'style'):
             return
 
