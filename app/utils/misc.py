@@ -38,7 +38,7 @@ def fetch_favicon(url: str) -> bytes:
     """
     response = get(f'{ddg_favicon_site}/{urlparse(url).netloc}.ico')
 
-    if response.status_code and len(response.content) > 0:
+    if response.status_code == 200 and len(response.content) > 0:
         tmp_mem = io.BytesIO()
         tmp_mem.write(response.content)
         tmp_mem.seek(0)
@@ -66,7 +66,7 @@ def read_config_bool(var: str, default: bool=False) -> bool:
 def get_client_ip(r: Request) -> str:
     if r.environ.get('HTTP_X_FORWARDED_FOR') is None:
         return r.environ['REMOTE_ADDR']
-    
+
     return r.environ['HTTP_X_FORWARDED_FOR']
 
 
@@ -95,7 +95,7 @@ def get_proxy_host_url(r: Request, default: str, root=False) -> str:
 
 
 def check_for_update(version_url: str, current: str) -> int:
-    'Check for the latest version of Whoogle'
+    # Check for the latest version of Whoogle
     has_update = ''
     with contextlib.suppress(exceptions.ConnectionError, AttributeError):
         update = bsoup(get(version_url).text, 'html.parser')
@@ -108,7 +108,7 @@ def check_for_update(version_url: str, current: str) -> int:
 
 
 def get_abs_url(url, page_url):
-    'Creates a valid absolute URL using a partial or relative URL'
+    # Creates a valid absolute URL using a partial or relative URL
     urls = {
         "//": f"https:{url}",
         "/": f"{urlparse(page_url).netloc}{url}",
