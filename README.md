@@ -241,6 +241,8 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_SO=farside.link/anonymousoverflow
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
+# specify dotenv location if not in default location
+#Environment=WHOOGLE_DOTENV_PATH=<path/to>/whoogle.env
 Type=simple
 User=<username>
 # If installed as a package, add:

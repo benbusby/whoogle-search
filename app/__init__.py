@@ -25,9 +25,10 @@ app = Flask(__name__, static_folder=os.path.dirname(
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
-dot_env_path = (
-    os.path.join(os.path.dirname(os.path.abspath(__file__)),
-    '../whoogle.env'))
+# look for WHOOGLE_ENV, else look in parent directory
+dot_env_path = os.getenv(
+    "WHOOGLE_DOTENV_PATH",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "../whoogle.env"))
 
 # Load .env file if enabled
 if os.path.exists(dot_env_path):
