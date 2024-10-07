@@ -241,6 +241,8 @@ Description=Whoogle
 #Environment=WHOOGLE_ALT_SO=farside.link/anonymousoverflow
 # Load values from dotenv only
 #Environment=WHOOGLE_DOTENV=1
+# specify dotenv location if not in default location
+#Environment=WHOOGLE_DOTENV_PATH=<path/to>/whoogle.env
 Type=simple
 User=<username>
 # If installed as a package, add:
@@ -411,6 +413,7 @@ There are a few optional environment variables available for customizing a Whoog
 | -------------------- | ----------------------------------------------------------------------------------------- |
 | WHOOGLE_URL_PREFIX   | The URL prefix to use for the whoogle instance (i.e. "/whoogle")                          |
 | WHOOGLE_DOTENV       | Load environment variables in `whoogle.env`                                               |
+| WHOOGLE_DOTENV_PATH  | The path to `whoogle.env` if not in default location                                      |
 | WHOOGLE_USER         | The username for basic auth. WHOOGLE_PASS must also be set if used.                       |
 | WHOOGLE_PASS         | The password for basic auth. WHOOGLE_USER must also be set if used.                       |
 | WHOOGLE_PROXY_USER   | The username of the proxy server.                                                         |
