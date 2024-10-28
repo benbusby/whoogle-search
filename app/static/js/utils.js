@@ -16,7 +16,7 @@ const checkForTracking = () => {
             ]
         },
         "usps": {
-            "link": `https://tools.usps.com/go/TrackConfirmAction?tLabels=${query}`,
+            "link": `https://tools.usps.com/go/TrackConfirmAction_input?origTrackNum=${query}`,
             "expr": [
                 /(\b\d{30}\b)|(\b91\d+\b)|(\b\d{20}\b)/,
                 /^E\D{1}\d{9}\D{2}$|^9\d{15,21}$/,
