@@ -339,6 +339,10 @@ def search():
     # Return 503 if temporarily blocked by captcha
     if has_captcha(str(response)):
         app.logger.error('503 (CAPTCHA)')
+        fallback_engine = os.environ.get('WHOOGLE_FALLBACK_ENGINE_URL', '')
+        if (fallback_engine):
+            return redirect(fallback_engine + query)
+        
         return render_template(
             'error.html',
             blocked=True,
@@ -618,6 +622,10 @@ def internal_error(e):
         pass
 
     print(traceback.format_exc(), file=sys.stderr)
+
+    fallback_engine = os.environ.get('WHOOGLE_FALLBACK_ENGINE_URL', '')
+    if (fallback_engine):
+        return redirect(fallback_engine + query)
 
     localization_lang = g.user_config.get_localization_lang()
     translation = app.config['TRANSLATIONS'][localization_lang]
