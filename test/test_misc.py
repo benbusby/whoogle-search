@@ -4,19 +4,11 @@ from app import app
 from app.models.endpoint import Endpoint
 from app.utils.session import generate_key, valid_user_session
 
-
-JAPAN_PREFS = 'uG-gGIJwHdqxl6DrS3mnu_511HlQcRpxYlG03Xs-' \
-   + '_znXNiJWI9nLOkRLkiiFwIpeUYMTGfUF5-t9fP5DGmzDLEt04DCx703j3nPf' \
-   + '29v_RWkU7gXw_44m2oAFIaKGmYlu4Z0bKyu9k5WXfL9Dy6YKKnpcR5CiaFsG' \
-   + 'rccNRkAPYm-eYGAFUV8M59f8StsGd_M-gHKGS9fLok7EhwBWjHxBJ2Kv8hsT' \
-   + '87zftP2gMJOevTdNnezw2Y5WOx-ZotgeheCW1BYCFcRqatlov21PHp22NGVG' \
-   + '8ZuBNAFW0bE99WSdyT7dUIvzeWCLJpbdSsq-3FUUZkxbRdFYlGd8vY1UgVAp' \
-   + 'OSie2uAmpgLFXygO-VfNBBZ68Q7gAap2QtzHCiKD5cFYwH3LPgVJ-DoZvJ6k' \
-   + 'alt34TaYiJphgiqFKV4SCeVmLWTkr0SF3xakSR78yYJU_d41D2ng-TojA9XZ' \
-   + 'uR2ZqjSvPKOWvjimu89YhFOgJxG1Po8Henj5h9OL9VXXvdvlJwBSAKw1E3FV' \
-   + '7UHWiglMxPblfxqou1cYckMYkFeIMCD2SBtju68mBiQh2k328XRPTsQ_ocby' \
-   + 'cgVKnleGperqbD6crRk3Z9xE5sVCjujn9JNVI-7mqOITMZ0kntq9uJ3R5n25' \
-   + 'Vec0TJ0P19nEtvjY0nJIrIjtnBg=='
+JAPAN_PREFS = 'uG7IBICwK7FgMJNpUawp2tKDb1Omuv_euy-cJHVZ' \
+  + 'BSydthgwxRFIHxiVA8qUGavKaDXyiM5uNuPIjKbEAW-zB_vzNXWVaafFhW7k2' \
+  + 'fO2_mS5e5eK41XXWwiViTz2VVmGWje0UgQwwVPe1A7aH0s10FgARsd2xl5nlg' \
+  + 'RLHT2krPUw-iLQ5uHZSnYXFuF4caYemWcj4vqB2ocHkt-aqn04jgnnlWWME_K' \
+  + '9ySWdWmPyS66HtLt1tCwc_-xGZklvbHw=='
 
 
 def test_generate_user_keys():
