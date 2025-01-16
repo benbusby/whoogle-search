@@ -1,3 +1,13 @@
+>[!WARNING]
+>
+>As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. This is a fundamental part of how Whoogle
+>works -- Whoogle requests the JavaScript-free search results, then filters out garbage from the results page and proxies all external content for the user.
+>
+>This is possibly a breaking change that will mean the end for Whoogle. I'll continue monitoring the status of their JS-free results and looking into workarounds,
+>and will make another post if a solution is found (or not).
+
+___
+
 ![Whoogle Search](docs/banner.png)
 
 [![Latest Release](https://img.shields.io/github/v/release/benbusby/whoogle-search)](https://github.com/benbusby/shoogle/releases)
