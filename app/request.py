@@ -18,6 +18,7 @@ AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
 
 MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
 DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
+LYNX_UA = 'Lynx/2.9.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/3.4.0'
 
 # Valid query params
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
@@ -73,6 +74,11 @@ def send_tor_signal(signal: Signal) -> bool:
 
 
 def gen_user_agent(is_mobile) -> str:
+    if True:
+        # Temporary fix while the removal of javascript-free searches by
+        # Google is being investigated
+        return LYNX_UA
+
     user_agent = os.environ.get('WHOOGLE_USER_AGENT', '')
     user_agent_mobile = os.environ.get('WHOOGLE_USER_AGENT_MOBILE', '')
     if user_agent and not is_mobile:
@@ -308,7 +314,7 @@ class Request:
         now = datetime.now()
         cookies = {
             'CONSENT': 'PENDING+987',
-            'SOCS': 'CAESHAgBEhIaAB', 
+            'SOCS': 'CAESHAgBEhIaAB',
         }
 
         # Validate Tor conn and request new identity if the last one failed
