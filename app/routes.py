@@ -438,8 +438,8 @@ def config():
         if name:
             config_pkl = os.path.join(app.config['CONFIG_PATH'], name)
             session['config'] = (pickle.load(open(config_pkl, 'rb'))
-                                 if os.path.exists(config_pkl)
-                                 else session['config'])
+                                if os.path.exists(config_pkl)
+                                else session['config'])
             return json.dumps(session['config'])
         else:
             return json.dumps({})
@@ -448,8 +448,20 @@ def config():
         if 'url' not in config_data or not config_data['url']:
             config_data['url'] = g.user_config.url
 
+        # Handle user agent configuration
+        if 'user_agent' in config_data:
+            if config_data['user_agent'] == 'custom':
+                config_data['use_custom_user_agent'] = True
+                # Keep both the selection and the custom string
+                if 'custom_user_agent' in config_data:
+                    config_data['custom_user_agent'] = config_data['custom_user_agent']
+                    print(f"Setting custom user agent to: {config_data['custom_user_agent']}")  # Debug log
+            else:
+                config_data['use_custom_user_agent'] = False
+                config_data['custom_user_agent'] = ''
+
         # Save config by name to allow a user to easily load later
-        if 'name' in request.args:
+        if name:
             pickle.dump(
                 config_data,
                 open(os.path.join(

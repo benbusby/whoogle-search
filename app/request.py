@@ -18,7 +18,6 @@ AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
 
 MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
 DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
-LYNX_UA = 'Lynx/2.9.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/3.4.0'
 
 # Valid query params
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
@@ -73,20 +72,19 @@ def send_tor_signal(signal: Signal) -> bool:
     return False
 
 
-def gen_user_agent(is_mobile) -> str:
-    if True:
-        # Temporary fix while the removal of javascript-free searches by
-        # Google is being investigated
+def gen_user_agent(config, is_mobile) -> str:
+    # Define the Lynx user agent
+    LYNX_UA = 'Lynx/2.9.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/3.4.0'
+
+    # If using custom user agent, return the custom string
+    if config.user_agent == 'custom' and config.custom_user_agent:
+        return config.custom_user_agent
+
+    # If using Lynx user agent
+    if config.user_agent == 'LYNX_UA':
         return LYNX_UA
 
-    user_agent = os.environ.get('WHOOGLE_USER_AGENT', '')
-    user_agent_mobile = os.environ.get('WHOOGLE_USER_AGENT_MOBILE', '')
-    if user_agent and not is_mobile:
-        return user_agent
-
-    if user_agent_mobile and is_mobile:
-        return user_agent_mobile
-
+    # If no custom user agent is set, generate a random one
     firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
     linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
 
@@ -198,10 +196,7 @@ class Request:
         # enable Tor for future requests
         send_tor_signal(Signal.HEARTBEAT)
 
-        self.language = (
-            config.lang_search if config.lang_search else ''
-        )
-
+        self.language = config.lang_search if config.lang_search else ''
         self.country = config.country if config.country else ''
 
         # For setting Accept-language Header
@@ -211,11 +206,13 @@ class Request:
 
         self.mobile = bool(normal_ua) and ('Android' in normal_ua
                                            or 'iPhone' in normal_ua)
-        self.modified_user_agent = gen_user_agent(self.mobile)
-        if not self.mobile:
-            self.modified_user_agent_mobile = gen_user_agent(True)
 
-        # Set up proxy, if previously configured
+        # Generate user agent based on config
+        self.modified_user_agent = gen_user_agent(config, self.mobile)
+        if not self.mobile:
+            self.modified_user_agent_mobile = gen_user_agent(config, True)
+
+        # Set up proxy configuration
         proxy_path = os.environ.get('WHOOGLE_PROXY_LOC', '')
         if proxy_path:
             proxy_type = os.environ.get('WHOOGLE_PROXY_TYPE', '')
@@ -235,6 +232,7 @@ class Request:
                 'http': 'socks5://127.0.0.1:9050',
                 'https': 'socks5://127.0.0.1:9050'
             } if config.tor else {}
+
         self.tor = config.tor
         self.tor_valid = False
         self.root_path = root_path

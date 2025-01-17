@@ -228,6 +228,21 @@
                             <input type="checkbox" name="get_only"
                                    id="config-get-only" {{ 'checked' if config.get_only else '' }}>
                         </div>
+                        <div class="config-div config-div-user-agent">
+                            <label for="config-user-agent">User Agent: </label>
+                            <select name="user_agent" id="config-user-agent">
+                                <option value="LYNX_UA" {% if not config.user_agent or config.user_agent == 'LYNX_UA' %}selected{% endif %}>Lynx Browser</option>
+                                <option value="" {% if config.user_agent == '' and config.user_agent != 'LYNX_UA' %}selected{% endif %}>Original (Random)</option>
+                                <option value="custom" {% if config.user_agent == 'custom' %}selected{% endif %}>Custom</option>
+                            </select>
+                        </div>
+                        <div class="config-div config-div-custom-user-agent" {% if config.user_agent != 'custom' %}style="display: none;"{% endif %}>
+                            <label for="config-custom-user-agent">Custom User Agent: </label>
+                            <input type="text" name="custom_user_agent" id="config-custom-user-agent"
+                                   value="{{ config.custom_user_agent }}"
+                                   placeholder="Enter custom user agent string">
+                            <div><span class="info-text"> — <a href="https://github.com/benbusby/whoogle-search/wiki/User-Agents">User Agent Wiki</a></span></div>
+                        </div>
                         <div class="config-div config-div-accept-language">
                             <label for="config-accept-language">Set Accept-Language: </label>
                             <input type="checkbox" name="accept_language"

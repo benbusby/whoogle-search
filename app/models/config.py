@@ -37,33 +37,12 @@ def get_rule_for_selector(stylesheet: CSSStyleSheet,
 
 class Config:
     def __init__(self, **kwargs):
-        app_config = current_app.config
-        self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
-        self.lang_search = os.getenv('WHOOGLE_CONFIG_SEARCH_LANGUAGE', '')
-        self.lang_interface = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
-        self.style_modified = os.getenv(
-            'WHOOGLE_CONFIG_STYLE', '')
-        self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
-        self.block_title = os.getenv('WHOOGLE_CONFIG_BLOCK_TITLE', '')
-        self.block_url = os.getenv('WHOOGLE_CONFIG_BLOCK_URL', '')
-        self.country = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
-        self.tbs = os.getenv('WHOOGLE_CONFIG_TIME_PERIOD', '')
-        self.theme = os.getenv('WHOOGLE_CONFIG_THEME', 'system')
-        self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
-        self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')  # deprecated
-        self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
-        self.nojs = read_config_bool('WHOOGLE_CONFIG_NOJS')
-        self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
-        self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
-        self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
-        self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
-        self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
-        self.anon_view = read_config_bool('WHOOGLE_CONFIG_ANON_VIEW')
-        self.preferences_encrypted = read_config_bool('WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED')
-        self.preferences_key = os.getenv('WHOOGLE_CONFIG_PREFERENCES_KEY', '')
+        # User agent configuration
+        self.user_agent = kwargs.get('user_agent', 'LYNX_UA')
+        self.custom_user_agent = kwargs.get('custom_user_agent', '')
+        self.use_custom_user_agent = kwargs.get('use_custom_user_agent', False)
 
-        self.accept_language = False
-
+        # Add user agent related keys to safe_keys
         self.safe_keys = [
             'lang_search',
             'lang_interface',
@@ -77,8 +56,38 @@ class Config:
             'nojs',
             'anon_view',
             'preferences_encrypted',
-            'tbs'
+            'tbs',
+            'user_agent',
+            'custom_user_agent',
+            'use_custom_user_agent'
         ]
+
+        app_config = current_app.config
+        self.url = kwargs.get('url', '')
+        self.lang_search = kwargs.get('lang_search', '')
+        self.lang_interface = kwargs.get('lang_interface', '')
+        self.style_modified = os.getenv(
+            'WHOOGLE_CONFIG_STYLE', '')
+        self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
+        self.block_title = os.getenv('WHOOGLE_CONFIG_BLOCK_TITLE', '')
+        self.block_url = os.getenv('WHOOGLE_CONFIG_BLOCK_URL', '')
+        self.country = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
+        self.tbs = os.getenv('WHOOGLE_CONFIG_TIME_PERIOD', '')
+        self.theme = kwargs.get('theme', '')
+        self.safe = kwargs.get('safe', '')
+        self.dark = kwargs.get('dark', '')
+        self.alts = kwargs.get('alts', '')
+        self.nojs = kwargs.get('nojs', '')
+        self.tor = kwargs.get('tor', '')
+        self.near = kwargs.get('near', '')
+        self.new_tab = kwargs.get('new_tab', '')
+        self.view_image = kwargs.get('view_image', '')
+        self.get_only = kwargs.get('get_only', '')
+        self.anon_view = read_config_bool('WHOOGLE_CONFIG_ANON_VIEW')
+        self.preferences_encrypted = read_config_bool('WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED')
+        self.preferences_key = os.getenv('WHOOGLE_CONFIG_PREFERENCES_KEY', '')
+
+        self.accept_language = False
 
         # Skip setting custom config if there isn't one
         if kwargs:
