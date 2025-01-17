@@ -1,6 +1,6 @@
 FROM python:3.12.6-alpine3.20 AS builder
 
-RUN apk --update add \
+RUN apk --no-cache add \
     build-base \
     libxml2-dev \
     libxslt-dev \
@@ -14,11 +14,11 @@ RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r re
 
 FROM python:3.12.6-alpine3.20
 
-RUN apk add --update --no-cache tor curl openrc libstdc++
+RUN apk add --no-cache tor curl openrc libstdc++
 # git go //for obfs4proxy
 # libcurl4-openssl-dev
 
-RUN apk -U upgrade
+RUN apk --no-cache upgrade
 
 # uncomment to build obfs4proxy
 # RUN git clone https://gitlab.com/yawning/obfs4.git
