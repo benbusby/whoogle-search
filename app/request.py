@@ -79,7 +79,7 @@ def gen_user_agent(config, is_mobile) -> str:
     # If using custom user agent, return the custom string
     if config.user_agent == 'custom' and config.custom_user_agent:
         return config.custom_user_agent
-    
+
     # If using Lynx user agent
     if config.user_agent == 'LYNX_UA':
         return LYNX_UA
@@ -198,7 +198,7 @@ class Request:
 
         self.language = config.lang_search if config.lang_search else ''
         self.country = config.country if config.country else ''
-        
+
         # For setting Accept-language Header
         self.lang_interface = ''
         if config.accept_language:
@@ -206,7 +206,7 @@ class Request:
 
         self.mobile = bool(normal_ua) and ('Android' in normal_ua
                                            or 'iPhone' in normal_ua)
-        
+
         # Generate user agent based on config
         self.modified_user_agent = gen_user_agent(config, self.mobile)
         if not self.mobile:
@@ -232,7 +232,7 @@ class Request:
                 'http': 'socks5://127.0.0.1:9050',
                 'https': 'socks5://127.0.0.1:9050'
             } if config.tor else {}
-        
+
         self.tor = config.tor
         self.tor_valid = False
         self.root_path = root_path
