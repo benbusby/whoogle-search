@@ -78,7 +78,6 @@ def gen_user_agent(config, is_mobile) -> str:
 
     # If using custom user agent, return the custom string
     if config.user_agent == 'custom' and config.custom_user_agent:
-        print(f"Using custom user agent: {config.custom_user_agent}")  # Debug log
         return config.custom_user_agent
     
     # If using Lynx user agent
@@ -213,8 +212,6 @@ class Request:
         if not self.mobile:
             self.modified_user_agent_mobile = gen_user_agent(config, True)
 
-        print(f"Initialized with user agent: {self.modified_user_agent}")  # Debug log
-
         # Set up proxy configuration
         proxy_path = os.environ.get('WHOOGLE_PROXY_LOC', '')
         if proxy_path:
@@ -300,8 +297,6 @@ class Request:
                 modified_user_agent = self.modified_user_agent_mobile
             else:
                 modified_user_agent = self.modified_user_agent
-
-        print(f"Using User-Agent: {modified_user_agent}")  # Debug log
 
         headers = {
             'User-Agent': modified_user_agent
