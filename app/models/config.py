@@ -63,9 +63,9 @@ class Config:
         ]
 
         app_config = current_app.config
-        self.url = kwargs.get('url', '')
-        self.lang_search = kwargs.get('lang_search', '')
-        self.lang_interface = kwargs.get('lang_interface', '')
+        self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
+        self.lang_search = os.getenv('WHOOGLE_CONFIG_SEARCH_LANGUAGE', '')
+        self.lang_interface = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
         self.style_modified = os.getenv(
             'WHOOGLE_CONFIG_STYLE', '')
         self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
@@ -73,16 +73,16 @@ class Config:
         self.block_url = os.getenv('WHOOGLE_CONFIG_BLOCK_URL', '')
         self.country = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
         self.tbs = os.getenv('WHOOGLE_CONFIG_TIME_PERIOD', '')
-        self.theme = kwargs.get('theme', '')
-        self.safe = kwargs.get('safe', '')
-        self.dark = kwargs.get('dark', '')
-        self.alts = kwargs.get('alts', '')
-        self.nojs = kwargs.get('nojs', '')
-        self.tor = kwargs.get('tor', '')
-        self.near = kwargs.get('near', '')
-        self.new_tab = kwargs.get('new_tab', '')
-        self.view_image = kwargs.get('view_image', '')
-        self.get_only = kwargs.get('get_only', '')
+        self.theme = os.getenv('WHOOGLE_CONFIG_THEME', 'system')
+        self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
+        self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')  # deprecated
+        self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
+        self.nojs = read_config_bool('WHOOGLE_CONFIG_NOJS')
+        self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
+        self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
+        self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
+        self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
+        self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
         self.anon_view = read_config_bool('WHOOGLE_CONFIG_ANON_VIEW')
         self.preferences_encrypted = read_config_bool('WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED')
         self.preferences_key = os.getenv('WHOOGLE_CONFIG_PREFERENCES_KEY', '')
@@ -203,7 +203,7 @@ class Config:
             # if preferences leads to an empty dictionary it means preferences
             # parameter was not decrypted successfully
             if len(params_new):
-                params = params_new 
+                params = params_new
 
         for param_key in params.keys():
             if not self.is_safe_key(param_key):
