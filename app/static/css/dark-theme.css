@@ -32,15 +32,15 @@ textarea {
     color: var(--whoogle-dark-text) !important;
 }
 
-a:visited h3 div {
+a:visited h3 div, a:visited .qXLe6d {
     color: var(--whoogle-dark-result-visited) !important;
 }
 
-a:link h3 div {
+a:link h3 div, a:link .qXLe6d {
     color: var(--whoogle-dark-result-title) !important;
 }
 
-a:link div {
+a:link div, a:link .fYyStc {
     color: var(--whoogle-dark-result-url) !important;
 }
 
@@ -62,7 +62,7 @@ select {
     background-color: var(--whoogle-dark-page-bg) !important;
 }
 
-.ZINbbc {
+.ZINbbc, .ezO2md {
     overflow: hidden;
     box-shadow: 0 0 0 0 !important;
     background-color: var(--whoogle-dark-result-bg) !important;

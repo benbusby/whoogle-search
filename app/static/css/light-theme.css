@@ -75,15 +75,15 @@ select {
 }
 
 
-a:visited h3 div {
+a:visited div, a:visited .qXLe6d {
     color: var(--whoogle-result-visited) !important;
 }
 
-a:link h3 div {
+a:link div, a:link .qXLe6d {
     color: var(--whoogle-result-title) !important;
 }
 
-a:link div {
+a:link div, a:link .fYyStc {
     color: var(--whoogle-result-url) !important;
 }
 

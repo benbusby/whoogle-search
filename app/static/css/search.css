@@ -7,6 +7,12 @@ body {
     font-size: 16px !important;
 }
 
+.ezO2md {
+    border-radius: 10px;
+    border: 0 !important;
+    box-shadow: 0 3px 5px rgb(0 0 0 / 0.2);
+}
+
 .autocomplete {
     position: relative;
     display: inline-block;
