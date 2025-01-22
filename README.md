@@ -155,6 +155,13 @@ Use one of the following guides to install Whoogle on Koyeb:
 
 ___
 
+### [RepoCloud](https://repocloud.io)
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/?app_id=309)
+
+1. Sign up for a free [RepoCloud account](https://repocloud.io) and receive free credits to get started.
+2. Click "Deploy" to launch the app and access it instantly via your RepoCloud URL.
+___
+
 ### [pipx](https://github.com/pipxproject/pipx#install-pipx)
 Persistent install:
 
