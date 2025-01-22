@@ -399,7 +399,7 @@ To use the Kubernetes Helm Chart:
 1. Ensure you have [Helm](https://helm.sh/docs/intro/install/) `>=3.0.0` installed
 2. Clone this repository
 3. Update [charts/whoogle/values.yaml](./charts/whoogle/values.yaml) as desired
-4. Run `helm install whoogle ./charts/whoogle`
+4. Run `helm upgrade --install whoogle ./charts/whoogle`
 
 ___
 
