@@ -699,27 +699,12 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 | Website | Country | Language | Cloudflare |
 |-|-|-|-|
-| [https://search.albony.xyz](https://search.albony.xyz/) | 🇮🇳 IN | Multi-choice |  |
 | [https://search.garudalinux.org](https://search.garudalinux.org) | 🇫🇮 FI | Multi-choice | ✅ |
-| [https://search.dr460nf1r3.org](https://search.dr460nf1r3.org) | 🇩🇪 DE | Multi-choice | ✅ |
-| [https://s.tokhmi.xyz](https://s.tokhmi.xyz) | 🇺🇸 US | Multi-choice | ✅ |
 | [https://search.sethforprivacy.com](https://search.sethforprivacy.com) | 🇩🇪 DE | English | |
-| [https://whoogle.dcs0.hu](https://whoogle.dcs0.hu) | 🇭🇺 HU | Multi-choice | |
-| [https://gowogle.voring.me](https://gowogle.voring.me) | 🇺🇸 US | Multi-choice | |
 | [https://whoogle.privacydev.net](https://whoogle.privacydev.net) | 🇫🇷 FR | English | |
 | [https://wg.vern.cc](https://wg.vern.cc) | 🇺🇸 US | English |  |
-| [https://whoogle.hxvy0.gq](https://whoogle.hxvy0.gq) | 🇨🇦 CA | Turkish Only | ✅ |
-| [https://whoogle.hostux.net](https://whoogle.hostux.net) | 🇫🇷 FR | Multi-choice | |
 | [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
-| [https://wgl.frail.duckdns.org](https://wgl.frail.duckdns.org) | 🇧🇷 BR | Multi-choice | |
-| [https://whoogle.no-logs.com](https://whoogle.no-logs.com/) | 🇸🇪 SE | Multi-choice | |
-| [https://whoogle.ftw.lol](https://whoogle.ftw.lol) | 🇩🇪 DE | Multi-choice | |
-| [https://whoogle-search--replitcomreside.repl.co](https://whoogle-search--replitcomreside.repl.co) | 🇺🇸 US | English |  |
-| [https://search.notrustverify.ch](https://search.notrustverify.ch) | 🇨🇭 CH | Multi-choice |  |
-| [https://whoogle.datura.network](https://whoogle.datura.network) | 🇩🇪 DE | Multi-choice | |
-| [https://whoogle.yepserver.xyz](https://whoogle.yepserver.xyz) | 🇺🇦 UA | Multi-choice | |
-| [https://search.nezumi.party](https://search.nezumi.party) | 🇮🇹 IT | Multi-choice | |
-| [https://search.snine.nl](https://search.snine.nl) | 🇳🇱 NL | Mult-choice | ✅ |
+
 
 
 * A checkmark in the "Cloudflare" category here refers to the use of the reverse proxy, [Cloudflare](https://cloudflare.com). The checkmark will not be listed for a site which uses Cloudflare DNS but rather the proxying service which grants Cloudflare the ability to monitor traffic to the website.
