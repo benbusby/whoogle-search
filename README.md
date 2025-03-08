@@ -704,6 +704,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 | [https://whoogle.privacydev.net](https://whoogle.privacydev.net) | 🇫🇷 FR | English | |
 | [https://wg.vern.cc](https://wg.vern.cc) | 🇺🇸 US | English |  |
 | [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
+| [https://whoogle.4040940.xyz/](https://whoogle.4040940.xyz/) | 🇺🇸 US | English | ✅ |
 
 
 
