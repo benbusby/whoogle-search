@@ -1,5 +1,4 @@
 import cssutils
-from app.utils.misc import SKIP_PREFIX
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 from cryptography.fernet import Fernet

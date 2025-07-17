@@ -1,6 +1,6 @@
 from app.models.config import Config
 from app.models.endpoint import Endpoint
-from app.utils.misc import list_to_dict, SKIP_PREFIX
+from app.utils.misc import list_to_dict
 from bs4 import BeautifulSoup, NavigableString
 import copy
 from flask import current_app
@@ -12,6 +12,7 @@ import re
 import warnings
 
 SKIP_ARGS = ['ref_src', 'utm']
+SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
 GOOG_STATIC = 'www.gstatic.com'
 G_M_LOGO_URL = 'https://www.gstatic.com/m/images/icons/googleg.gif'
 GOOG_IMG = '/images/branding/searchlogo/1x/googlelogo'
@@ -235,7 +236,6 @@ def get_site_alt(link: str, site_alts: dict = SITE_ALTS) -> str:
                 # If a scheme is specified, remove everything before the
                 # first occurence of it
                 link = f'{parsed_alt.scheme}{link.split(parsed_alt.scheme, 1)[-1]}'
-
         break
 
     return link

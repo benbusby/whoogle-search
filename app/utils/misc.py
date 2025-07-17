@@ -11,8 +11,6 @@ from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet
 from flask import Request
 
-SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
-
 ddg_favicon_site = 'http://icons.duckduckgo.com/ip2'
 
 empty_gif = base64.b64decode(
