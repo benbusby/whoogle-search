@@ -5,13 +5,17 @@ on:
     branches: live
     tags: v*
 
+permissions: {}
+
 jobs:
   publish-test:
     name: Build and publish to TestPyPI
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
+        with:
+          persist-credentials: false
+          
       - name: Set up Python 3.9
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
@@ -38,7 +42,7 @@ jobs:
           .
 
       - name: Publish distribution to TestPyPI
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/\
@@ -71,6 +75,6 @@ jobs:
           .
       - name: Publish distribution to PyPI
         if: startsWith(github.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
