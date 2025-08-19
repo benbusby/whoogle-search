@@ -6,14 +6,16 @@ on:
 
 jobs:
   scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the container image
-      run: |
-        docker build --tag whoogle-search:test .
-    - name: Initiate grype scan
-      run: |
-        curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b .
-        chmod +x ./grype
-        ./grype whoogle-search:test --only-fixed
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      
+      - name: Build the container image
+        run: |
+          docker build --tag whoogle-search:test .
+
+      - name: Initiate grype scan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b .
+          chmod +x ./grype
+          ./grype whoogle-search:test --only-fixed
