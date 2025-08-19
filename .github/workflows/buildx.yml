@@ -3,7 +3,7 @@ name: buildx
 on:
   workflow_run:
     workflows: ["docker_main"]
-    branches: [main]
+    branches: [live]
     types:
       - completed
   push:

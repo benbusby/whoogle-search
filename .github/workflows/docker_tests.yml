@@ -2,9 +2,9 @@ name: docker_tests
 
 on:
   push:
-    branches: main
+    branches: live
   pull_request:
-    branches: main
+    branches: live
 
 jobs:
   docker:
