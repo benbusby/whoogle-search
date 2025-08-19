@@ -165,11 +165,11 @@ ___
 ### [pipx](https://github.com/pipxproject/pipx#install-pipx)
 Persistent install:
 
-`pipx install https://github.com/benbusby/whoogle-search/archive/refs/heads/main.zip`
+`pipx install https://github.com/royaloughtness/whoogle-search/archive/refs/heads/live.zip`
 
 Sandboxed temporary instance:
 
-`pipx run --spec git+https://github.com/benbusby/whoogle-search.git whoogle-search`
+`pipx run --spec git+https://github.com/royaloughtness/whoogle-search.git whoogle-search`
 
 ___
 

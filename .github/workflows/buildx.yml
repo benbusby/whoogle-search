@@ -31,7 +31,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: build and push the image
-        if: startsWith(github.ref, 'refs/heads/main') && github.actor == 'royaloughtness'
+        if: startsWith(github.ref, 'refs/heads/live') && github.actor == 'royaloughtness'
         run: |
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           docker buildx ls

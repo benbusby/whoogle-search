@@ -2,7 +2,7 @@ name: pypi
 
 on:
   push:
-    branches: main
+    branches: live
     tags: v*
 
 jobs:
