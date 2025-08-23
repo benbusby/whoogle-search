@@ -29,6 +29,7 @@ from app.utils.results import bold_search_terms,\
     add_currency_card, check_currency, get_tabs_content
 from app.utils.search import Search, needs_https, has_captcha
 from app.utils.session import valid_user_session
+from app.models.g_classes import GClasses
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for, g
@@ -417,6 +418,61 @@ def search():
             mobile=g.user_request.mobile,
             tabs=tabs)).replace("  ", "")
 
+@app.route(f'/{Endpoint.search}.json', methods=['GET', 'POST'])
+@session_required
+@auth_required
+def search_json():
+    if request.method == 'POST':
+        post_data = MultiDict(request.form)
+        post_data['q'] = encrypt_string(g.session_key, post_data['q'])
+        get_req_str = urlparse.urlencode(post_data)
+        return redirect(url_for('.search_json') + '?' + get_req_str)
+
+    search_util = Search(request, g.user_config, g.session_key)
+    query = search_util.new_search_query()
+
+    bang = resolve_bang(query)
+    if bang:
+        return redirect(bang)
+
+    if not query:
+        return jsonify({"error": "No query specified"}), 400
+
+    try:
+        html_response = search_util.generate_response()
+    except TorError as e:
+        session['error_message'] = e.message + (
+            "\\n\\nTor config is now disabled!" if e.disable else "")
+        session['config']['tor'] = False if e.disable else session['config'][
+            'tor']
+        return jsonify({"error": "Tor error"}), 503
+
+    # Parse the cleaned HTML response
+    soup = bsoup(html_response, 'html.parser')
+
+    # Remove unwanted elements like st-card
+    for elem in soup.find_all(attrs={"id": "st-card"}):
+        elem.decompose()
+
+    # Extract results
+    results = []
+    for div in soup.find_all('div', class_='ezO2md'):
+        title_tag = div.find('a', class_='fuLhoc ZWRArf')
+        snippet_tag = div.find('span', class_='fYyStc')
+        if title_tag:
+            title_text = title_tag.get_text(strip=True)
+            link = title_tag.get('href')
+            snippet_text = snippet_tag.get_text(strip=True) if snippet_tag else ""
+            results.append({
+                "title": title_text,
+                "link": link,
+                "snippet": snippet_text
+            })
+
+    return jsonify({
+        "query": query,
+        "results": results
+    })
 
 @app.route(f'/{Endpoint.config}', methods=['GET', 'POST', 'PUT'])
 @session_required
