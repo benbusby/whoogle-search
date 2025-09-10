@@ -34,6 +34,20 @@ const setupConfigLayout = () => {
 
         content.classList.toggle("open");
     });
+
+    // Setup user agent dropdown handler
+    const userAgentSelect = document.getElementById("config-user-agent");
+    const customUserAgentDiv = document.querySelector(".config-div-custom-user-agent");
+    
+    if (userAgentSelect && customUserAgentDiv) {
+        userAgentSelect.addEventListener("change", function() {
+            if (this.value === "custom") {
+                customUserAgentDiv.style.display = "block";
+            } else {
+                customUserAgentDiv.style.display = "none";
+            }
+        });
+    }
 };
 
 const loadConfig = event => {
