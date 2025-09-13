@@ -37,8 +37,12 @@ def get_rule_for_selector(stylesheet: CSSStyleSheet,
 
 class Config:
     def __init__(self, **kwargs):
-        # User agent configuration
-        self.user_agent = kwargs.get('user_agent', 'LYNX_UA')
+        # User agent configuration - default to env_conf if environment variables exist, otherwise default
+        env_user_agent = os.getenv('WHOOGLE_USER_AGENT', '')
+        env_mobile_agent = os.getenv('WHOOGLE_USER_AGENT_MOBILE', '')
+        default_ua_option = 'env_conf' if (env_user_agent or env_mobile_agent) else 'default'
+        
+        self.user_agent = kwargs.get('user_agent', default_ua_option)
         self.custom_user_agent = kwargs.get('custom_user_agent', '')
         self.use_custom_user_agent = kwargs.get('use_custom_user_agent', False)
 

@@ -458,7 +458,9 @@ def config():
                     print(f"Setting custom user agent to: {config_data['custom_user_agent']}")  # Debug log
             else:
                 config_data['use_custom_user_agent'] = False
-                config_data['custom_user_agent'] = ''
+                # Only clear custom_user_agent if not using custom option
+                if config_data['user_agent'] != 'custom':
+                    config_data['custom_user_agent'] = ''
 
         # Save config by name to allow a user to easily load later
         if name:
