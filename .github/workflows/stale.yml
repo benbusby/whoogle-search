@@ -27,6 +27,7 @@ jobs:
         # Disabled PR Closing for now, but pre-staged the settings
         days-before-pr-stale: -1
         days-before-pr-close: -1
+        operations-per-run: 100
         stale-pr-message: "This PR appears to be stale.  If it is still valid please comment within 14 days or it will be auto-closed."
         close-pr-message: "This PR was closed as stale."
         exempt-issue-labels: 'keep-open,enhancement,critical,dependencies,documentation'
