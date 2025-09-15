@@ -690,7 +690,12 @@ class Filter:
                             link_str.find('medium.com') + len('medium.com'):]
                     new_desc.string = link_str
                 else:
-                    new_desc.string = link_str.replace(site, alt)
+                    # start replacing after scheme//
+                    repl_start = link_str.find('//') + 1
+                    # end replacement on the next / that's found
+                    repl_end = link_str.find('/', repl_start)
+                    replace_site = link_str[repl_start:] if repl_end == -1 else link_str[repl_start:repl_end]
+                    new_desc.string = link_str.replace(replace_site, alt)
 
                 link_desc.replace_with(new_desc)
 

@@ -197,6 +197,11 @@ def get_site_alt(link: str, site_alts: dict = SITE_ALTS) -> str:
 
     for site_key in site_alts.keys():
         site_alt = f'{parsed_link.scheme}://{site_key}'
+
+        # If an site alt is already present in the link, skip updating it
+        if site_alts[site_key] in link:
+            break
+
         if not hostname or site_alt not in hostcomp or not site_alts[site_key]:
             continue
 
@@ -204,7 +209,12 @@ def get_site_alt(link: str, site_alts: dict = SITE_ALTS) -> str:
         # a 2-char language code) to be passed as a URL param to Wikiless
         # in order to preserve the language setting.
         params = ''
-        if 'wikipedia' in hostname and len(subdomain) == 2:
+
+        # Fix edge case for simple.wikipedia.org where substitution with a language subdomain
+        # breaks the link
+        if 'wikipedia' in hostname and subdomain == 'simple' and 'wikipedia' in site_alts[site_key]:
+            break
+        elif 'wikipedia' in hostname and len(subdomain) == 2:
             hostname = f'{subdomain}.{hostname}'
             params = f'?lang={subdomain}'
         elif 'medium' in hostname and len(subdomain) > 0:
@@ -220,13 +230,12 @@ def get_site_alt(link: str, site_alts: dict = SITE_ALTS) -> str:
             link = '//'.join(link.split('//')[1:])
 
         for prefix in SKIP_PREFIX:
+            # replace the first occurrence of the prefix
+            link = link.replace(prefix, '//', 1)
             if parsed_alt.scheme:
                 # If a scheme is specified, remove everything before the
                 # first occurence of it
                 link = f'{parsed_alt.scheme}{link.split(parsed_alt.scheme, 1)[-1]}'
-            else:
-                # Otherwise, replace the first occurrence of the prefix
-                link = link.replace(prefix, '//', 1)
         break
 
     return link
