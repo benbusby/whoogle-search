@@ -11,6 +11,7 @@ from stem import Signal, SocketError
 from stem.connection import AuthenticationFailure
 from stem.control import Controller
 from stem.connection import authenticate_cookie, authenticate_password
+import httpx
 
 MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
@@ -353,11 +354,10 @@ class Request:
                     "Error raised during Tor connection validation",
                     disable=True)
 
-        response = requests.get(
-            (base_url or self.search_url) + query,
-            proxies=self.proxies,
-            headers=headers,
-            cookies=cookies)
+        with httpx.Client(http2=True, proxies=self.proxies, headers=headers) as client:
+            response = client.get(
+                 (base_url or self.search_url) + query,
+                 cookies=cookies)
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:
