@@ -103,7 +103,7 @@ class Search:
                 pass
 
         # Strip '!' for "feeling lucky" queries
-        if match := re.search("(^|\s)!($|\s)", q):
+        if match := re.search(r"(^|\s)!($|\s)", q):
             self.feeling_lucky = True
             start, end = match.span()
             self.query = " ".join([seg for seg in [q[:start], q[end:]] if seg])
