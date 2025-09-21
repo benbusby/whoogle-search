@@ -1,6 +1,6 @@
 import json
 import pathlib
-import requests
+import httpx
 
 lingva = 'https://lingva.ml/api/v1/en'
 
@@ -25,7 +25,7 @@ def translate(v: str, lang: str) -> str:
 
     lingva_req = f'{lingva}/{lang}/{v}'
 
-    response = requests.get(lingva_req).json()
+    response = httpx.get(lingva_req).json()
 
     if 'translation' in response:
         return response['translation']

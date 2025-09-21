@@ -9,10 +9,14 @@
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <link rel="stylesheet" href="{{ cb_url('logo.css') }}">
-    <link rel="stylesheet" href="{{ cb_url('input.css') }}">
-    <link rel="stylesheet" href="{{ cb_url('search.css') }}">
-    <link rel="stylesheet" href="{{ cb_url('header.css') }}">
+    {% if bundle_static() %}
+        <link rel="stylesheet" href="/{{ cb_url('bundle.css') }}">
+    {% else %}
+        <link rel="stylesheet" href="{{ cb_url('logo.css') }}">
+        <link rel="stylesheet" href="{{ cb_url('input.css') }}">
+        <link rel="stylesheet" href="{{ cb_url('search.css') }}">
+        <link rel="stylesheet" href="{{ cb_url('header.css') }}">
+    {% endif %}
     {% if config.theme %}
         {% if config.theme == 'system' %}
             <style>
@@ -39,10 +43,14 @@
 {{ response|safe }}
 </body>
 {% include 'footer.html' %}
-{% if autocomplete_enabled == '1' %}
-    <script src="{{ cb_url('autocomplete.js') }}"></script>
+{% if bundle_static() %}
+    <script src="/{{ cb_url('bundle.js') }}" defer></script>
+{% else %}
+    {% if autocomplete_enabled == '1' %}
+        <script src="{{ cb_url('autocomplete.js') }}"></script>
+    {% endif %}
+    <script src="{{ cb_url('utils.js') }}"></script>
+    <script src="{{ cb_url('keyboard.js') }}"></script>
+    <script src="{{ cb_url('currency.js') }}"></script>
 {% endif %}
-<script src="{{ cb_url('utils.js') }}"></script>
-<script src="{{ cb_url('keyboard.js') }}"></script>
-<script src="{{ cb_url('currency.js') }}"></script>
 </html>

@@ -18,6 +18,8 @@ import warnings
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.utils.misc import read_config_bool
+from app.services.http_client import HttpxClient
+from app.services.provider import close_all_clients
 from app.version import __version__
 
 app = Flask(__name__, static_folder=os.path.dirname(
@@ -50,6 +52,7 @@ app.config['STATIC_FOLDER'] = os.getenv(
 app.config['BUILD_FOLDER'] = os.path.join(
     app.config['STATIC_FOLDER'], 'build')
 app.config['CACHE_BUSTING_MAP'] = {}
+app.config['BUNDLE_STATIC'] = read_config_bool('WHOOGLE_BUNDLE_STATIC')
 app.config['LANGUAGES'] = json.load(open(
     os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json'),
     encoding='utf-8'))
@@ -85,6 +88,17 @@ app.config['BANG_PATH'] = os.getenv(
 app.config['BANG_FILE'] = os.path.join(
     app.config['BANG_PATH'],
     'bangs.json')
+
+# Global services registry (simple DI)
+app.services = {}
+
+
+@app.teardown_appcontext
+def _teardown_clients(exception):
+    try:
+        close_all_clients()
+    except Exception:
+        pass
 
 # Ensure all necessary directories exist
 if not os.path.exists(app.config['CONFIG_PATH']):
@@ -174,10 +188,54 @@ for cb_dir in cache_busting_dirs:
             map_path = map_path[1:]
         app.config['CACHE_BUSTING_MAP'][cb_file] = map_path
 
+# Optionally create simple bundled assets (opt-in via WHOOGLE_BUNDLE_STATIC=1)
+if app.config['BUNDLE_STATIC']:
+    # CSS bundle: include all css except theme files (end with -theme.css)
+    css_dir = os.path.join(app.config['STATIC_FOLDER'], 'css')
+    css_parts = []
+    for name in sorted(os.listdir(css_dir)):
+        if not name.endswith('.css'):
+            continue
+        if name.endswith('-theme.css'):
+            continue
+        try:
+            css_parts.append(open(os.path.join(css_dir, name), 'r', encoding='utf-8').read())
+        except Exception:
+            pass
+    css_bundle = '\n'.join(css_parts)
+    if css_bundle:
+        css_tmp = os.path.join(app.config['BUILD_FOLDER'], 'app.css')
+        open(css_tmp, 'w', encoding='utf-8').write(css_bundle)
+        css_hashed = gen_file_hash(app.config['BUILD_FOLDER'], 'app.css')
+        os.replace(css_tmp, os.path.join(app.config['BUILD_FOLDER'], css_hashed))
+        map_path = os.path.join('app/static/build', css_hashed)
+        app.config['CACHE_BUSTING_MAP']['bundle.css'] = map_path
+
+    # JS bundle: include all js files
+    js_dir = os.path.join(app.config['STATIC_FOLDER'], 'js')
+    js_parts = []
+    for name in sorted(os.listdir(js_dir)):
+        if not name.endswith('.js'):
+            continue
+        try:
+            js_parts.append(open(os.path.join(js_dir, name), 'r', encoding='utf-8').read())
+        except Exception:
+            pass
+    js_bundle = '\n;'.join(js_parts)
+    if js_bundle:
+        js_tmp = os.path.join(app.config['BUILD_FOLDER'], 'app.js')
+        open(js_tmp, 'w', encoding='utf-8').write(js_bundle)
+        js_hashed = gen_file_hash(app.config['BUILD_FOLDER'], 'app.js')
+        os.replace(js_tmp, os.path.join(app.config['BUILD_FOLDER'], js_hashed))
+        map_path = os.path.join('app/static/build', js_hashed)
+        app.config['CACHE_BUSTING_MAP']['bundle.js'] = map_path
+
 # Templating functions
 app.jinja_env.globals.update(clean_query=clean_query)
 app.jinja_env.globals.update(
     cb_url=lambda f: app.config['CACHE_BUSTING_MAP'][f.lower()])
+app.jinja_env.globals.update(
+    bundle_static=lambda: app.config.get('BUNDLE_STATIC', False))
 
 # Attempt to acquire tor identity, to determine if Tor config is available
 send_tor_signal(Signal.HEARTBEAT)

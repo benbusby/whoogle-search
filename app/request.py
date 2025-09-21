@@ -1,10 +1,10 @@
 from app.models.config import Config
 from app.utils.misc import read_config_bool
+from app.services.provider import get_http_client
 from datetime import datetime
 from defusedxml import ElementTree as ET
 import random
-import requests
-from requests import Response, ConnectionError
+import httpx
 import urllib.parse as urlparse
 import os
 from stem import Signal, SocketError
@@ -202,7 +202,7 @@ class Request:
         config: the user's current whoogle configuration
     """
 
-    def __init__(self, normal_ua, root_path, config: Config):
+    def __init__(self, normal_ua, root_path, config: Config, http_client=None):
         self.search_url = 'https://www.google.com/search?gbv=1&num=' + str(
             os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&q='
         # Send heartbeat to Tor, used in determining if the user can or cannot
@@ -249,6 +249,8 @@ class Request:
         self.tor = config.tor
         self.tor_valid = False
         self.root_path = root_path
+        # Initialize HTTP client (shared per proxies)
+        self.http_client = http_client or get_http_client(self.proxies)
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -286,7 +288,7 @@ class Request:
             return []
 
     def send(self, base_url='', query='', attempt=0,
-             force_mobile=False, user_agent='') -> Response:
+             force_mobile=False, user_agent=''):
         """Sends an outbound request to a URL. Optionally sends the request
         using Tor, if enabled by the user.
 
@@ -339,8 +341,9 @@ class Request:
         # Make sure that the tor connection is valid, if enabled
         if self.tor:
             try:
-                tor_check = requests.get('https://check.torproject.org/',
-                                         proxies=self.proxies, headers=headers)
+                tor_check = self.http_client.get('https://check.torproject.org/',
+                                                 headers=headers,
+                                                 retries=1)
                 self.tor_valid = 'Congratulations' in tor_check.text
 
                 if not self.tor_valid:
@@ -348,16 +351,18 @@ class Request:
                         "Tor connection succeeded, but the connection could "
                         "not be validated by torproject.org",
                         disable=True)
-            except ConnectionError:
+            except httpx.RequestError:
                 raise TorError(
                     "Error raised during Tor connection validation",
                     disable=True)
 
-        response = requests.get(
-            (base_url or self.search_url) + query,
-            proxies=self.proxies,
-            headers=headers,
-            cookies=cookies)
+        try:
+            response = self.http_client.get(
+                (base_url or self.search_url) + query,
+                headers=headers,
+                cookies=cookies)
+        except httpx.HTTPError as e:
+            raise
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:

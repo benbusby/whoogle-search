@@ -10,8 +10,12 @@
 {% else %}
     <link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
 {% endif %}
+{% if bundle_static() %}
+<link rel="stylesheet" href="/{{ cb_url('bundle.css') }}">
+{% else %}
 <link rel="stylesheet" href="{{ cb_url('main.css') }}">
 <link rel="stylesheet" href="{{ cb_url('error.css') }}">
+{% endif %}
 <style>{{ config.style }}</style>
 <div>
     <h1>Error</h1>

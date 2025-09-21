@@ -5,7 +5,7 @@ import io
 import os
 import re
 
-from requests import exceptions, get
+import httpx
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet
@@ -97,8 +97,8 @@ def get_proxy_host_url(r: Request, default: str, root=False) -> str:
 def check_for_update(version_url: str, current: str) -> int:
     # Check for the latest version of Whoogle
     has_update = ''
-    with contextlib.suppress(exceptions.ConnectionError, AttributeError):
-        update = bsoup(get(version_url).text, 'html.parser')
+    with contextlib.suppress(httpx.RequestError, AttributeError):
+        update = bsoup(httpx.get(version_url).text, 'html.parser')
         latest = update.select_one('[class="Link--primary"]').string[1:]
         current = int(''.join(filter(str.isdigit, current)))
         latest = int(''.join(filter(str.isdigit, latest)))

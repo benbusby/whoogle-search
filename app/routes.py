@@ -32,8 +32,7 @@ from app.utils.session import valid_user_session
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for, g
-from requests import exceptions
-from requests.models import PreparedRequest
+import httpx
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.exceptions import InvalidSignature
 from werkzeug.datastructures import MultiDict
@@ -166,7 +165,8 @@ def before_request_func():
     g.user_request = Request(
         request.headers.get('User-Agent'),
         get_request_url(request.url_root),
-        config=g.user_config)
+        config=g.user_config
+    )
 
     g.app_location = g.user_config.url
 
@@ -299,7 +299,7 @@ def search():
         get_req_str = urlparse.urlencode(post_data)
         return redirect(url_for('.search') + '?' + get_req_str)
 
-    search_util = Search(request, g.user_config, g.session_key)
+    search_util = Search(request, g.user_config, g.session_key, user_request=g.user_request)
     query = search_util.new_search_query()
 
     bang = resolve_bang(query)
@@ -320,7 +320,15 @@ def search():
             'tor']
         return redirect(url_for('.index'))
 
+    wants_json = (
+        request.args.get('format') == 'json' or
+        'application/json' in request.headers.get('Accept', '') or
+        'application/*+json' in request.headers.get('Accept', '')
+    )
+
     if search_util.feeling_lucky:
+        if wants_json:
+            return jsonify({'redirect': response}), 303
         return redirect(response, code=303)
 
     # If the user is attempting to translate a string, determine the correct
@@ -341,17 +349,26 @@ def search():
         app.logger.error('503 (CAPTCHA)')
         fallback_engine = os.environ.get('WHOOGLE_FALLBACK_ENGINE_URL', '')
         if (fallback_engine):
+            if wants_json:
+                return jsonify({'redirect': fallback_engine + query}), 302
             return redirect(fallback_engine + query)
         
-        return render_template(
-            'error.html',
-            blocked=True,
-            error_message=translation['ratelimit'],
-            translation=translation,
-            farside='https://farside.link',
-            config=g.user_config,
-            query=urlparse.unquote(query),
-            params=g.user_config.to_params(keys=['preferences'])), 503
+        if wants_json:
+            return jsonify({
+                'blocked': True,
+                'error_message': translation['ratelimit'],
+                'query': urlparse.unquote(query)
+            }), 503
+        else:
+            return render_template(
+                'error.html',
+                blocked=True,
+                error_message=translation['ratelimit'],
+                translation=translation,
+                farside='https://farside.link',
+                config=g.user_config,
+                query=urlparse.unquote(query),
+                params=g.user_config.to_params(keys=['preferences'])), 503
 
     response = bold_search_terms(response, query)
 
@@ -381,6 +398,29 @@ def search():
     preferences = g.user_config.preferences
     home_url = f"home?preferences={preferences}" if preferences else "home"
     cleanresponse = str(response).replace("andlt;","&lt;").replace("andgt;","&gt;")
+
+    if wants_json:
+        # Build a parsable JSON from the filtered soup
+        json_soup = bsoup(str(response), 'html.parser')
+        results = []
+        seen = set()
+        for a in json_soup.find_all('a', href=True):
+            href = a['href']
+            if not href.startswith('http'):
+                continue
+            if href in seen:
+                continue
+            text = a.get_text(strip=True)
+            if not text:
+                continue
+            seen.add(href)
+            results.append({'href': href, 'text': text})
+
+        return jsonify({
+            'query': urlparse.unquote(query),
+            'search_type': search_util.search_type,
+            'results': results
+        })
 
     return render_template(
         'display.html',
@@ -521,7 +561,7 @@ def element():
         tmp_mem.seek(0)
 
         return send_file(tmp_mem, mimetype=src_type)
-    except exceptions.RequestException:
+    except httpx.HTTPError:
         pass
 
     return send_file(io.BytesIO(empty_gif), mimetype='image/gif')

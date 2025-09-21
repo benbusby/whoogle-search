@@ -1,5 +1,5 @@
 import json
-import requests
+import httpx
 import urllib.parse as urlparse
 import os
 import glob
@@ -63,12 +63,9 @@ def gen_bangs_json(bangs_file: str) -> None:
         None
 
     """
-    try:
-        # Request full list from DDG
-        r = requests.get(DDG_BANGS)
-        r.raise_for_status()
-    except requests.exceptions.HTTPError as err:
-        raise SystemExit(err)
+    # Request full list from DDG
+    r = httpx.get(DDG_BANGS)
+    r.raise_for_status()
 
     # Convert to json
     data = json.loads(r.text)

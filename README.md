@@ -75,6 +75,7 @@ Contents
 - User-defined [custom bangs](#custom-bangs)
 - Optional location-based searching (i.e. results near \<city\>)
 - Optional NoJS mode to view search results in a separate window with JavaScript blocked
+- JSON output for results via content negotiation (see "JSON results (API)")
 
 <sup>*No third party JavaScript. Whoogle can be used with JavaScript disabled, but if enabled, uses JavaScript for things like presenting search suggestions.</sup>
 
@@ -463,6 +464,8 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_SHOW_FAVICONS | Show/hide favicons next to search result URLs. Default on.                               |
 | WHOOGLE_UPDATE_CHECK  | Enable/disable the automatic daily check for new versions of Whoogle. Default on.        |
 | WHOOGLE_FALLBACK_ENGINE_URL | Set a fallback Search Engine URL when there is internal server error or instance is rate-limited. Search query is appended to the end of the URL (eg. https://duckduckgo.com/?k1=-1&q=). |
+| WHOOGLE_BUNDLE_STATIC | When set to 1, serve a single bundled CSS and JS file generated at startup to reduce requests. Default off. |
+| WHOOGLE_HTTP2         | Enable HTTP/2 for upstream requests (via httpx). Default on — set to 0 to force HTTP/1.1. |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
@@ -494,6 +497,28 @@ These environment variables allow setting default config values, but can be over
 Same as most search engines, with the exception of filtering by time range.
 
 To filter by a range of time, append ":past <time>" to the end of your search, where <time> can be `hour`, `day`, `month`, or `year`. Example: `coronavirus updates :past hour`
+
+### JSON results (API)
+Whoogle can return filtered results as JSON using the same sanitization rules as the HTML view.
+
+- Send `Accept: application/json` or append `format=json` to the search URL.
+- Example: `/search?q=whoogle` with `Accept: application/json`, or `/search?q=whoogle&format=json`.
+- Response shape:
+
+```
+{
+  "query": "whoogle",
+  "search_type": "",
+  "results": [
+    {"href": "https://example.com/page", "text": "Example Page"},
+    ...
+  ]
+}
+```
+
+Special cases:
+- Feeling Lucky returns HTTP 303 with body `{ "redirect": "<url>" }`.
+- Temporary blocks (captcha) return HTTP 503 with `{ "blocked": true, "error_message": "...", "query": "..." }`.
 
 ## Extra Steps
 
@@ -629,6 +654,14 @@ server {
 ```
 
 You can then add SSL support using LetsEncrypt by following a guide such as [this one](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/).
+
+### Static asset bundling (optional)
+Whoogle can optionally serve a single bundled CSS and JS to reduce the number of HTTP requests.
+
+- Enable by setting `WHOOGLE_BUNDLE_STATIC=1` and restarting the app.
+- On startup, Whoogle concatenates local CSS/JS into hashed files under `app/static/build/` and templates will prefer those bundles.
+- When disabled (default), templates load individual CSS/JS files for easier development.
+- Note: Theme CSS (`*-theme.css`) are still loaded separately to honor user theme selection.
 
 ## Contributing
 

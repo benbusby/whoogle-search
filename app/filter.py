@@ -649,50 +649,94 @@ class Filter:
         """Replaces link locations and page elements if "alts" config
         is enabled
         """
-        for site, alt in SITE_ALTS.items():
-            if site != "medium.com" and alt != "":
-                # Ignore medium.com replacements since these are handled
-                # specifically in the link description replacement, and medium
-                # results are never given their own "card" result where this
-                # replacement would make sense.
-                # Also ignore if the alt is empty, since this is used to indicate
-                # that the alt is not enabled.
-                for div in self.soup.find_all('div', text=re.compile(site)):
-                    # Use the number of words in the div string to determine if the
-                    # string is a result description (shouldn't replace domains used
-                    # in desc text).
-                    if len(div.string.split(' ')) == 1:
-                        div.string = div.string.replace(site, alt)
+        # Precompute regex for sites (escape dots) and common prefixes
+        site_keys = list(SITE_ALTS.keys())
+        if not site_keys:
+            return
+        sites_pattern = re.compile('|'.join([re.escape(k) for k in site_keys]))
+        prefix_pattern = re.compile(r'^(?:https?:\/\/)?(?:(?:www|mobile|m)\.)?')
 
-            for link in self.soup.find_all('a', href=True):
-                # Search and replace all link descriptions
-                # with alternative location
-                link['href'] = get_site_alt(link['href'])
-                link_desc = link.find_all(
-                    text=re.compile('|'.join(SITE_ALTS.keys())))
-                if len(link_desc) == 0:
-                    continue
+        # 1) Replace bare domain divs (single token) once, avoiding duplicates
+        for div in self.soup.find_all('div', text=sites_pattern):
+            if not div or not div.string:
+                continue
+            if len(div.string.split(' ')) != 1:
+                continue
+            match = sites_pattern.search(div.string)
+            if not match:
+                continue
+            site = match.group(0)
+            alt = SITE_ALTS.get(site, '')
+            if not alt:
+                continue
+            # Skip if already contains the alt to avoid old.old.* repetition
+            if alt in div.string:
+                continue
+            div.string = div.string.replace(site, alt)
 
-                # Replace link description
-                link_desc = link_desc[0]
-                if site not in link_desc or not alt:
-                    continue
+        # 2) Update link hrefs and descriptions in a single pass
+        for link in self.soup.find_all('a', href=True):
+            link['href'] = get_site_alt(link['href'])
 
-                new_desc = BeautifulSoup(features='html.parser').new_tag('div')
-                link_str = str(link_desc)
+            # Find a description text node matching a known site
+            desc_nodes = link.find_all(text=sites_pattern)
+            if not desc_nodes:
+                continue
+            desc_node = desc_nodes[0]
+            link_str = str(desc_node)
 
-                # Medium links should be handled differently, since 'medium.com'
-                # is a common substring of domain names, but shouldn't be
-                # replaced (i.e. 'philomedium.com' should stay as it is).
-                if 'medium.com' in link_str:
-                    if link_str.startswith('medium.com') or '.medium.com' in link_str:
-                        link_str = SITE_ALTS['medium.com'] + link_str[
-                            link_str.find('medium.com') + len('medium.com'):]
-                    new_desc.string = link_str
+            # Determine which site key is present in the description
+            site_match = sites_pattern.search(link_str)
+            if not site_match:
+                continue
+            site = site_match.group(0)
+            alt = SITE_ALTS.get(site, '')
+            if not alt:
+                continue
+
+            # Avoid duplication if alt already present
+            if alt in link_str:
+                continue
+
+            # Medium-specific handling remains to avoid matching substrings
+            if 'medium.com' in link_str:
+                if link_str.startswith('medium.com') or '.medium.com' in link_str:
+                    replaced = SITE_ALTS['medium.com'] + link_str[
+                        link_str.find('medium.com') + len('medium.com'):
+                    ]
                 else:
-                    new_desc.string = link_str.replace(site, alt)
+                    replaced = link_str
+            else:
+                # If the description looks like a URL with scheme, replace only the host
+                if '://' in link_str:
+                    scheme, rest = link_str.split('://', 1)
+                    host, sep, path = rest.partition('/')
+                    # Drop common prefixes from host when swapping to a fully-qualified alt
+                    alt_parsed = urlparse.urlparse(alt)
+                    alt_host = alt_parsed.netloc if alt_parsed.netloc else alt.replace('https://', '').replace('http://', '')
+                    # If alt includes a scheme, prefer its host; otherwise use alt as host
+                    if alt_parsed.scheme:
+                        new_host = alt_host
+                    else:
+                        # When alt has no scheme, still replace entire host
+                        new_host = alt
+                    # Prevent replacing if host already equals target
+                    if host == new_host:
+                        replaced = link_str
+                    else:
+                        replaced = f"{scheme}://{new_host}{sep}{path}"
+                else:
+                    # No scheme in the text; include optional prefixes in replacement
+                    # Replace any leading www./m./mobile. + site with alt host (no scheme)
+                    alt_parsed = urlparse.urlparse(alt)
+                    alt_host = alt_parsed.netloc if alt_parsed.netloc else alt.replace('https://', '').replace('http://', '')
+                    # Build a pattern that includes optional prefixes for the specific site
+                    site_with_prefix = re.compile(rf'(?:(?:www|mobile|m)\.)?{re.escape(site)}')
+                    replaced = site_with_prefix.sub(alt_host, link_str, count=1)
 
-                link_desc.replace_with(new_desc)
+            new_desc = BeautifulSoup(features='html.parser').new_tag('div')
+            new_desc.string = replaced
+            desc_node.replace_with(new_desc)
 
     def view_image(self, soup) -> BeautifulSoup:
         """Replaces the soup with a new one that handles mobile results and
