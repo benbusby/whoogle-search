@@ -1,3 +1,4 @@
+from app import app
 from app.request import Request
 from app.models.config import Config
 
@@ -21,7 +22,8 @@ class FakeHttpClient:
 
 
 def test_autocomplete_parsing():
-    cfg = Config(**{})
+    with app.app_context():
+        cfg = Config(**{})
     req = Request(normal_ua='UA', root_path='http://localhost:5000', config=cfg, http_client=FakeHttpClient())
     suggestions = req.autocomplete('who')
     assert 'whoogle' in suggestions

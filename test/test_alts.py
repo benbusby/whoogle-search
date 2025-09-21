@@ -3,6 +3,7 @@ import os
 
 from bs4 import BeautifulSoup
 
+from app import app
 from app.filter import Filter
 from app.models.config import Config
 from app.utils.session import generate_key
@@ -15,7 +16,8 @@ def build_soup(html: str):
 
 def make_filter(soup: BeautifulSoup):
     secret_key = generate_key()
-    cfg = Config(**{'alts': True})
+    with app.app_context():
+        cfg = Config(**{'alts': True})
     f = Filter(user_key=secret_key, config=cfg)
     f.soup = soup
     return f
@@ -99,7 +101,9 @@ def test_single_pass_description_replacement(monkeypatch):
         assert a['href'].startswith('https://nitter.example')
 
         # Ensure description got host swapped once, no double scheme or duplication
-        text = soup.find('div').get_text()
+        main_div = soup.find('div', id='main')
+        # The description div is the first inner div under #main in this fixture
+        text = main_div.find_all('div')[0].get_text().strip()
         assert text.startswith('https://nitter.example')
         assert 'https://https://' not in text
         assert 'nitter.examplenitter.example' not in text

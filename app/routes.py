@@ -380,9 +380,10 @@ def search():
         elif search_util.widget == 'calculator' and not 'nojs' in request.args:
             response = add_calculator_card(html_soup)
 
-    # Update tabs content
+    # Update tabs content (fallback to the raw query if full_query isn't set)
+    full_query_val = getattr(search_util, 'full_query', query)
     tabs = get_tabs_content(app.config['HEADER_TABS'],
-                            search_util.full_query,
+                            full_query_val,
                             search_util.search_type,
                             g.user_config.preferences,
                             translation)
