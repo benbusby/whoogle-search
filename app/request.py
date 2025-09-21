@@ -354,10 +354,17 @@ class Request:
                     "Error raised during Tor connection validation",
                     disable=True)
 
-        with httpx.Client(http2=True, proxies=self.proxies, headers=headers) as client:
-            response = client.get(
-                 (base_url or self.search_url) + query,
-                 cookies=cookies)
+        # When we have direct connection use HTTP/2 which is faster
+        request_url = (base_url or self.search_url) + query
+        if not self.tor and not self.proxies:
+            with httpx.Client(http2=True, follow_redirects=True, headers=headers) as client:
+                response = client.get(request_url, cookies=cookies)
+        else:
+            response = requests.get(
+                request_url,
+                proxies=self.proxies,
+                headers=headers,
+                cookies=cookies)
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:
