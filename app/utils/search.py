@@ -158,7 +158,7 @@ class Search:
 
         # Produce cleanable html soup from response
         get_body_safed = get_body.text.replace("&lt;","andlt;").replace("&gt;","andgt;")
-        html_soup = bsoup(get_body_safed, 'html.parser')
+        html_soup = bsoup(get_body_safed, 'html.parser').html
 
         # Replace current soup if view_image is active
         # FIXME: Broken since the user agent changes as of 16 Jan 2025
