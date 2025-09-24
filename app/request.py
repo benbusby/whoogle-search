@@ -265,26 +265,35 @@ class Request:
             list: The list of matches for possible search suggestions
 
         """
-        ac_query = dict(q=query)
-        if self.language:
-            ac_query['lr'] = self.language
-        if self.country:
-            ac_query['gl'] = self.country
-        if self.lang_interface:
-            ac_query['hl'] = self.lang_interface
-
-        response = self.send(base_url=AUTOCOMPLETE_URL,
-                             query=urlparse.urlencode(ac_query)).text
-
-        if not response:
+        # Check if autocomplete is disabled via environment variable
+        if os.environ.get('WHOOGLE_AUTOCOMPLETE', '1') == '0':
             return []
-
+            
         try:
-            root = ET.fromstring(response)
-            return [_.attrib['data'] for _ in
-                    root.findall('.//suggestion/[@data]')]
-        except ET.ParseError:
-            # Malformed XML response
+            ac_query = dict(q=query)
+            if self.language:
+                ac_query['lr'] = self.language
+            if self.country:
+                ac_query['gl'] = self.country
+            if self.lang_interface:
+                ac_query['hl'] = self.lang_interface
+
+            response = self.send(base_url=AUTOCOMPLETE_URL,
+                                 query=urlparse.urlencode(ac_query)).text
+
+            if not response:
+                return []
+
+            try:
+                root = ET.fromstring(response)
+                return [_.attrib['data'] for _ in
+                        root.findall('.//suggestion/[@data]')]
+            except ET.ParseError:
+                # Malformed XML response
+                return []
+        except Exception as e:
+            # Log the error but don't crash - autocomplete is non-essential
+            print(f"Autocomplete error: {str(e)}")
             return []
 
     def send(self, base_url='', query='', attempt=0,

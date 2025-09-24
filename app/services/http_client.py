@@ -84,13 +84,22 @@ class HttpxClient:
         attempt = 0
         while attempt <= retries:
             try:
+                # Check if client is closed and recreate if needed
+                if self._client.is_closed:
+                    self._recreate_client()
+                    
                 response = self._client.get(url, headers=headers, cookies=cookies)
                 if use_cache and response.status_code == 200:
                     with self._cache_lock:
                         self._cache[key] = response
                 return response
-            except httpx.HTTPError as exc:
+            except (httpx.HTTPError, RuntimeError) as exc:
                 last_exc = exc
+                if "client has been closed" in str(exc).lower():
+                    # Recreate client and try again
+                    self._recreate_client()
+                    if attempt < retries:
+                        continue
                 if attempt == retries:
                     raise
                 time.sleep(backoff_seconds * (2 ** attempt))
@@ -100,6 +109,44 @@ class HttpxClient:
         if last_exc:
             raise last_exc
         raise httpx.HTTPError('Unknown HTTP error')
+
+    def _recreate_client(self) -> None:
+        """Recreate the HTTP client when it has been closed."""
+        try:
+            self._client.close()
+        except Exception:
+            pass  # Client might already be closed
+        
+        # Recreate with same configuration
+        client_kwargs = dict(timeout=self._timeout_seconds,
+                             follow_redirects=True)
+        
+        if self._proxies:
+            proxy_values = list(self._proxies.values())
+            single_proxy = proxy_values[0] if proxy_values and all(v == proxy_values[0] for v in proxy_values) else None
+            if single_proxy:
+                try:
+                    self._client = httpx.Client(proxy=single_proxy, **client_kwargs)
+                except TypeError:
+                    try:
+                        self._client = httpx.Client(proxies=self._proxies, **client_kwargs)
+                    except TypeError:
+                        mounts: Dict[str, httpx.Proxy] = {}
+                        for scheme_key, url in self._proxies.items():
+                            prefix = f"{scheme_key}://"
+                            mounts[prefix] = httpx.Proxy(url)
+                        self._client = httpx.Client(mounts=mounts, **client_kwargs)
+            else:
+                try:
+                    self._client = httpx.Client(proxies=self._proxies, **client_kwargs)
+                except TypeError:
+                    mounts: Dict[str, httpx.Proxy] = {}
+                    for scheme_key, url in self._proxies.items():
+                        prefix = f"{scheme_key}://"
+                        mounts[prefix] = httpx.Proxy(url)
+                    self._client = httpx.Client(mounts=mounts, **client_kwargs)
+        else:
+            self._client = httpx.Client(**client_kwargs)
 
     def close(self) -> None:
         self._client.close()

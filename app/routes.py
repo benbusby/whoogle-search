@@ -283,9 +283,11 @@ def autocomplete():
     #
     # Note: If Tor is enabled, this returns nothing, as the request is
     # almost always rejected
+    # Also check if autocomplete is disabled globally
+    autocomplete_enabled = os.environ.get('WHOOGLE_AUTOCOMPLETE', '1') != '0'
     return jsonify([
         q,
-        g.user_request.autocomplete(q) if not g.user_config.tor else []
+        g.user_request.autocomplete(q) if (not g.user_config.tor and autocomplete_enabled) else []
     ])
 
 @app.route(f'/{Endpoint.search}', methods=['GET', 'POST'])

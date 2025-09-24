@@ -161,6 +161,11 @@ class Search:
         # Produce cleanable html soup from response
         get_body_safed = get_body.text.replace("&lt;","andlt;").replace("&gt;","andgt;")
         html_soup = bsoup(get_body_safed, 'html.parser')
+        
+        # Ensure we extract only the content within <html> if it exists
+        # This prevents doctype declarations from appearing in the output
+        if html_soup.html:
+            html_soup = html_soup.html
 
         # Replace current soup if view_image is active
         # FIXME: Broken since the user agent changes as of 16 Jan 2025

@@ -136,7 +136,7 @@ def has_ad_content(element: str) -> bool:
             or 'ⓘ' in element)
 
 
-def get_first_link(soup: BeautifulSoup) -> str:
+def get_first_link(soup) -> str:
     """Retrieves the first result link from the query response
 
     Args:
@@ -147,23 +147,17 @@ def get_first_link(soup: BeautifulSoup) -> str:
 
     """
     first_link = ''
-    orig_details = []
 
-    # Temporarily remove details so we don't grab those links
-    for details in soup.find_all('details'):
-        temp_details = soup.new_tag('removed_details')
-        orig_details.append(details.replace_with(temp_details))
-
-    # Replace hrefs with only the intended destination (no "utm" type tags)
+    # Find the first valid search result link, excluding details elements
     for a in soup.find_all('a', href=True):
+        # Skip links that are inside details elements (collapsible sections)
+        if a.find_parent('details'):
+            continue
+            
         # Return the first search result URL
         if a['href'].startswith('http://') or a['href'].startswith('https://'):
             first_link = a['href']
             break
-
-    # Add the details back
-    for orig_detail, details in zip(orig_details, soup.find_all('removed_details')):
-        details.replace_with(orig_detail)
 
     return first_link
 
