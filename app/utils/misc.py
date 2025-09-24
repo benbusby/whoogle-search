@@ -48,7 +48,8 @@ def fetch_favicon(url: str) -> bytes:
 
 
 def gen_file_hash(path: str, static_file: str) -> str:
-    file_contents = open(os.path.join(path, static_file), 'rb').read()
+    with open(os.path.join(path, static_file), 'rb') as f:
+        file_contents = f.read()
     file_hash = hashlib.md5(file_contents).hexdigest()[:8]
     filename_split = os.path.splitext(static_file)
 

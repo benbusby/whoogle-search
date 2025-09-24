@@ -131,10 +131,9 @@ class Config:
         Returns:
             str -- the new style
         """
-        style_sheet = cssutils.parseString(
-            open(os.path.join(current_app.config['STATIC_FOLDER'],
-                              'css/variables.css')).read()
-        )
+        vars_path = os.path.join(current_app.config['STATIC_FOLDER'], 'css/variables.css')
+        with open(vars_path, 'r', encoding='utf-8') as f:
+            style_sheet = cssutils.parseString(f.read())
 
         modified_sheet = cssutils.parseString(self.style_modified)
         for rule in modified_sheet:

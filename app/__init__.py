@@ -53,24 +53,18 @@ app.config['BUILD_FOLDER'] = os.path.join(
     app.config['STATIC_FOLDER'], 'build')
 app.config['CACHE_BUSTING_MAP'] = {}
 app.config['BUNDLE_STATIC'] = read_config_bool('WHOOGLE_BUNDLE_STATIC')
-app.config['LANGUAGES'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json'),
-    encoding='utf-8'))
-app.config['COUNTRIES'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json'),
-    encoding='utf-8'))
-app.config['TIME_PERIODS'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/time_periods.json'),
-    encoding='utf-8'))
-app.config['TRANSLATIONS'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json'),
-    encoding='utf-8'))
-app.config['THEMES'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/themes.json'),
-    encoding='utf-8'))
-app.config['HEADER_TABS'] = json.load(open(
-    os.path.join(app.config['STATIC_FOLDER'], 'settings/header_tabs.json'),
-    encoding='utf-8'))
+with open(os.path.join(app.config['STATIC_FOLDER'], 'settings/languages.json'), 'r', encoding='utf-8') as f:
+    app.config['LANGUAGES'] = json.load(f)
+with open(os.path.join(app.config['STATIC_FOLDER'], 'settings/countries.json'), 'r', encoding='utf-8') as f:
+    app.config['COUNTRIES'] = json.load(f)
+with open(os.path.join(app.config['STATIC_FOLDER'], 'settings/time_periods.json'), 'r', encoding='utf-8') as f:
+    app.config['TIME_PERIODS'] = json.load(f)
+with open(os.path.join(app.config['STATIC_FOLDER'], 'settings/translations.json'), 'r', encoding='utf-8') as f:
+    app.config['TRANSLATIONS'] = json.load(f)
+with open(os.path.join(app.config['STATIC_FOLDER'], 'settings/themes.json'), 'r', encoding='utf-8') as f:
+    app.config['THEMES'] = json.load(f)
+with open(os.path.join(app.config['STATIC_FOLDER'], 'settings/header_tabs.json'), 'r', encoding='utf-8') as f:
+    app.config['HEADER_TABS'] = json.load(f)
 app.config['CONFIG_PATH'] = os.getenv(
     'CONFIG_VOLUME',
     os.path.join(app.config['STATIC_FOLDER'], 'config'))
@@ -117,14 +111,14 @@ if not os.path.exists(app.config['BUILD_FOLDER']):
 app_key_path = os.path.join(app.config['CONFIG_PATH'], 'whoogle.key')
 if os.path.exists(app_key_path):
     try:
-        app.config['SECRET_KEY'] = open(app_key_path, 'r').read()
+        with open(app_key_path, 'r', encoding='utf-8') as f:
+            app.config['SECRET_KEY'] = f.read()
     except PermissionError:
         app.config['SECRET_KEY'] = str(b64encode(os.urandom(32)))
 else:
     app.config['SECRET_KEY'] = str(b64encode(os.urandom(32)))
-    with open(app_key_path, 'w') as key_file:
+    with open(app_key_path, 'w', encoding='utf-8') as key_file:
         key_file.write(app.config['SECRET_KEY'])
-        key_file.close()
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=365)
 
 # NOTE: SESSION_COOKIE_SAMESITE must be set to 'lax' to allow the user's
@@ -160,7 +154,8 @@ app.config['CSP'] = 'default-src \'none\';' \
 generating_bangs = False
 if not os.path.exists(app.config['BANG_FILE']):
     generating_bangs = True
-    json.dump({}, open(app.config['BANG_FILE'], 'w'))
+    with open(app.config['BANG_FILE'], 'w', encoding='utf-8') as f:
+        json.dump({}, f)
     bangs_thread = threading.Thread(
         target=gen_bangs_json,
         args=(app.config['BANG_FILE'],))
@@ -199,13 +194,15 @@ if app.config['BUNDLE_STATIC']:
         if name.endswith('-theme.css'):
             continue
         try:
-            css_parts.append(open(os.path.join(css_dir, name), 'r', encoding='utf-8').read())
+            with open(os.path.join(css_dir, name), 'r', encoding='utf-8') as f:
+                css_parts.append(f.read())
         except Exception:
             pass
     css_bundle = '\n'.join(css_parts)
     if css_bundle:
         css_tmp = os.path.join(app.config['BUILD_FOLDER'], 'app.css')
-        open(css_tmp, 'w', encoding='utf-8').write(css_bundle)
+        with open(css_tmp, 'w', encoding='utf-8') as f:
+            f.write(css_bundle)
         css_hashed = gen_file_hash(app.config['BUILD_FOLDER'], 'app.css')
         os.replace(css_tmp, os.path.join(app.config['BUILD_FOLDER'], css_hashed))
         map_path = os.path.join('app/static/build', css_hashed)
@@ -218,13 +215,15 @@ if app.config['BUNDLE_STATIC']:
         if not name.endswith('.js'):
             continue
         try:
-            js_parts.append(open(os.path.join(js_dir, name), 'r', encoding='utf-8').read())
+            with open(os.path.join(js_dir, name), 'r', encoding='utf-8') as f:
+                js_parts.append(f.read())
         except Exception:
             pass
     js_bundle = '\n;'.join(js_parts)
     if js_bundle:
         js_tmp = os.path.join(app.config['BUILD_FOLDER'], 'app.js')
-        open(js_tmp, 'w', encoding='utf-8').write(js_bundle)
+        with open(js_tmp, 'w', encoding='utf-8') as f:
+            f.write(js_bundle)
         js_hashed = gen_file_hash(app.config['BUILD_FOLDER'], 'app.js')
         os.replace(js_tmp, os.path.join(app.config['BUILD_FOLDER'], js_hashed))
         map_path = os.path.join('app/static/build', js_hashed)

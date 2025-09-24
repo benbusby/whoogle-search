@@ -219,7 +219,7 @@ class Filter:
             return
 
         for d in div.find_all('div', recursive=True):
-            d_text = d.find(text=True, recursive=False)
+            d_text = d.find(string=True, recursive=False)
 
             # Ensure we're working with tags that contain text content
             if not d_text or not d.string:
@@ -295,7 +295,7 @@ class Filter:
             return
         search_string = ' '.join(['-site:' +
                                  _ for _ in self.config.block.split(',')])
-        selected = soup.body.findAll(text=re.compile(search_string))
+        selected = soup.body.find_all(string=re.compile(search_string))
 
         for result in selected:
             result.string.replace_with(result.string.replace(
@@ -362,11 +362,11 @@ class Filter:
 
         def pull_child_divs(result_div: BeautifulSoup):
             try:
-                return result_div.findChildren(
-                    'div', recursive=False
-                )[0].findChildren(
-                    'div', recursive=False)
-            except IndexError:
+                top_level_divs = result_div.find_all('div', recursive=False)
+                if not top_level_divs:
+                    return []
+                return top_level_divs[0].find_all('div', recursive=False)
+            except Exception:
                 return []
 
         if not self.main_divs:
@@ -657,7 +657,7 @@ class Filter:
         prefix_pattern = re.compile(r'^(?:https?:\/\/)?(?:(?:www|mobile|m)\.)?')
 
         # 1) Replace bare domain divs (single token) once, avoiding duplicates
-        for div in self.soup.find_all('div', text=sites_pattern):
+        for div in self.soup.find_all('div', string=sites_pattern):
             if not div or not div.string:
                 continue
             if len(div.string.split(' ')) != 1:
@@ -679,7 +679,7 @@ class Filter:
             link['href'] = get_site_alt(link['href'])
 
             # Find a description text node matching a known site
-            desc_nodes = link.find_all(text=sites_pattern)
+            desc_nodes = link.find_all(string=sites_pattern)
             if not desc_nodes:
                 continue
             desc_node = desc_nodes[0]

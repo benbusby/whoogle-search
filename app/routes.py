@@ -682,7 +682,7 @@ def internal_error(e):
 
     fallback_engine = os.environ.get('WHOOGLE_FALLBACK_ENGINE_URL', '')
     if (fallback_engine):
-        return redirect(fallback_engine + query)
+        return redirect(fallback_engine + (query or ''))
 
     localization_lang = g.user_config.get_localization_lang()
     translation = app.config['TRANSLATIONS'][localization_lang]
@@ -692,7 +692,7 @@ def internal_error(e):
             translation=translation,
             farside='https://farside.link',
             config=g.user_config,
-            query=urlparse.unquote(query),
+            query=urlparse.unquote(query or ''),
             params=g.user_config.to_params(keys=['preferences'])), 500
 
 

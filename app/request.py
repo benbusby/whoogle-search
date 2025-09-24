@@ -205,9 +205,10 @@ class Request:
     def __init__(self, normal_ua, root_path, config: Config, http_client=None):
         self.search_url = 'https://www.google.com/search?gbv=1&num=' + str(
             os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&q='
-        # Send heartbeat to Tor, used in determining if the user can or cannot
-        # enable Tor for future requests
-        send_tor_signal(Signal.HEARTBEAT)
+        # Optionally send heartbeat to Tor to determine availability
+        # Only when Tor is enabled in config to avoid unnecessary socket usage
+        if config.tor:
+            send_tor_signal(Signal.HEARTBEAT)
 
         self.language = config.lang_search if config.lang_search else ''
         self.country = config.country if config.country else ''
@@ -334,10 +335,12 @@ class Request:
 
         # view is suppressed correctly
         now = datetime.now()
-        cookies = {
-            'CONSENT': 'PENDING+987',
-            'SOCS': 'CAESHAgBEhIaAB',
-        }
+        consent_cookie = 'CONSENT=PENDING+987; SOCS=CAESHAgBEhIaAB'
+        # Prefer header-based cookies to avoid httpx per-request cookies deprecation
+        if 'Cookie' in headers:
+            headers['Cookie'] += '; ' + consent_cookie
+        else:
+            headers['Cookie'] = consent_cookie
 
         # Validate Tor conn and request new identity if the last one failed
         if self.tor and not send_tor_signal(
@@ -368,8 +371,7 @@ class Request:
         try:
             response = self.http_client.get(
                 (base_url or self.search_url) + query,
-                headers=headers,
-                cookies=cookies)
+                headers=headers)
         except httpx.HTTPError as e:
             raise
 

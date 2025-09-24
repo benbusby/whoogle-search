@@ -43,7 +43,8 @@ def load_all_bangs(ddg_bangs_file: str, ddg_bangs: dict = {}):
 
     for i, bang_file in enumerate(bang_files):
         try:
-            bangs |= json.load(open(bang_file))
+            with open(bang_file, 'r', encoding='utf-8') as f:
+                bangs |= json.load(f)
         except json.decoder.JSONDecodeError:
             # Ignore decoding error only for the ddg bangs file, since this can
             # occur if file is still being written
@@ -80,7 +81,8 @@ def gen_bangs_json(bangs_file: str) -> None:
             'suggestion': bang_command + ' (' + row['s'] + ')'
         }
 
-    json.dump(bangs_data, open(bangs_file, 'w'))
+    with open(bangs_file, 'w', encoding='utf-8') as f:
+        json.dump(bangs_data, f)
     print('* Finished creating ddg bangs json')
     load_all_bangs(bangs_file, bangs_data)
 
