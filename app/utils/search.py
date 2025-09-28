@@ -148,8 +148,7 @@ class Search:
         # force mobile search when view image is true and
         # the request is not already made by a mobile
         view_image = ('tbm=isch' in full_query
-                      and self.config.view_image
-                      and not g.user_request.mobile)
+                      and self.config.view_image)
 
         get_body = g.user_request.send(query=full_query,
                                        force_mobile=self.config.view_image,
