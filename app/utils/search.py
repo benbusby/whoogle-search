@@ -147,10 +147,9 @@ class Search:
 
         # force mobile search when view image is true and
         # the request is not already made by a mobile
-        # FIXME: Broken since the user agent changes as of 16 Jan 2025
-        # view_image = ('tbm=isch' in full_query
-                      # and self.config.view_image
-                      # and not g.user_request.mobile)
+        view_image = ('tbm=isch' in full_query
+                      and self.config.view_image
+                      and not g.user_request.mobile)
 
         get_body = g.user_request.send(query=full_query,
                                        force_mobile=self.config.view_image,
@@ -161,9 +160,8 @@ class Search:
         html_soup = bsoup(get_body_safed, 'html.parser')
 
         # Replace current soup if view_image is active
-        # FIXME: Broken since the user agent changes as of 16 Jan 2025
-        # if view_image:
-            # html_soup = content_filter.view_image(html_soup)
+        if view_image:
+            html_soup = content_filter.view_image(html_soup)
 
         # Indicate whether or not a Tor connection is active
         if g.user_request.tor_valid:
