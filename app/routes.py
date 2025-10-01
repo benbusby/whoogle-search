@@ -407,15 +407,30 @@ def search():
         json_soup = bsoup(str(response), 'html.parser')
         results = []
         seen = set()
-        for a in json_soup.find_all('a', href=True):
-            href = a['href']
-            if not href.startswith('http'):
+        
+        # Find all result containers (using known result classes)
+        result_divs = json_soup.find_all('div', class_=['ZINbbc', 'ezO2md'])
+        
+        for div in result_divs:
+            # Find the first valid link in this result container
+            link = None
+            for a in div.find_all('a', href=True):
+                if a['href'].startswith('http'):
+                    link = a
+                    break
+            
+            if not link:
                 continue
+                
+            href = link['href']
             if href in seen:
                 continue
-            text = a.get_text(strip=True)
+            
+            # Get all text from the result container, not just the link
+            text = div.get_text(separator=' ', strip=True)
             if not text:
                 continue
+                
             seen.add(href)
             results.append({'href': href, 'text': text})
 
