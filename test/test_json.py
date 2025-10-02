@@ -41,6 +41,12 @@ def test_search_json_accept(client, stubbed_search_response):
     assert 'https://example.org/other' in hrefs
     # Relative href should be excluded
     assert not any(href.endswith('/relative') for href in hrefs)
+    # Verify new fields are present while maintaining backward compatibility
+    for result in data['results']:
+        assert 'href' in result
+        assert 'text' in result  # Original field maintained
+        assert 'title' in result  # New field
+        assert 'content' in result  # New field
 
 
 def test_search_json_format_param(client, stubbed_search_response):

@@ -100,4 +100,4 @@ EXPOSE $EXPOSE_PORT
 HEALTHCHECK --interval=30s --timeout=5s \
   CMD curl -f http://localhost:${EXPOSE_PORT}/healthz || exit 1
 
-CMD misc/tor/start-tor.sh & ./run
+CMD ["/bin/sh", "-c", "misc/tor/start-tor.sh & ./run"]

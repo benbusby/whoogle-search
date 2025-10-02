@@ -432,9 +432,49 @@ def search():
                 text = div.get_text(separator=' ', strip=True)
                 if not text:
                     continue
+                
+                # Extract title and content separately
+                # Title is typically in an h3 tag or the main link text
+                title = ''
+                h3_tag = div.find('h3')
+                if h3_tag:
+                    title = h3_tag.get_text(strip=True)
+                elif link:
+                    title = link.get_text(strip=True)
+                
+                # Content is the remaining text after removing the title
+                # Look for description/snippet elements
+                content = ''
+                # Common classes for snippets/descriptions in Google results
+                snippet_selectors = [
+                    {'class_': ['VwiC3b']},  # Standard snippet
+                    {'class_': ['s']},        # Alternative snippet class
+                    {'class_': ['st']},       # Another snippet class
+                ]
+                
+                for selector in snippet_selectors:
+                    snippet_elem = div.find('div', selector) or div.find('span', selector)
+                    if snippet_elem:
+                        content = snippet_elem.get_text(separator=' ', strip=True)
+                        break
+                
+                # If no specific content found, use text minus title as fallback
+                if not content and title:
+                    # Try to extract content by removing title from full text
+                    if text.startswith(title):
+                        content = text[len(title):].strip()
+                    else:
+                        content = text
+                elif not content:
+                    content = text
                     
                 seen.add(href)
-                results.append({'href': href, 'text': text})
+                results.append({
+                    'href': href,
+                    'text': text,
+                    'title': title,
+                    'content': content
+                })
         else:
             # Fallback: extract links directly if no result containers found
             for a in json_soup.find_all('a', href=True):
@@ -447,7 +487,13 @@ def search():
                 if not text:
                     continue
                 seen.add(href)
-                results.append({'href': href, 'text': text})
+                # In fallback mode, the link text serves as both title and text
+                results.append({
+                    'href': href,
+                    'text': text,
+                    'title': text,
+                    'content': ''
+                })
 
         return jsonify({
             'query': urlparse.unquote(query),
