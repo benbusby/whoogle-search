@@ -290,6 +290,36 @@ def autocomplete():
         g.user_request.autocomplete(q) if (not g.user_config.tor and autocomplete_enabled) else []
     ])
 
+def clean_text_spacing(text: str) -> str:
+    """Clean up text spacing issues from HTML extraction.
+    
+    Args:
+        text: Text extracted from HTML that may have spacing issues
+        
+    Returns:
+        Cleaned text with proper spacing
+    """
+    if not text:
+        return text
+    
+    # Normalize multiple spaces to single space
+    text = re.sub(r'\s+', ' ', text)
+    
+    # Fix domain names: remove space before period followed by domain extension
+    # Examples: "weather .com" -> "weather.com", "example .org" -> "example.org"
+    text = re.sub(r'\s+\.([a-zA-Z]{2,})\b', r'.\1', text)
+    
+    # Fix www/http/https patterns
+    # Examples: "www .example" -> "www.example"
+    text = re.sub(r'\b(www|http|https)\s+\.', r'\1.', text)
+    
+    # Fix spaces before common punctuation
+    text = re.sub(r'\s+([,;:])', r'\1', text)
+    
+    # Strip leading/trailing whitespace
+    return text.strip()
+
+
 @app.route(f'/{Endpoint.search}', methods=['GET', 'POST'])
 @session_required
 @auth_required
@@ -429,7 +459,7 @@ def search():
                     continue
                 
                 # Get all text from the result container, not just the link
-                text = div.get_text(separator=' ', strip=True)
+                text = clean_text_spacing(div.get_text(separator=' ', strip=True))
                 if not text:
                     continue
                 
@@ -439,15 +469,15 @@ def search():
                 # First try h3 tag
                 h3_tag = div.find('h3')
                 if h3_tag:
-                    title = h3_tag.get_text(strip=True)
+                    title = clean_text_spacing(h3_tag.get_text(separator=' ', strip=True))
                 else:
                     # Try CVA68e class (common title class in Google results)
                     title_span = div.find('span', class_='CVA68e')
                     if title_span:
-                        title = title_span.get_text(strip=True)
+                        title = clean_text_spacing(title_span.get_text(separator=' ', strip=True))
                     elif link:
                         # Fallback to link text, but exclude URL breadcrumb
-                        title = link.get_text(strip=True)
+                        title = clean_text_spacing(link.get_text(separator=' ', strip=True))
                 
                 # Content is the description/snippet text
                 # Look for description/snippet elements
@@ -464,7 +494,7 @@ def search():
                     snippet_elem = div.find('span', selector) or div.find('div', selector)
                     if snippet_elem:
                         # Get text but exclude any nested links (like "Related searches")
-                        content = snippet_elem.get_text(separator=' ', strip=True)
+                        content = clean_text_spacing(snippet_elem.get_text(separator=' ', strip=True))
                         # Only use if it's substantial content (not just the URL breadcrumb)
                         if content and not content.startswith('www.') and '›' not in content:
                             break
@@ -496,7 +526,7 @@ def search():
                     continue
                 if href in seen:
                     continue
-                text = a.get_text(strip=True)
+                text = clean_text_spacing(a.get_text(separator=' ', strip=True))
                 if not text:
                     continue
                 seen.add(href)
