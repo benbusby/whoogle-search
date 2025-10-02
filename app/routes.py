@@ -434,29 +434,42 @@ def search():
                     continue
                 
                 # Extract title and content separately
-                # Title is typically in an h3 tag or the main link text
+                # Title is typically in an h3 tag, CVA68e span, or the main link text
                 title = ''
+                # First try h3 tag
                 h3_tag = div.find('h3')
                 if h3_tag:
                     title = h3_tag.get_text(strip=True)
-                elif link:
-                    title = link.get_text(strip=True)
+                else:
+                    # Try CVA68e class (common title class in Google results)
+                    title_span = div.find('span', class_='CVA68e')
+                    if title_span:
+                        title = title_span.get_text(strip=True)
+                    elif link:
+                        # Fallback to link text, but exclude URL breadcrumb
+                        title = link.get_text(strip=True)
                 
-                # Content is the remaining text after removing the title
+                # Content is the description/snippet text
                 # Look for description/snippet elements
                 content = ''
                 # Common classes for snippets/descriptions in Google results
                 snippet_selectors = [
-                    {'class_': ['VwiC3b']},  # Standard snippet
-                    {'class_': ['s']},        # Alternative snippet class
-                    {'class_': ['st']},       # Another snippet class
+                    {'class_': 'VwiC3b'},   # Standard snippet
+                    {'class_': 'FrIlee'},   # Alternative snippet class (common in current Google)
+                    {'class_': 's'},        # Another snippet class
+                    {'class_': 'st'},       # Legacy snippet class
                 ]
                 
                 for selector in snippet_selectors:
-                    snippet_elem = div.find('div', selector) or div.find('span', selector)
+                    snippet_elem = div.find('span', selector) or div.find('div', selector)
                     if snippet_elem:
+                        # Get text but exclude any nested links (like "Related searches")
                         content = snippet_elem.get_text(separator=' ', strip=True)
-                        break
+                        # Only use if it's substantial content (not just the URL breadcrumb)
+                        if content and not content.startswith('www.') and '›' not in content:
+                            break
+                        else:
+                            content = ''
                 
                 # If no specific content found, use text minus title as fallback
                 if not content and title:

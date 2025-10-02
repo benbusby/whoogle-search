@@ -7,6 +7,12 @@ from cachetools import TTLCache
 import ssl
 import os
 
+# Import h2 exceptions for better error handling
+try:
+    from h2.exceptions import ProtocolError as H2ProtocolError
+except ImportError:
+    H2ProtocolError = None
+
 
 class HttpxClient:
     """Thin wrapper around httpx.Client providing simple retries and optional TTL caching.
@@ -22,6 +28,11 @@ class HttpxClient:
             cache_ttl_seconds: int = 30,
             cache_maxsize: int = 256,
             http2: bool = True) -> None:
+        # Allow disabling HTTP/2 via environment variable
+        # HTTP/2 can sometimes cause protocol errors with certain servers
+        if os.environ.get('WHOOGLE_DISABLE_HTTP2', '').lower() in ('1', 'true', 't', 'yes', 'y'):
+            http2 = False
+            
         client_kwargs = dict(http2=http2,
                              timeout=timeout_seconds,
                              follow_redirects=True)
@@ -138,15 +149,35 @@ class HttpxClient:
                     with self._cache_lock:
                         self._cache[key] = response
                 return response
-            except (httpx.HTTPError, RuntimeError) as exc:
+            except Exception as exc:
                 last_exc = exc
-                if "client has been closed" in str(exc).lower():
-                    # Recreate client and try again
+                # Check for specific errors that require client recreation
+                should_recreate = False
+                
+                if isinstance(exc, (httpx.HTTPError, RuntimeError)):
+                    if "client has been closed" in str(exc).lower():
+                        should_recreate = True
+                
+                # Handle H2 protocol errors (connection state issues)
+                if H2ProtocolError and isinstance(exc, H2ProtocolError):
+                    should_recreate = True
+                
+                # Also check if the error message contains h2 protocol error info
+                if "ProtocolError" in str(exc) or "ConnectionState.CLOSED" in str(exc):
+                    should_recreate = True
+                
+                if should_recreate:
                     self._recreate_client()
                     if attempt < retries:
+                        time.sleep(backoff_seconds * (2 ** attempt))
+                        attempt += 1
                         continue
+                
+                # For non-recoverable errors or last attempt, raise
                 if attempt == retries:
                     raise
+                    
+                # For other errors, still retry with backoff
                 time.sleep(backoff_seconds * (2 ** attempt))
                 attempt += 1
 
