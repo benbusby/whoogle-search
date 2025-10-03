@@ -233,6 +233,12 @@
                             <input type="checkbox" name="tor"
                                    id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
                         </div>
+                        <div class="config-div config-div-leta">
+                            <label class="tooltip" for="config-leta">Use Mullvad Leta Backend: </label>
+                            <input type="checkbox" name="use_leta"
+                                   id="config-leta" {{ 'checked' if config.use_leta else '' }}>
+                            <div><span class="info-text"> — Uses Mullvad's privacy-focused search. Only supports regular web search (no images/videos/news/maps).</span></div>
+                        </div>
                         <div class="config-div config-div-get-only">
                             <label for="config-get-only">{{ translation['config-get-only'] }}: </label>
                             <input type="checkbox" name="get_only"

@@ -63,7 +63,8 @@ class Config:
             'tbs',
             'user_agent',
             'custom_user_agent',
-            'use_custom_user_agent'
+            'use_custom_user_agent',
+            'use_leta'
         ]
 
         app_config = current_app.config
@@ -90,6 +91,7 @@ class Config:
         self.anon_view = read_config_bool('WHOOGLE_CONFIG_ANON_VIEW')
         self.preferences_encrypted = read_config_bool('WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED')
         self.preferences_key = os.getenv('WHOOGLE_CONFIG_PREFERENCES_KEY', '')
+        self.use_leta = read_config_bool('WHOOGLE_CONFIG_USE_LETA', default=True)
 
         self.accept_language = False
 
@@ -100,7 +102,10 @@ class Config:
                 if attr in kwargs.keys():
                     setattr(self, attr, kwargs[attr])
                 elif attr not in kwargs.keys() and mutable_attrs[attr] == bool:
-                    setattr(self, attr, False)
+                    # Only set to False if the attribute wasn't already set to True
+                    # by environment defaults (e.g., use_leta defaults to True)
+                    if not getattr(self, attr, False):
+                        setattr(self, attr, False)
 
     def __getitem__(self, name):
         return getattr(self, name)

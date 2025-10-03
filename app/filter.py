@@ -142,6 +142,127 @@ class Filter:
     def elements(self):
         return self._elements
 
+    def convert_leta_to_whoogle(self, soup) -> BeautifulSoup:
+        """Converts Leta search results HTML to Whoogle-compatible format
+        
+        Args:
+            soup: BeautifulSoup object containing Leta results
+            
+        Returns:
+            BeautifulSoup: Converted HTML in Whoogle format
+        """
+        # Find all Leta result articles
+        articles = soup.find_all('article', class_='svelte-fmlk7p')
+        
+        if not articles:
+            # No results found, return empty results page
+            return soup
+        
+        # Create a new container for results with proper Whoogle CSS class
+        main_div = BeautifulSoup(features='html.parser').new_tag('div', attrs={'id': 'main'})
+        
+        for article in articles:
+            # Extract data from Leta article
+            link_tag = article.find('a', href=True)
+            if not link_tag:
+                continue
+                
+            url = link_tag.get('href', '')
+            title_tag = article.find('h3')
+            title = title_tag.get_text(strip=True) if title_tag else ''
+            
+            snippet_tag = article.find('p', class_='result__body')
+            snippet = snippet_tag.get_text(strip=True) if snippet_tag else ''
+            
+            cite_tag = article.find('cite')
+            display_url = cite_tag.get_text(strip=True) if cite_tag else url
+            
+            # Create Whoogle-style result div with proper CSS class
+            result_div = BeautifulSoup(features='html.parser').new_tag(
+                'div', attrs={'class': [GClasses.result_class_a]}
+            )
+            result_outer = BeautifulSoup(features='html.parser').new_tag('div')
+            
+            # Create a div for the title link
+            title_div = BeautifulSoup(features='html.parser').new_tag('div')
+            result_link = BeautifulSoup(features='html.parser').new_tag('a', href=url)
+            result_title = BeautifulSoup(features='html.parser').new_tag('h3')
+            result_title.string = title
+            result_link.append(result_title)
+            title_div.append(result_link)
+            
+            # Create a div for the URL display with cite
+            url_div = BeautifulSoup(features='html.parser').new_tag('div')
+            result_cite = BeautifulSoup(features='html.parser').new_tag('cite')
+            result_cite.string = display_url
+            url_div.append(result_cite)
+            
+            # Create a div for snippet
+            result_snippet = BeautifulSoup(features='html.parser').new_tag('div')
+            snippet_span = BeautifulSoup(features='html.parser').new_tag('span')
+            snippet_span.string = snippet
+            result_snippet.append(snippet_span)
+            
+            # Assemble the result with proper structure
+            result_outer.append(title_div)
+            result_outer.append(url_div)
+            result_outer.append(result_snippet)
+            result_div.append(result_outer)
+            main_div.append(result_div)
+        
+        # Find and preserve pagination elements from Leta
+        navigation = soup.find('div', class_='navigation')
+        if navigation:
+            # Convert Leta's "Next" button to Whoogle-style pagination
+            next_button = navigation.find('button', attrs={'data-cy': 'next-button'})
+            if next_button:
+                next_form = next_button.find_parent('form')
+                if next_form:
+                    # Extract the page number from hidden input
+                    page_input = next_form.find('input', attrs={'name': 'page'})
+                    if page_input:
+                        next_page = page_input.get('value', '2')
+                        # Create footer for pagination
+                        footer = BeautifulSoup(features='html.parser').new_tag('footer')
+                        nav_table = BeautifulSoup(features='html.parser').new_tag('table')
+                        nav_tr = BeautifulSoup(features='html.parser').new_tag('tr')
+                        nav_td = BeautifulSoup(features='html.parser').new_tag('td')
+                        
+                        # Calculate start value for Whoogle pagination
+                        start_val = (int(next_page) - 1) * 10
+                        next_link = BeautifulSoup(features='html.parser').new_tag('a', href=f'search?q={self.query}&start={start_val}')
+                        next_link.string = 'Next »'
+                        
+                        nav_td.append(next_link)
+                        nav_tr.append(nav_td)
+                        nav_table.append(nav_tr)
+                        footer.append(nav_table)
+                        main_div.append(footer)
+        
+        # Clear the original soup body and add our converted results
+        if soup.body:
+            soup.body.clear()
+            # Add inline style to body for proper width constraints
+            if not soup.body.get('style'):
+                soup.body['style'] = 'padding: 0 20px; margin: 0 auto; max-width: 1000px;'
+            soup.body.append(main_div)
+        else:
+            # If no body, create one with proper styling
+            new_body = BeautifulSoup(features='html.parser').new_tag(
+                'body', 
+                attrs={'style': 'padding: 0 20px; margin: 0 auto; max-width: 1000px;'}
+            )
+            new_body.append(main_div)
+            if soup.html:
+                soup.html.append(new_body)
+            else:
+                # Create minimal HTML structure
+                html_tag = BeautifulSoup(features='html.parser').new_tag('html')
+                html_tag.append(new_body)
+                soup.append(html_tag)
+        
+        return soup
+
     def encrypt_path(self, path, is_element=False) -> str:
         # Encrypts path to avoid plaintext results in logs
         if is_element:
@@ -155,6 +276,11 @@ class Filter:
 
     def clean(self, soup) -> BeautifulSoup:
         self.soup = soup
+        
+        # Check if this is a Leta result page and convert it
+        if self.config.use_leta and self.soup.find('article', class_='svelte-fmlk7p'):
+            self.soup = self.convert_leta_to_whoogle(self.soup)
+        
         self.main_divs = self.soup.find('div', {'id': 'main'})
         self.remove_ads()
         self.remove_block_titles()

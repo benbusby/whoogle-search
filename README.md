@@ -1,10 +1,12 @@
 >[!WARNING]
 >
->As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. This is a fundamental part of how Whoogle
->works -- Whoogle requests the JavaScript-free search results, then filters out garbage from the results page and proxies all external content for the user.
+>**Mullvad Leta Backend Now Available!**
 >
->This is possibly a breaking change that will mean the end for Whoogle. I'll continue monitoring the status of their JS-free results and looking into workarounds,
->and will make another post if a solution is found (or not).
+>As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. We have made multiple workarounds, but as of 2 October 2025, Google has killed off all remaining methods we had to retrieve results from them originally. While we work to rebuild and hopefully find new ways to continue on, we have released a stopgap which usus [Mullvad Leta](https://leta.mullvad.net) (an alternative privacy-focused search backend) as the default (but disable-able) backend leveraging their Google results. 
+>
+>**Leta is now enabled by default**. It provides anonymous search results through Mullvad's infrastructure without requiring JavaScript. While Leta doesn't support image, video, news, or map searches, it provides privacy-focused web search results.
+>
+>To switch back to Google (if it becomes available again), you can disable Leta in the config settings or set `WHOOGLE_CONFIG_USE_LETA=0` in your environment variables. See [LETA_INTEGRATION.md](LETA_INTEGRATION.md) for more details.
 
 ___
 
@@ -57,6 +59,7 @@ Contents
 10. [Screenshots](#screenshots)
 
 ## Features
+- **Mullvad Leta backend support** - Privacy-focused alternative to Google (enabled by default)
 - No ads or sponsored content
 - No JavaScript\*
 - No cookies\*\*
@@ -492,6 +495,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED | Encrypt preferences token, requires preferences key             |
 | WHOOGLE_CONFIG_PREFERENCES_KEY       | Key to encrypt preferences in URL (REQUIRED to show url)        |
 | WHOOGLE_CONFIG_ANON_VIEW             | Include the "anonymous view" option for each search result      |
+| WHOOGLE_CONFIG_USE_LETA              | Use Mullvad Leta as search backend (default: enabled). Set to 0 to use Google instead |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
@@ -714,6 +718,20 @@ def contains(x: list, y: int) -> bool:
 Whoogle currently supports translations using [`translations.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/translations.json). Language values in this file need to match the "value" of the according language in [`languages.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/languages.json) (i.e. "lang_en" for English, "lang_es" for Spanish, etc). After you add a new set of translations to `translations.json`, open a PR with your changes and they will be merged in as soon as possible.
 
 ## FAQ
+
+**What is Mullvad Leta and why is it the default?**
+
+Mullvad Leta is a privacy-focused search service provided by [Mullvad VPN](https://mullvad.net/en/leta). As of January 2025, Google disabled JavaScript-free search results, which breaks Whoogle's core functionality. Leta provides an excellent alternative that:
+
+- Doesn't require JavaScript
+- Provides privacy-focused search results through Mullvad's infrastructure
+- Uses Google's search index (so results are similar to what you'd expect)
+- Doesn't track or log your searches
+
+**Limitations:** Leta only supports regular web search - no images, videos, news, or maps. If you need these features and Google's JavaScript-free search becomes available again, you can disable Leta in settings or set `WHOOGLE_CONFIG_USE_LETA=0`.
+
+For more details, see [LETA_INTEGRATION.md](LETA_INTEGRATION.md).
+
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
 Whoogle is intended to only ever be deployed to private instances by individuals of any background, with as little effort as possible. Prior knowledge of/experience with the command line or deploying applications is not necessary to deploy Whoogle, which isn't the case with Searx. As a result, Whoogle is missing some features of Searx in order to be as easy to deploy as possible.
