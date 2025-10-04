@@ -1,11 +1,12 @@
 >[!WARNING]
 >
->As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. This is a fundamental part of how Whoogle
->works -- Whoogle requests the JavaScript-free search results, then filters out garbage from the results page and proxies all external content for the user.
+>**Mullvad Leta Backend Now Available!**
 >
->This is possibly a breaking change that will mean the end for Whoogle. I'll continue monitoring the status of their JS-free results and looking into workarounds,
->and will make another post if a solution is found (or not).
-
+>As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. We have made multiple workarounds, but as of 2 October 2025, Google has killed off all remaining methods we had to retrieve results from them originally. While we work to rebuild and hopefully find new ways to continue on, we have released a stopgap (in the beta branch/release) which uses [Mullvad Leta](https://leta.mullvad.net) (an alternative privacy-focused search backend) as the default (but disable-able) backend leveraging their Google results. 
+>
+>**Leta is now enabled by default**. It provides anonymous search results through Mullvad's infrastructure without requiring JavaScript. While Leta doesn't support image, video, news, or map searches, it provides privacy-focused web search results.
+>
+>To switch back to Google (if it becomes available again), you can disable Leta in the config settings or set `WHOOGLE_CONFIG_USE_LETA=0` in your environment variables. See [LETA_INTEGRATION.md](LETA_INTEGRATION.md) for more details.
 ___
 
 ![Whoogle Search](docs/banner.png)
