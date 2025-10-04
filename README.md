@@ -2,7 +2,7 @@
 >
 >**Mullvad Leta Backend Now Available!**
 >
->As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. We have made multiple workarounds, but as of 2 October 2025, Google has killed off all remaining methods we had to retrieve results from them originally. While we work to rebuild and hopefully find new ways to continue on, we have released a stopgap which usus [Mullvad Leta](https://leta.mullvad.net) (an alternative privacy-focused search backend) as the default (but disable-able) backend leveraging their Google results. 
+>As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. We have made multiple workarounds, but as of 2 October 2025, Google has killed off all remaining methods we had to retrieve results from them originally. While we work to rebuild and hopefully find new ways to continue on, we have released a stopgap which uses [Mullvad Leta](https://leta.mullvad.net) (an alternative privacy-focused search backend) as the default (but disable-able) backend leveraging their Google results. 
 >
 >**Leta is now enabled by default**. It provides anonymous search results through Mullvad's infrastructure without requiring JavaScript. While Leta doesn't support image, video, news, or map searches, it provides privacy-focused web search results.
 >
