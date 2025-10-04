@@ -1,7 +1,8 @@
 from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.utils.misc import list_to_dict
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup, NavigableString, MarkupResemblesLocatorWarning
+import warnings
 import copy
 from flask import current_app
 import html
@@ -9,7 +10,7 @@ import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import re
-import warnings
+warnings.filterwarnings('ignore', category=MarkupResemblesLocatorWarning)
 
 SKIP_ARGS = ['ref_src', 'utm']
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.']
@@ -114,7 +115,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
     for word in re.split(r'\s+(?=[^"]*(?:"[^"]*"[^"]*)*$)', query):
         word = re.sub(r'[@_!#$%^&*()<>?/\|}{~:]+', '', word)
         target = response.find_all(
-            text=re.compile(r'' + re.escape(word), re.I))
+            string=re.compile(r'' + re.escape(word), re.I))
         for nav_str in target:
             replace_any_case(nav_str, word)
 
@@ -136,7 +137,7 @@ def has_ad_content(element: str) -> bool:
             or 'ⓘ' in element)
 
 
-def get_first_link(soup: BeautifulSoup) -> str:
+def get_first_link(soup) -> str:
     """Retrieves the first result link from the query response
 
     Args:
@@ -147,23 +148,17 @@ def get_first_link(soup: BeautifulSoup) -> str:
 
     """
     first_link = ''
-    orig_details = []
 
-    # Temporarily remove details so we don't grab those links
-    for details in soup.find_all('details'):
-        temp_details = soup.new_tag('removed_details')
-        orig_details.append(details.replace_with(temp_details))
-
-    # Replace hrefs with only the intended destination (no "utm" type tags)
+    # Find the first valid search result link, excluding details elements
     for a in soup.find_all('a', href=True):
+        # Skip links that are inside details elements (collapsible sections)
+        if a.find_parent('details'):
+            continue
+            
         # Return the first search result URL
         if a['href'].startswith('http://') or a['href'].startswith('https://'):
             first_link = a['href']
             break
-
-    # Add the details back
-    for orig_detail, details in zip(orig_details, soup.find_all('removed_details')):
-        details.replace_with(orig_detail)
 
     return first_link
 
@@ -425,7 +420,8 @@ def get_tabs_content(tabs: dict,
                      full_query: str,
                      search_type: str,
                      preferences: str,
-                     translation: dict) -> dict:
+                     translation: dict,
+                     use_leta: bool = False) -> dict:
     """Takes the default tabs content and updates it according to the query.
 
     Args:
@@ -433,6 +429,7 @@ def get_tabs_content(tabs: dict,
         full_query: The original search query
         search_type: The current search_type
         translation: The translation to get the names of the tabs
+        use_leta: Whether Mullvad Leta backend is being used
 
     Returns:
         dict: contains the name, the href and if the tab is selected or not
@@ -442,6 +439,11 @@ def get_tabs_content(tabs: dict,
         block_idx = full_query.index('-site:')
         map_query = map_query[:block_idx]
     tabs = copy.deepcopy(tabs)
+    
+    # If using Leta, remove unsupported tabs (images, videos, news, maps)
+    if use_leta:
+        tabs = {k: v for k, v in tabs.items() if k == 'all'}
+    
     for tab_id, tab_content in tabs.items():
         # update name to desired language
         if tab_id in translation:

@@ -55,7 +55,7 @@ class Search:
         config: the current user config settings
         session_key: the flask user fernet key
     """
-    def __init__(self, request, config, session_key, cookies_disabled=False):
+    def __init__(self, request, config, session_key, cookies_disabled=False, user_request=None):
         method = request.method
         self.request = request
         self.request_params = request.args if method == 'GET' else request.form
@@ -66,6 +66,7 @@ class Search:
         self.query = ''
         self.widget = ''
         self.cookies_disabled = cookies_disabled
+        self.user_request = user_request
         self.search_type = self.request_params.get(
             'tbm') if 'tbm' in self.request_params else ''
 
@@ -103,7 +104,7 @@ class Search:
                 pass
 
         # Strip '!' for "feeling lucky" queries
-        if match := re.search("(^|\s)!($|\s)", q):
+        if match := re.search(r"(^|\s)!($|\s)", q):
             self.feeling_lucky = True
             start, end = match.span()
             self.query = " ".join([seg for seg in [q[:start], q[end:]] if seg])
@@ -147,26 +148,29 @@ class Search:
 
         # force mobile search when view image is true and
         # the request is not already made by a mobile
-        # FIXME: Broken since the user agent changes as of 16 Jan 2025
-        # view_image = ('tbm=isch' in full_query
-                      # and self.config.view_image
-                      # and not g.user_request.mobile)
+        view_image = ('tbm=isch' in full_query
+                      and self.config.view_image)
 
-        get_body = g.user_request.send(query=full_query,
-                                       force_mobile=self.config.view_image,
-                                       user_agent=self.user_agent)
+        client = self.user_request or g.user_request
+        get_body = client.send(query=full_query,
+                               force_mobile=self.config.view_image,
+                               user_agent=self.user_agent)
 
         # Produce cleanable html soup from response
         get_body_safed = get_body.text.replace("&lt;","andlt;").replace("&gt;","andgt;")
         html_soup = bsoup(get_body_safed, 'html.parser')
+        
+        # Ensure we extract only the content within <html> if it exists
+        # This prevents doctype declarations from appearing in the output
+        if html_soup.html:
+            html_soup = html_soup.html
 
         # Replace current soup if view_image is active
-        # FIXME: Broken since the user agent changes as of 16 Jan 2025
-        # if view_image:
-            # html_soup = content_filter.view_image(html_soup)
+        if view_image:
+            html_soup = content_filter.view_image(html_soup)
 
         # Indicate whether or not a Tor connection is active
-        if g.user_request.tor_valid:
+        if (self.user_request or g.user_request).tor_valid:
             html_soup.insert(0, bsoup(TOR_BANNER, 'html.parser'))
 
         formatted_results = content_filter.clean(html_soup)

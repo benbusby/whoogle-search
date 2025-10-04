@@ -17,13 +17,21 @@
     <meta name="referrer" content="no-referrer">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="static/img/favicon/ms-icon-144x144.png">
-    {% if autocomplete_enabled == '1' %}
-        <script src="{{ cb_url('autocomplete.js') }}"></script>
+    {% if bundle_static() %}
+        <script src="/{{ cb_url('bundle.js') }}" defer></script>
+    {% else %}
+        {% if autocomplete_enabled == '1' %}
+            <script src="{{ cb_url('autocomplete.js') }}"></script>
+        {% endif %}
+        <script type="text/javascript" src="{{ cb_url('controller.js') }}"></script>
     {% endif %}
-    <script type="text/javascript" src="{{ cb_url('controller.js') }}"></script>
     <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ cb_url('logo.css') }}">
+    {% if bundle_static() %}
+        <link rel="stylesheet" href="/{{ cb_url('bundle.css') }}">
+    {% else %}
+        <link rel="stylesheet" href="{{ cb_url('logo.css') }}">
+    {% endif %}
     {% if config.theme %}
         {% if config.theme == 'system' %}
             <style>
@@ -36,7 +44,9 @@
     {% else %}
         <link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
     {% endif %}
-    <link rel="stylesheet" href="{{ cb_url('main.css') }}">
+    {% if not bundle_static() %}
+        <link rel="stylesheet" href="{{ cb_url('main.css') }}">
+    {% endif %}
     <noscript>
         <style>
             #main {
@@ -222,6 +232,12 @@
                             <label for="config-tor">{{ translation['config-tor'] }}: {{ '' if tor_available else 'Unavailable' }}</label>
                             <input type="checkbox" name="tor"
                                    id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
+                        </div>
+                        <div class="config-div config-div-leta">
+                            <label class="tooltip" for="config-leta">Use Mullvad Leta Backend: </label>
+                            <input type="checkbox" name="use_leta"
+                                   id="config-leta" {{ 'checked' if config.use_leta else '' }}>
+                            <div><span class="info-text"> — Uses Mullvad's privacy-focused search. Only supports regular web search (no images/videos/news/maps).</span></div>
                         </div>
                         <div class="config-div config-div-get-only">
                             <label for="config-get-only">{{ translation['config-get-only'] }}: </label>

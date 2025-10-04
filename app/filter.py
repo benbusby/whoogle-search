@@ -142,6 +142,127 @@ class Filter:
     def elements(self):
         return self._elements
 
+    def convert_leta_to_whoogle(self, soup) -> BeautifulSoup:
+        """Converts Leta search results HTML to Whoogle-compatible format
+        
+        Args:
+            soup: BeautifulSoup object containing Leta results
+            
+        Returns:
+            BeautifulSoup: Converted HTML in Whoogle format
+        """
+        # Find all Leta result articles
+        articles = soup.find_all('article', class_='svelte-fmlk7p')
+        
+        if not articles:
+            # No results found, return empty results page
+            return soup
+        
+        # Create a new container for results with proper Whoogle CSS class
+        main_div = BeautifulSoup(features='html.parser').new_tag('div', attrs={'id': 'main'})
+        
+        for article in articles:
+            # Extract data from Leta article
+            link_tag = article.find('a', href=True)
+            if not link_tag:
+                continue
+                
+            url = link_tag.get('href', '')
+            title_tag = article.find('h3')
+            title = title_tag.get_text(strip=True) if title_tag else ''
+            
+            snippet_tag = article.find('p', class_='result__body')
+            snippet = snippet_tag.get_text(strip=True) if snippet_tag else ''
+            
+            cite_tag = article.find('cite')
+            display_url = cite_tag.get_text(strip=True) if cite_tag else url
+            
+            # Create Whoogle-style result div with proper CSS class
+            result_div = BeautifulSoup(features='html.parser').new_tag(
+                'div', attrs={'class': [GClasses.result_class_a]}
+            )
+            result_outer = BeautifulSoup(features='html.parser').new_tag('div')
+            
+            # Create a div for the title link
+            title_div = BeautifulSoup(features='html.parser').new_tag('div')
+            result_link = BeautifulSoup(features='html.parser').new_tag('a', href=url)
+            result_title = BeautifulSoup(features='html.parser').new_tag('h3')
+            result_title.string = title
+            result_link.append(result_title)
+            title_div.append(result_link)
+            
+            # Create a div for the URL display with cite
+            url_div = BeautifulSoup(features='html.parser').new_tag('div')
+            result_cite = BeautifulSoup(features='html.parser').new_tag('cite')
+            result_cite.string = display_url
+            url_div.append(result_cite)
+            
+            # Create a div for snippet
+            result_snippet = BeautifulSoup(features='html.parser').new_tag('div')
+            snippet_span = BeautifulSoup(features='html.parser').new_tag('span')
+            snippet_span.string = snippet
+            result_snippet.append(snippet_span)
+            
+            # Assemble the result with proper structure
+            result_outer.append(title_div)
+            result_outer.append(url_div)
+            result_outer.append(result_snippet)
+            result_div.append(result_outer)
+            main_div.append(result_div)
+        
+        # Find and preserve pagination elements from Leta
+        navigation = soup.find('div', class_='navigation')
+        if navigation:
+            # Convert Leta's "Next" button to Whoogle-style pagination
+            next_button = navigation.find('button', attrs={'data-cy': 'next-button'})
+            if next_button:
+                next_form = next_button.find_parent('form')
+                if next_form:
+                    # Extract the page number from hidden input
+                    page_input = next_form.find('input', attrs={'name': 'page'})
+                    if page_input:
+                        next_page = page_input.get('value', '2')
+                        # Create footer for pagination
+                        footer = BeautifulSoup(features='html.parser').new_tag('footer')
+                        nav_table = BeautifulSoup(features='html.parser').new_tag('table')
+                        nav_tr = BeautifulSoup(features='html.parser').new_tag('tr')
+                        nav_td = BeautifulSoup(features='html.parser').new_tag('td')
+                        
+                        # Calculate start value for Whoogle pagination
+                        start_val = (int(next_page) - 1) * 10
+                        next_link = BeautifulSoup(features='html.parser').new_tag('a', href=f'search?q={self.query}&start={start_val}')
+                        next_link.string = 'Next »'
+                        
+                        nav_td.append(next_link)
+                        nav_tr.append(nav_td)
+                        nav_table.append(nav_tr)
+                        footer.append(nav_table)
+                        main_div.append(footer)
+        
+        # Clear the original soup body and add our converted results
+        if soup.body:
+            soup.body.clear()
+            # Add inline style to body for proper width constraints
+            if not soup.body.get('style'):
+                soup.body['style'] = 'padding: 0 20px; margin: 0 auto; max-width: 1000px;'
+            soup.body.append(main_div)
+        else:
+            # If no body, create one with proper styling
+            new_body = BeautifulSoup(features='html.parser').new_tag(
+                'body', 
+                attrs={'style': 'padding: 0 20px; margin: 0 auto; max-width: 1000px;'}
+            )
+            new_body.append(main_div)
+            if soup.html:
+                soup.html.append(new_body)
+            else:
+                # Create minimal HTML structure
+                html_tag = BeautifulSoup(features='html.parser').new_tag('html')
+                html_tag.append(new_body)
+                soup.append(html_tag)
+        
+        return soup
+
     def encrypt_path(self, path, is_element=False) -> str:
         # Encrypts path to avoid plaintext results in logs
         if is_element:
@@ -155,6 +276,11 @@ class Filter:
 
     def clean(self, soup) -> BeautifulSoup:
         self.soup = soup
+        
+        # Check if this is a Leta result page and convert it
+        if self.config.use_leta and self.soup.find('article', class_='svelte-fmlk7p'):
+            self.soup = self.convert_leta_to_whoogle(self.soup)
+        
         self.main_divs = self.soup.find('div', {'id': 'main'})
         self.remove_ads()
         self.remove_block_titles()
@@ -219,7 +345,7 @@ class Filter:
             return
 
         for d in div.find_all('div', recursive=True):
-            d_text = d.find(text=True, recursive=False)
+            d_text = d.find(string=True, recursive=False)
 
             # Ensure we're working with tags that contain text content
             if not d_text or not d.string:
@@ -295,7 +421,7 @@ class Filter:
             return
         search_string = ' '.join(['-site:' +
                                  _ for _ in self.config.block.split(',')])
-        selected = soup.body.findAll(text=re.compile(search_string))
+        selected = soup.body.find_all(string=re.compile(search_string))
 
         for result in selected:
             result.string.replace_with(result.string.replace(
@@ -362,11 +488,11 @@ class Filter:
 
         def pull_child_divs(result_div: BeautifulSoup):
             try:
-                return result_div.findChildren(
-                    'div', recursive=False
-                )[0].findChildren(
-                    'div', recursive=False)
-            except IndexError:
+                top_level_divs = result_div.find_all('div', recursive=False)
+                if not top_level_divs:
+                    return []
+                return top_level_divs[0].find_all('div', recursive=False)
+            except Exception:
                 return []
 
         if not self.main_divs:
@@ -649,50 +775,94 @@ class Filter:
         """Replaces link locations and page elements if "alts" config
         is enabled
         """
-        for site, alt in SITE_ALTS.items():
-            if site != "medium.com" and alt != "":
-                # Ignore medium.com replacements since these are handled
-                # specifically in the link description replacement, and medium
-                # results are never given their own "card" result where this
-                # replacement would make sense.
-                # Also ignore if the alt is empty, since this is used to indicate
-                # that the alt is not enabled.
-                for div in self.soup.find_all('div', text=re.compile(site)):
-                    # Use the number of words in the div string to determine if the
-                    # string is a result description (shouldn't replace domains used
-                    # in desc text).
-                    if len(div.string.split(' ')) == 1:
-                        div.string = div.string.replace(site, alt)
+        # Precompute regex for sites (escape dots) and common prefixes
+        site_keys = list(SITE_ALTS.keys())
+        if not site_keys:
+            return
+        sites_pattern = re.compile('|'.join([re.escape(k) for k in site_keys]))
+        prefix_pattern = re.compile(r'^(?:https?:\/\/)?(?:(?:www|mobile|m)\.)?')
 
-            for link in self.soup.find_all('a', href=True):
-                # Search and replace all link descriptions
-                # with alternative location
-                link['href'] = get_site_alt(link['href'])
-                link_desc = link.find_all(
-                    text=re.compile('|'.join(SITE_ALTS.keys())))
-                if len(link_desc) == 0:
-                    continue
+        # 1) Replace bare domain divs (single token) once, avoiding duplicates
+        for div in self.soup.find_all('div', string=sites_pattern):
+            if not div or not div.string:
+                continue
+            if len(div.string.split(' ')) != 1:
+                continue
+            match = sites_pattern.search(div.string)
+            if not match:
+                continue
+            site = match.group(0)
+            alt = SITE_ALTS.get(site, '')
+            if not alt:
+                continue
+            # Skip if already contains the alt to avoid old.old.* repetition
+            if alt in div.string:
+                continue
+            div.string = div.string.replace(site, alt)
 
-                # Replace link description
-                link_desc = link_desc[0]
-                if site not in link_desc or not alt:
-                    continue
+        # 2) Update link hrefs and descriptions in a single pass
+        for link in self.soup.find_all('a', href=True):
+            link['href'] = get_site_alt(link['href'])
 
-                new_desc = BeautifulSoup(features='html.parser').new_tag('div')
-                link_str = str(link_desc)
+            # Find a description text node matching a known site
+            desc_nodes = link.find_all(string=sites_pattern)
+            if not desc_nodes:
+                continue
+            desc_node = desc_nodes[0]
+            link_str = str(desc_node)
 
-                # Medium links should be handled differently, since 'medium.com'
-                # is a common substring of domain names, but shouldn't be
-                # replaced (i.e. 'philomedium.com' should stay as it is).
-                if 'medium.com' in link_str:
-                    if link_str.startswith('medium.com') or '.medium.com' in link_str:
-                        link_str = SITE_ALTS['medium.com'] + link_str[
-                            link_str.find('medium.com') + len('medium.com'):]
-                    new_desc.string = link_str
+            # Determine which site key is present in the description
+            site_match = sites_pattern.search(link_str)
+            if not site_match:
+                continue
+            site = site_match.group(0)
+            alt = SITE_ALTS.get(site, '')
+            if not alt:
+                continue
+
+            # Avoid duplication if alt already present
+            if alt in link_str:
+                continue
+
+            # Medium-specific handling remains to avoid matching substrings
+            if 'medium.com' in link_str:
+                if link_str.startswith('medium.com') or '.medium.com' in link_str:
+                    replaced = SITE_ALTS['medium.com'] + link_str[
+                        link_str.find('medium.com') + len('medium.com'):
+                    ]
                 else:
-                    new_desc.string = link_str.replace(site, alt)
+                    replaced = link_str
+            else:
+                # If the description looks like a URL with scheme, replace only the host
+                if '://' in link_str:
+                    scheme, rest = link_str.split('://', 1)
+                    host, sep, path = rest.partition('/')
+                    # Drop common prefixes from host when swapping to a fully-qualified alt
+                    alt_parsed = urlparse.urlparse(alt)
+                    alt_host = alt_parsed.netloc if alt_parsed.netloc else alt.replace('https://', '').replace('http://', '')
+                    # If alt includes a scheme, prefer its host; otherwise use alt as host
+                    if alt_parsed.scheme:
+                        new_host = alt_host
+                    else:
+                        # When alt has no scheme, still replace entire host
+                        new_host = alt
+                    # Prevent replacing if host already equals target
+                    if host == new_host:
+                        replaced = link_str
+                    else:
+                        replaced = f"{scheme}://{new_host}{sep}{path}"
+                else:
+                    # No scheme in the text; include optional prefixes in replacement
+                    # Replace any leading www./m./mobile. + site with alt host (no scheme)
+                    alt_parsed = urlparse.urlparse(alt)
+                    alt_host = alt_parsed.netloc if alt_parsed.netloc else alt.replace('https://', '').replace('http://', '')
+                    # Build a pattern that includes optional prefixes for the specific site
+                    site_with_prefix = re.compile(rf'(?:(?:www|mobile|m)\.)?{re.escape(site)}')
+                    replaced = site_with_prefix.sub(alt_host, link_str, count=1)
 
-                link_desc.replace_with(new_desc)
+            new_desc = BeautifulSoup(features='html.parser').new_tag('div')
+            new_desc.string = replaced
+            desc_node.replace_with(new_desc)
 
     def view_image(self, soup) -> BeautifulSoup:
         """Replaces the soup with a new one that handles mobile results and

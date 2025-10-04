@@ -32,8 +32,7 @@ from app.utils.session import valid_user_session
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for, g
-from requests import exceptions
-from requests.models import PreparedRequest
+import httpx
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.exceptions import InvalidSignature
 from werkzeug.datastructures import MultiDict
@@ -166,7 +165,8 @@ def before_request_func():
     g.user_request = Request(
         request.headers.get('User-Agent'),
         get_request_url(request.url_root),
-        config=g.user_config)
+        config=g.user_config
+    )
 
     g.app_location = g.user_config.url
 
@@ -283,10 +283,42 @@ def autocomplete():
     #
     # Note: If Tor is enabled, this returns nothing, as the request is
     # almost always rejected
+    # Also check if autocomplete is disabled globally
+    autocomplete_enabled = os.environ.get('WHOOGLE_AUTOCOMPLETE', '1') != '0'
     return jsonify([
         q,
-        g.user_request.autocomplete(q) if not g.user_config.tor else []
+        g.user_request.autocomplete(q) if (not g.user_config.tor and autocomplete_enabled) else []
     ])
+
+def clean_text_spacing(text: str) -> str:
+    """Clean up text spacing issues from HTML extraction.
+    
+    Args:
+        text: Text extracted from HTML that may have spacing issues
+        
+    Returns:
+        Cleaned text with proper spacing
+    """
+    if not text:
+        return text
+    
+    # Normalize multiple spaces to single space
+    text = re.sub(r'\s+', ' ', text)
+    
+    # Fix domain names: remove space before period followed by domain extension
+    # Examples: "weather .com" -> "weather.com", "example .org" -> "example.org"
+    text = re.sub(r'\s+\.([a-zA-Z]{2,})\b', r'.\1', text)
+    
+    # Fix www/http/https patterns
+    # Examples: "www .example" -> "www.example"
+    text = re.sub(r'\b(www|http|https)\s+\.', r'\1.', text)
+    
+    # Fix spaces before common punctuation
+    text = re.sub(r'\s+([,;:])', r'\1', text)
+    
+    # Strip leading/trailing whitespace
+    return text.strip()
+
 
 @app.route(f'/{Endpoint.search}', methods=['GET', 'POST'])
 @session_required
@@ -299,7 +331,7 @@ def search():
         get_req_str = urlparse.urlencode(post_data)
         return redirect(url_for('.search') + '?' + get_req_str)
 
-    search_util = Search(request, g.user_config, g.session_key)
+    search_util = Search(request, g.user_config, g.session_key, user_request=g.user_request)
     query = search_util.new_search_query()
 
     bang = resolve_bang(query)
@@ -308,6 +340,16 @@ def search():
 
     # Redirect to home if invalid/blank search
     if not query:
+        return redirect(url_for('.index'))
+
+    # Check if using Leta with unsupported search type
+    tbm_value = request.args.get('tbm', '').strip()
+    if g.user_config.use_leta and tbm_value:
+        session['error_message'] = (
+            "Image, video, news, and map searches are not supported when using "
+            "Mullvad Leta as the search backend. Please disable Leta in settings "
+            "or perform a regular web search."
+        )
         return redirect(url_for('.index'))
 
     # Generate response and number of external elements from the page
@@ -320,7 +362,15 @@ def search():
             'tor']
         return redirect(url_for('.index'))
 
+    wants_json = (
+        request.args.get('format') == 'json' or
+        'application/json' in request.headers.get('Accept', '') or
+        'application/*+json' in request.headers.get('Accept', '')
+    )
+
     if search_util.feeling_lucky:
+        if wants_json:
+            return jsonify({'redirect': response}), 303
         return redirect(response, code=303)
 
     # If the user is attempting to translate a string, determine the correct
@@ -341,17 +391,26 @@ def search():
         app.logger.error('503 (CAPTCHA)')
         fallback_engine = os.environ.get('WHOOGLE_FALLBACK_ENGINE_URL', '')
         if (fallback_engine):
+            if wants_json:
+                return jsonify({'redirect': fallback_engine + query}), 302
             return redirect(fallback_engine + query)
         
-        return render_template(
-            'error.html',
-            blocked=True,
-            error_message=translation['ratelimit'],
-            translation=translation,
-            farside='https://farside.link',
-            config=g.user_config,
-            query=urlparse.unquote(query),
-            params=g.user_config.to_params(keys=['preferences'])), 503
+        if wants_json:
+            return jsonify({
+                'blocked': True,
+                'error_message': translation['ratelimit'],
+                'query': urlparse.unquote(query)
+            }), 503
+        else:
+            return render_template(
+                'error.html',
+                blocked=True,
+                error_message=translation['ratelimit'],
+                translation=translation,
+                farside='https://farside.link',
+                config=g.user_config,
+                query=urlparse.unquote(query),
+                params=g.user_config.to_params(keys=['preferences'])), 503
 
     response = bold_search_terms(response, query)
 
@@ -363,12 +422,14 @@ def search():
         elif search_util.widget == 'calculator' and not 'nojs' in request.args:
             response = add_calculator_card(html_soup)
 
-    # Update tabs content
+    # Update tabs content (fallback to the raw query if full_query isn't set)
+    full_query_val = getattr(search_util, 'full_query', query)
     tabs = get_tabs_content(app.config['HEADER_TABS'],
-                            search_util.full_query,
+                            full_query_val,
                             search_util.search_type,
                             g.user_config.preferences,
-                            translation)
+                            translation,
+                            g.user_config.use_leta)
 
     # Feature to display currency_card
     # Since this is determined by more than just the
@@ -381,6 +442,118 @@ def search():
     preferences = g.user_config.preferences
     home_url = f"home?preferences={preferences}" if preferences else "home"
     cleanresponse = str(response).replace("andlt;","&lt;").replace("andgt;","&gt;")
+
+    if wants_json:
+        # Build a parsable JSON from the filtered soup
+        json_soup = bsoup(str(response), 'html.parser')
+        results = []
+        seen = set()
+        
+        # Find all result containers (using known result classes)
+        result_divs = json_soup.find_all('div', class_=['ZINbbc', 'ezO2md'])
+        
+        if result_divs:
+            # Process structured Google results with container divs
+            for div in result_divs:
+                # Find the first valid link in this result container
+                link = None
+                for a in div.find_all('a', href=True):
+                    if a['href'].startswith('http'):
+                        link = a
+                        break
+                
+                if not link:
+                    continue
+                    
+                href = link['href']
+                if href in seen:
+                    continue
+                
+                # Get all text from the result container, not just the link
+                text = clean_text_spacing(div.get_text(separator=' ', strip=True))
+                if not text:
+                    continue
+                
+                # Extract title and content separately
+                # Title is typically in an h3 tag, CVA68e span, or the main link text
+                title = ''
+                # First try h3 tag
+                h3_tag = div.find('h3')
+                if h3_tag:
+                    title = clean_text_spacing(h3_tag.get_text(separator=' ', strip=True))
+                else:
+                    # Try CVA68e class (common title class in Google results)
+                    title_span = div.find('span', class_='CVA68e')
+                    if title_span:
+                        title = clean_text_spacing(title_span.get_text(separator=' ', strip=True))
+                    elif link:
+                        # Fallback to link text, but exclude URL breadcrumb
+                        title = clean_text_spacing(link.get_text(separator=' ', strip=True))
+                
+                # Content is the description/snippet text
+                # Look for description/snippet elements
+                content = ''
+                # Common classes for snippets/descriptions in Google results
+                snippet_selectors = [
+                    {'class_': 'VwiC3b'},   # Standard snippet
+                    {'class_': 'FrIlee'},   # Alternative snippet class (common in current Google)
+                    {'class_': 's'},        # Another snippet class
+                    {'class_': 'st'},       # Legacy snippet class
+                ]
+                
+                for selector in snippet_selectors:
+                    snippet_elem = div.find('span', selector) or div.find('div', selector)
+                    if snippet_elem:
+                        # Get text but exclude any nested links (like "Related searches")
+                        content = clean_text_spacing(snippet_elem.get_text(separator=' ', strip=True))
+                        # Only use if it's substantial content (not just the URL breadcrumb)
+                        if content and not content.startswith('www.') and '›' not in content:
+                            break
+                        else:
+                            content = ''
+                
+                # If no specific content found, use text minus title as fallback
+                if not content and title:
+                    # Try to extract content by removing title from full text
+                    if text.startswith(title):
+                        content = text[len(title):].strip()
+                    else:
+                        content = text
+                elif not content:
+                    content = text
+                    
+                seen.add(href)
+                results.append({
+                    'href': href,
+                    'text': text,
+                    'title': title,
+                    'content': content
+                })
+        else:
+            # Fallback: extract links directly if no result containers found
+            for a in json_soup.find_all('a', href=True):
+                href = a['href']
+                if not href.startswith('http'):
+                    continue
+                if href in seen:
+                    continue
+                text = clean_text_spacing(a.get_text(separator=' ', strip=True))
+                if not text:
+                    continue
+                seen.add(href)
+                # In fallback mode, the link text serves as both title and text
+                results.append({
+                    'href': href,
+                    'text': text,
+                    'title': text,
+                    'content': ''
+                })
+
+        return jsonify({
+            'query': urlparse.unquote(query),
+            'search_type': search_util.search_type,
+            'results': results
+        })
 
     return render_template(
         'display.html',
@@ -521,7 +694,7 @@ def element():
         tmp_mem.seek(0)
 
         return send_file(tmp_mem, mimetype=src_type)
-    except exceptions.RequestException:
+    except httpx.HTTPError:
         pass
 
     return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
@@ -639,7 +812,7 @@ def internal_error(e):
 
     fallback_engine = os.environ.get('WHOOGLE_FALLBACK_ENGINE_URL', '')
     if (fallback_engine):
-        return redirect(fallback_engine + query)
+        return redirect(fallback_engine + (query or ''))
 
     localization_lang = g.user_config.get_localization_lang()
     translation = app.config['TRANSLATIONS'][localization_lang]
@@ -649,7 +822,7 @@ def internal_error(e):
             translation=translation,
             farside='https://farside.link',
             config=g.user_config,
-            query=urlparse.unquote(query),
+            query=urlparse.unquote(query or ''),
             params=g.user_config.to_params(keys=['preferences'])), 500
 
 

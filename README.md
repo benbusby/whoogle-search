@@ -2,11 +2,12 @@
 >
 >**Mullvad Leta Backend Now Available!**
 >
->As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. We have made multiple workarounds, but as of 2 October 2025, Google has killed off all remaining methods we had to retrieve results from them originally. While we work to rebuild and hopefully find new ways to continue on, we have released a stopgap (in the beta branch/release) which uses [Mullvad Leta](https://leta.mullvad.net) (an alternative privacy-focused search backend) as the default (but disable-able) backend leveraging their Google results. 
+>As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. We have made multiple workarounds, but as of 2 October 2025, Google has killed off all remaining methods we had to retrieve results from them originally. While we work to rebuild and hopefully find new ways to continue on, we have released a stopgap which usus [Mullvad Leta](https://leta.mullvad.net) (an alternative privacy-focused search backend) as the default (but disable-able) backend leveraging their Google results. 
 >
 >**Leta is now enabled by default**. It provides anonymous search results through Mullvad's infrastructure without requiring JavaScript. While Leta doesn't support image, video, news, or map searches, it provides privacy-focused web search results.
 >
 >To switch back to Google (if it becomes available again), you can disable Leta in the config settings or set `WHOOGLE_CONFIG_USE_LETA=0` in your environment variables. See [LETA_INTEGRATION.md](LETA_INTEGRATION.md) for more details.
+
 ___
 
 ![Whoogle Search](docs/banner.png)
@@ -15,7 +16,6 @@ ___
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![tests](https://github.com/benbusby/whoogle-search/actions/workflows/tests.yml/badge.svg)](https://github.com/benbusby/whoogle-search/actions/workflows/tests.yml)
 [![buildx](https://github.com/benbusby/whoogle-search/actions/workflows/buildx.yml/badge.svg)](https://github.com/benbusby/whoogle-search/actions/workflows/buildx.yml)
-[![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-benbusby-shoogle-master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/benbusby/whoogle-search)](https://hub.docker.com/r/benbusby/whoogle-search)
 
 <table>
@@ -58,6 +58,7 @@ Contents
 10. [Screenshots](#screenshots)
 
 ## Features
+- **Mullvad Leta backend support** - Privacy-focused alternative to Google (enabled by default)
 - No ads or sponsored content
 - No JavaScript\*
 - No cookies\*\*
@@ -76,6 +77,7 @@ Contents
 - User-defined [custom bangs](#custom-bangs)
 - Optional location-based searching (i.e. results near \<city\>)
 - Optional NoJS mode to view search results in a separate window with JavaScript blocked
+- JSON output for results via content negotiation (see "JSON results (API)")
 
 <sup>*No third party JavaScript. Whoogle can be used with JavaScript disabled, but if enabled, uses JavaScript for things like presenting search suggestions.</sup>
 
@@ -464,6 +466,8 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_SHOW_FAVICONS | Show/hide favicons next to search result URLs. Default on.                               |
 | WHOOGLE_UPDATE_CHECK  | Enable/disable the automatic daily check for new versions of Whoogle. Default on.        |
 | WHOOGLE_FALLBACK_ENGINE_URL | Set a fallback Search Engine URL when there is internal server error or instance is rate-limited. Search query is appended to the end of the URL (eg. https://duckduckgo.com/?k1=-1&q=). |
+| WHOOGLE_BUNDLE_STATIC | When set to 1, serve a single bundled CSS and JS file generated at startup to reduce requests. Default off. |
+| WHOOGLE_HTTP2         | Enable HTTP/2 for upstream requests (via httpx). Default on — set to 0 to force HTTP/1.1. |
 
 ### Config Environment Variables
 These environment variables allow setting default config values, but can be overwritten manually by using the home page config menu. These allow a shortcut for destroying/rebuilding an instance to the same config state every time.
@@ -490,11 +494,34 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED | Encrypt preferences token, requires preferences key             |
 | WHOOGLE_CONFIG_PREFERENCES_KEY       | Key to encrypt preferences in URL (REQUIRED to show url)        |
 | WHOOGLE_CONFIG_ANON_VIEW             | Include the "anonymous view" option for each search result      |
+| WHOOGLE_CONFIG_USE_LETA              | Use Mullvad Leta as search backend (default: enabled). Set to 0 to use Google instead |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
 
 To filter by a range of time, append ":past <time>" to the end of your search, where <time> can be `hour`, `day`, `month`, or `year`. Example: `coronavirus updates :past hour`
+
+### JSON results (API)
+Whoogle can return filtered results as JSON using the same sanitization rules as the HTML view.
+
+- Send `Accept: application/json` or append `format=json` to the search URL.
+- Example: `/search?q=whoogle` with `Accept: application/json`, or `/search?q=whoogle&format=json`.
+- Response shape:
+
+```
+{
+  "query": "whoogle",
+  "search_type": "",
+  "results": [
+    {"href": "https://example.com/page", "text": "Example Page"},
+    ...
+  ]
+}
+```
+
+Special cases:
+- Feeling Lucky returns HTTP 303 with body `{ "redirect": "<url>" }`.
+- Temporary blocks (captcha) return HTTP 503 with `{ "blocked": true, "error_message": "...", "query": "..." }`.
 
 ## Extra Steps
 
@@ -631,6 +658,14 @@ server {
 
 You can then add SSL support using LetsEncrypt by following a guide such as [this one](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/).
 
+### Static asset bundling (optional)
+Whoogle can optionally serve a single bundled CSS and JS to reduce the number of HTTP requests.
+
+- Enable by setting `WHOOGLE_BUNDLE_STATIC=1` and restarting the app.
+- On startup, Whoogle concatenates local CSS/JS into hashed files under `app/static/build/` and templates will prefer those bundles.
+- When disabled (default), templates load individual CSS/JS files for easier development.
+- Note: Theme CSS (`*-theme.css`) are still loaded separately to honor user theme selection.
+
 ## Contributing
 
 Under the hood, Whoogle is a basic Flask app with the following structure:
@@ -682,6 +717,20 @@ def contains(x: list, y: int) -> bool:
 Whoogle currently supports translations using [`translations.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/translations.json). Language values in this file need to match the "value" of the according language in [`languages.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/languages.json) (i.e. "lang_en" for English, "lang_es" for Spanish, etc). After you add a new set of translations to `translations.json`, open a PR with your changes and they will be merged in as soon as possible.
 
 ## FAQ
+
+**What is Mullvad Leta and why is it the default?**
+
+Mullvad Leta is a privacy-focused search service provided by [Mullvad VPN](https://mullvad.net/en/leta). As of January 2025, Google disabled JavaScript-free search results, which breaks Whoogle's core functionality. Leta provides an excellent alternative that:
+
+- Doesn't require JavaScript
+- Provides privacy-focused search results through Mullvad's infrastructure
+- Uses Google's search index (so results are similar to what you'd expect)
+- Doesn't track or log your searches
+
+**Limitations:** Leta only supports regular web search - no images, videos, news, or maps. If you need these features and Google's JavaScript-free search becomes available again, you can disable Leta in settings or set `WHOOGLE_CONFIG_USE_LETA=0`.
+
+For more details, see [LETA_INTEGRATION.md](LETA_INTEGRATION.md).
+
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
 Whoogle is intended to only ever be deployed to private instances by individuals of any background, with as little effort as possible. Prior knowledge of/experience with the command line or deploying applications is not necessary to deploy Whoogle, which isn't the case with Searx. As a result, Whoogle is missing some features of Searx in order to be as easy to deploy as possible.

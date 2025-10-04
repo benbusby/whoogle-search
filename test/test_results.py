@@ -3,6 +3,7 @@ from app.filter import Filter
 from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.utils import results
+from app.utils import search as search_mod
 from app.utils.session import generate_key
 from datetime import datetime
 from dateutil.parser import ParserError, parse
@@ -32,18 +33,24 @@ def get_search_results(data):
     return result_divs
 
 
-def test_get_results(client):
-    # FIXME: Temporary fix while #1211 is investigated
-    return
+def test_get_results(client, monkeypatch):
+    def fake_generate(self):
+        # Build 10 results under #main, each with a single inner div
+        items = []
+        for i in range(10):
+            items.append(f'<div><div><a href="https://example.com/{i}">Item {i}</a></div></div>')
+        return f'<div id="main">{"".join(items)}</div>'
+
+    monkeypatch.setattr(search_mod.Search, 'generate_response', fake_generate)
 
     rv = client.get(f'/{Endpoint.search}?q=test')
     assert rv._status_code == 200
 
     # Depending on the search, there can be more
     # than 10 result divs
-    results = get_search_results(rv.data)
-    assert len(results) >= 10
-    assert len(results) <= 15
+    results_divs = get_search_results(rv.data)
+    assert len(results_divs) >= 10
+    assert len(results_divs) <= 15
 
 
 def test_post_results(client):
@@ -87,9 +94,12 @@ def test_block_results(client):
         assert result_site not in 'pinterest.com'
 
 
-def test_view_my_ip(client):
-    # FIXME: Temporary fix while #1211 is investigated
-    return
+def test_view_my_ip(client, monkeypatch):
+    def fake_generate(self):
+        # Minimal page; ip card is injected later by routes when widget == 'ip'
+        return '<div id="main"></div>'
+
+    monkeypatch.setattr(search_mod.Search, 'generate_response', fake_generate)
 
     rv = client.get(f'/{Endpoint.search}?q=my ip address')
     assert rv._status_code == 200
@@ -100,9 +110,16 @@ def test_view_my_ip(client):
     assert '127.0.0.1' in str_data
 
 
-def test_recent_results(client):
-    # FIXME: Temporary fix while #1211 is investigated
-    return
+def test_recent_results(client, monkeypatch):
+    def fake_generate(self):
+        # Create results with a span containing today's date so it passes all windows
+        today = datetime.now().strftime('%b %d, %Y')
+        items = []
+        for i in range(5):
+            items.append(f'<div><div><span>{today}</span></div></div>')
+        return f'<div id="main">{"".join(items)}</div>'
+
+    monkeypatch.setattr(search_mod.Search, 'generate_response', fake_generate)
 
     times = {
         'tbs=qdr:y': 365,

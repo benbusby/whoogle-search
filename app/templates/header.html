@@ -155,4 +155,8 @@
     </div>
 </div>
 
+{% if bundle_static() %}
+<script src="/{{ cb_url('bundle.js') }}" defer></script>
+{% else %}
 <script type="text/javascript" src="{{ cb_url('header.js') }}"></script>
+{% endif %}

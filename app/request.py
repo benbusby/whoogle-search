@@ -1,10 +1,10 @@
 from app.models.config import Config
 from app.utils.misc import read_config_bool
+from app.services.provider import get_http_client
 from datetime import datetime
 from defusedxml import ElementTree as ET
 import random
-import requests
-from requests import Response, ConnectionError
+import httpx
 import urllib.parse as urlparse
 import os
 from stem import Signal, SocketError
@@ -107,7 +107,75 @@ def gen_user_agent(config, is_mobile) -> str:
     return DESKTOP_UA.format("Mozilla", linux, firefox)
 
 
+def gen_query_leta(query, args, config) -> str:
+    """Builds a query string for Mullvad Leta backend
+    
+    Args:
+        query: The search query string
+        args: Request arguments
+        config: User configuration
+        
+    Returns:
+        str: A formatted query string for Leta
+    """
+    # Ensure search query is parsable
+    query = urlparse.quote(query)
+    
+    # Build query starting with 'q='
+    query_str = 'q=' + query
+    
+    # Always use Google as the engine (Leta supports 'google' or 'brave')
+    query_str += '&engine=google'
+    
+    # Add country if configured
+    if config.country:
+        query_str += '&country=' + config.country.lower()
+    
+    # Add language if configured
+    # Convert from Google's lang format (lang_en) to Leta's format (en)
+    if config.lang_search:
+        lang_code = config.lang_search.replace('lang_', '')
+        query_str += '&language=' + lang_code
+    
+    # Handle time period filtering with :past syntax or tbs parameter
+    if ':past' in query:
+        time_range = str.strip(query.split(':past', 1)[-1]).lower()
+        if time_range.startswith('day'):
+            query_str += '&lastUpdated=d'
+        elif time_range.startswith('week'):
+            query_str += '&lastUpdated=w'
+        elif time_range.startswith('month'):
+            query_str += '&lastUpdated=m'
+        elif time_range.startswith('year'):
+            query_str += '&lastUpdated=y'
+    elif 'tbs' in args or 'tbs' in config:
+        result_tbs = args.get('tbs') if 'tbs' in args else config.tbs
+        # Convert Google's tbs format to Leta's lastUpdated format
+        if result_tbs and 'qdr:d' in result_tbs:
+            query_str += '&lastUpdated=d'
+        elif result_tbs and 'qdr:w' in result_tbs:
+            query_str += '&lastUpdated=w'
+        elif result_tbs and 'qdr:m' in result_tbs:
+            query_str += '&lastUpdated=m'
+        elif result_tbs and 'qdr:y' in result_tbs:
+            query_str += '&lastUpdated=y'
+    
+    # Add pagination if present
+    if 'start' in args:
+        start = int(args.get('start', '0'))
+        # Leta uses 1-indexed pages, Google uses result offset
+        page = (start // 10) + 1
+        if page > 1:
+            query_str += '&page=' + str(page)
+    
+    return query_str
+
+
 def gen_query(query, args, config) -> str:
+    # If using Leta backend, build query differently
+    if config.use_leta:
+        return gen_query_leta(query, args, config)
+    
     param_dict = {key: '' for key in VALID_PARAMS}
 
     # Use :past(hour/day/week/month/year) if available
@@ -202,12 +270,20 @@ class Request:
         config: the user's current whoogle configuration
     """
 
-    def __init__(self, normal_ua, root_path, config: Config):
-        self.search_url = 'https://www.google.com/search?gbv=1&num=' + str(
-            os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&q='
-        # Send heartbeat to Tor, used in determining if the user can or cannot
-        # enable Tor for future requests
-        send_tor_signal(Signal.HEARTBEAT)
+    def __init__(self, normal_ua, root_path, config: Config, http_client=None):
+        # Use Leta backend if configured, otherwise use Google
+        if config.use_leta:
+            self.search_url = 'https://leta.mullvad.net/search?'
+            self.use_leta = True
+        else:
+            self.search_url = 'https://www.google.com/search?gbv=1&num=' + str(
+                os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&'
+            self.use_leta = False
+        
+        # Optionally send heartbeat to Tor to determine availability
+        # Only when Tor is enabled in config to avoid unnecessary socket usage
+        if config.tor:
+            send_tor_signal(Signal.HEARTBEAT)
 
         self.language = config.lang_search if config.lang_search else ''
         self.country = config.country if config.country else ''
@@ -249,6 +325,8 @@ class Request:
         self.tor = config.tor
         self.tor_valid = False
         self.root_path = root_path
+        # Initialize HTTP client (shared per proxies)
+        self.http_client = http_client or get_http_client(self.proxies)
 
     def __getitem__(self, name):
         return getattr(self, name)
@@ -263,30 +341,39 @@ class Request:
             list: The list of matches for possible search suggestions
 
         """
-        ac_query = dict(q=query)
-        if self.language:
-            ac_query['lr'] = self.language
-        if self.country:
-            ac_query['gl'] = self.country
-        if self.lang_interface:
-            ac_query['hl'] = self.lang_interface
-
-        response = self.send(base_url=AUTOCOMPLETE_URL,
-                             query=urlparse.urlencode(ac_query)).text
-
-        if not response:
+        # Check if autocomplete is disabled via environment variable
+        if os.environ.get('WHOOGLE_AUTOCOMPLETE', '1') == '0':
             return []
-
+            
         try:
-            root = ET.fromstring(response)
-            return [_.attrib['data'] for _ in
-                    root.findall('.//suggestion/[@data]')]
-        except ET.ParseError:
-            # Malformed XML response
+            ac_query = dict(q=query)
+            if self.language:
+                ac_query['lr'] = self.language
+            if self.country:
+                ac_query['gl'] = self.country
+            if self.lang_interface:
+                ac_query['hl'] = self.lang_interface
+
+            response = self.send(base_url=AUTOCOMPLETE_URL,
+                                 query=urlparse.urlencode(ac_query)).text
+
+            if not response:
+                return []
+
+            try:
+                root = ET.fromstring(response)
+                return [_.attrib['data'] for _ in
+                        root.findall('.//suggestion/[@data]')]
+            except ET.ParseError:
+                # Malformed XML response
+                return []
+        except Exception as e:
+            # Log the error but don't crash - autocomplete is non-essential
+            print(f"Autocomplete error: {str(e)}")
             return []
 
     def send(self, base_url='', query='', attempt=0,
-             force_mobile=False, user_agent='') -> Response:
+             force_mobile=False, user_agent=''):
         """Sends an outbound request to a URL. Optionally sends the request
         using Tor, if enabled by the user.
 
@@ -323,10 +410,12 @@ class Request:
 
         # view is suppressed correctly
         now = datetime.now()
-        cookies = {
-            'CONSENT': 'PENDING+987',
-            'SOCS': 'CAESHAgBEhIaAB',
-        }
+        consent_cookie = 'CONSENT=PENDING+987; SOCS=CAESHAgBEhIaAB'
+        # Prefer header-based cookies to avoid httpx per-request cookies deprecation
+        if 'Cookie' in headers:
+            headers['Cookie'] += '; ' + consent_cookie
+        else:
+            headers['Cookie'] = consent_cookie
 
         # Validate Tor conn and request new identity if the last one failed
         if self.tor and not send_tor_signal(
@@ -339,8 +428,9 @@ class Request:
         # Make sure that the tor connection is valid, if enabled
         if self.tor:
             try:
-                tor_check = requests.get('https://check.torproject.org/',
-                                         proxies=self.proxies, headers=headers)
+                tor_check = self.http_client.get('https://check.torproject.org/',
+                                                 headers=headers,
+                                                 retries=1)
                 self.tor_valid = 'Congratulations' in tor_check.text
 
                 if not self.tor_valid:
@@ -348,16 +438,17 @@ class Request:
                         "Tor connection succeeded, but the connection could "
                         "not be validated by torproject.org",
                         disable=True)
-            except ConnectionError:
+            except httpx.RequestError:
                 raise TorError(
                     "Error raised during Tor connection validation",
                     disable=True)
 
-        response = requests.get(
-            (base_url or self.search_url) + query,
-            proxies=self.proxies,
-            headers=headers,
-            cookies=cookies)
+        try:
+            response = self.http_client.get(
+                (base_url or self.search_url) + query,
+                headers=headers)
+        except httpx.HTTPError as e:
+            raise
 
         # Retry query with new identity if using Tor (max 10 attempts)
         if 'form id="captcha-form"' in response.text and self.tor:

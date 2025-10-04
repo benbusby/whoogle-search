@@ -5,7 +5,7 @@ import io
 import os
 import re
 
-from requests import exceptions, get
+import httpx
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet
@@ -36,19 +36,24 @@ def fetch_favicon(url: str) -> bytes:
         bytes - the favicon bytes, or a placeholder image if one
         was not returned
     """
-    response = get(f'{ddg_favicon_site}/{urlparse(url).netloc}.ico')
+    try:
+        response = httpx.get(f'{ddg_favicon_site}/{urlparse(url).netloc}.ico', timeout=2.0)
 
-    if response.status_code == 200 and len(response.content) > 0:
-        tmp_mem = io.BytesIO()
-        tmp_mem.write(response.content)
-        tmp_mem.seek(0)
+        if response.status_code == 200 and len(response.content) > 0:
+            tmp_mem = io.BytesIO()
+            tmp_mem.write(response.content)
+            tmp_mem.seek(0)
 
-        return tmp_mem.read()
+            return tmp_mem.read()
+    except Exception:
+        # If favicon fetch fails, return placeholder
+        pass
     return placeholder_img
 
 
 def gen_file_hash(path: str, static_file: str) -> str:
-    file_contents = open(os.path.join(path, static_file), 'rb').read()
+    with open(os.path.join(path, static_file), 'rb') as f:
+        file_contents = f.read()
     file_hash = hashlib.md5(file_contents).hexdigest()[:8]
     filename_split = os.path.splitext(static_file)
 
@@ -97,8 +102,8 @@ def get_proxy_host_url(r: Request, default: str, root=False) -> str:
 def check_for_update(version_url: str, current: str) -> int:
     # Check for the latest version of Whoogle
     has_update = ''
-    with contextlib.suppress(exceptions.ConnectionError, AttributeError):
-        update = bsoup(get(version_url).text, 'html.parser')
+    with contextlib.suppress(httpx.RequestError, AttributeError):
+        update = bsoup(httpx.get(version_url).text, 'html.parser')
         latest = update.select_one('[class="Link--primary"]').string[1:]
         current = int(''.join(filter(str.isdigit, current)))
         latest = int(''.join(filter(str.isdigit, latest)))

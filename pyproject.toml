@@ -1,3 +1,16 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+lint.select = [
+  "E", "F", "W",  # pycodestyle/pyflakes
+  "I",              # isort
+]
+lint.ignore = []
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
