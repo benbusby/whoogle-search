@@ -751,7 +751,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 |-|-|-|-|
 | [https://search.garudalinux.org](https://search.garudalinux.org) | 🇫🇮 FI | Multi-choice | ✅ |
 | [https://search.sethforprivacy.com](https://search.sethforprivacy.com) | 🇩🇪 DE | English | |
-| [http://suche.emmanuel2507.nas64.de](http://suche.emmanuel2507.nas64.de) | 🇩🇪 AT | Multi-choice | |
+| [https://emmanuel2507.nas64.de/suche](https://emmanuel2507.nas64.de/suche) | 🇩🇪 AT | Multi-choice | |
 | [https://whoogle.lunar.icu](https://whoogle.lunar.icu) | 🇩🇪 DE | Multi-choice | ✅ |
 | [https://whoogle.4040940.xyz/](https://whoogle.4040940.xyz/) | 🇺🇸 US | English | ✅ |
 
