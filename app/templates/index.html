@@ -25,6 +25,7 @@
         {% endif %}
         <script type="text/javascript" src="{{ cb_url('controller.js') }}"></script>
     {% endif %}
+    <script type="text/javascript" src="{{ cb_url('speech.js') }}"></script>
     <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% if bundle_static() %}
@@ -66,6 +67,30 @@
         </style>
     </noscript>
     <style>{{ config.style }}</style>
+    <style>
+    .search-input-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input-container input[type="text"] {
+        padding-right: 40px; /* Make space for the microphone icon */
+        flex-grow: 1;
+    }
+
+    .search-input-container .speech-to-text-btn {
+        position: absolute;
+        right: 5px;
+        background: none !important;
+        border: none !important;
+        cursor: pointer;
+        font-size: 1.2em;
+        padding: 0;
+        line-height: 1;
+        z-index: 10;
+    }
+    </style>
     <title>Whoogle Search</title>
 </head>
 <body id="main">
@@ -75,23 +100,23 @@
     </div>
     <form id="search-form" action="search" method="{{ 'get' if config.get_only else 'post' }}">
         <div class="search-fields">
-            <div class="autocomplete">
-                {% if config.preferences %}
-                    <input type="hidden" name="preferences" value="{{ config.preferences }}" />
-                {% endif %}
-                <input
-                        type="text"
-                        name="q"
-                        id="search-bar"
-                        class="home-search"
-                        autofocus="autofocus"
-                        autocapitalize="none"
-                        spellcheck="false"
-                        autocorrect="off"
-                        autocomplete="off"
-                        dir="auto">
-            </div>
-            <input type="submit" id="search-submit" value="{{ translation['search'] }}">
+            <div class="autocomplete search-input-container">
+                    {% if config.preferences %}
+                        <input type="hidden" name="preferences" value="{{ config.preferences }}" />
+                    {% endif %}
+                    <input
+                            type="text"
+                            name="q"
+                            id="search-bar"
+                            class="home-search"
+                            autofocus="autofocus"
+                            autocapitalize="none"
+                            spellcheck="false"
+                            autocorrect="off"
+                            autocomplete="off"
+                            dir="auto">
+                    <button type="button" class="speech-to-text-btn">🎙️</button>
+                </div>            <input type="submit" id="search-submit" value="{{ translation['search'] }}">
         </div>
     </form>
     {% if not config_disabled %}
