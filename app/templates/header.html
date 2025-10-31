@@ -9,31 +9,31 @@
                         {{ logo|safe }}
                     </div>
                 </a>
-                <div class="H0PQec mobile-input-div">
-                    <div class="autocomplete-mobile esbc autocomplete">
-                        {% if config.preferences %}
-                            <input type="hidden" name="preferences" value="{{ config.preferences }}" />
-                        {% endif %}
-                        <input
-                                id="search-bar"
-                                class="mobile-search-bar"
-                                autocapitalize="none"
-                                autocomplete="off"
-                                autocorrect="off"
-                                spellcheck="false"
-                                class="search-bar-input"
-                                name="q"
-                                type="text"
-                                value="{{ clean_query(query) }}"
-                                dir="auto">
-                        <input id="search-reset" type="reset" value="x">
-                        <input name="tbm" value="{{ search_type }}" style="display: none">
-                        <input name="country" value="{{ config.country }}" style="display: none;">
-                        <input type="submit" style="display: none;">
-                        <div class="sc"></div>
-                    </div>
-                </div>
-            </form>
+                    <div class="H0PQec mobile-input-div">
+                        <div class="autocomplete-mobile esbc autocomplete search-input-container">
+                            {% if config.preferences %}
+                                <input type="hidden" name="preferences" value="{{ config.preferences }}" />
+                            {% endif %}
+                            <input
+                                    id="search-bar"
+                                    class="mobile-search-bar"
+                                    autocapitalize="none"
+                                    autocomplete="off"
+                                    autocorrect="off"
+                                    spellcheck="false"
+                                    class="search-bar-input"
+                                    name="q"
+                                    type="text"
+                                    value="{{ clean_query(query) }}"
+                                    dir="auto">
+                            <button type="button" id="speech-to-text-btn-header-mobile" class="speech-to-text-btn">🎙️</button>
+                            <input id="search-reset" type="reset" value="x">
+                            <input name="tbm" value="{{ search_type }}" style="display: none">
+                            <input name="country" value="{{ config.country }}" style="display: none;">
+                            <input type="submit" style="display: none;">
+                            <div class="sc"></div>
+                        </div>
+                    </div>            </form>
         </div>
       <div>
         <div class="header-tab-div">
@@ -71,30 +71,30 @@
                   class="search-form"
                   id="sf"
                   method="{{ 'GET' if config.get_only else 'POST' }}">
-                <div class="autocomplete header-autocomplete">
-                    <div style="width: 100%; display: flex">
-                        {% if config.preferences %}
-                            <input type="hidden" name="preferences" value="{{ config.preferences }}" />
-                        {% endif %}
-                        <input
-                                id="search-bar"
-                                autocapitalize="none"
-                                autocomplete="off"
-                                autocorrect="off"
-                                class="search-bar-desktop search-bar-input"
-                                name="q"
-                                spellcheck="false"
-                                type="text"
-                                value="{{ clean_query(query) }}"
-                                dir="auto">
-                        <input name="tbm" value="{{ search_type }}" style="display: none">
-                        <input name="country" value="{{ config.country }}" style="display: none;">
-                        <input name="tbs" value="{{ config.tbs }}" style="display: none;">
-                        <input type="submit" style="display: none;">
-                        <div class="sc"></div>
-                    </div>
-                </div>
-            </form>
+                    <div class="autocomplete header-autocomplete search-input-container">
+                        <div style="width: 100%; display: flex">
+                            {% if config.preferences %}
+                                <input type="hidden" name="preferences" value="{{ config.preferences }}" />
+                            {% endif %}
+                            <input
+                                    id="search-bar"
+                                    autocapitalize="none"
+                                    autocomplete="off"
+                                    autocorrect="off"
+                                    class="search-bar-desktop search-bar-input"
+                                    name="q"
+                                    spellcheck="false"
+                                    type="text"
+                                    value="{{ clean_query(query) }}"
+                                    dir="auto">
+                            <button type="button" id="speech-to-text-btn-header-desktop" class="speech-to-text-btn">🎙️</button>
+                            <input name="tbm" value="{{ search_type }}" style="display: none">
+                            <input name="country" value="{{ config.country }}" style="display: none;">
+                            <input name="tbs" value="{{ config.tbs }}" style="display: none;">
+                            <input type="submit" style="display: none;">
+                            <div class="sc"></div>
+                        </div>
+                    </div>            </form>
         </div>
     </header>
     <div>
@@ -160,3 +160,28 @@
 {% else %}
 <script type="text/javascript" src="{{ cb_url('header.js') }}"></script>
 {% endif %}
+<script type="text/javascript" src="{{ cb_url('speech.js') }}"></script>
+<style>
+    .search-input-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input-container input[type="text"] {
+        padding-right: 40px;
+        flex-grow: 1;
+    }
+
+    .search-input-container .speech-to-text-btn {
+        position: absolute;
+        right: 5px;
+        background: none !important;
+        border: none !important;
+        cursor: pointer;
+        font-size: 1.2em;
+        padding: 0;
+        line-height: 1;
+        z-index: 10;
+    }
+</style>
