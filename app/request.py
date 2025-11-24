@@ -1,6 +1,7 @@
 from app.models.config import Config
 from app.utils.misc import read_config_bool
 from app.services.provider import get_http_client
+from app.utils.ua_generator import load_ua_pool, get_random_ua, DEFAULT_FALLBACK_UA
 from datetime import datetime
 from defusedxml import ElementTree as ET
 import random
@@ -16,8 +17,32 @@ MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
                     'complete/search?client=toolbar&')
 
-MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
-DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
+DEFAULT_DESKTOP_UA = (
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) '
+    'Gecko/20100101 Firefox/131.0'
+)
+DEFAULT_MOBILE_UA = (
+    'Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) '
+    'AppleWebKit/537.36 (KHTML, like Gecko) '
+    'Chrome/127.0.0.0 Mobile Safari/537.36'
+)
+
+DESKTOP_UAS = [
+    DEFAULT_DESKTOP_UA,
+    'Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) '
+    'AppleWebKit/537.36 (KHTML, like Gecko) '
+    'Chrome/127.0.0.0 Safari/537.36'
+]
+MOBILE_UAS = [
+    DEFAULT_MOBILE_UA,
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) '
+    'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 '
+    'Mobile/15E148 Safari/604.1',
+    'Mozilla/5.0 (Linux; Android 13; SM-S918B) '
+    'AppleWebKit/537.36 (KHTML, like Gecko) '
+    'Chrome/125.0.0.0 Mobile Safari/537.36'
+]
 
 # Valid query params
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
@@ -73,8 +98,8 @@ def send_tor_signal(signal: Signal) -> bool:
 
 
 def gen_user_agent(config, is_mobile) -> str:
-    # Define the default PlayStation Portable user agent (replaces Lynx)
-    DEFAULT_UA = 'Mozilla/4.0 (PSP (PlayStation Portable); 2.00)'
+    # Modern defaults mimic widely-used browsers so Google returns full results.
+    default_ua = DEFAULT_MOBILE_UA if is_mobile else DEFAULT_DESKTOP_UA
 
     # If using custom user agent, return the custom string
     if config.user_agent == 'custom' and config.custom_user_agent:
@@ -93,18 +118,39 @@ def gen_user_agent(config, is_mobile) -> str:
         # If env vars are not set, fall back to default
         return DEFAULT_UA
 
-    # If using default user agent
+    # If using default user agent - use auto-generated Opera UA pool
     if config.user_agent == 'default':
-        return DEFAULT_UA
+        try:
+            # Try to load UA pool from cache (lazy loading if not in app.config)
+            # First check if we have access to Flask app context
+            try:
+                from flask import current_app
+                if hasattr(current_app, 'config') and 'UA_POOL' in current_app.config:
+                    ua_pool = current_app.config['UA_POOL']
+                else:
+                    # Fall back to loading from disk
+                    config_path = os.environ.get('CONFIG_VOLUME', 
+                                                os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                                            'static', 'config'))
+                    cache_path = os.path.join(config_path, 'ua_cache.json')
+                    ua_pool = load_ua_pool(cache_path, count=10)
+            except (ImportError, RuntimeError):
+                # No Flask context available, load from disk
+                config_path = os.environ.get('CONFIG_VOLUME', 
+                                            os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                                        'static', 'config'))
+                cache_path = os.path.join(config_path, 'ua_cache.json')
+                ua_pool = load_ua_pool(cache_path, count=10)
+            
+            return get_random_ua(ua_pool)
+        except Exception as e:
+            # If anything goes wrong, fall back to default Opera UA
+            print(f"Warning: Could not load UA pool, using fallback Opera UA: {e}")
+            return DEFAULT_FALLBACK_UA
 
     # If no custom user agent is set, generate a random one (for backwards compatibility)
-    firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
-    linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
-
-    if is_mobile:
-        return MOBILE_UA.format("Mozilla", firefox)
-
-    return DESKTOP_UA.format("Mozilla", linux, firefox)
+    candidates = MOBILE_UAS if is_mobile else DESKTOP_UAS
+    return random.choice(candidates)
 
 
 def gen_query(query, args, config) -> str:
@@ -324,23 +370,39 @@ class Request:
                 modified_user_agent = self.modified_user_agent
 
         headers = {
-            'User-Agent': modified_user_agent
+            'User-Agent': modified_user_agent,
+            'Accept': ('text/html,application/xhtml+xml,application/xml;'
+                       'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'),
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Cache-Control': 'max-age=0',
+            'Pragma': 'no-cache',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-User': '?1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-CH-UA': (
+                '"Not/A)Brand";v="8", '
+                '"Chromium";v="127", '
+                '"Google Chrome";v="127"'
+            ),
+            'Sec-CH-UA-Mobile': '?0',
+            'Sec-CH-UA-Platform': '"macOS"'
         }
 
-        # Adding the Accept-Language to the Header if possible
+        # Add Accept-Language header tied to the current config if requested
         if self.lang_interface:
-            headers.update({'Accept-Language':
-                            self.lang_interface.replace('lang_', '')
-                            + ';q=1.0'})
+            headers['Accept-Language'] = (
+                self.lang_interface.replace('lang_', '') + ';q=1.0'
+            )
 
-        # view is suppressed correctly
-        now = datetime.now()
-        consent_cookie = 'CONSENT=PENDING+987; SOCS=CAESHAgBEhIaAB'
-        # Prefer header-based cookies to avoid httpx per-request cookies deprecation
-        if 'Cookie' in headers:
-            headers['Cookie'] += '; ' + consent_cookie
-        else:
-            headers['Cookie'] = consent_cookie
+        # Consent cookies keep Google from showing the interstitial consent wall
+        consent_cookies = {
+            'CONSENT': 'PENDING+987',
+            'SOCS': 'CAESHAgBEhIaAB'
+        }
 
         # Validate Tor conn and request new identity if the last one failed
         if self.tor and not send_tor_signal(
@@ -371,7 +433,8 @@ class Request:
         try:
             response = self.http_client.get(
                 (base_url or self.search_url) + query,
-                headers=headers)
+                headers=headers,
+                cookies=consent_cookies)
         except httpx.HTTPError as e:
             raise
 

@@ -36,7 +36,7 @@ def fetch_favicon(url: str) -> bytes:
         bytes - the favicon bytes, or a placeholder image if one
         was not returned
     """
-    response = get(f'{ddg_favicon_site}/{urlparse(url).netloc}.ico')
+    response = httpx.get(f'{ddg_favicon_site}/{urlparse(url).netloc}.ico')
 
     if response.status_code == 200 and len(response.content) > 0:
         tmp_mem = io.BytesIO()

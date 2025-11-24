@@ -1,10 +1,10 @@
 >[!WARNING]
 >
->As of 16 January, 2025, Google seemingly no longer supports performing search queries without JavaScript enabled. This is a fundamental part of how Whoogle
+>Since 16 January, 2025, Google has been attacking the ability to perform search queries without JavaScript enabled. This is a fundamental part of how Whoogle
 >works -- Whoogle requests the JavaScript-free search results, then filters out garbage from the results page and proxies all external content for the user.
 >
->This is possibly a breaking change that will mean the end for Whoogle. I'll continue monitoring the status of their JS-free results and looking into workarounds,
->and will make another post if a solution is found (or not).
+>This is possibly a breaking change that may mean the end for Whoogle. We'll continue fighting back and releasing workarounds until all workarounds are 
+>exhausted or a better method is found.
 
 ___
 
@@ -68,7 +68,12 @@ Contents
 - POST request search and suggestion queries (when possible)
 - View images at full res without site redirect (currently mobile only)
 - Light/Dark/System theme modes (with support for [custom CSS theming](https://github.com/benbusby/whoogle-search/wiki/User-Contributed-CSS-Themes))
-- Randomly generated User Agent
+- Auto-generated Opera User Agents with random rotation
+  - 10 unique Opera-based UAs generated on startup from 115 language variants
+  - Randomly rotated for each search request to avoid detection patterns
+  - Cached across restarts with configurable refresh options
+  - Fallback to safe default UA if generation fails
+  - Optional display of current UA in search results footer
 - Easy to install/deploy
 - DDG-style bang (i.e. `!<tag> <query>`) searches
 - User-defined [custom bangs](#custom-bangs)
@@ -437,9 +442,12 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_PROXY_PASS   | The password of the proxy server.                                                         |
 | WHOOGLE_PROXY_TYPE   | The type of the proxy server. Can be "socks5", "socks4", or "http".                       |
 | WHOOGLE_PROXY_LOC    | The location of the proxy server (host or ip).                                            |
-| WHOOGLE_USER_AGENT   | The desktop user agent to use. Defaults to a randomly generated one.                      |
-| WHOOGLE_USER_AGENT_MOBILE | The mobile user agent to use. Defaults to a randomly generated one.                  |
+| WHOOGLE_USER_AGENT   | The desktop user agent to use when using 'env_conf' option. Leave empty to use auto-generated Opera UAs. |
+| WHOOGLE_USER_AGENT_MOBILE | The mobile user agent to use when using 'env_conf' option. Leave empty to use auto-generated Opera UAs. |
 | WHOOGLE_USE_CLIENT_USER_AGENT | Enable to use your own user agent for all requests. Defaults to false.           |
+| WHOOGLE_UA_CACHE_PERSISTENT | Whether to persist auto-generated UAs across restarts. Set to '0' to regenerate on each startup. Default '1'. |
+| WHOOGLE_UA_CACHE_REFRESH_DAYS | Auto-refresh UA cache after N days. Set to '0' to never refresh (cache persists indefinitely). Default '0'. |
+| WHOOGLE_UA_LIST_FILE | Path to text file containing custom UA strings (one per line). When set, uses these instead of auto-generated UAs. |
 | WHOOGLE_REDIRECTS    | Specify sites that should be redirected elsewhere. See [custom redirecting](#custom-redirecting). |
 | EXPOSE_PORT          | The port where Whoogle will be exposed.                                                   |
 | HTTPS_ONLY           | Enforce HTTPS. (See [here](https://github.com/benbusby/whoogle-search#https-enforcement)) |
@@ -491,6 +499,7 @@ These environment variables allow setting default config values, but can be over
 | WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED | Encrypt preferences token, requires preferences key             |
 | WHOOGLE_CONFIG_PREFERENCES_KEY       | Key to encrypt preferences in URL (REQUIRED to show url)        |
 | WHOOGLE_CONFIG_ANON_VIEW             | Include the "anonymous view" option for each search result      |
+| WHOOGLE_CONFIG_SHOW_USER_AGENT       | Display the User Agent string used for search in results footer |
 
 ## Usage
 Same as most search engines, with the exception of filtering by time range.
@@ -662,6 +671,141 @@ Whoogle can optionally serve a single bundled CSS and JS to reduce the number of
 - When disabled (default), templates load individual CSS/JS files for easier development.
 - Note: Theme CSS (`*-theme.css`) are still loaded separately to honor user theme selection.
 
+## User Agent Generator Tool
+
+A standalone command-line tool is available for generating Opera User Agent strings on demand:
+
+```bash
+# Generate 10 User Agent strings (default)
+python misc/generate_uas.py
+
+# Generate custom number of UAs
+python misc/generate_uas.py 20
+```
+
+This tool is useful for:
+- Testing different UA strings
+- Generating UAs for other projects
+- Verifying UA generation patterns
+- Debugging UA-related issues
+
+## Using Custom User Agent Lists
+
+Instead of using auto-generated Opera UA strings, you can provide your own list of User Agent strings for Whoogle to use.
+
+### Setup
+
+1. Create a text file with your preferred UA strings (one per line):
+
+```
+Opera/9.80 (J2ME/MIDP; Opera Mini/4.2.13337/22.478; U; en) Presto/2.4.15 Version/10.00
+Opera/9.80 (Android; Linux; Opera Mobi/498; U; en) Presto/2.12.423 Version/10.1
+Opera/9.30 (Nintendo Wii; U; ; 3642; en)
+```
+
+2. Set the `WHOOGLE_UA_LIST_FILE` environment variable to point to your file:
+
+```bash
+# Docker
+docker run -e WHOOGLE_UA_LIST_FILE=/config/my_user_agents.txt ...
+
+# Docker Compose
+environment:
+  - WHOOGLE_UA_LIST_FILE=/config/my_user_agents.txt
+
+# Manual/systemd
+export WHOOGLE_UA_LIST_FILE=/path/to/my_user_agents.txt
+```
+
+### Priority Order
+
+Whoogle uses the following priority when loading User Agent strings:
+
+1. **Custom UA list file** (if `WHOOGLE_UA_LIST_FILE` is set and valid)
+2. **Cached auto-generated UAs** (if cache exists and is valid)
+3. **Newly generated UAs** (if no cache or cache expired)
+
+### Tips
+
+- You can use the output from `misc/check_google_user_agents.py` as your custom UA list
+- Generate a list with `python misc/generate_uas.py 50 2>/dev/null > my_uas.txt`
+- Mix different UA types (Opera, Firefox, Chrome) for more variety
+- Keep the file readable by Whoogle (proper permissions)
+- One UA string per line, blank lines are ignored
+
+### Example Workflow
+
+```bash
+# Generate and test UAs, save working ones
+python misc/generate_uas.py 100 2>/dev/null > candidate_uas.txt
+python misc/check_google_user_agents.py candidate_uas.txt --output working_uas.txt
+
+# Use the working UAs with Whoogle
+export WHOOGLE_UA_LIST_FILE=./working_uas.txt
+./run
+```
+
+## User Agent Testing Tool
+
+Whoogle now includes a comprehensive testing tool (`misc/check_google_user_agents.py`) to verify which User Agent strings successfully return Google search results without triggering blocks, JavaScript-only pages, or browser upgrade prompts.
+
+### Usage
+
+```bash
+# Test all UAs from a file
+python misc/check_google_user_agents.py UAs.txt
+
+# Save working UAs to a file (appends incrementally)
+python misc/check_google_user_agents.py UAs.txt --output working_uas.txt
+
+# Use a specific search query
+python misc/check_google_user_agents.py UAs.txt --query "python programming"
+
+# Verbose mode to see detailed results
+python misc/check_google_user_agents.py UAs.txt --output working.txt --verbose
+
+# Adjust delay between requests (default: 0.5 seconds)
+python misc/check_google_user_agents.py UAs.txt --delay 1.0
+
+# Set request timeout (default: 10 seconds)
+python misc/check_google_user_agents.py UAs.txt --timeout 15.0
+```
+
+### Features
+
+- **Incremental Results**: Working UAs are saved immediately to the output file (append mode), so progress is preserved even if interrupted
+- **Duplicate Detection**: Automatically skips UAs already in the output file when resuming
+- **Random Query Cycling**: By default, cycles through diverse search queries to simulate realistic usage patterns
+- **Rate Limit Detection**: Detects and reports Google rate limiting with recovery instructions
+- **Comprehensive Validation**: Checks for:
+  - HTTP status codes (blocks, server errors, rate limits)
+  - Block markers (unusual traffic, upgrade browser messages)
+  - Success markers (actual search result HTML elements)
+  - JavaScript-only pages and redirects
+  - Response size validation
+
+### Testing Methodology
+
+The tool evaluates UAs against multiple criteria:
+
+1. **HTTP Status**: Rejects 4xx/5xx errors, detects 429 rate limits
+2. **Block Detection**: Searches for Google's block messages (CAPTCHA, unusual traffic, etc.)
+3. **JavaScript Detection**: Identifies JS-only pages and noscript redirects
+4. **Result Validation**: Confirms presence of actual search result HTML elements
+5. **Content Analysis**: Validates response size and structure
+
+This tool was used to discover and validate the working Opera UA patterns that power Whoogle's auto-generation feature.
+
+## Known Issues
+
+### User Agent Strings and Image Search
+
+**Issue**: Most, if not all, of the auto-generated Opera User Agent strings may fail when performing **image searches** on Google. This appears to be a limitation with how Google's image search validates User Agent strings.
+
+**Impact**:
+- Regular web searches work correctly with generated UAs
+- Image search may return errors or no results
+
 ## Contributing
 
 Under the hood, Whoogle is a basic Flask app with the following structure:
@@ -675,6 +819,7 @@ Under the hood, Whoogle is a basic Flask app with the following structure:
     - `results.py`: Utility functions for interpreting/modifying individual search results
     - `search.py`: Creates and handles new search queries
     - `session.py`: Miscellaneous methods related to user sessions
+    - `ua_generator.py`: Auto-generates Opera User Agent strings with pattern-based randomization
   - `templates/`
     - `index.html`: The home page template
     - `display.html`: The search results template
