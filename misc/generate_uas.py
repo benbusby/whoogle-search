@@ -39,11 +39,6 @@ except ImportError:
         "Opera/9.80 (Android; Linux; Opera Mobi/{build}; U; {lang}) Presto/{presto} Version/{final}",
         "Opera/9.80 (iPhone; Opera Mini/{version}/{build}; U; {lang}) Presto/{presto} Version/{final}",
         "Opera/9.80 (iPad; Opera Mini/{version}/{build}; U; {lang}) Presto/{presto} Version/{final}",
-        "Opera/9.30 (Nintendo Wii; U; ; {code}; {lang})",
-        "Opera/9.80 (S60; SymbOS; Opera Mobi/{build}; U; {lang}) Presto/{presto} Version/{final}",
-        "Opera/9.80 (Series 60; Opera Mini/{version}/{build}; U; {lang}) Presto/{presto} Version/{final}",
-        "Opera/9.80 (BlackBerry; Opera Mini/{version}/{build}; U; {lang}) Presto/{presto} Version/{final}",
-        "Opera/9.80 (Windows Mobile; Opera Mini/{version}/{build}; U; {lang}) Presto/{presto} Version/{final}",
     ]
     
     OPERA_MINI_VERSIONS = [
@@ -122,29 +117,22 @@ except ImportError:
         "eu", "eu-ES"
     ]
     
-    WII_CODES = [
-        "1038-58", "1621", "2047-7", "2077-4", "3642"
-    ]
-    
     def generate_opera_ua():
         """Generate a single random Opera User Agent string."""
         pattern = random.choice(OPERA_PATTERNS)
         params = {'lang': random.choice(LANGUAGES)}
         
-        if "Nintendo Wii" in pattern:
-            params['code'] = random.choice(WII_CODES)
-        else:
-            if '{version}' in pattern:
-                params['version'] = random.choice(OPERA_MINI_VERSIONS)
-            if '{build}' in pattern:
-                if "Opera Mobi" in pattern:
-                    params['build'] = random.choice(OPERA_MOBI_BUILDS)
-                else:
-                    params['build'] = random.choice(BUILD_NUMBERS)
-            if '{presto}' in pattern:
-                params['presto'] = random.choice(PRESTO_VERSIONS)
-            if '{final}' in pattern:
-                params['final'] = random.choice(FINAL_VERSIONS)
+        if '{version}' in pattern:
+            params['version'] = random.choice(OPERA_MINI_VERSIONS)
+        if '{build}' in pattern:
+            if "Opera Mobi" in pattern:
+                params['build'] = random.choice(OPERA_MOBI_BUILDS)
+            else:
+                params['build'] = random.choice(BUILD_NUMBERS)
+        if '{presto}' in pattern:
+            params['presto'] = random.choice(PRESTO_VERSIONS)
+        if '{final}' in pattern:
+            params['final'] = random.choice(FINAL_VERSIONS)
         
         return pattern.format(**params)
     
