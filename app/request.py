@@ -2,9 +2,7 @@ from app.models.config import Config
 from app.utils.misc import read_config_bool
 from app.services.provider import get_http_client
 from app.utils.ua_generator import load_ua_pool, get_random_ua, DEFAULT_FALLBACK_UA
-from datetime import datetime
 from defusedxml import ElementTree as ET
-import random
 import httpx
 import urllib.parse as urlparse
 import os
@@ -16,33 +14,6 @@ from stem.connection import authenticate_cookie, authenticate_password
 MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
                     'complete/search?client=toolbar&')
-
-DEFAULT_DESKTOP_UA = (
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) '
-    'Gecko/20100101 Firefox/131.0'
-)
-DEFAULT_MOBILE_UA = (
-    'Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) '
-    'AppleWebKit/537.36 (KHTML, like Gecko) '
-    'Chrome/127.0.0.0 Mobile Safari/537.36'
-)
-
-DESKTOP_UAS = [
-    DEFAULT_DESKTOP_UA,
-    'Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) '
-    'AppleWebKit/537.36 (KHTML, like Gecko) '
-    'Chrome/127.0.0.0 Safari/537.36'
-]
-MOBILE_UAS = [
-    DEFAULT_MOBILE_UA,
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) '
-    'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 '
-    'Mobile/15E148 Safari/604.1',
-    'Mozilla/5.0 (Linux; Android 13; SM-S918B) '
-    'AppleWebKit/537.36 (KHTML, like Gecko) '
-    'Chrome/125.0.0.0 Mobile Safari/537.36'
-]
 
 # Valid query params
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
@@ -98,9 +69,6 @@ def send_tor_signal(signal: Signal) -> bool:
 
 
 def gen_user_agent(config, is_mobile) -> str:
-    # Modern defaults mimic widely-used browsers so Google returns full results.
-    default_ua = DEFAULT_MOBILE_UA if is_mobile else DEFAULT_DESKTOP_UA
-
     # If using custom user agent, return the custom string
     if config.user_agent == 'custom' and config.custom_user_agent:
         return config.custom_user_agent
@@ -115,8 +83,8 @@ def gen_user_agent(config, is_mobile) -> str:
             env_ua = os.getenv('WHOOGLE_USER_AGENT', '')
             if env_ua:
                 return env_ua
-        # If env vars are not set, fall back to default
-        return DEFAULT_UA
+        # If env vars are not set, fall back to Opera UA
+        return DEFAULT_FALLBACK_UA
 
     # If using default user agent - use auto-generated Opera UA pool
     if config.user_agent == 'default':
@@ -129,13 +97,9 @@ def gen_user_agent(config, is_mobile) -> str:
                     ua_pool = current_app.config['UA_POOL']
                 else:
                     # Fall back to loading from disk
-                    config_path = os.environ.get('CONFIG_VOLUME', 
-                                                os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                                                            'static', 'config'))
-                    cache_path = os.path.join(config_path, 'ua_cache.json')
-                    ua_pool = load_ua_pool(cache_path, count=10)
+                    raise ImportError("UA_POOL not in app config")
             except (ImportError, RuntimeError):
-                # No Flask context available, load from disk
+                # No Flask context available or UA_POOL not in config, load from disk
                 config_path = os.environ.get('CONFIG_VOLUME', 
                                             os.path.join(os.path.dirname(os.path.abspath(__file__)), 
                                                         'static', 'config'))
@@ -148,9 +112,8 @@ def gen_user_agent(config, is_mobile) -> str:
             print(f"Warning: Could not load UA pool, using fallback Opera UA: {e}")
             return DEFAULT_FALLBACK_UA
 
-    # If no custom user agent is set, generate a random one (for backwards compatibility)
-    candidates = MOBILE_UAS if is_mobile else DESKTOP_UAS
-    return random.choice(candidates)
+    # Fallback for backwards compatibility (old configs or invalid user_agent values)
+    return DEFAULT_FALLBACK_UA
 
 
 def gen_query(query, args, config) -> str:

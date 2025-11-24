@@ -13,7 +13,7 @@ from typing import List, Dict
 
 
 # Default fallback UA if generation fails
-DEFAULT_FALLBACK_UA = "Opera/9.30 (Nintendo Wii; U; ; 3642; en)"
+DEFAULT_FALLBACK_UA = "Opera/9.80 (iPad; Opera Mini/5.0.17381/503; U; eu) Presto/2.6.35 Version/11.10)"
 
 # Opera UA Pattern Templates
 OPERA_PATTERNS = [
