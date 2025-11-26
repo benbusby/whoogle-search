@@ -3,7 +3,7 @@ name: buildx
 on:
   workflow_run:
     workflows: ["docker_main"]
-    branches: [main]
+    branches: [main, updates]
     types:
       - completed
   push:
@@ -50,6 +50,17 @@ jobs:
       #     docker buildx build --push \
       #       --tag ghcr.io/benbusby/whoogle-search:latest \
       #       --platform linux/amd64,linux/arm64 .
+      - name: build and push updates branch (update-testing tag)
+        if: github.event.workflow_run.head_branch == 'updates' && github.event.workflow_run.conclusion == 'success' && (github.actor == 'benbusby' || github.actor == 'Don-Swanson')
+        run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          docker buildx ls
+          docker buildx build --push \
+            --tag benbusby/whoogle-search:update-testing \
+            --platform linux/amd64,linux/arm/v7,linux/arm64 .
+          docker buildx build --push \
+            --tag ghcr.io/benbusby/whoogle-search:update-testing \
+            --platform linux/amd64,linux/arm/v7,linux/arm64 .
       - name: build and push release (version + latest)
         if: github.event_name == 'release' && github.event.release.prerelease == false && (github.actor == 'benbusby' || github.actor == 'Don-Swanson')
         run: |

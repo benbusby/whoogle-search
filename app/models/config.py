@@ -81,7 +81,6 @@ class Config:
         self.tbs = os.getenv('WHOOGLE_CONFIG_TIME_PERIOD', '')
         self.theme = os.getenv('WHOOGLE_CONFIG_THEME', 'system')
         self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
-        self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')  # deprecated
         self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
         self.nojs = read_config_bool('WHOOGLE_CONFIG_NOJS')
         self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')

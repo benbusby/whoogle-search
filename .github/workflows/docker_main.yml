@@ -3,7 +3,7 @@ name: docker_main
 on:
   workflow_run:
     workflows: ["tests"]
-    branches: [main]
+    branches: [main, updates]
     types:
       - completed
 

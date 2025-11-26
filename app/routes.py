@@ -217,9 +217,7 @@ def index():
                            translation=app.config['TRANSLATIONS'][
                                g.user_config.get_localization_lang()
                            ],
-                           logo=render_template(
-                               'logo.html',
-                               dark=g.user_config.dark),
+                           logo=render_template('logo.html'),
                            config_disabled=(
                                    app.config['CONFIG_DISABLE'] or
                                    not valid_user_session(session)),
@@ -581,7 +579,7 @@ def search():
             languages=app.config['LANGUAGES'],
             countries=app.config['COUNTRIES'],
             time_periods=app.config['TIME_PERIODS'],
-            logo=render_template('logo.html', dark=g.user_config.dark),
+            logo=render_template('logo.html'),
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
             mobile=g.user_request.mobile,

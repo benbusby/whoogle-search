@@ -26,10 +26,12 @@
         {% else %}
             <link rel="stylesheet" href="{{ cb_url(config.theme + '-theme.css') }}"/>
         {% endif %}
-    {% else %}
-        <link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
     {% endif %}
-    <style>{{ config.style }}</style>
+    {% if config.style %}
+        <style>
+            {{ config.style }}
+        </style>
+    {% endif %}
     <title>{{ clean_query(query) }} - Whoogle Search</title>
 </head>
 <body>

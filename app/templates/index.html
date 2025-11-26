@@ -41,8 +41,6 @@
         {% else %}
             <link rel="stylesheet" href="{{ cb_url(config.theme + '-theme.css') }}"/>
         {% endif %}
-    {% else %}
-        <link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
     {% endif %}
     {% if not bundle_static() %}
         <link rel="stylesheet" href="{{ cb_url('main.css') }}">
@@ -204,10 +202,6 @@
                             </select>
                         </div>
                         <!-- DEPRECATED -->
-                        <!--<div class="config-div config-div-dark">-->
-                        <!--<label for="config-dark">{{ translation['config-dark'] }}: </label>-->
-                        <!--<input type="checkbox" name="dark" id="config-dark" {{ 'checked' if config.dark else '' }}>-->
-                        <!--</div>-->
                         <div class="config-div config-div-safe">
                             <label for="config-safe">{{ translation['config-safe'] }}: </label>
                             <input type="checkbox" name="safe" id="config-safe" {{ 'checked' if config.safe else '' }}>
