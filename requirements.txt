@@ -1,6 +1,6 @@
 attrs==25.3.0
 beautifulsoup4==4.13.5
-brotli==1.1.0
+brotli==1.2.0
 certifi==2025.8.3
 cffi==2.0.0
 click==8.3.0
