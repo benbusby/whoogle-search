@@ -1,9 +1,8 @@
 from app.models.config import Config
 from app.utils.misc import read_config_bool
 from app.services.provider import get_http_client
-from datetime import datetime
+from app.utils.ua_generator import load_ua_pool, get_random_ua, DEFAULT_FALLBACK_UA
 from defusedxml import ElementTree as ET
-import random
 import httpx
 import urllib.parse as urlparse
 import os
@@ -15,9 +14,6 @@ from stem.connection import authenticate_cookie, authenticate_password
 MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
                     'complete/search?client=toolbar&')
-
-MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
-DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
 
 # Valid query params
 VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
@@ -73,9 +69,6 @@ def send_tor_signal(signal: Signal) -> bool:
 
 
 def gen_user_agent(config, is_mobile) -> str:
-    # Define the default PlayStation Portable user agent (replaces Lynx)
-    DEFAULT_UA = 'Mozilla/4.0 (PSP (PlayStation Portable); 2.00)'
-
     # If using custom user agent, return the custom string
     if config.user_agent == 'custom' and config.custom_user_agent:
         return config.custom_user_agent
@@ -90,21 +83,37 @@ def gen_user_agent(config, is_mobile) -> str:
             env_ua = os.getenv('WHOOGLE_USER_AGENT', '')
             if env_ua:
                 return env_ua
-        # If env vars are not set, fall back to default
-        return DEFAULT_UA
+        # If env vars are not set, fall back to Opera UA
+        return DEFAULT_FALLBACK_UA
 
-    # If using default user agent
+    # If using default user agent - use auto-generated Opera UA pool
     if config.user_agent == 'default':
-        return DEFAULT_UA
+        try:
+            # Try to load UA pool from cache (lazy loading if not in app.config)
+            # First check if we have access to Flask app context
+            try:
+                from flask import current_app
+                if hasattr(current_app, 'config') and 'UA_POOL' in current_app.config:
+                    ua_pool = current_app.config['UA_POOL']
+                else:
+                    # Fall back to loading from disk
+                    raise ImportError("UA_POOL not in app config")
+            except (ImportError, RuntimeError):
+                # No Flask context available or UA_POOL not in config, load from disk
+                config_path = os.environ.get('CONFIG_VOLUME', 
+                                            os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                                        'static', 'config'))
+                cache_path = os.path.join(config_path, 'ua_cache.json')
+                ua_pool = load_ua_pool(cache_path, count=10)
+            
+            return get_random_ua(ua_pool)
+        except Exception as e:
+            # If anything goes wrong, fall back to default Opera UA
+            print(f"Warning: Could not load UA pool, using fallback Opera UA: {e}")
+            return DEFAULT_FALLBACK_UA
 
-    # If no custom user agent is set, generate a random one (for backwards compatibility)
-    firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
-    linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
-
-    if is_mobile:
-        return MOBILE_UA.format("Mozilla", firefox)
-
-    return DESKTOP_UA.format("Mozilla", linux, firefox)
+    # Fallback for backwards compatibility (old configs or invalid user_agent values)
+    return DEFAULT_FALLBACK_UA
 
 
 def gen_query_leta(query, args, config) -> str:
@@ -399,23 +408,39 @@ class Request:
                 modified_user_agent = self.modified_user_agent
 
         headers = {
-            'User-Agent': modified_user_agent
+            'User-Agent': modified_user_agent,
+            'Accept': ('text/html,application/xhtml+xml,application/xml;'
+                       'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'),
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Cache-Control': 'max-age=0',
+            'Pragma': 'no-cache',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-User': '?1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-CH-UA': (
+                '"Not/A)Brand";v="8", '
+                '"Chromium";v="127", '
+                '"Google Chrome";v="127"'
+            ),
+            'Sec-CH-UA-Mobile': '?0',
+            'Sec-CH-UA-Platform': '"macOS"'
         }
 
-        # Adding the Accept-Language to the Header if possible
+        # Add Accept-Language header tied to the current config if requested
         if self.lang_interface:
-            headers.update({'Accept-Language':
-                            self.lang_interface.replace('lang_', '')
-                            + ';q=1.0'})
+            headers['Accept-Language'] = (
+                self.lang_interface.replace('lang_', '') + ';q=1.0'
+            )
 
-        # view is suppressed correctly
-        now = datetime.now()
-        consent_cookie = 'CONSENT=PENDING+987; SOCS=CAESHAgBEhIaAB'
-        # Prefer header-based cookies to avoid httpx per-request cookies deprecation
-        if 'Cookie' in headers:
-            headers['Cookie'] += '; ' + consent_cookie
-        else:
-            headers['Cookie'] = consent_cookie
+        # Consent cookies keep Google from showing the interstitial consent wall
+        consent_cookies = {
+            'CONSENT': 'PENDING+987',
+            'SOCS': 'CAESHAgBEhIaAB'
+        }
 
         # Validate Tor conn and request new identity if the last one failed
         if self.tor and not send_tor_signal(
@@ -446,7 +471,8 @@ class Request:
         try:
             response = self.http_client.get(
                 (base_url or self.search_url) + query,
-                headers=headers)
+                headers=headers,
+                cookies=consent_cookies)
         except httpx.HTTPError as e:
             raise
 

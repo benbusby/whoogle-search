@@ -45,6 +45,7 @@ class Config:
         self.user_agent = kwargs.get('user_agent', default_ua_option)
         self.custom_user_agent = kwargs.get('custom_user_agent', '')
         self.use_custom_user_agent = kwargs.get('use_custom_user_agent', False)
+        self.show_user_agent = read_config_bool('WHOOGLE_CONFIG_SHOW_USER_AGENT')
 
         # Add user agent related keys to safe_keys
         self.safe_keys = [
@@ -64,7 +65,7 @@ class Config:
             'user_agent',
             'custom_user_agent',
             'use_custom_user_agent',
-            'use_leta'
+            'show_user_agent'
         ]
 
         app_config = current_app.config
@@ -99,7 +100,10 @@ class Config:
         if kwargs:
             mutable_attrs = self.get_mutable_attrs()
             for attr in mutable_attrs:
-                if attr in kwargs.keys():
+                if attr == 'show_user_agent':
+                    # Handle show_user_agent as boolean
+                    self.show_user_agent = bool(kwargs.get(attr))
+                elif attr in kwargs.keys():
                     setattr(self, attr, kwargs[attr])
                 elif attr not in kwargs.keys() and mutable_attrs[attr] == bool:
                     # Only set to False if the attribute wasn't already set to True

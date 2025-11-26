@@ -555,6 +555,13 @@ def search():
             'results': results
         })
 
+    # Get the user agent that was used for the search
+    used_user_agent = ''
+    if search_util.user_request:
+        used_user_agent = search_util.user_request.modified_user_agent
+    elif hasattr(g, 'user_request') and g.user_request:
+        used_user_agent = g.user_request.modified_user_agent
+    
     return render_template(
         'display.html',
         has_update=app.config['HAS_UPDATE'],
@@ -576,6 +583,7 @@ def search():
         ) and not search_util.search_type,  # Standard search queries only
         response=cleanresponse,
         version_number=app.config['VERSION_NUMBER'],
+        used_user_agent=used_user_agent,
         search_header=render_template(
             'header.html',
             home_url=home_url,

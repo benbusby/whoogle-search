@@ -5,5 +5,8 @@
         {% if has_update %}
              || <span class="update_available">Update Available 🟢</span>
         {% endif %}
+        {% if config.show_user_agent and used_user_agent %}
+            <br><span class="user-agent-display" style="font-size: 0.85em; color: #666;">User Agent: {{ used_user_agent }}</span>
+        {% endif %}
     </p>
 </footer>

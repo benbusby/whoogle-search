@@ -3,6 +3,7 @@ from app.request import send_tor_signal
 from app.utils.session import generate_key
 from app.utils.bangs import gen_bangs_json, load_all_bangs
 from app.utils.misc import gen_file_hash, read_config_bool
+from app.utils.ua_generator import load_ua_pool
 from base64 import b64encode
 from bs4 import MarkupResemblesLocatorWarning
 from datetime import datetime, timedelta
@@ -106,6 +107,16 @@ if not os.path.exists(app.config['BANG_PATH']):
 
 if not os.path.exists(app.config['BUILD_FOLDER']):
     os.makedirs(app.config['BUILD_FOLDER'])
+
+# Initialize User Agent pool
+app.config['UA_CACHE_PATH'] = os.path.join(app.config['CONFIG_PATH'], 'ua_cache.json')
+try:
+    app.config['UA_POOL'] = load_ua_pool(app.config['UA_CACHE_PATH'], count=10)
+except Exception as e:
+    # If UA pool loading fails, log warning and set empty pool
+    # The gen_user_agent function will handle the fallback
+    print(f"Warning: Could not initialize UA pool: {e}")
+    app.config['UA_POOL'] = []
 
 # Session values
 app_key_path = os.path.join(app.config['CONFIG_PATH'], 'whoogle.key')

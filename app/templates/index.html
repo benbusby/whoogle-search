@@ -264,6 +264,11 @@
                             <input type="checkbox" name="accept_language"
                                    id="config-accept-language" {{ 'checked' if config.accept_language else '' }}>
                         </div>
+                        <div class="config-div config-div-show-user-agent">
+                            <label for="config-show-user-agent">Show User Agent in Footer: </label>
+                            <input type="checkbox" name="show_user_agent"
+                                   id="config-show-user-agent" {{ 'checked' if config.show_user_agent else '' }}>
+                        </div>
                         <div class="config-div config-div-root-url">
                             <label for="config-url">{{ translation['config-url'] }}: </label>
                             <input type="text" name="url" id="config-url" value="{{ config.url }}">
