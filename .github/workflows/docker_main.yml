@@ -3,7 +3,7 @@ name: docker_main
 on:
   workflow_run:
     workflows: ["tests"]
-    branches: [main]
+    branches: [main, updates]
     types:
       - completed
 
@@ -11,6 +11,7 @@ on:
 jobs:
   on-success:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - name: checkout code
       uses: actions/checkout@v2
