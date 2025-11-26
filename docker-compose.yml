@@ -1,6 +1,5 @@
-# can't use mem_limit in a 3.x docker-compose file in non swarm mode
-# see https://github.com/docker/compose/issues/4513
-version: "2.4"
+# Modern docker-compose format (v2+) does not require version specification
+# Memory limits are supported in Compose v2+ without version field
 
 services:
   whoogle-search:

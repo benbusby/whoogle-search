@@ -3,7 +3,6 @@ import base64
 import io
 import json
 import os
-import pickle
 import re
 import urllib.parse as urlparse
 import uuid
@@ -102,9 +101,8 @@ def session_required(f):
                 if os.path.getsize(file_path) > app.config['MAX_SESSION_SIZE']:
                     continue
 
-                with open(file_path, 'rb') as session_file:
-                    _ = pickle.load(session_file)
-                    data = pickle.load(session_file)
+                with open(file_path, 'r', encoding='utf-8') as session_file:
+                    data = json.load(session_file)
                     if isinstance(data, dict) and 'valid' in data:
                         continue
                     invalid_sessions.append(file_path)
@@ -176,19 +174,28 @@ def after_request_func(resp):
     resp.headers['X-Content-Type-Options'] = 'nosniff'
     resp.headers['X-Frame-Options'] = 'DENY'
     resp.headers['Cache-Control'] = 'max-age=86400'
+    
+    # Security headers
+    resp.headers['Referrer-Policy'] = 'no-referrer'
+    resp.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+    
+    # Add HSTS header if HTTPS is enabled
+    if os.environ.get('HTTPS_ONLY', False):
+        resp.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
 
-    if os.getenv('WHOOGLE_CSP', False):
+    # Enable CSP by default (can be disabled via env var)
+    if os.getenv('WHOOGLE_CSP', '1') != '0':
         resp.headers['Content-Security-Policy'] = app.config['CSP']
         if os.environ.get('HTTPS_ONLY', False):
             resp.headers['Content-Security-Policy'] += \
-                'upgrade-insecure-requests'
+                ' upgrade-insecure-requests'
 
     return resp
 
 
 @app.errorhandler(404)
 def unknown_page(e):
-    app.logger.warn(e)
+    app.logger.warning(e)
     return redirect(g.app_location)
 
 
@@ -604,10 +611,11 @@ def config():
         return json.dumps(g.user_config.__dict__)
     elif request.method == 'PUT' and not config_disabled:
         if name:
-            config_pkl = os.path.join(app.config['CONFIG_PATH'], name)
-            session['config'] = (pickle.load(open(config_pkl, 'rb'))
-                                if os.path.exists(config_pkl)
-                                else session['config'])
+            config_file = os.path.join(app.config['CONFIG_PATH'], name)
+            if os.path.exists(config_file):
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    session['config'] = json.load(f)
+            # else keep existing session['config']
             return json.dumps(session['config'])
         else:
             return json.dumps({})
@@ -623,7 +631,7 @@ def config():
                 # Keep both the selection and the custom string
                 if 'custom_user_agent' in config_data:
                     config_data['custom_user_agent'] = config_data['custom_user_agent']
-                    print(f"Setting custom user agent to: {config_data['custom_user_agent']}")  # Debug log
+                    app.logger.debug(f"Setting custom user agent to: {config_data['custom_user_agent']}")
             else:
                 config_data['use_custom_user_agent'] = False
                 # Only clear custom_user_agent if not using custom option
@@ -632,11 +640,9 @@ def config():
 
         # Save config by name to allow a user to easily load later
         if name:
-            pickle.dump(
-                config_data,
-                open(os.path.join(
-                    app.config['CONFIG_PATH'],
-                    name), 'wb'))
+            config_file = os.path.join(app.config['CONFIG_PATH'], name)
+            with open(config_file, 'w', encoding='utf-8') as f:
+                json.dump(config_data, f, indent=2)
 
         session['config'] = config_data
         return redirect(config_data['url'])
@@ -798,8 +804,9 @@ def internal_error(e):
 
     # Attempt to parse the query
     try:
-        search_util = Search(request, g.user_config, g.session_key)
-        query = search_util.new_search_query()
+        if hasattr(g, 'user_config') and hasattr(g, 'session_key'):
+            search_util = Search(request, g.user_config, g.session_key)
+            query = search_util.new_search_query()
     except Exception:
         pass
 
@@ -809,16 +816,26 @@ def internal_error(e):
     if (fallback_engine):
         return redirect(fallback_engine + (query or ''))
 
-    localization_lang = g.user_config.get_localization_lang()
+    # Safely get localization language with fallback
+    if hasattr(g, 'user_config'):
+        localization_lang = g.user_config.get_localization_lang()
+    else:
+        localization_lang = 'lang_en'
     translation = app.config['TRANSLATIONS'][localization_lang]
-    return render_template(
-            'error.html',
-            error_message='Internal server error (500)',
-            translation=translation,
-            farside='https://farside.link',
-            config=g.user_config,
-            query=urlparse.unquote(query or ''),
-            params=g.user_config.to_params(keys=['preferences'])), 500
+    # Build template context with safe defaults
+    template_context = {
+        'error_message': 'Internal server error (500)',
+        'translation': translation,
+        'farside': 'https://farside.link',
+        'query': urlparse.unquote(query or '')
+    }
+    
+    # Add user config if available
+    if hasattr(g, 'user_config'):
+        template_context['config'] = g.user_config
+        template_context['params'] = g.user_config.to_params(keys=['preferences'])
+    
+    return render_template('error.html', **template_context), 500
 
 
 def run_app() -> None:

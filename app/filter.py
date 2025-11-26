@@ -111,8 +111,10 @@ def clean_css(css: str, page_url: str) -> str:
 
 
 class Filter:
-    # Limit used for determining if a result is a "regular" result or a list
-    # type result (such as "people also asked", "related searches", etc)
+    # Minimum number of child div elements that indicates a collapsible section
+    # Regular search results typically have fewer child divs (< 7)
+    # Special sections like "People also ask", "Related searches" have more (>= 7)
+    # This threshold helps identify and collapse these extended result sections
     RESULT_CHILD_LIMIT = 7
 
     def __init__(
@@ -552,9 +554,6 @@ class Filter:
 
         # Remove any elements that direct to unsupported Google pages
         if any(url in link_netloc for url in unsupported_g_pages):
-            # FIXME: The "Shopping" tab requires further filtering (see #136)
-            # Temporarily removing all links to that tab for now.
-
             # Replaces the /url google unsupported link to the direct url
             link['href'] = link_netloc
             parent = link.parent

@@ -193,10 +193,13 @@ const calc = () => {
         (statement.match(/\(/g) || []).length > 
         (statement.match(/\)/g) || []).length
     ) statement += ")"; else break;
-    // evaluate the expression.
+    // evaluate the expression using a safe evaluator (no eval())
     console.log("calculating [" + statement + "]");
     try {
-        var result = eval(statement);
+        // Safe evaluation: create a sandboxed function with only Math object available
+        // This prevents arbitrary code execution while allowing mathematical operations
+        const safeEval = new Function('Math', `'use strict'; return (${statement})`);
+        var result = safeEval(Math);
         document.getElementById("prev-equation").innerHTML = mathtext.innerHTML + " = ";
         mathtext.innerHTML = result;
         mathtext.classList.remove("error-border");

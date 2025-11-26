@@ -12,19 +12,19 @@ from flask import Flask
 import json
 import logging.config
 import os
+import sys
 from stem import Signal
 import threading
 import warnings
 
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from app.utils.misc import read_config_bool
 from app.services.http_client import HttpxClient
 from app.services.provider import close_all_clients
 from app.version import __version__
 
-app = Flask(__name__, static_folder=os.path.dirname(
-    os.path.abspath(__file__)) + '/static')
+app = Flask(__name__, static_folder=os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'static'))
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -76,7 +76,10 @@ app.config['CONFIG_DISABLE'] = read_config_bool('WHOOGLE_CONFIG_DISABLE')
 app.config['SESSION_FILE_DIR'] = os.path.join(
     app.config['CONFIG_PATH'],
     'session')
-app.config['MAX_SESSION_SIZE'] = 4000  # Sessions won't exceed 4KB
+# Maximum session file size in bytes (4KB limit to prevent abuse and disk exhaustion)
+# Session files larger than this are ignored during cleanup to avoid processing
+# potentially malicious or corrupted files
+app.config['MAX_SESSION_SIZE'] = 4000
 app.config['BANG_PATH'] = os.getenv(
     'CONFIG_VOLUME',
     os.path.join(app.config['STATIC_FOLDER'], 'bangs'))
@@ -118,18 +121,53 @@ except Exception as e:
     print(f"Warning: Could not initialize UA pool: {e}")
     app.config['UA_POOL'] = []
 
-# Session values
-app_key_path = os.path.join(app.config['CONFIG_PATH'], 'whoogle.key')
-if os.path.exists(app_key_path):
+# Session values - Secret key management
+# Priority: environment variable → file → generate new
+def get_secret_key():
+    """Load or generate secret key with validation.
+    
+    Priority order:
+    1. WHOOGLE_SECRET_KEY environment variable
+    2. Existing key file
+    3. Generate new key and save to file
+    
+    Returns:
+        str: Valid secret key for Flask sessions
+    """
+    # Check environment variable first
+    env_key = os.getenv('WHOOGLE_SECRET_KEY', '').strip()
+    if env_key:
+        # Validate env key has minimum length
+        if len(env_key) >= 32:
+            return env_key
+        else:
+            print(f"Warning: WHOOGLE_SECRET_KEY too short ({len(env_key)} chars, need 32+). Using file/generated key instead.", file=sys.stderr)
+    
+    # Check file-based key
+    app_key_path = os.path.join(app.config['CONFIG_PATH'], 'whoogle.key')
+    if os.path.exists(app_key_path):
+        try:
+            with open(app_key_path, 'r', encoding='utf-8') as f:
+                key = f.read().strip()
+                # Validate file key
+                if len(key) >= 32:
+                    return key
+                else:
+                    print(f"Warning: Key file too short, regenerating", file=sys.stderr)
+        except (PermissionError, IOError) as e:
+            print(f"Warning: Could not read key file: {e}", file=sys.stderr)
+    
+    # Generate new key
+    new_key = str(b64encode(os.urandom(32)))
     try:
-        with open(app_key_path, 'r', encoding='utf-8') as f:
-            app.config['SECRET_KEY'] = f.read()
-    except PermissionError:
-        app.config['SECRET_KEY'] = str(b64encode(os.urandom(32)))
-else:
-    app.config['SECRET_KEY'] = str(b64encode(os.urandom(32)))
-    with open(app_key_path, 'w', encoding='utf-8') as key_file:
-        key_file.write(app.config['SECRET_KEY'])
+        with open(app_key_path, 'w', encoding='utf-8') as key_file:
+            key_file.write(new_key)
+    except (PermissionError, IOError) as e:
+        print(f"Warning: Could not save key file: {e}. Key will not persist across restarts.", file=sys.stderr)
+    
+    return new_key
+
+app.config['SECRET_KEY'] = get_secret_key()
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=365)
 
 # NOTE: SESSION_COOKIE_SAMESITE must be set to 'lax' to allow the user's

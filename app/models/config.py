@@ -247,9 +247,34 @@ class Config:
         return param_str
 
     def _get_fernet_key(self, password: str) -> bytes:
-        hash_object = hashlib.md5(password.encode())
-        key = urlsafe_b64encode(hash_object.hexdigest().encode())
-        return key
+        """Derive a Fernet-compatible key from a password using PBKDF2.
+        
+        Note: This uses a static salt for simplicity. This is a breaking change
+        from the previous MD5-based implementation. Existing encrypted preferences
+        will need to be re-encrypted.
+        
+        Args:
+            password: The password to derive the key from
+            
+        Returns:
+            bytes: A URL-safe base64 encoded 32-byte key suitable for Fernet
+        """
+        # Use a static salt derived from app context
+        # In a production system, you'd want to store per-user salts
+        salt = b'whoogle-preferences-salt-v2'
+        
+        # Derive a 32-byte key using PBKDF2 with SHA256
+        # 100,000 iterations is a reasonable balance of security and performance
+        kdf_key = hashlib.pbkdf2_hmac(
+            'sha256',
+            password.encode('utf-8'),
+            salt,
+            100000,
+            dklen=32
+        )
+        
+        # Fernet requires a URL-safe base64 encoded key
+        return urlsafe_b64encode(kdf_key)
 
     def _encode_preferences(self) -> str:
         preferences_json = json.dumps(self.get_attrs()).encode()
