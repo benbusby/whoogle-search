@@ -4,7 +4,7 @@
 >works -- Whoogle requests the JavaScript-free search results, then filters out garbage from the results page and proxies all external content for the user.
 >
 >This is possibly a breaking change that may mean the end for Whoogle. We'll continue fighting back and releasing workarounds until all workarounds are 
->exhausted or a better method is found.
+>exhausted or a better method is found. If you know of a better way, please review and comment in our Way Forward Discussion
 
 ___
 
@@ -700,7 +700,6 @@ Instead of using auto-generated Opera UA strings, you can provide your own list 
 ```
 Opera/9.80 (J2ME/MIDP; Opera Mini/4.2.13337/22.478; U; en) Presto/2.4.15 Version/10.00
 Opera/9.80 (Android; Linux; Opera Mobi/498; U; en) Presto/2.12.423 Version/10.1
-Opera/9.30 (Nintendo Wii; U; ; 3642; en)
 ```
 
 2. Set the `WHOOGLE_UA_LIST_FILE` environment variable to point to your file:
