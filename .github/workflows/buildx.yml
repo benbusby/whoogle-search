@@ -57,7 +57,7 @@ jobs:
       #       --tag ghcr.io/benbusby/whoogle-search:latest \
       #       --platform linux/amd64,linux/arm64 .
       - name: build and push updates branch (update-testing tag)
-        if: github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'updates' && github.event.workflow_run.conclusion == 'success' && (github.actor == 'benbusby' || github.actor == 'Don-Swanson')
+        if: github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'updates' && github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.actor.login == 'benbusby' || github.event.workflow_run.actor.login == 'Don-Swanson')
         run: |
           docker buildx build --push \
             --tag benbusby/whoogle-search:update-testing \
