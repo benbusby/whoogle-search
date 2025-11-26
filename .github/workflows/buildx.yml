@@ -52,7 +52,7 @@ jobs:
           docker buildx build --push \
             --tag benbusby/whoogle-search:update-testing \
             --tag ghcr.io/benbusby/whoogle-search:update-testing \
-            --platform linux/amd64,linux/arm/v7,linux/arm64 .
+            --platform linux/amd64,linux/arm64 .
       - name: build and push release (version + latest)
         if: github.event_name == 'release' && github.event.release.prerelease == false && (github.actor == 'benbusby' || github.actor == 'Don-Swanson')
         run: |
@@ -63,7 +63,7 @@ jobs:
             --tag benbusby/whoogle-search:latest \
             --tag ghcr.io/benbusby/whoogle-search:${VERSION} \
             --tag ghcr.io/benbusby/whoogle-search:latest \
-            --platform linux/amd64,linux/arm/v7,linux/arm64 .
+            --platform linux/amd64,linux/arm64 .
       - name: build and push pre-release (version only)
         if: github.event_name == 'release' && github.event.release.prerelease == true && (github.actor == 'benbusby' || github.actor == 'Don-Swanson')
         run: |
@@ -72,7 +72,7 @@ jobs:
           docker buildx build --push \
             --tag benbusby/whoogle-search:${VERSION} \
             --tag ghcr.io/benbusby/whoogle-search:${VERSION} \
-            --platform linux/amd64,linux/arm/v7,linux/arm64 .
+            --platform linux/amd64,linux/arm64 .
       # Disabled: Use GitHub releases instead (triggers release or pre-release workflows above)
       # - name: build and push tag
       #   if: startsWith(github.ref, 'refs/tags')
@@ -80,4 +80,4 @@ jobs:
       #     docker buildx build --push \
       #       --tag benbusby/whoogle-search:${GITHUB_REF#refs/*/v} \
       #       --tag ghcr.io/benbusby/whoogle-search:${GITHUB_REF#refs/*/v} \
-      #       --platform linux/amd64,linux/arm/v7,linux/arm64 .
+      #       --platform linux/amd64,linux/arm64 .

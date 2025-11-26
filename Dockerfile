@@ -1,3 +1,13 @@
+# NOTE: ARMv7 support has been dropped due to lack of pre-built cryptography wheels for Alpine/musl.
+# To restore ARMv7 support for local builds:
+# 1. Change requirements.txt:
+#    cryptography==3.3.2; platform_machine == 'armv7l'
+#    cryptography==46.0.1; platform_machine != 'armv7l'
+#    pyOpenSSL==19.1.0; platform_machine == 'armv7l'
+#    pyOpenSSL==25.3.0; platform_machine != 'armv7l'
+# 2. Add linux/arm/v7 to --platform flag when building:
+#    docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 .
+
 FROM python:3.12.6-alpine3.20 AS builder
 
 RUN apk --no-cache add \

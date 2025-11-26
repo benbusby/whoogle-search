@@ -88,6 +88,17 @@ Contents
 <sup>***If deployed to a remote server, or configured to send requests through a VPN, Tor, proxy, etc.</sup>
 
 ## Install
+
+### Supported Platforms
+Official Docker images are built for:
+- **linux/amd64** (x86_64)
+- **linux/arm64** (ARM 64-bit, Raspberry Pi 3/4/5, Apple Silicon)
+
+**Note**: ARMv7 support (32-bit ARM, Raspberry Pi 2) was dropped in v1.2.0 due to incompatibility with modern security libraries on Alpine Linux. Users with ARMv7 devices can either:
+- Use an older version (v1.1.x or earlier)
+- Build locally with pinned dependencies (see notes in Dockerfile)
+- Upgrade to a 64-bit OS if hardware supports it (Raspberry Pi 3+)
+
 There are a few different ways to begin using the app, depending on your preferences:
 
 ___
