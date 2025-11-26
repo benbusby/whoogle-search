@@ -116,7 +116,75 @@ def gen_user_agent(config, is_mobile) -> str:
     return DEFAULT_FALLBACK_UA
 
 
+def gen_query_leta(query, args, config) -> str:
+    """Builds a query string for Mullvad Leta backend
+    
+    Args:
+        query: The search query string
+        args: Request arguments
+        config: User configuration
+        
+    Returns:
+        str: A formatted query string for Leta
+    """
+    # Ensure search query is parsable
+    query = urlparse.quote(query)
+    
+    # Build query starting with 'q='
+    query_str = 'q=' + query
+    
+    # Always use Google as the engine (Leta supports 'google' or 'brave')
+    query_str += '&engine=google'
+    
+    # Add country if configured
+    if config.country:
+        query_str += '&country=' + config.country.lower()
+    
+    # Add language if configured
+    # Convert from Google's lang format (lang_en) to Leta's format (en)
+    if config.lang_search:
+        lang_code = config.lang_search.replace('lang_', '')
+        query_str += '&language=' + lang_code
+    
+    # Handle time period filtering with :past syntax or tbs parameter
+    if ':past' in query:
+        time_range = str.strip(query.split(':past', 1)[-1]).lower()
+        if time_range.startswith('day'):
+            query_str += '&lastUpdated=d'
+        elif time_range.startswith('week'):
+            query_str += '&lastUpdated=w'
+        elif time_range.startswith('month'):
+            query_str += '&lastUpdated=m'
+        elif time_range.startswith('year'):
+            query_str += '&lastUpdated=y'
+    elif 'tbs' in args or 'tbs' in config:
+        result_tbs = args.get('tbs') if 'tbs' in args else config.tbs
+        # Convert Google's tbs format to Leta's lastUpdated format
+        if result_tbs and 'qdr:d' in result_tbs:
+            query_str += '&lastUpdated=d'
+        elif result_tbs and 'qdr:w' in result_tbs:
+            query_str += '&lastUpdated=w'
+        elif result_tbs and 'qdr:m' in result_tbs:
+            query_str += '&lastUpdated=m'
+        elif result_tbs and 'qdr:y' in result_tbs:
+            query_str += '&lastUpdated=y'
+    
+    # Add pagination if present
+    if 'start' in args:
+        start = int(args.get('start', '0'))
+        # Leta uses 1-indexed pages, Google uses result offset
+        page = (start // 10) + 1
+        if page > 1:
+            query_str += '&page=' + str(page)
+    
+    return query_str
+
+
 def gen_query(query, args, config) -> str:
+    # If using Leta backend, build query differently
+    if config.use_leta:
+        return gen_query_leta(query, args, config)
+    
     param_dict = {key: '' for key in VALID_PARAMS}
 
     # Use :past(hour/day/week/month/year) if available
@@ -212,8 +280,15 @@ class Request:
     """
 
     def __init__(self, normal_ua, root_path, config: Config, http_client=None):
-        self.search_url = 'https://www.google.com/search?gbv=1&num=' + str(
-            os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&q='
+        # Use Leta backend if configured, otherwise use Google
+        if config.use_leta:
+            self.search_url = 'https://leta.mullvad.net/search?'
+            self.use_leta = True
+        else:
+            self.search_url = 'https://www.google.com/search?gbv=1&num=' + str(
+                os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&'
+            self.use_leta = False
+        
         # Optionally send heartbeat to Tor to determine availability
         # Only when Tor is enabled in config to avoid unnecessary socket usage
         if config.tor:

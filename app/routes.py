@@ -342,6 +342,16 @@ def search():
     if not query:
         return redirect(url_for('.index'))
 
+    # Check if using Leta with unsupported search type
+    tbm_value = request.args.get('tbm', '').strip()
+    if g.user_config.use_leta and tbm_value:
+        session['error_message'] = (
+            "Image, video, news, and map searches are not supported when using "
+            "Mullvad Leta as the search backend. Please disable Leta in settings "
+            "or perform a regular web search."
+        )
+        return redirect(url_for('.index'))
+
     # Generate response and number of external elements from the page
     try:
         response = search_util.generate_response()
@@ -418,7 +428,8 @@ def search():
                             full_query_val,
                             search_util.search_type,
                             g.user_config.preferences,
-                            translation)
+                            translation,
+                            g.user_config.use_leta)
 
     # Feature to display currency_card
     # Since this is determined by more than just the

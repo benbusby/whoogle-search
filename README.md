@@ -56,6 +56,7 @@ Contents
 10. [Screenshots](#screenshots)
 
 ## Features
+- **Mullvad Leta backend support** - Privacy-focused alternative to Google (enabled by default)
 - No ads or sponsored content
 - No JavaScript\*
 - No cookies\*\*
@@ -858,6 +859,20 @@ def contains(x: list, y: int) -> bool:
 Whoogle currently supports translations using [`translations.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/translations.json). Language values in this file need to match the "value" of the according language in [`languages.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/languages.json) (i.e. "lang_en" for English, "lang_es" for Spanish, etc). After you add a new set of translations to `translations.json`, open a PR with your changes and they will be merged in as soon as possible.
 
 ## FAQ
+
+**What is Mullvad Leta and why is it the default?**
+
+Mullvad Leta is a privacy-focused search service provided by [Mullvad VPN](https://mullvad.net/en/leta). As of January 2025, Google disabled JavaScript-free search results, which breaks Whoogle's core functionality. Leta provides an excellent alternative that:
+
+- Doesn't require JavaScript
+- Provides privacy-focused search results through Mullvad's infrastructure
+- Uses Google's search index (so results are similar to what you'd expect)
+- Doesn't track or log your searches
+
+**Limitations:** Leta only supports regular web search - no images, videos, news, or maps. If you need these features and Google's JavaScript-free search becomes available again, you can disable Leta in settings or set `WHOOGLE_CONFIG_USE_LETA=0`.
+
+For more details, see [LETA_INTEGRATION.md](LETA_INTEGRATION.md).
+
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
 
 Whoogle is intended to only ever be deployed to private instances by individuals of any background, with as little effort as possible. Prior knowledge of/experience with the command line or deploying applications is not necessary to deploy Whoogle, which isn't the case with Searx. As a result, Whoogle is missing some features of Searx in order to be as easy to deploy as possible.
