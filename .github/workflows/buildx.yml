@@ -20,6 +20,13 @@ jobs:
       - name: Wait for tests to succeed
         if: ${{ github.event.workflow_run.conclusion != 'success' && startsWith(github.ref, 'refs/tags') != true }}
         run: exit 1
+      - name: Debug workflow context
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
       - name: checkout code
         uses: actions/checkout@v4
       - name: Set up QEMU

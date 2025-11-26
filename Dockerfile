@@ -1,4 +1,14 @@
-FROM python:3.12.6-alpine3.20 AS builder
+# NOTE: ARMv7 support has been dropped due to lack of pre-built cryptography wheels for Alpine/musl.
+# To restore ARMv7 support for local builds:
+# 1. Change requirements.txt:
+#    cryptography==3.3.2; platform_machine == 'armv7l'
+#    cryptography==46.0.1; platform_machine != 'armv7l'
+#    pyOpenSSL==19.1.0; platform_machine == 'armv7l'
+#    pyOpenSSL==25.3.0; platform_machine != 'armv7l'
+# 2. Add linux/arm/v7 to --platform flag when building:
+#    docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 .
+
+FROM python:3.12-alpine3.22 AS builder
 
 RUN apk --no-cache add \
     build-base \
@@ -12,13 +22,16 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r requirements.txt
 
-FROM python:3.12.6-alpine3.20
+FROM python:3.12-alpine3.22
 
-RUN apk add --no-cache tor curl openrc libstdc++
+# Remove bridge package to avoid CVEs (not needed for Docker containers)
+RUN apk add --no-cache --no-scripts tor curl openrc libstdc++ && \
+    apk del --no-cache bridge || true
 # git go //for obfs4proxy
 # libcurl4-openssl-dev
-
-RUN apk --no-cache upgrade
+RUN pip install --upgrade pip
+RUN apk --no-cache upgrade && \
+    apk del --no-cache --rdepends bridge || true
 
 # uncomment to build obfs4proxy
 # RUN git clone https://gitlab.com/yawning/obfs4.git

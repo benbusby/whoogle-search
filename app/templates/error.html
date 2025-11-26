@@ -7,8 +7,6 @@
     {% else %}
         <link rel="stylesheet" href="{{ cb_url(config.theme + '-theme.css') }}"/>
     {% endif %}
-{% else %}
-    <link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.css') }}"/>
 {% endif %}
 {% if bundle_static() %}
 <link rel="stylesheet" href="/{{ cb_url('bundle.css') }}">
