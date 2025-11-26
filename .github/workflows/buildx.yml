@@ -6,6 +6,9 @@ on:
     branches: [main, updates]
     types:
       - completed
+  push:
+    tags:
+      - '*'
   release:
     types:
       - published
@@ -15,8 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Wait for tests to succeed
-        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        if: ${{ github.event.workflow_run.conclusion != 'success' && startsWith(github.ref, 'refs/tags') != true }}
         run: exit 1
+      - name: Debug workflow context
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
       - name: checkout code
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -47,7 +57,7 @@ jobs:
       #       --tag ghcr.io/benbusby/whoogle-search:latest \
       #       --platform linux/amd64,linux/arm64 .
       - name: build and push updates branch (update-testing tag)
-        if: github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'updates' && github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.actor.login == 'benbusby' || github.event.workflow_run.actor.login == 'Don-Swanson')
+        if: github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'updates' && github.event.workflow_run.conclusion == 'success' && (github.actor == 'benbusby' || github.actor == 'Don-Swanson')
         run: |
           docker buildx build --push \
             --tag benbusby/whoogle-search:update-testing \
@@ -73,11 +83,10 @@ jobs:
             --tag benbusby/whoogle-search:${VERSION} \
             --tag ghcr.io/benbusby/whoogle-search:${VERSION} \
             --platform linux/amd64,linux/arm64 .
-      # Disabled: Use GitHub releases instead (triggers release or pre-release workflows above)
-      # - name: build and push tag
-      #   if: startsWith(github.ref, 'refs/tags')
-      #   run: |
-      #     docker buildx build --push \
-      #       --tag benbusby/whoogle-search:${GITHUB_REF#refs/*/v} \
-      #       --tag ghcr.io/benbusby/whoogle-search:${GITHUB_REF#refs/*/v} \
-      #       --platform linux/amd64,linux/arm64 .
+      - name: build and push tag
+        if: startsWith(github.ref, 'refs/tags')
+        run: |
+          docker buildx build --push \
+            --tag benbusby/whoogle-search:${GITHUB_REF#refs/*/v} \
+            --tag ghcr.io/benbusby/whoogle-search:${GITHUB_REF#refs/*/v} \
+            --platform linux/amd64,linux/arm64 .
