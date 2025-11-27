@@ -140,7 +140,8 @@ class Search:
                                 root_url=root_url,
                                 mobile=mobile,
                                 config=self.config,
-                                query=self.query)
+                                query=self.query,
+                                page_url=self.request.url)
         full_query = gen_query(self.query,
                                self.request_params,
                                self.config)
@@ -148,8 +149,10 @@ class Search:
 
         # force mobile search when view image is true and
         # the request is not already made by a mobile
-        view_image = ('tbm=isch' in full_query
-                      and self.config.view_image)
+        is_image_query = ('tbm=isch' in full_query) or ('udm=2' in full_query)
+        # Always parse image results when hitting the images endpoint (udm=2)
+        # to avoid Google returning only text/AI blocks.
+        view_image = is_image_query
 
         client = self.user_request or g.user_request
         get_body = client.send(query=full_query,
@@ -194,4 +197,3 @@ class Search:
             link['href'] += param_str
 
         return str(formatted_results)
-

@@ -10,9 +10,9 @@
       background-color: #fff;
     }
     body {
-      padding: 0 8px;
+      padding: 0 12px;
       margin: 0 auto;
-      max-width: 736px;
+      max-width: 1200px;
     }
     a {
       text-decoration: none;
@@ -167,6 +167,7 @@
       border-collapse: collapse;
       border-spacing: 0;
       width: 100%;
+      table-layout: fixed;
     }
     .X6ZCif {
       color: #202124;
@@ -209,15 +210,20 @@
       text-align: center;
     }
     .RAyV4b {
-      line-height: 140px;
-      overflow: "hidden";
+      height: 220px;
+      line-height: 220px;
+      overflow: hidden;
       text-align: center;
     }
     .t0fcAb {
       text-align: center;
       margin: auto;
       vertical-align: middle;
-      object-fit: contain;
+      object-fit: cover;
+      max-width: 100%;
+      height: auto;
+      max-height: 220px;
+      display: block;
     }
     .Tor4Ec {
       padding-top: 2px;
@@ -312,6 +318,24 @@
     }
     a .CVA68e:hover {
       text-decoration: underline;
+    }
+    .e3goi {
+      width: 25%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .svla5d {
+      max-width: 100%;
+    }
+    @media (max-width: 900px) {
+      .e3goi {
+        width: 50%;
+      }
+    }
+    @media (max-width: 600px) {
+      .e3goi {
+        width: 100%;
+      }
     }
   </style>
   <div>

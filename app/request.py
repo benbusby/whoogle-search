@@ -147,6 +147,10 @@ def gen_query(query, args, config) -> str:
     # Pass along type of results (news, images, books, etc)
     if 'tbm' in args:
         param_dict['tbm'] = '&tbm=' + args.get('tbm')
+        # Google Images now expects the modern udm=2 layout; force it when
+        # requesting images to avoid redirects to the new AI/text layout.
+        if args.get('tbm') == 'isch' and 'udm' not in args:
+            param_dict['udm'] = '&udm=2'
 
     # Get results page start value (10 per page, ie page 2 start val = 20)
     if 'start' in args:
@@ -212,8 +216,18 @@ class Request:
     """
 
     def __init__(self, normal_ua, root_path, config: Config, http_client=None):
-        self.search_url = 'https://www.google.com/search?gbv=1&num=' + str(
-            os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&q='
+        results_per_page = str(os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10))
+        self.search_url = (
+            'https://www.google.com/search?gbv=1&num='
+            f'{results_per_page}&q='
+        )
+        # Google Images rejects the lightweight gbv=1 interface. Use the
+        # modern udm=2 entrypoint specifically for image searches to avoid the
+        # "update your browser" interstitial.
+        self.image_search_url = (
+            'https://www.google.com/search?udm=2&num='
+            f'{results_per_page}&q='
+        )
         # Optionally send heartbeat to Tor to determine availability
         # Only when Tor is enabled in config to avoid unnecessary socket usage
         if config.tor:
@@ -234,6 +248,13 @@ class Request:
         self.modified_user_agent = gen_user_agent(config, self.mobile)
         if not self.mobile:
             self.modified_user_agent_mobile = gen_user_agent(config, True)
+
+        # Dedicated modern UA to use when Google rejects legacy ones (e.g. Images)
+        self.image_user_agent = (
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/127.0.0.0 Safari/537.36'
+        )
 
         # Set up proxy configuration
         proxy_path = os.environ.get('WHOOGLE_PROXY_LOC', '')
@@ -332,6 +353,13 @@ class Request:
             else:
                 modified_user_agent = self.modified_user_agent
 
+        # Some Google endpoints (notably Images) now refuse legacy user agents.
+        # If an image search is detected and the generated UA isn't Chromium-
+        # like, retry with a modern Chrome string to avoid the "update your
+        # browser" interstitial.
+        if (('tbm=isch' in query) or ('udm=2' in query)) and 'Chrome' not in modified_user_agent:
+            modified_user_agent = self.image_user_agent
+
         headers = {
             'User-Agent': modified_user_agent,
             'Accept': ('text/html,application/xhtml+xml,application/xml;'
@@ -345,16 +373,23 @@ class Request:
             'Sec-Fetch-Site': 'none',
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-User': '?1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-CH-UA': (
-                '"Not/A)Brand";v="8", '
-                '"Chromium";v="127", '
-                '"Google Chrome";v="127"'
-            ),
-            'Sec-CH-UA-Mobile': '?0',
-            'Sec-CH-UA-Platform': '"macOS"'
+            'Sec-Fetch-Dest': 'document'
         }
+        # Only attach client hints when using a Chromium-like user agent to
+        # avoid sending conflicting information that can trigger unsupported
+        # browser pages.
+        if 'Chrome' in headers['User-Agent']:
+            headers.update({
+                'Sec-CH-UA': (
+                    '"Not/A)Brand";v="8", '
+                    '"Chromium";v="127", '
+                    '"Google Chrome";v="127"'
+                ),
+                'Sec-CH-UA-Mobile': '?0',
+                'Sec-CH-UA-Platform': '"Windows"'
+            })
 
+ 
         # Add Accept-Language header tied to the current config if requested
         if self.lang_interface:
             headers['Accept-Language'] = (
@@ -393,9 +428,13 @@ class Request:
                     "Error raised during Tor connection validation",
                     disable=True)
 
+        search_base = base_url or self.search_url
+        if not base_url and ('tbm=isch' in query or 'udm=2' in query):
+            search_base = self.image_search_url
+
         try:
             response = self.http_client.get(
-                (base_url or self.search_url) + query,
+                search_base + query,
                 headers=headers,
                 cookies=consent_cookies)
         except httpx.HTTPError as e:
@@ -406,6 +445,6 @@ class Request:
             attempt += 1
             if attempt > 10:
                 raise TorError("Tor query failed -- max attempts exceeded 10")
-            return self.send((base_url or self.search_url), query, attempt)
+            return self.send(search_base, query, attempt)
 
         return response
