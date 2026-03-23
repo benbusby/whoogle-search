@@ -69,8 +69,8 @@ Contents
 - POST request search and suggestion queries (when possible)
 - View images at full res without site redirect (currently mobile only)
 - Light/Dark/System theme modes (with support for [custom CSS theming](https://github.com/benbusby/whoogle-search/wiki/User-Contributed-CSS-Themes))
-- Auto-generated Opera User Agents with random rotation
-  - 10 unique Opera-based UAs generated on startup from 115 language variants
+- Auto-generated Safari User Agents with random rotation
+  - 10 unique Safari-based UAs generated on startup from 115 language variants
   - Randomly rotated for each search request to avoid detection patterns
   - Cached across restarts with configurable refresh options
   - Fallback to safe default UA if generation fails
@@ -454,8 +454,8 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_PROXY_PASS   | The password of the proxy server.                                                         |
 | WHOOGLE_PROXY_TYPE   | The type of the proxy server. Can be "socks5", "socks4", or "http".                       |
 | WHOOGLE_PROXY_LOC    | The location of the proxy server (host or ip).                                            |
-| WHOOGLE_USER_AGENT   | The desktop user agent to use when using 'env_conf' option. Leave empty to use auto-generated Opera UAs. |
-| WHOOGLE_USER_AGENT_MOBILE | The mobile user agent to use when using 'env_conf' option. Leave empty to use auto-generated Opera UAs. |
+| WHOOGLE_USER_AGENT   | The desktop user agent to use when using 'env_conf' option. Leave empty to use auto-generated Safari UAs. |
+| WHOOGLE_USER_AGENT_MOBILE | The mobile user agent to use when using 'env_conf' option. Leave empty to use auto-generated Safari UAs. |
 | WHOOGLE_USE_CLIENT_USER_AGENT | Enable to use your own user agent for all requests. Defaults to false.           |
 | WHOOGLE_UA_CACHE_PERSISTENT | Whether to persist auto-generated UAs across restarts. Set to '0' to regenerate on each startup. Default '1'. |
 | WHOOGLE_UA_CACHE_REFRESH_DAYS | Auto-refresh UA cache after N days. Set to '0' to never refresh (cache persists indefinitely). Default '0'. |
@@ -781,7 +781,7 @@ Whoogle can optionally serve a single bundled CSS and JS to reduce the number of
 
 ## User Agent Generator Tool
 
-A standalone command-line tool is available for generating Opera User Agent strings on demand:
+A standalone command-line tool is available for generating Safari User Agent strings on demand:
 
 ```bash
 # Generate 10 User Agent strings (default)
@@ -799,15 +799,15 @@ This tool is useful for:
 
 ## Using Custom User Agent Lists
 
-Instead of using auto-generated Opera UA strings, you can provide your own list of User Agent strings for Whoogle to use.
+Instead of using auto-generated Safari UA strings, you can provide your own list of User Agent strings for Whoogle to use.
 
 ### Setup
 
 1. Create a text file with your preferred UA strings (one per line):
 
 ```
-Opera/9.80 (J2ME/MIDP; Opera Mini/4.2.13337/22.478; U; en) Presto/2.4.15 Version/10.00
-Opera/9.80 (Android; Linux; Opera Mobi/498; U; en) Presto/2.12.423 Version/10.1
+Safari/9.80 (J2ME/MIDP; Safari Mini/4.2.13337/22.478; U; en) Presto/2.4.15 Version/10.00
+Safari/9.80 (Android; Linux; Safari Mobi/498; U; en) Presto/2.12.423 Version/10.1
 ```
 
 2. Set the `WHOOGLE_UA_LIST_FILE` environment variable to point to your file:
@@ -836,7 +836,7 @@ Whoogle uses the following priority when loading User Agent strings:
 
 - You can use the output from `misc/check_google_user_agents.py` as your custom UA list
 - Generate a list with `python misc/generate_uas.py 50 2>/dev/null > my_uas.txt`
-- Mix different UA types (Opera, Firefox, Chrome) for more variety
+- Mix different UA types (Safari, Firefox, Chrome) for more variety
 - Keep the file readable by Whoogle (proper permissions)
 - One UA string per line, blank lines are ignored
 
@@ -901,13 +901,13 @@ The tool evaluates UAs against multiple criteria:
 4. **Result Validation**: Confirms presence of actual search result HTML elements
 5. **Content Analysis**: Validates response size and structure
 
-This tool was used to discover and validate the working Opera UA patterns that power Whoogle's auto-generation feature.
+This tool was used to discover and validate the working Safari UA patterns that power Whoogle's auto-generation feature.
 
 ## Known Issues
 
 ### User Agent Strings and Image Search
 
-**Issue**: Most, if not all, of the auto-generated Opera User Agent strings may fail when performing **image searches** on Google. This appears to be a limitation with how Google's image search validates User Agent strings.
+**Issue**: Most, if not all, of the auto-generated Safari User Agent strings may fail when performing **image searches** on Google. This appears to be a limitation with how Google's image search validates User Agent strings.
 
 **Impact**:
 - Regular web searches work correctly with generated UAs
@@ -926,7 +926,7 @@ Under the hood, Whoogle is a basic Flask app with the following structure:
     - `results.py`: Utility functions for interpreting/modifying individual search results
     - `search.py`: Creates and handles new search queries
     - `session.py`: Miscellaneous methods related to user sessions
-    - `ua_generator.py`: Auto-generates Opera User Agent strings with pattern-based randomization
+    - `ua_generator.py`: Auto-generates Safari User Agent strings with pattern-based randomization
   - `templates/`
     - `index.html`: The home page template
     - `display.html`: The search results template
