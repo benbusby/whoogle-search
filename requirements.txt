@@ -17,7 +17,7 @@ packaging==25.0
 pluggy==1.6.0
 pycodestyle==2.14.0
 pycparser==2.22
-pyOpenSSL==25.3.0
+pyOpenSSL==26.0.0
 pyparsing==3.2.5
 pytest==8.3.3
 python-dateutil==2.9.0.post0
