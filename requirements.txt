@@ -19,7 +19,7 @@ pycodestyle==2.14.0
 pycparser==2.22
 pyOpenSSL==25.3.0
 pyparsing==3.2.5
-pytest==8.3.3
+pytest==9.0.3
 python-dateutil==2.9.0.post0
 httpx[http2,socks]==0.28.1
 cachetools==6.2.0
