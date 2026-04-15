@@ -1,10 +1,10 @@
 >[!WARNING]
 >
->Since 16 January, 2025, Google has been attacking the ability to perform search queries without JavaScript enabled. This is a fundamental part of how Whoogle
->works -- Whoogle requests the JavaScript-free search results, then filters out garbage from the results page and proxies all external content for the user.
+>**Final Release Notice 14 Apr 2026**
+>Since early 2025, Google has been aggressively blocking search queries performed without JavaScript enabled by continuously banning working User-Agent strings.
+>This is THE fundamental part of how Whoogle works. All efforts to find and build a method to continue working have failed, and as a result, this will be the **final release of Whoogle**.
 >
->This is possibly a breaking change that may mean the end for Whoogle. We'll continue fighting back and releasing workarounds until all workarounds are 
->exhausted or a better method is found. If you know of a better way, please review and comment in our Way Forward Discussion
+>Whoogle can theoretically continue to be used by bringing your own CSE Key (Custom Search Engine Key), or if you are able to find a working UA string, you can hardcode that. However, no additional efforts will be placed into finding a fix or maintaining workarounds unless someone stumbles upon a method that will work reliably and maintains a small, simple footprint.
 
 ___
 

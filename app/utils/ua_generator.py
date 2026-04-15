@@ -1,7 +1,7 @@
 """
-User Agent Generator for Safari-based UA strings.
+User Agent Generator for working UA strings.
 
-This module generates realistic Safari 5.0 User Agent strings based on patterns
+This module generates User Agent strings based on patterns
 found in working UA strings that successfully bypass Google's restrictions.
 """
 
@@ -12,31 +12,15 @@ from datetime import datetime
 from typing import List
 
 # Default fallback UA if generation fails
-DEFAULT_FALLBACK_UA = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0 Safari/533.16"
+DEFAULT_FALLBACK_UA = "Opera/12.02 (Android 4.1; Linux; Opera Mobi/ADR-1111101157; U; en-US) Presto/2.9.201 Version/12.02"
 
-# Safari UA Pattern Templates
-SAFARI_PATTERNS = [
-    "Mozilla/5.0 ({system}; U; {os_ver}; {lang}) AppleWebKit/{webkit} (KHTML, like Gecko) Version/5.0 Safari/{safari}"
+# UA Pattern Templates
+UA_PATTERNS = [
+    "HTC_Touch_3G Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.11)",
+    "Opera/12.02 (Android {android_ver}; Linux; Opera Mobi/ADR-1111101157; U; {lang}) Presto/2.9.201 Version/12.02"
 ]
 
-SYSTEMS_AND_VERSIONS = [
-    ({"system": "X11", "os_ver": "Linux x86_64"}),
-    ({"system": "Windows", "os_ver": "Windows NT 6.1"}),
-    ({"system": "Windows", "os_ver": "Windows NT 6.0"}),
-    ({"system": "Macintosh", "os_ver": "Intel Mac OS X 10_6_3"}),
-    ({"system": "Macintosh", "os_ver": "Intel Mac OS X 10_5_8"}),
-    ({"system": "Macintosh", "os_ver": "PPC Mac OS X 10_5_8"}),
-    ({"system": "Macintosh", "os_ver": "PPC Mac OS X 10_4_11"}),
-    ({"system": "Macintosh", "os_ver": "Intel Mac OS X 10_6_3; HTC-P715a"}),
-]
-
-WEBKIT_VERSIONS = [
-    "531.2+", "533.16", "533.18.1", "534.1+"
-]
-
-SAFARI_VERSIONS = [
-    "531.2+", "533.16"
-]
+ANDROID_VERSIONS = ["4.0", "4.1", "4.2", "4.3", "4.4"]
 
 LANGUAGES = [
     # English variants
@@ -108,20 +92,16 @@ def check_blacklist(ua: str) -> bool:
 
 def generate_safari_ua() -> str:
     """
-    Generate a single random Safari 5.0 User Agent string.
+    Generate a single random User Agent string based on working templates.
     
     Returns:
-        str: A randomly generated Safari UA string
+        str: A randomly generated UA string
     """
-    pattern = random.choice(SAFARI_PATTERNS)
-    system_info = random.choice(SYSTEMS_AND_VERSIONS)
+    pattern = random.choice(UA_PATTERNS)
     
     params = {
-        'system': system_info['system'],
-        'os_ver': system_info['os_ver'],
         'lang': random.choice(LANGUAGES),
-        'webkit': random.choice(WEBKIT_VERSIONS),
-        'safari': random.choice(SAFARI_VERSIONS)
+        'android_ver': random.choice(ANDROID_VERSIONS)
     }
     
     return pattern.format(**params)
