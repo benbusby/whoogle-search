@@ -12,6 +12,7 @@ from flask import Flask
 import json
 import logging.config
 import os
+import shutil
 import sys
 from stem import Signal
 import threading
@@ -225,6 +226,11 @@ for cb_dir in cache_busting_dirs:
         except FileExistsError:
             # Symlink hasn't changed, ignore
             pass
+        except OSError:
+            # Windows without symlink privilege raises OSError (WinError 1314,
+            # "a required privilege is not held by the client"); some filesystems
+            # can't symlink either. Fall back to copying so cache-busting still works.
+            shutil.copyfile(full_cb_path, build_path)
 
         # Create mapping for relative path urls
         map_path = build_path.replace(app.config['APP_ROOT'], '')
