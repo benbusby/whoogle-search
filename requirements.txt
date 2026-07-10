@@ -23,7 +23,7 @@ pytest==9.0.3
 python-dateutil==2.9.0.post0
 httpx[http2,socks]==0.28.1
 cachetools==6.2.0
-soupsieve==2.8
+soupsieve==2.8.4
 stem==1.8.2
 httpcore>=1.0.9
 h11>=0.16.0
