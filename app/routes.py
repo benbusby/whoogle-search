@@ -29,6 +29,7 @@ from app.utils.results import bold_search_terms,\
     add_currency_card, check_currency, get_tabs_content
 from app.utils.search import Search, needs_https, has_captcha
 from app.utils.session import valid_user_session
+from app.utils.ssrf import is_safe_url
 from bs4 import BeautifulSoup as bsoup
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for, g
@@ -713,6 +714,10 @@ def element():
     if not validators.domain(domain):
         return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
 
+    # Reject targets that resolve to internal/reserved addresses (SSRF).
+    if not is_safe_url(src_url):
+        return send_file(io.BytesIO(empty_gif), mimetype='image/gif')
+
     try:
         response = g.user_request.send(base_url=src_url)
 
@@ -753,6 +758,12 @@ def window():
 
     # Ensure requested URL has a valid domain
     if not validators.domain(target.netloc):
+        return render_template(
+            'error.html',
+            error_message='Invalid location'), 400
+
+    # Reject targets that resolve to internal/reserved addresses (SSRF).
+    if not is_safe_url(target_url):
         return render_template(
             'error.html',
             error_message='Invalid location'), 400

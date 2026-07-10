@@ -7,6 +7,8 @@ from cachetools import TTLCache
 import ssl
 import os
 
+from app.utils.ssrf import ssrf_request_hook
+
 # Import h2 exceptions for better error handling
 try:
     from h2.exceptions import ProtocolError as H2ProtocolError
@@ -35,7 +37,8 @@ class HttpxClient:
             
         client_kwargs = dict(http2=http2,
                              timeout=timeout_seconds,
-                             follow_redirects=True)
+                             follow_redirects=True,
+                             event_hooks={'request': [ssrf_request_hook]})
         # Prefer future-proof mounts when proxies are provided; fall back to proxies=
         self._proxies = proxies or {}
         self._http2 = http2
@@ -196,7 +199,8 @@ class HttpxClient:
         # Recreate with same configuration
         client_kwargs = dict(timeout=self._timeout_seconds,
                              follow_redirects=True,
-                             http2=self._http2)
+                             http2=self._http2,
+                             event_hooks={'request': [ssrf_request_hook]})
 
         try:
             self._client = self._build_client(client_kwargs, self._verify)
