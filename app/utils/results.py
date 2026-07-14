@@ -319,6 +319,11 @@ def check_currency(response: str) -> dict:
             else:
                 return {}
         currency_link = currency_link.find_all(class_='BNeawe')
+        # Google periodically changes the conversion-widget markup (e.g. dropping the
+        # BNeawe class), which leaves <2 nodes here and used to crash with an IndexError
+        # -> HTTP 500 on every currency/crypto query. Bail gracefully instead.
+        if len(currency_link) < 2:
+            return {}
         currency1 = currency_link[0].text
         currency2 = currency_link[1].text
         currency1 = currency1.rstrip('=').split(' ', 1)
@@ -326,6 +331,8 @@ def check_currency(response: str) -> dict:
 
         # Handle differences in currency formatting
         # i.e. "5.000" vs "5,000"
+        if len(currency1) < 2 or len(currency2) < 2 or len(currency2[0]) < 3:
+            return {}
         if currency2[0][-3] == ',':
             currency1[0] = currency1[0].replace('.', '')
             currency1[0] = currency1[0].replace(',', '.')
