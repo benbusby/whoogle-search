@@ -284,7 +284,12 @@ class Config:
         return urlsafe_b64encode(kdf_key)
 
     def _encode_preferences(self) -> str:
-        preferences_json = json.dumps(self.get_attrs()).encode()
+        safe_preferences = {
+            key: value
+            for key, value in self.get_attrs().items()
+            if self.is_safe_key(key)
+        }
+        preferences_json = json.dumps(safe_preferences).encode()
         compressed_preferences = brotli.compress(preferences_json)
 
         if self.preferences_encrypted and self.preferences_key:
@@ -312,4 +317,3 @@ class Config:
             config = {}
 
         return config
-
