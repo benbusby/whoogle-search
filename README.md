@@ -40,7 +40,7 @@ Contents
     1. [Arch/AUR](#arch-linux--arch-based-distributions)
     1. [Helm/Kubernetes](#helm-chart-for-kubernetes)
 4. [Environment Variables and Configuration](#environment-variables)
-5. [Google Custom Search (BYOK)](#google-custom-search-byok)
+5. [Google Custom Search (BYOK) (No longer possible)](#google-custom-search-byok)
 6. [Usage](#usage)
 7. [Extra Steps](#extra-steps)
     1. [Set Primary Search Engine](#set-whoogle-as-your-primary-search-engine)
@@ -524,6 +524,11 @@ These environment variables configure the "Bring Your Own Key" feature for Googl
 
 ## Google Custom Search (BYOK)
 
+>[!WARNING]
+>
+>**No longer possible to create these keys**
+>The CSE option to search the entire web has been deprecated and so if you have not got a key already, this is not possible to use.
+
 If Google blocks traditional search scraping (captchas, IP bans), you can use your own Google Custom Search Engine credentials as a fallback. This uses Google's official API with your own quota.
 
 ### Why Use This?
@@ -545,7 +550,7 @@ If Google blocks traditional search scraping (captchas, IP bans), you can use yo
 
 ### Setup Steps
 
-#### 1. Create a Custom Search Engine
+#### 1. Create a Custom Search Engine (No longer possible)
 1. Go to [Programmable Search Engine](https://programmablesearchengine.google.com/controlpanel/all)
 2. Click **"Add"** to create a new search engine
 3. Under "What to search?", select **"Search the entire web"**
