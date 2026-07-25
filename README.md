@@ -1,10 +1,23 @@
->[!WARNING]
+>[!IMPORTANT]
 >
->**Final Release Notice 14 Apr 2026**
->Since early 2025, Google has been aggressively blocking search queries performed without JavaScript enabled by continuously banning working User-Agent strings.
->This is THE fundamental part of how Whoogle works. All efforts to find and build a method to continue working have failed, and as a result, this will be the **final release of Whoogle**.
+># Whoogle has reached the end of the road — 24 Jul 2026
 >
->Whoogle can theoretically continue to be used by bringing your own CSE Key (Custom Search Engine Key), or if you are able to find a working UA string, you can hardcode that. However, no additional efforts will be placed into finding a fix or maintaining workarounds unless someone stumbles upon a method that will work reliably and maintains a small, simple footprint.
+>Whoogle no longer returns search results, and that isn't something this project can fix.
+>
+>Since early 2025, Google has steadily shut the door on search queries made without JavaScript, banning working User-Agent strings as fast as they were found. Fetching results without JavaScript was the foundation Whoogle was built on. Google has now killed the last User-Agent string that still worked, and with it the only way Whoogle had to reach search results.
+>
+>The Google Custom Search (BYOK) fallback described below is no longer a workable alternative either, so there's nothing left to fall back to. Google closed both doors; there's no third one to try.
+>
+>Because of that, active work on this repository has come to an end:
+>- No further commits or releases
+>- No bug fixes
+>- No pull requests or contributions will be reviewed or merged
+>- No new translations or feature requests
+>- No ongoing support for existing deployments, public instances, or Docker images
+>
+>The code stays up for reference, and it's still MIT licensed — fork it and take it wherever you like. Everything below this notice describes how Whoogle worked while Google still allowed it to, and is kept as a record of that. Please don't expect any of it to work today.
+>
+>To everyone who used, deployed, translated, packaged, and contributed to Whoogle over the years: thank you. It was a good run, and it ended on Google's terms, not ours.
 
 ___
 
@@ -23,7 +36,7 @@ ___
   </tr>
 </table>
 
-Get Google search results, but without any ads, JavaScript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
+*(Historical description — see the notice above.)* Get Google search results, but without any ads, JavaScript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
 Contents
 1. [Features](#features)
@@ -524,6 +537,9 @@ These environment variables configure the "Bring Your Own Key" feature for Googl
 
 ## Google Custom Search (BYOK)
 
+> [!IMPORTANT]
+> **This path is no longer viable.** CSE was the last fallback left after Google blocked no-JS results, and Google has since closed that option off as a practical way to run Whoogle. The rest of this section is kept for reference only — please don't expect it to work, and there's no need to open issues about it.
+
 If Google blocks traditional search scraping (captchas, IP bans), you can use your own Google Custom Search Engine credentials as a fallback. This uses Google's official API with your own quota.
 
 ### Why Use This?
@@ -915,6 +931,9 @@ This tool was used to discover and validate the working Safari UA patterns that 
 
 ## Contributing
 
+> [!IMPORTANT]
+> **This project is no longer taking contributions.** With Google having cut off the only ways Whoogle could fetch results, there's nothing left to build on here, so issues, pull requests, translations, and feature requests won't be reviewed or merged. If you'd like to carry the idea forward, please fork it — the MIT license means you don't need anyone's permission. The structure notes below are kept to make that easier.
+
 Under the hood, Whoogle is a basic Flask app with the following structure:
 
 - `app/`
@@ -941,8 +960,6 @@ Under the hood, Whoogle is a basic Flask app with the following structure:
     - Key-value JSON files for establishing valid configuration values
 
 
-If you're new to the project, the easiest way to get started would be to try fixing [an open bug report](https://github.com/benbusby/whoogle-search/issues?q=is%3Aissue+is%3Aopen+label%3Abug). If there aren't any open, or if the open ones are too stale, try taking on a [feature request](https://github.com/benbusby/whoogle-search/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement). Generally speaking, if you can write something that has any potential of breaking down in the future, you should write a test for it.
-
 The project follows the [PEP 8 Style Guide](https://www.python.org/dev/peps/pep-0008/), but is liable to change. Static typing should always be used when possible. Function documentation is greatly appreciated, and typically follows the below format:
 
 ```python
@@ -962,7 +979,7 @@ def contains(x: list, y: int) -> bool:
 
 #### Translating
 
-Whoogle currently supports translations using [`translations.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/translations.json). Language values in this file need to match the "value" of the according language in [`languages.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/languages.json) (i.e. "lang_en" for English, "lang_es" for Spanish, etc). After you add a new set of translations to `translations.json`, open a PR with your changes and they will be merged in as soon as possible.
+Whoogle supports translations using [`translations.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/translations.json). Language values in this file need to match the "value" of the according language in [`languages.json`](https://github.com/benbusby/whoogle-search/blob/main/app/static/settings/languages.json) (i.e. "lang_en" for English, "lang_es" for Spanish, etc). Translation PRs are no longer being merged here, but the format is documented above if you'd like to add languages in a fork.
 
 ## FAQ
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
@@ -979,7 +996,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Public Instances
 
-*Note: Use public instances at your own discretion. The maintainers of Whoogle do not personally validate the integrity of any other instances. Popular public instances are more likely to be rate-limited or blocked.*
+*Note: this list is no longer maintained, and the instances below are unlikely to still be working now that Google has blocked the underlying requests. Use public instances at your own discretion. The maintainers of Whoogle do not personally validate the integrity of any other instances.*
 
 | Website | Country | Language | Cloudflare |
 |-|-|-|-|
